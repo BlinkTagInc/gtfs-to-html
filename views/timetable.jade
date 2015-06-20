@@ -10,6 +10,9 @@ block content
       caption.direction To #{headsign}
       .description= route.description
       .timetable_days
+        each calendar in calendars
+          .calendar_name= calendar.service_name
+          .calendar_days= calendar.day_list
       thead
         tr
           th(scope="column") Stop
@@ -30,3 +33,15 @@ block content
     .notes
       .note *** = Request stop - call for pickup
       .note — = No service at this timepoint
+      
+    .calendar_dates
+      if excludedDates.length
+        .excluded_dates Service not provided on:
+          each date in excludedDates
+            div= date
+      if includedDates.length
+        .included_dates Service provided on:
+          each date in includedDates
+            div= date
+          
+        
