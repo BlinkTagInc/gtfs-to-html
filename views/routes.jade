@@ -1,0 +1,16 @@
+extends layout
+
+block content
+  .content
+    h1 Routes
+    
+    ul.list-group
+      each route in routes
+        li.list-group-item
+          if route.route_color
+            .route-color(style="background:##{route.route_color};")
+          .route-name= route.route_short_name + ' - ' + route.route_long_name
+          .btn-group
+            a.btn.btn-default.btn-sm(href="/timetable?agency_key=#{agencyKey}&route_id=#{route.route_id}") No direction
+            a.btn.btn-default.btn-sm(href="/timetable?agency_key=#{agencyKey}&route_id=#{route.route_id}&direction_id=0") Direction 0
+            a.btn.btn-default.btn-sm(href="/timetable?agency_key=#{agencyKey}&route_id=#{route.route_id}&direction_id=1") Direction 1

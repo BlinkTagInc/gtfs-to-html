@@ -1,0 +1,32 @@
+extends layout
+
+block content
+  .content
+    if route.route_color
+      .route-color(style="background:##{route.route_color};")
+    h1.route_name Timetable for Route #{route.route_short_name} - #{route.route_long_name}
+    
+    table.table.table-bordered.table-striped
+      caption.direction To #{headsign}
+      .description= route.description
+      .timetable_days
+      thead
+        tr
+          th(scope="column") Stop
+          each trip, idx in stops[0].trips
+            th.run_header(scope="column") Run #{idx + 1}
+
+      tbody
+        each stop in stops
+          tr
+            th 
+              .stop_name= stop.stop_name
+              .stop_code= stop.stop_code
+              .stop_description= stop.stop_desc
+            
+            each trip in stop.trips
+              td.stop_time(class="#{trip.classes.join(' ')}")= trip.formatted_time
+              
+    .notes
+      .note *** = Request stop - call for pickup
+      .note — = No service at this timepoint

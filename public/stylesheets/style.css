@@ -1,0 +1,31 @@
+h1 {
+  margin-bottom: 10px;
+}
+
+.content {
+  min-height: 400px;
+  margin: 20px;
+}
+
+.route-color {
+  width: 30px;
+  height: 30px;
+  float: left;
+  margin: 5px 10px 5px 0;
+}
+
+.notes .note {
+  display: inline-block;
+  margin-right: 15px;
+}
+
+.route-name {
+  width: 350px;
+  display: inline-block;
+  font-weight: bold;
+}
+
+.skipped,
+.untimed {
+  text-align: center;
+}
