@@ -28,11 +28,11 @@ block content
               .stop_description= stop.stop_desc
             
             each trip in stop.trips
-              td.stop_time(class="#{trip.classes.join(' ')}")= trip.formatted_time
+              td.stop_time(class="#{trip.classes.join(' ')}")!= trip.formatted_time
               
     .notes
       .note *** = Request stop - call for pickup
-      .note — = No service at this timepoint
+      .note &mdash; = No service at this timepoint
       
     .calendar_dates
       if excludedDates.length
