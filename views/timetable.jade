@@ -6,29 +6,35 @@ block content
       .route-color(style="background:##{route.route_color};")
     h1.route_name Timetable for Route #{route.route_short_name} - #{route.route_long_name}
     
-    table.table.table-bordered.table-striped
+    table.timetable(id="route_id_#{route.routeroute_id}_direction_#{direction}")
       caption.direction To #{headsign}
       .description= route.description
-      .timetable_days
+      .timetable_daysi
         each calendar in calendars
           .calendar_name= calendar.service_name
           .calendar_days= calendar.day_list
+      colgroup
+        col
+        each trip, idx in trips
+          col(id="trip_id_#{trip.trip_id}" class="run_#{idx} #{(trip.trip_short_name) ? 'trip_short_name_' + trip.trip_short_name : ''}")
       thead
         tr
-          th(scope="column") Stop
+          th.stop_header(scope="column") Stop
           each trip, idx in stops[0].trips
-            th.run_header(scope="column") Run #{idx + 1}
+            th.run_header(scope="column")= trip.trip_short_name || 'Run #' + (idx + 1)
 
       tbody
         each stop in stops
-          tr
-            th 
+          tr.stop_row(id="stop_id_#{stop.stop_id}")
+            th(scope="row")
               .stop_name= stop.stop_name
               .stop_code= stop.stop_code
               .stop_description= stop.stop_desc
             
             each trip in stop.trips
-              td.stop_time(class="#{trip.classes.join(' ')}")!= trip.formatted_time
+              td.stop_time(class="#{trip.classes.join(' ')}")
+                span.stop_time_text!= trip.formatted_time
+                span.stop_time_period= trip.formatted_period
               
     .notes
       .note *** = Request stop - call for pickup
