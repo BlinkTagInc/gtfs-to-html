@@ -21,6 +21,7 @@
     "moment": "^2.10.3",
     "morgan": "^1.6.0",
     "rimraf": "^2.4.0",
-    "underscore": "^1.8.3"
+    "underscore": "^1.8.3",
+    "yargs": "^3.12.0"
   }
 }

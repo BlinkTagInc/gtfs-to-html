@@ -28,7 +28,7 @@ router.get('/timetable', function(req, res, next) {
   var routeId = req.query.route_id;
   var directionId = req.query.direction_id;
 
-  utils.generateHTML(agencyKey, routeId, directionId, function(e, html) {
+  utils.generateHTML(agencyKey, routeId, directionId, {}, function(e, html) {
     if(e) return next(e);
 
     res.send(html);

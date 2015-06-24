@@ -6,7 +6,7 @@ var jade = require('jade');
 var mkdirp = require('mkdirp');
 var rimraf = require('rimraf');
 var utils = require('../lib/utils');
-
+var argv = require('yargs').argv;
 
 // check if this file was invoked direct through command line or required as an export
 var invocation = (require.main === module) ? 'direct' : 'required';
@@ -27,6 +27,10 @@ if (invocation === 'direct') {
 
 function main(config, cb){
   var log = (config.verbose === false) ? function(){} : console.log;
+
+  var options = {
+    nohead: !!argv.nohead
+  };
 
   var agencyKey = (typeof config.agencies[0] === 'string')  ? config.agencies[0] : config.agencies[0].agency_key;
   var path = 'html/' + agencyKey;
@@ -61,7 +65,7 @@ function main(config, cb){
         var routeId = route.route_id;
 
         async.each(directionIds, function(directionId, cb) {
-          utils.generateHTML(agencyKey, routeId, directionId, function(e, html) {
+          utils.generateHTML(agencyKey, routeId, directionId, options, function(e, html) {
             // ignore errors
             if(e) return cb();
 

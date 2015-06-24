@@ -39,6 +39,16 @@ To generate HTML timetables, run the 'gtfs-to-html' script.
 
 This will download the GTFS file specified in `config.js` and then build the HTML timetables and save them in `html/:agency_key`.
 
+## Options
+
+Note the use of two sets of `--` when running commands with arguments from npm.
+
+`nohead`
+
+    npm run gtfs-to-html -- --nohead
+
+This will generate embeddable HTML without an `<html>`, `<head>` or `<body>` tag.
+
 
 ## Testing
 
