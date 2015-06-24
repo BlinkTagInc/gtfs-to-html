@@ -1,3 +1,11 @@
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.42857143;
+  color: #333333;
+  background-color: #ffffff;
+}
+
 h1 {
   margin-bottom: 10px;
 }
@@ -12,6 +20,11 @@ h1 {
   height: 30px;
   float: left;
   margin: 5px 10px 5px 0;
+}
+
+.direction {
+  font-weight: bold;
+  margin-bottom: 10px;
 }
 
 .notes {
@@ -44,4 +57,54 @@ h1 {
 .excluded_dates {
   width: 180px;
   float: right;
+}
+
+table {
+  background-color: transparent;
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: 20px;
+  border: 1px solid #dddddd;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+th {
+  text-align: left;
+}
+td,
+th {
+  padding: 0;
+}
+table > thead > tr > th,
+table > tbody > tr > th,
+table > tfoot > tr > th,
+table > thead > tr > td,
+table > tbody > tr > td,
+table > tfoot > tr > td {
+  padding: 8px;
+  line-height: 1.42857143;
+  vertical-align: top;
+  border: 1px solid #dddddd;
+}
+table > thead > tr > th {
+  vertical-align: bottom;
+  border-bottom: 2px solid #dddddd;
+}
+table > caption + thead > tr:first-child > th,
+table > colgroup + thead > tr:first-child > th,
+table > thead:first-child > tr:first-child > th,
+table > caption + thead > tr:first-child > td,
+table > colgroup + thead > tr:first-child > td,
+table > thead:first-child > tr:first-child > td {
+  border-top: 0;
+}
+table > tbody + tbody {
+  border-top: 2px solid #dddddd;
+}
+table > thead > tr > th,
+table > thead > tr > td {
+  border-bottom-width: 2px;
+}
+table > tbody > tr:nth-of-type(odd) {
+  background-color: #f9f9f9;
 }
