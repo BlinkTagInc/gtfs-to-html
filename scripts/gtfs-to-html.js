@@ -4,6 +4,7 @@ var fs = require('fs');
 var gtfs = require('gtfs');
 var jade = require('jade');
 var mkdirp = require('mkdirp');
+var path = require('path');
 var rimraf = require('rimraf');
 var utils = require('../lib/utils');
 var argv = require('yargs').argv;
@@ -33,7 +34,7 @@ function main(config, cb){
   };
 
   var agencyKey = (typeof config.agencies[0] === 'string')  ? config.agencies[0] : config.agencies[0].agency_key;
-  var path = 'html/' + agencyKey;
+  var exportPath = 'html/' + agencyKey;
   var routes;
 
   log('Generating HTML schedules for ' + agencyKey);
@@ -45,11 +46,16 @@ function main(config, cb){
     },
     function(cb) {
       // cleanup any previously generated files
-      rimraf(path, cb);
+      rimraf(exportPath, cb);
     },
     function(cb) {
       // create directory
-      mkdirp(path, cb);
+      mkdirp(exportPath, cb);
+    },
+    function(cb) {
+      // copy css
+      fs.createReadStream(path.join(__dirname, '..', 'public/timetable_styles.css')).pipe(fs.createWriteStream(exportPath + '/timetable_styles.css'));
+      cb();
     },
     function(cb) {
       // get routes
@@ -72,7 +78,7 @@ function main(config, cb){
             var fileName = route.route_short_name + '_' + routeId + ((directionId !== undefined) ? ('_' + directionId) : '') + '.html';
 
             log('  Creating ' + fileName);
-            fs.writeFile(path + '/' + fileName, html, cb);
+            fs.writeFile(exportPath + '/' + fileName, html, cb);
           });
         }, cb);
       }, cb);
