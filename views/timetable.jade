@@ -6,7 +6,7 @@ block content
       .route-color(style="background:##{route.route_color};")
     h1.route_name Timetable for Route #{route.route_short_name} - #{route.route_long_name}
     
-    table.timetable(id="route_id_#{route.routeroute_id}_direction_#{direction}")
+    table.timetable(id="route_id_#{route.route_id}_direction_#{direction}")
       caption.direction To #{headsign}
       .description= route.description
       .timetable_daysi
