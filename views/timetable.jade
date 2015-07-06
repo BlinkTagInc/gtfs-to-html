@@ -4,18 +4,17 @@ block content
   .content
     if route.route_color
       .route-color(style="background:##{route.route_color};")
-    h1.route_name Timetable for Route #{route.route_short_name} - #{route.route_long_name}
+    h1.route_name Timetable for Route #{timetable.route_label}
+    h2.service_notes= timetable.service_notes
     
     if options.effectiveDate
       .effective-date Effective #{options.effectiveDate}
     
-    table.table-responsive.timetable(id="route_id_#{route.route_id}_direction_#{direction}")
-      caption.direction To #{headsign}
+    table.table-responsive.timetable(id="route_id_#{route.route_id}_direction_#{timetable.direction_id}")
+      caption.direction #{timetable.direction_label}
       .description= route.description
-      .timetable_daysi
-        each calendar in calendars
-          .calendar_name= calendar.service_name
-          .calendar_days= calendar.day_list
+      .timetable_days= timetable.day_list
+      
       colgroup
         col
         each trip, idx in trips

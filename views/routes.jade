@@ -11,6 +11,9 @@ block content
             .route-color(style="background:##{route.route_color};")
           .route-name= route.route_short_name + ' - ' + route.route_long_name
           .btn-group
-            a.btn.btn-default.btn-sm(href="/timetable?agency_key=#{agencyKey}&route_id=#{route.route_id}") No direction
-            a.btn.btn-default.btn-sm(href="/timetable?agency_key=#{agencyKey}&route_id=#{route.route_id}&direction_id=0") Direction 0
-            a.btn.btn-default.btn-sm(href="/timetable?agency_key=#{agencyKey}&route_id=#{route.route_id}&direction_id=1") Direction 1
+            each timetable in route.timetables
+              a.btn.btn-default.btn-sm(href="/timetable?agency_key=#{agencyKey}&timetable_id=#{timetable.timetable_id}")
+                if timetable.direction_label
+                  span= timetable.direction_label + ' ' +  timetable.service_notes
+                else
+                  span= 'Direction ' + timetable.direction_id

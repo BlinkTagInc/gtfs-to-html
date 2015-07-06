@@ -36,7 +36,7 @@ function main(config, cb){
 
   var agencyKey = (typeof config.agencies[0] === 'string')  ? config.agencies[0] : config.agencies[0].agency_key;
   var exportPath = 'html/' + agencyKey;
-  var routes;
+  var timetables;
 
   log('Generating HTML schedules for ' + agencyKey);
 
@@ -59,29 +59,21 @@ function main(config, cb){
       cb();
     },
     function(cb) {
-      // get routes
-      gtfs.getRoutesByAgency(agencyKey, function(e, results) {
-        routes = results;
+      // get timetables
+      gtfs.getTimetablesByAgency(agencyKey, function(e, results) {
+        timetables = results;
         cb(e);
       });
     },
     function(cb) {
-      var directionIds = ['0', '1', undefined];
+      // build HTML timetables
+      async.each(timetables, function(timetable, cb) {
+        utils.generateHTML(agencyKey, timetable.timetable_id, options, function(e, html) {
+          var fileName = (timetable.route_label + '_' + timetable.service_notes + '_' + (timetable.direction_label || timetable.direction_id) + '.html').replace(/ /g,'');
 
-      async.each(routes, function(route, cb) {
-        var routeId = route.route_id;
-
-        async.each(directionIds, function(directionId, cb) {
-          utils.generateHTML(agencyKey, routeId, directionId, options, function(e, html) {
-            // ignore errors
-            if(e) return cb();
-
-            var fileName = route.route_short_name + '_' + routeId + ((directionId !== undefined) ? ('_' + directionId) : '') + '.html';
-
-            log('  Creating ' + fileName);
-            fs.writeFile(exportPath + '/' + fileName, html, cb);
-          });
-        }, cb);
+          log('  Creating ' + fileName);
+          fs.writeFile(exportPath + '/' + fileName, html, cb);
+        });
       }, cb);
     }
   ], cb);

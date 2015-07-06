@@ -1,3 +1,4 @@
+var _ = require('underscore');
 var gtfs = require('gtfs');
 var router = require('express').Router();
 var utils = require('../lib/utils');
@@ -17,21 +18,25 @@ router.get('/routes', function(req, res, next) {
   var agencyKey = req.query.agency_key;
 
   gtfs.getRoutesByAgency(agencyKey, function(e, routes) {
-    res.render('routes', {routes: routes, agencyKey: agencyKey});
+    gtfs.getTimetablesByAgency(agencyKey, function(e, timetables) {
+      var timetablesByRoute = _.groupBy(timetables, 'route_id');
+      routes = routes.map(function(route) {
+        route = route.toObject();
+        route.timetables = _.sortBy(timetablesByRoute[route.route_id], 'direction_id') || [];
+        return route;
+      });
+      res.render('routes', {routes: routes, agencyKey: agencyKey});
+    });
   });
 });
 
 
 router.get('/timetable', function(req, res, next) {
-  // /timetable?agency_key=eldoradotransit-ca-us&route_id=1970&direction_id=1
-
   var agencyKey = req.query.agency_key;
-  var routeId = req.query.route_id;
-  var directionId = req.query.direction_id;
+  var timetableId = req.query.timetable_id;
 
-  utils.generateHTML(agencyKey, routeId, directionId, config, function(e, html) {
+  utils.generateHTML(agencyKey, timetableId, config, function(e, html) {
     if(e) return next(e);
-
     res.send(html);
   });
 });
