@@ -1,3 +1,4 @@
+var _ = require('underscore');
 var async = require('async');
 var download = require('../node_modules/gtfs/scripts/download');
 var fs = require('fs');
@@ -29,9 +30,9 @@ if (invocation === 'direct') {
 function main(config, cb){
   var log = (config.verbose === false) ? function(){} : console.log;
 
-  var options = {
+  var options = _.extend(config, {
     nohead: !!argv.nohead
-  };
+  });
 
   var agencyKey = (typeof config.agencies[0] === 'string')  ? config.agencies[0] : config.agencies[0].agency_key;
   var exportPath = 'html/' + agencyKey;

@@ -6,6 +6,9 @@ block content
       .route-color(style="background:##{route.route_color};")
     h1.route_name Timetable for Route #{route.route_short_name} - #{route.route_long_name}
     
+    if options.effectiveDate
+      .effective-date Effective #{options.effectiveDate}
+    
     table.table-responsive.timetable(id="route_id_#{route.route_id}_direction_#{direction}")
       caption.direction To #{headsign}
       .description= route.description
@@ -37,8 +40,8 @@ block content
                 span.stop_time_period= trip.formatted_period
               
     .notes
-      .note *** = Request stop - call for pickup
-      .note &mdash; = No service at this timepoint
+      .note #{options.requestStopSymbol} = Request stop - call for pickup
+      .note #{options.noServiceSymbol} = No service at this timepoint
       
     .calendar_dates
       if excludedDates.length
