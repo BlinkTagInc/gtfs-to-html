@@ -131,12 +131,12 @@ function main(config, callback) {
       log(agency_key + ': Starting');
 
       async.series([
-        // cleanupFiles,
-        // downloadFiles,
+        cleanupFiles,
+        downloadFiles,
         removeDatabase,
         importFiles,
         postProcess,
-        // cleanupFiles
+        cleanupFiles
       ], function (e, results) {
         log(e || agency_key + ': Completed');
         cb();

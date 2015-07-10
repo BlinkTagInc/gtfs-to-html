@@ -12,7 +12,7 @@ module.exports = {
   agencies: [
     {
       agency_key: 'eldoradotransit-ca-us',
-      url: 'http://data.trilliumtransit.com/gtfs/eldoradotransit-ca-us/eldoradotransit-ca-us.zip'
+      url: 'https://dl.dropboxusercontent.com/u/33568/eldorado-gtfs.zip'
     }
   ],
   effectiveDate: 'July 8, 2015',
