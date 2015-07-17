@@ -259,7 +259,8 @@ function main(config, callback) {
                   'thursday',
                   'friday',
                   'saturday',
-                  'sunday'
+                  'sunday',
+                  'pickup_type'
                 ];
 
                 integerFields.forEach(function(fieldName) {
