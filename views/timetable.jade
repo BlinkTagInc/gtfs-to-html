@@ -37,19 +37,34 @@ block content
               td.stop_time(class="#{trip.classes.join(' ')}")
                 span.stop_time_text!= trip.formatted_time
                 span.stop_time_period= trip.formatted_period
-              
-    .notes
-      .note #{options.requestStopSymbol} = Request stop - call for pickup
-      .note #{options.noServiceSymbol} = No service at this timepoint
-      
-    .calendar_dates
-      if excludedDates.length
-        .excluded_dates Service not provided on:
-          each date in excludedDates
-            div= date
-      if includedDates.length
-        .included_dates Service provided on:
-          each date in includedDates
-            div= date
+                
+    .timetable-bottom
+      .notes
+        .note #{options.requestStopSymbol} = Request stop - call for pickup
+        .note #{options.noServiceSymbol} = No service at this timepoint
+        
+      .calendar_dates
+        if excludedDates.length
+          .excluded_dates Service not provided on:
+            each date in excludedDates
+              div= date
+        if includedDates.length
+          .included_dates Service provided on:
+            each date in includedDates
+              div= date
           
+    if options.showMap
+      #map.map
+        
+      script.
+        L.mapbox.accessToken = 'pk.eyJ1IjoibWFwYm94IiwiYSI6IlhHVkZmaW8ifQ.hAMX5hSW-QnTeRCMAy9A8Q';
+        var map = L.mapbox.map('map', 'mapbox.streets');
+        
+        var stops = JSON.parse('!{JSON.stringify(stops)}');
+        var markers = L.featureGroup(stops.map(function(stop) {
+          var popupContent = '<h2>' + stop.stop_name + '</h2>' + stop.stop_times.join('<br>');
+          return L.marker([stop.stop_lat, stop.stop_lon], {title: stop.stop_name}).bindPopup(popupContent);
+        })).addTo(map);
+  
+        map.fitBounds(markers.getBounds());
         

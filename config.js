@@ -1,10 +1,11 @@
  /*
- // Valid options
- // mongo_url
- // agencies
- // effectiveDate
- // noServiceSymbol
- // requestStopSymbol
+  * Valid options
+  * mongo_url
+  * agencies
+  * effectiveDate
+  * noServiceSymbol
+  * requestStopSymbol
+  * showMap
  */
 
 module.exports = {
@@ -21,5 +22,6 @@ module.exports = {
   ],
   effectiveDate: 'July 8, 2015',
   noServiceSymbol: '—',
-  requestStopSymbol: '***'
+  requestStopSymbol: '***',
+  showMap: true
 };

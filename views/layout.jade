@@ -5,6 +5,10 @@ if !options || !options.nohead
       title= title
       link(rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css")
       link(rel="stylesheet" href="/timetable_styles.css")
+        
+      if options.showMap
+        script(src="https://api.tiles.mapbox.com/mapbox.js/v2.2.1/mapbox.js")
+        link(href="https://api.tiles.mapbox.com/mapbox.js/v2.2.1/mapbox.css" rel="stylesheet")
 
     body
       block content
