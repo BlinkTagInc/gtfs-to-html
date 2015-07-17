@@ -16,7 +16,7 @@ module.exports = {
     },
     {
       agency_key: 'petaluma-transit',
-      url: 'http://data.trilliumtransit.com/gtfs/petalumatransit-petaluma-ca-us/petalumatransit-petaluma-ca-us.zip'
+      url: 'https://dl.dropboxusercontent.com/u/33568/petaluma.zip'
     }
   ],
   effectiveDate: 'July 8, 2015',

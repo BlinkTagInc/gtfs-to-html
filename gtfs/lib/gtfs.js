@@ -57,8 +57,9 @@ module.exports = {
   /*
    * Returns a timetable object matching the `timetable_id` specified
    */
-  getTimetable: function (timetable_id, cb) {
+  getTimetable: function (agency_key, timetable_id, cb) {
     Timetable.findOne({
+      agency_key: agency_key,
       timetable_id: timetable_id
     }, cb);
   },
@@ -67,8 +68,9 @@ module.exports = {
   /*
    * Returns a route object matching the `route_id` specified
    */
-  getRoute: function (route_id, cb) {
+  getRoute: function (agency_key, route_id, cb) {
     Route.findOne({
+      agency_key: agency_key,
       route_id: route_id
     }, cb);
   },
@@ -89,12 +91,13 @@ module.exports = {
   /*
    * Returns an array of stops matching the `stop_ids` specified
    */
-  getStops: function (stop_ids, cb) {
+  getStops: function (agency_key, stop_ids, cb) {
     if(!_.isArray(stop_ids)) {
       stop_ids = [stop_ids];
     }
 
     Stop.find({
+      agency_key: agency_key,
       stop_id: {
         $in: stop_ids
       }
