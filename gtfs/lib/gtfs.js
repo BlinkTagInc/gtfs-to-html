@@ -75,6 +75,18 @@ module.exports = {
 
 
   /*
+   * Returns a route directions object matching the `route_id` and `direction_id` specified
+   */
+  getRouteDirection: function (agency_key, route_id, direction_id, cb) {
+    RouteDirection.findOne({
+      agency_key: agency_key,
+      route_id: route_id,
+      direction_id: direction_id
+    }, cb);
+  },
+
+
+  /*
    * Returns an array of stops matching the `stop_ids` specified
    */
   getStops: function (stop_ids, cb) {
