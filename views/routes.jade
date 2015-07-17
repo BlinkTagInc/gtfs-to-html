@@ -13,7 +13,7 @@ block content
           .btn-group
             each timetable in route.timetables
               a.btn.btn-default.btn-sm(href="/timetable?agency_key=#{agencyKey}&timetable_id=#{timetable.timetable_id}")
-                if timetable.direction_label
-                  span= timetable.direction_label + ' ' +  timetable.service_notes
+                if timetable.service_notes
+                  span= timetable.service_notes
                 else
                   span= 'Direction ' + timetable.direction_id
