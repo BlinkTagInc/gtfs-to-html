@@ -34,49 +34,53 @@ function main(config, cb){
     nohead: !!argv.nohead
   });
 
-  var agencyKey = (typeof config.agencies[0] === 'string')  ? config.agencies[0] : config.agencies[0].agency_key;
-  var exportPath = 'html/' + agencyKey;
-  var timetables;
+  async.eachSeries(config.agencies, function(agency, cb) {
+    var agencyKey = (typeof agency === 'string')  ? agency : agency.agency_key;
+    var exportPath = 'html/' + agencyKey;
+    var timetables;
 
-  log('Generating HTML schedules for ' + agencyKey);
+    log('Generating HTML schedules for ' + agencyKey);
 
-  async.series([
-    function(cb) {
-      // download GTFS
-      download(config, cb);
-    },
-    function(cb) {
-      // cleanup any previously generated files
-      rimraf(exportPath, cb);
-    },
-    function(cb) {
-      // create directory
-      mkdirp(exportPath, cb);
-    },
-    function(cb) {
-      // copy css
-      fs.createReadStream(path.join(__dirname, '..', 'public/timetable_styles.css')).pipe(fs.createWriteStream(exportPath + '/timetable_styles.css'));
-      cb();
-    },
-    function(cb) {
-      // get timetables
-      gtfs.getTimetablesByAgency(agencyKey, function(e, results) {
-        timetables = results;
-        cb(e);
-      });
-    },
-    function(cb) {
-      // build HTML timetables
-      async.each(timetables, function(timetable, cb) {
-        utils.generateHTML(agencyKey, timetable.timetable_id, options, function(e, html) {
-          var fileName = (timetable.route_label + '_' + timetable.service_notes + '_' + (timetable.direction_label || timetable.direction_id) + '.html').replace(/ /g,'');
-
-          log('  Creating ' + fileName);
-          fs.writeFile(exportPath + '/' + fileName, html, cb);
+    async.series([
+      function(cb) {
+        // download GTFS
+        var agencyConfig = _.clone(_.omit(config, 'agencies'));
+        agencyConfig.agencies = [agency];
+        download(agencyConfig, cb);
+      },
+      function(cb) {
+        // cleanup any previously generated files
+        rimraf(exportPath, cb);
+      },
+      function(cb) {
+        // create directory
+        mkdirp(exportPath, cb);
+      },
+      function(cb) {
+        // copy css
+        fs.createReadStream(path.join(__dirname, '..', 'public/timetable_styles.css')).pipe(fs.createWriteStream(exportPath + '/timetable_styles.css'));
+        cb();
+      },
+      function(cb) {
+        // get timetables
+        gtfs.getTimetablesByAgency(agencyKey, function(e, results) {
+          timetables = results;
+          cb(e);
         });
-      }, cb);
-    }
-  ], cb);
+      },
+      function(cb) {
+        // build HTML timetables
+        async.each(timetables, function(timetable, cb) {
+          utils.generateHTML(agencyKey, timetable.timetable_id, options, function(e, html) {
+            var fileName = (timetable.route_label + '_' + timetable.service_notes + '_' + (timetable.direction_label || timetable.direction_id) + '.html').replace(/ /g,'');
+
+            log('  Creating ' + fileName);
+            fs.writeFile(exportPath + '/' + fileName, html, cb);
+          });
+        }, cb);
+      }
+    ], cb);
+  }, cb);
 }
 
 // allow script to be called directly from commandline or required (for testable code)

@@ -13,6 +13,10 @@ module.exports = {
     {
       agency_key: 'eldoradotransit-ca-us',
       url: 'http://data.trilliumtransit.com/gtfs/eldoradotransit-ca-us/eldoradotransit-ca-us.zip'
+    },
+    {
+      agency_key: 'petaluma-transit',
+      url: 'http://data.trilliumtransit.com/gtfs/petalumatransit-petaluma-ca-us/petalumatransit-petaluma-ca-us.zip'
     }
   ],
   effectiveDate: 'July 8, 2015',
