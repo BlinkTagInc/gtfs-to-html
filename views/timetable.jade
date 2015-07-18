@@ -1,5 +1,11 @@
 extends layout
 
+
+block extraHead
+  if options.showMap
+    script(src="https://api.tiles.mapbox.com/mapbox.js/v2.2.1/mapbox.js")
+    link(href="https://api.tiles.mapbox.com/mapbox.js/v2.2.1/mapbox.css" rel="stylesheet")
+
 block content
   .content
     if route.route_color
@@ -60,7 +66,7 @@ block content
         L.mapbox.accessToken = 'pk.eyJ1IjoibWFwYm94IiwiYSI6IlhHVkZmaW8ifQ.hAMX5hSW-QnTeRCMAy9A8Q';
         var map = L.mapbox.map('map', 'mapbox.streets');
         
-        var stops = JSON.parse('!{JSON.stringify(stops)}');
+        var stops = !{JSON.stringify(stops)};
         var markers = L.featureGroup(stops.map(function(stop) {
           var popupContent = '<h2>' + stop.stop_name + '</h2>' + stop.stop_times.join('<br>');
           return L.marker([stop.stop_lat, stop.stop_lon], {title: stop.stop_name}).bindPopup(popupContent);
