@@ -72,10 +72,10 @@ function main(config, cb){
         // build HTML timetables
         async.each(timetables, function(timetable, cb) {
           utils.generateHTML(agencyKey, timetable.timetable_id, options, function(e, html) {
-            var fileName = (timetable.route_label + '_' + timetable.service_notes + (timetable.direction_id !== null ? '_' + timetable.direction_id : '') + '.html').replace(/ /g,'');
-
-            log('  Creating ' + fileName);
-            fs.writeFile(exportPath + '/' + fileName, html, cb);
+            utils.generateFilename(agencyKey, timetable, function(e, filename) {
+              log('  Creating ' + filename);
+              fs.writeFile(exportPath + '/' + filename, html, cb);
+            });
           });
         }, cb);
       },
