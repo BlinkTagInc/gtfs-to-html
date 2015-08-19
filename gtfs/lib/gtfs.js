@@ -24,24 +24,26 @@ require('../models/FareRule');
 require('../models/FeedInfo');
 require('../models/Frequencies');
 require('../models/Route');
+require('../models/RouteDirection');
 require('../models/Shape');
 require('../models/Stop');
 require('../models/StopTime');
 require('../models/Transfer');
 require('../models/Trip');
 require('../models/Timetable');
-require('../models/RouteDirection');
+
 
 var Agency = db.model('Agency');
 var Calendar = db.model('Calendar');
 var CalendarDate = db.model('CalendarDate');
+var FeedInfo = db.model('FeedInfo');
 var Route = db.model('Route');
+var RouteDirection = db.model('RouteDirection');
 var Shape = db.model('Shape');
 var Stop = db.model('Stop');
 var StopTime = db.model('StopTime');
 var Trip = db.model('Trip');
 var Timetable = db.model('Timetable');
-var RouteDirection = db.model('RouteDirection');
 
 
 module.exports = {
@@ -817,6 +819,16 @@ module.exports = {
       service_id: {
         $in: service_ids
       }
+    }, cb);
+  },
+
+
+  /*
+   * Returns feed_info for the agency_key specified
+   */
+  getFeedInfo: function (agency_key, cb) {
+    FeedInfo.findOne({
+      agency_key: agency_key
     }, cb);
   }
 };

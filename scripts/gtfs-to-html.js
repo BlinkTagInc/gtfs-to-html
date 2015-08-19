@@ -78,6 +78,15 @@ function main(config, cb){
             fs.writeFile(exportPath + '/' + fileName, html, cb);
           });
         }, cb);
+      },
+      function(cb) {
+        // create log file
+        gtfs.getFeedInfo(agencyKey, function(e, results) {
+          if(e) cb(e);
+          log('  Writing log.txt');
+          var text = 'Feed Version: ' + results.feed_version;
+          fs.writeFile(exportPath + '/log.txt', text, cb);
+        });
       }
     ], cb);
   }, cb);

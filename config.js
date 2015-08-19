@@ -23,5 +23,5 @@ module.exports = {
   effectiveDate: 'July 8, 2015',
   noServiceSymbol: '—',
   requestStopSymbol: '***',
-  showMap: true
+  showMap: false
 };
