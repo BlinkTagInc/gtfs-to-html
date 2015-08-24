@@ -84,8 +84,11 @@ function main(config, cb){
         gtfs.getFeedInfo(agencyKey, function(e, results) {
           if(e) cb(e);
           log('  Writing log.txt');
-          var text = 'Feed Version: ' + results.feed_version;
-          fs.writeFile(exportPath + '/log.txt', text, cb);
+          var text = [
+            'Feed Version: ' + results.feed_version,
+            'Date Generated: ' + new Date()
+          ];
+          fs.writeFile(exportPath + '/log.txt', text.join('\n'), cb);
         });
       }
     ], cb);
