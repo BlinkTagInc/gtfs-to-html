@@ -36,7 +36,7 @@ function main(config, cb){
 
   async.eachSeries(config.agencies, function(agency, cb) {
     var agencyKey = (typeof agency === 'string')  ? agency : agency.agency_key;
-    var exportPath = 'html/' + agencyKey;
+    var exportPath = path.join('html', agencyKey);
     var timetables;
 
     log('Generating HTML schedules for ' + agencyKey);
@@ -73,8 +73,10 @@ function main(config, cb){
         async.each(timetables, function(timetable, cb) {
           utils.generateHTML(agencyKey, timetable.timetable_id, options, function(e, html) {
             utils.generateFilename(agencyKey, timetable, function(e, filename) {
+              var datePath = timetable.start_date + '-' + timetable.end_date;
               log('  Creating ' + filename);
-              fs.writeFile(exportPath + '/' + filename, html, cb);
+              mkdirp.sync(path.join(exportPath, datePath));
+              fs.writeFile(path.join(exportPath, datePath, filename), html, cb);
             });
           });
         }, cb);
@@ -88,7 +90,7 @@ function main(config, cb){
             'Feed Version: ' + results.feed_version,
             'Date Generated: ' + new Date()
           ];
-          fs.writeFile(exportPath + '/log.txt', text.join('\n'), cb);
+          fs.writeFile(path.join(exportPath, 'log.txt'), text.join('\n'), cb);
         });
       }
     ], cb);
