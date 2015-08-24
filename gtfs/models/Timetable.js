@@ -70,7 +70,7 @@ var Timetable = mongoose.model('Timetable', new mongoose.Schema({
   service_notes: {
     type: String
   },
-  direction_label: {
+  timetable_file_name: {
     type: String
   }
 }));
