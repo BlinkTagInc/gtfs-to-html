@@ -90,6 +90,15 @@ function main(config, cb){
             'Feed Version: ' + results.feed_version,
             'Date Generated: ' + new Date()
           ];
+
+          if(typeof (agency) == 'string') {
+            text.push('Source: http://www.gtfs-data-exchange.com/agency/' + item + '/latest.zip');
+          } else if(agency.url) {
+            text.push('Source: ' + agency.url);
+          } else if(agency.path) {
+            text.push('Source: ' + agency.path);
+          }
+
           fs.writeFile(path.join(exportPath, 'log.txt'), text.join('\n'), cb);
         });
       }
