@@ -351,7 +351,6 @@ function main(config, callback) {
 
         async.series([
           agencyCenter,
-          longestTrip,
           updatedDate
         ], function (e, results) {
           cb();
@@ -376,20 +375,6 @@ function main(config, callback) {
           }, cb);
       }
 
-
-      function longestTrip(cb) {
-        /*db.trips.find({agency_key: agency_key}).for.toArray(function(e, trips){
-            async.forEach(trips, function(trip, cb){
-              db.collection('stoptimes', function(e, collection){
-
-              });
-              console.log(trip);
-              cb();
-            }, cb);
-          });
-        });*/
-        cb();
-      }
 
       function updatedDate(cb) {
         db.collection('agencies')
