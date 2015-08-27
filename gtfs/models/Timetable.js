@@ -72,5 +72,10 @@ var Timetable = mongoose.model('Timetable', new mongoose.Schema({
   },
   timetable_file_name: {
     type: String
+  },
+  use_stop_sequence: {
+    type: Number,
+    min: 0,
+    max: 1
   }
 }));
