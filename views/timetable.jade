@@ -28,8 +28,8 @@ block content
       thead
         tr
           th.stop_header(scope="column") Stop
-          each trip, idx in stops[0].trips
-            th.run_header(scope="column")= trip.trip_short_name || 'Run #' + (idx + 1)
+          each trip, idx in trips
+            th.run_header(scope="column")= (trip.trip_short_name || 'Run #' + (idx + 1)) + (options.showDayList ? ' ' + trip.day_list : '')
 
       tbody
         each stop in stops
