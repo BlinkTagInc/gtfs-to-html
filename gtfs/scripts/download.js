@@ -8,6 +8,7 @@ var request = require('request');
 var unzip = require('unzip2');
 
 var downloadDir = 'downloads';
+var gtfsDir = 'downloads';
 var q;
 
 
@@ -175,6 +176,8 @@ function main(config, callback) {
 
       function downloadFiles(cb) {
         // do download
+        gtfsDir = downloadDir;
+
         var file_protocol = require('url').parse(task.agency_url).protocol;
         if(file_protocol === 'http:' || file_protocol === 'https:') {
           log(agency_key + ': Downloading');
@@ -217,6 +220,7 @@ function main(config, callback) {
       function readFiles(cb) {
         if(path.extname(task.path) === '.zip') {
           // local file is zipped
+          gtfsDir = downloadDir;
           fs.createReadStream(task.path)
             .pipe(unzip.Extract({
               path: downloadDir
