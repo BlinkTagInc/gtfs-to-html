@@ -18,7 +18,7 @@ if (invocation === 'direct') {
   try {
     config = require('../config.js');
   } catch (e) {
-    handleError(new Error('Cannot find config.js'));
+    handleError(new Error('Cannot find config.js. Use config-sample.js as a starting point'));
   }
 
   if(!config.agencies){
@@ -88,14 +88,16 @@ function main(config, cb){
         // create log file
         gtfs.getFeedInfo(agencyKey, function(e, results) {
           if(e) cb(e);
+          var feedVersion = results ? results.feed_version : 'Unknown';
+
           log('  Writing log.txt');
           var text = [
-            'Feed Version: ' + results.feed_version,
+            'Feed Version: ' + feedVersion,
             'Date Generated: ' + new Date()
           ];
 
           if(typeof (agency) == 'string') {
-            text.push('Source: http://www.gtfs-data-exchange.com/agency/' + item + '/latest.zip');
+            text.push('Source: http://www.gtfs-data-exchange.com/agency/' + agency + '/latest.zip');
           } else if(agency.url) {
             text.push('Source: ' + agency.url);
           } else if(agency.path) {
