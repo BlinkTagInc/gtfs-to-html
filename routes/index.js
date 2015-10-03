@@ -1,5 +1,5 @@
 var _ = require('underscore');
-var gtfs = require('../gtfs');
+var gtfs = require('gtfs');
 var router = require('express').Router();
 var utils = require('../lib/utils');
 var config = require('../config');

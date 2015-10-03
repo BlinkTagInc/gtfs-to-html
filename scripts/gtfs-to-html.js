@@ -1,8 +1,8 @@
 var _ = require('underscore');
 var async = require('async');
-var download = require('../gtfs/scripts/download');
+var download = require('../node_modules/gtfs/scripts/download');
 var fs = require('fs');
-var gtfs = require('../gtfs');
+var gtfs = require('gtfs');
 var jade = require('jade');
 var mkdirp = require('mkdirp');
 var path = require('path');
@@ -58,7 +58,8 @@ function main(config, cb){
       },
       function(cb) {
         // copy css
-        fs.createReadStream(path.join(__dirname, '..', 'public/timetable_styles.css')).pipe(fs.createWriteStream(exportPath + '/timetable_styles.css'));
+        fs.createReadStream(path.join(__dirname, '..', 'public/timetable_styles.css'))
+          .pipe(fs.createWriteStream(exportPath + '/timetable_styles.css'));
         cb();
       },
       function(cb) {
@@ -72,7 +73,9 @@ function main(config, cb){
         // build HTML timetables
         async.each(timetables, function(timetable, cb) {
           utils.generateHTML(agencyKey, timetable.timetable_id, options, function(e, html) {
+            if(e) return cb(e);
             utils.generateFilename(agencyKey, timetable, function(e, filename) {
+              if(e) return cb(e);
               var datePath = timetable.start_date + '-' + timetable.end_date;
               log('  Creating ' + filename);
               mkdirp.sync(path.join(exportPath, datePath));
