@@ -1,6 +1,8 @@
 # GTFS to HTML
 
-This package generates transit timetables in HTML format from GTFS.
+Generate HTML transit timetables in from [GTFS](https://developers.google.com/transit/gtfs/).
+
+<img width="1265" src="https://cloud.githubusercontent.com/assets/96217/10262598/87674f70-6983-11e5-8150-15b6372c989c.png">
 
 ## Setup
 
@@ -10,22 +12,80 @@ This package generates transit timetables in HTML format from GTFS.
 
 ### Configure
 
-Add an agency to the `agenices` array in `config.js`.  This can be an object containing an `agency_key` and `url` pointing to a GTFS file or just the `dataexchange_id` from [gtfs-data-exchange.com](http://gtfs-data-exchange.com).  See the [full list of agencies availale on GTFS data exchange](http://www.gtfs-data-exchange.com/api/agencies).
+Copy `config-sample.js` to `config.js`.
 
-    // specifying a GTFS URL
-    agencies: [
-      {
-        agency_key: 'eldoradotransit-ca-us',
-        url: 'http://data.trilliumtransit.com/gtfs/eldoradotransit-ca-us/eldoradotransit-ca-us.zip'
-      }
-    ]
+    cp config-sample.js config.js
 
-or
+Before you can use gtfs-to-html you must specify the transit agencies you'd like to use.
 
-    // specify a gtfs-data-exchange `dataexchange_id`
-    agencies: [
-      'caltrain'
-    ]
+You can specify agencies using their [GTFS Data Exchange](http://www.gtfs-data-exchange.com/) `dataexchange_id`, a `url` to the GTFS file or a local `path`.
+
+* Put agency_key names from [gtfs-data-exchange.com](http://gtfs-data-exchange.com). See the [full list of agencies availale on GTFS data exchange](http://www.gtfs-data-exchange.com/api/agencies).:
+```
+    'bay-area-rapid-transit'
+```
+
+* Specify a download URL:
+```
+{
+    agency_key: 'caltrain',
+    url: 'http://www.gtfs-data-exchange.com/agency/caltrain/latest.zip'
+}
+```
+
+* Specify a path to a zipped GTFS file:
+```
+{
+    agency_key: 'localAgency',
+    path: '/path/to/the/gtfs.zip'
+}
+```
+* Specify a path to an unzipped GTFS file:
+```
+{
+    agency_key: 'localAgency',
+    path: '/path/to/the/unzipped/gtfs/'
+}
+```
+
+The mongodb URI should also be configured in `config.js`. The default database URI is:
+`mongodb://localhost:27017/gtfs`
+
+#### Formatting Options
+
+The following items can be added to the configuration object:
+
+##### `effectiveDate`
+
+{String} This is printed at the top of the timetable.
+
+```
+    effectiveDate: 'July 8, 2015'
+```
+
+##### `noServiceSymbol`
+
+{String} The symbol to be used when a specific trip does not serve a specified stop.
+
+```
+    noServiceSymbol: '—'
+```
+
+##### `requestStopSymbol`
+
+{String} The symbol to be used to indicate that riders must request a stop.
+
+```
+    requestStopSymbol: '***'
+```
+
+##### `showMap`
+
+{Boolean} Whether or not to show a map of the route on the timetable.
+
+```
+    showMap: false
+```
 
 ## Running
 
@@ -37,9 +97,9 @@ To generate HTML timetables, run the 'gtfs-to-html' script.
 
     npm run gtfs-to-html
 
-This will download the GTFS file specified in `config.js` and then build the HTML timetables and save them in `html/:agency_key`.
+This will download the GTFS file specified in `config.js` .  Then, it will build the HTML timetables and save them in `html/:agency_key`.
 
-## Options
+### Options
 
 Note the use of two sets of `--` when running commands with arguments from npm.
 
@@ -58,4 +118,4 @@ You can view an individual route HTML on demand by running the included express 
 
     DEBUG=gtfs-to-html npm start
 
-With this running, you can open HTML `http://localhost:3000` in your browser and browser timetables.  Note that this only works after GTFS has been imported to mongodb and mongodb is running locally.
+With this running, you can open HTML `[http://localhost:3000](http://localhost:3000)` in your browser and browser timetables.  Note that this only works after GTFS has been imported to mongodb and mongodb is running locally.
