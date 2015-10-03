@@ -118,4 +118,4 @@ You can view an individual route HTML on demand by running the included express 
 
     DEBUG=gtfs-to-html npm start
 
-With this running, you can open HTML `[http://localhost:3000](http://localhost:3000)` in your browser and browser timetables.  Note that this only works after GTFS has been imported to mongodb and mongodb is running locally.
+With this running, you can open [http://localhost:3000](http://localhost:3000) in your browser and view all timetables.  Note that this only works after GTFS has been imported to mongodb and mongodb is running locally.
