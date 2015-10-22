@@ -1,10 +1,7 @@
 /*
  * You can specify agencies in the following ways:
- * * Put agency_key names from gtfs-data-exchange.com:
- * 'bay-area-rapid-transit'
- *
- * * Specify a download URL:
- * {agency_key: 'caltrain', url: 'http://www.gtfs-data-exchange.com/agency/caltrain/latest.zip'}
+ * * Specify a download URL (you can get one from transitfeeds.com):
+ * {agency_key: 'bart', url: 'http://api.transitfeeds.com/v1/getLatestFeedVersion?feed=bart%2F58&key=YOUR TRANSITFEEDS.COM API KEY'}
  *
  * * Specify a path to a zipped GTFS file:
  * {agency_key: 'localAgency', path: '/path/to/the/gtfs.zip'}
@@ -21,9 +18,8 @@ module.exports = {
   agencies: [
     {
       agency_key: 'county-connection',
-      url: 'http://www.gtfs-data-exchange.com/agency/county-connection/latest.zip'
-    },
-    'bay-area-rapid-transit'
+      url: 'http://cccta.org/GTFS/google_transit.zip'
+    }
   ],
   effectiveDate: 'July 8, 2015',
   noServiceSymbol: '—',

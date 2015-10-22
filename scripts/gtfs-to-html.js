@@ -35,7 +35,7 @@ function main(config, cb){
   });
 
   async.eachSeries(config.agencies, function(agency, cb) {
-    var agencyKey = (typeof agency === 'string')  ? agency : agency.agency_key;
+    var agencyKey = agency.agency_key;
     var exportPath = path.join('html', agencyKey);
     var timetables;
 
@@ -96,9 +96,7 @@ function main(config, cb){
             'Date Generated: ' + new Date()
           ];
 
-          if(typeof (agency) == 'string') {
-            text.push('Source: http://www.gtfs-data-exchange.com/agency/' + agency + '/latest.zip');
-          } else if(agency.url) {
+          if(agency.url) {
             text.push('Source: ' + agency.url);
           } else if(agency.path) {
             text.push('Source: ' + agency.path);
