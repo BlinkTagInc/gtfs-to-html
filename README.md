@@ -84,6 +84,30 @@ The following items can be added to the configuration object:
     showMap: false
 ```
 
+### Build `timetables.txt`
+
+This project requires that an additional file `timetables.txt` be added to an agencies GTFS. This file specifies which HTML timetables should be built.
+
+An example of this file is located in [examples/timetables.txt](examples/timetables.txt). The format of this file is:
+
+| column name | description |
+| ----------- | ----------- |
+| `timetable_id` | A unique ID for the timetable |
+| `route_id` | The ID of the route the timetable is for from `routes.txt`. |
+| `direction_id` | The `direction_id` from `trips.txt` for the timetable. This can be blank. |
+| `start_date` | The start date for this timetable in `YYYY-MM-DD` format. |
+| `end_date` | The end date for this timetable in `YYYY-MM-DD` format. |
+| `monday` | A binary value that indicates whether this timetable should include service on Mondays.  Valid options are `0` and `1`. |
+| `tuesday` | A binary value that indicates whether this timetable should include service on Tuesdays.  Valid options are `0` and `1`. |
+| `wednesday` | A binary value that indicates whether this timetable should include service on Wednesdays.  Valid options are `0` and `1`. |
+| `thursday` | A binary value that indicates whether this timetable should include service on Thursdays.  Valid options are `0` and `1`. |
+| `friday` | A binary value that indicates whether this timetable should include service on Fridays.  Valid options are `0` and `1`. |
+| `saturday` | A binary value that indicates whether this timetable should include service on Saturdays.  Valid options are `0` and `1`. |
+| `sunday` | A binary value that indicates whether this timetable should include service on Sundays.  Valid options are `0` and `1`. |
+| `route_label` | A short text label describing the route, for instance "4". |
+| `service_notes` | Text shown on the timetable about the service represented, for instance "Mon-Fri". |
+
+
 ## Running
 
 Ensure than mongodb is running locally.
