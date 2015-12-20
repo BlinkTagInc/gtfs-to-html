@@ -27,6 +27,10 @@ h1 {
   margin-bottom: 10px;
 }
 
+.timetable {
+  width: auto;
+}
+
 .timetable-bottom {
   overflow: hidden;
 }
@@ -47,8 +51,7 @@ h1 {
   font-weight: bold;
 }
 
-.skipped,
-.untimed {
+.stop_time {
   text-align: center;
 }
 
