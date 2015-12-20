@@ -3,10 +3,10 @@ var async = require('async');
 var download = require('../node_modules/gtfs/scripts/download');
 var fs = require('fs');
 var gtfs = require('gtfs');
-var jade = require('jade');
 var mkdirp = require('mkdirp');
 var path = require('path');
 var rimraf = require('rimraf');
+var sanitize = require("sanitize-filename");
 var utils = require('../lib/utils');
 var argv = require('yargs').argv;
 
@@ -36,7 +36,7 @@ function main(config, cb){
 
   async.eachSeries(config.agencies, function(agency, cb) {
     var agencyKey = agency.agency_key;
-    var exportPath = path.join('html', agencyKey);
+    var exportPath = path.join('html', sanitize(agencyKey));
     var timetables;
 
     log('Generating HTML schedules for ' + agencyKey);
@@ -76,7 +76,7 @@ function main(config, cb){
             if(e) return cb(e);
             utils.generateFilename(agencyKey, timetable, function(e, filename) {
               if(e) return cb(e);
-              var datePath = timetable.start_date + '-' + timetable.end_date;
+              var datePath = sanitize(timetable.start_date + '-' + timetable.end_date);
               log('  Creating ' + filename);
               mkdirp.sync(path.join(exportPath, datePath));
               fs.writeFile(path.join(exportPath, datePath, filename), html, cb);
