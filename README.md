@@ -106,7 +106,7 @@ An example of this file is located in [examples/timetables.txt](examples/timetab
 | `sunday` | A binary value that indicates whether this timetable should include service on Sundays.  Valid options are `0` and `1`. |
 | `route_label` | A short text label describing the route, for instance "4". |
 | `service_notes` | Text shown on the timetable about the service represented, for instance "Mon-Fri". |
-
+| `orientation` | Determines if the top row should be a list of trips or stops. Valid options are `vertical` and `horizontal`. `vertical` shows stops across the top row with each row being a list of stop times for each trip. `horizontal` shows trips across the top row with each row being stop times for a specific stop.  `horizontal` orientation is best for routes with lots of stops and fewer trips while `vertical` orientation is best for routes with lots of trips and a smaller number of stops. |
 
 ## Running
 
