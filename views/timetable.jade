@@ -46,8 +46,10 @@ block content
                 
     .timetable-bottom
       .notes
-        .note #{options.requestStopSymbol} = Request stop - call for pickup
-        .note #{options.noServiceSymbol} = No service at this timepoint
+        if options.requestStopSymbolUsed
+          .note #{options.requestStopSymbol} = Request stop - call for pickup
+        if options.noServiceSymbolUsed
+          .note #{options.noServiceSymbol} = No service at this timepoint
         
       .calendar_dates
         if excludedDates.length
