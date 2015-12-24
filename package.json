@@ -1,7 +1,7 @@
 {
   "name": "gtfs-to-html",
   "description": "Builds HTML timetables from GTFS",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "private": false,
   "repository": "git://github.com/brendannee/gtfs-to-html",
   "license": "MIT",
@@ -10,19 +10,19 @@
     "gtfs-to-html": "node scripts/gtfs-to-html.js"
   },
   "dependencies": {
-    "async": "1.4.2",
-    "body-parser": "1.14.1",
+    "async": "1.5.0",
+    "body-parser": "1.14.2",
     "cookie-parser": "1.4.0",
     "debug": "2.2.0",
     "express": "4.13.3",
-    "gtfs": "0.3.1",
+    "gtfs": "0.3.2",
     "jade": "1.11.0",
     "mkdirp": "0.5.1",
     "moment": "2.10.6",
     "morgan": "1.6.1",
-    "rimraf": "2.4.3",
+    "rimraf": "2.5.0",
     "sanitize-filename": "^1.5.3",
     "underscore": "1.8.3",
-    "yargs": "3.29.0"
+    "yargs": "3.31.0"
   }
 }
