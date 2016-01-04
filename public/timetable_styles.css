@@ -19,7 +19,7 @@ h1 {
   width: 30px;
   height: 30px;
   float: left;
-  margin: 5px 10px 5px 0;
+  margin-right: 10px;
 }
 
 .direction {
@@ -49,6 +49,7 @@ h1 {
   width: 350px;
   display: inline-block;
   font-weight: bold;
+  line-height: 28px;
 }
 
 .stop_time {
