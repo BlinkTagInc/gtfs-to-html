@@ -84,6 +84,14 @@ The following items can be added to the configuration object:
     showMap: false
 ```
 
+##### `showOnlyTimepoint`
+
+{Boolean} Whether or not all stops should be shown, or only stops with a `timepoint` value in [stop_times.txt](https://developers.google.com/transit/gtfs/reference?hl=en#stop_times_fields) that is considered exact (i.e. empty or `1`). Default is `false`, all stops shown.
+
+```
+    showOnlyTimepoint: false
+```
+
 ### Build `timetables.txt`
 
 This project requires that an additional file `timetables.txt` be added to an agencies GTFS. This file specifies which HTML timetables should be built.
