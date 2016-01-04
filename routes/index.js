@@ -20,10 +20,12 @@ router.get('/routes', function(req, res, next) {
   gtfs.getRoutesByAgency(agencyKey, function(e, routes) {
     gtfs.getTimetablesByAgency(agencyKey, function(e, timetables) {
       var timetablesByRoute = _.groupBy(timetables, 'route_id');
-      routes = routes.map(function(route) {
+      routes = _.sortBy(routes.map(function(route) {
         route = route.toObject();
         route.timetables = _.sortBy(timetablesByRoute[route.route_id], 'direction_id') || [];
         return route;
+      }), function(route) {
+        return parseInt(route.route_id, 10);
       });
       res.render('routes', {routes: routes, agencyKey: agencyKey});
     });
