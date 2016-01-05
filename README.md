@@ -116,6 +116,18 @@ An example of this file is located in [examples/timetables.txt](examples/timetab
 | `service_notes` | Text shown on the timetable about the service represented, for instance "Mon-Fri". |
 | `orientation` | Determines if the top row should be a list of trips or stops. Valid options are `vertical` and `horizontal`. `vertical` shows stops across the top row with each row being a list of stop times for each trip. `horizontal` shows trips across the top row with each row being stop times for a specific stop.  `horizontal` orientation is best for routes with lots of stops and fewer trips while `vertical` orientation is best for routes with lots of trips and a smaller number of stops. |
 
+### Build `timetable_stop_order.txt`
+
+This is an optional file that can specify stop order for a particular timetable. It is useful when generating combined timetables for multiple overlapping routes, or exerting fine-grained control on stop order.
+
+An example of this file is located in [examples/timetable_stop_order.txt](examples/timetable_stop_order.txt). The format of this file is:
+
+| column name | description |
+| ----------- | ----------- |
+| `timetable_id` | The ID of the timetable from `timetables.txt` |
+| `stop_id` | The ID of the stop from `stops.txt`. |
+| `stop_sequence` | An assigned integer identifying the order of stops to be presented in the timetable. The values for `stop_sequence` must be non-negative integers, and they must increase along the trip. This value does not need to match the `stop_sequence` found in `stop_times.txt`. |
+
 ## Running
 
 Ensure than mongodb is running locally.
