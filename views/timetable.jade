@@ -8,17 +8,17 @@ block extraHead
 
 block content
   .content
-    if route.route_color
-      .route-color(style="background:##{route.route_color};")
-    h1.route_name Timetable for Route #{timetable.route_label}
+    if routes[0].route_color
+      .route-color(style="background:##{routes[0].route_color};")
+    h1.route_name Timetable for #{timetable.route_label}
     h2.service_notes= timetable.service_notes
     
     if options.effectiveDate
       .effective-date Effective #{options.effectiveDate}
     
-    table.table-responsive.timetable(id="route_id_#{route.route_id}_direction_#{timetable.direction_id}")
+    table.table-responsive.timetable(id="route_id_#{routes[0].route_id}_direction_#{timetable.direction_id}")
       caption.direction 
-      .description= route.description
+      .description= routes[0].description
       .timetable_days= timetable.day_list
       
       if timetable.orientation === 'horizontal'
@@ -30,7 +30,14 @@ block content
           tr
             th.stop_header(scope="column") Stop
             each trip, idx in trips
-              th.run_header(scope="column")= (trip.trip_short_name || 'Run #' + (idx + 1)) + (options.showDayList ? ' ' + trip.day_list : '')
+              th.run_header(scope="column")
+                if trip.trip_short_name 
+                  span= trip.trip_short_name 
+                else if routes.length > 1
+                  span= 'Route ' + trip.route_short_name
+                else
+                  span= 'Run #' + (idx + 1)
+                span= options.showDayList ? ' ' + trip.day_list : ''
 
         tbody
           each stop in stops
@@ -46,16 +53,23 @@ block content
                   span.stop_time_period= trip.formatted_period
       else
         colgroup
+          if routes.length > 1
+            col
           each stop, idx in stops
             col(id="stop_id_#{stop.stop_id}" class="stop_#{idx}")
         thead
           tr
+            if routes.length > 1
+              th.run_header(scope="column")
             each stop, idx in stops
               th.stop_header(scope="column")= stop.stop_name
               
         tbody
           each trip, idx in trips
-            tr.trip_row(id="trip_id_#{trip.trip_id}")              
+            tr.trip_row(id="trip_id_#{trip.trip_id}")       
+              if routes.length > 1
+                th(scope="row")
+                  .route_name= 'Route ' + trip.route_short_name
               each stop in stops
                 td.stop_time(class="#{stop.trips[idx].classes.join(' ')}")
                   span.stop_time_text!= stop.trips[idx].formatted_time

@@ -1,7 +1,7 @@
 {
   "name": "gtfs-to-html",
   "description": "Builds HTML timetables from GTFS",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "private": false,
   "repository": "git://github.com/brendannee/gtfs-to-html",
   "license": "MIT",
@@ -15,7 +15,7 @@
     "cookie-parser": "1.4.0",
     "debug": "2.2.0",
     "express": "4.13.3",
-    "gtfs": "0.3.5",
+    "gtfs": "0.3.6",
     "jade": "1.11.0",
     "mkdirp": "0.5.1",
     "moment": "2.11.0",
