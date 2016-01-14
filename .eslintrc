@@ -1,0 +1,21 @@
+---
+  root: true
+  extends:
+    airbnb
+  parser: babel-eslint
+  env:
+    browser: true
+    node: true
+    protractor: true
+    jasmine: true
+    mocha: true
+    es6: true
+  rules:
+    comma-dangle:
+      - 2
+      - "never"
+    no-console: 0
+    no-param-reassign: 0
+    no-shadow: 0
+    space-before-function-paren: 0
+    max-len: 0

@@ -48,6 +48,10 @@ To find an agency's GTFS URL, visit transitfeeds.com. You can use the direct URL
 The mongodb URI should also be configured in `config.js`. The default database URI is:
 `mongodb://localhost:27017/gtfs`
 
+### Linting
+
+    eslint .
+
 #### Formatting Options
 
 The following items can be added to the configuration object:

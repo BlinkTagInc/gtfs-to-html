@@ -1,47 +1,46 @@
-var _ = require('underscore');
-var gtfs = require('gtfs');
-var router = require('express').Router();
-var utils = require('../lib/utils');
-var config = require('../config');
+const _ = require('underscore');
+const gtfs = require('gtfs');
+const router = require('express').Router();
 
+const config = require('../config');
+const utils = require('../lib/utils');
 
-router.get('/', function(req, res, next) {
+router.get('/', (req, res) => {
   // show all agencies
-  gtfs.agencies(function(e, agencies) {
-    res.render('agencies', {agencies: agencies});
+  gtfs.agencies((e, agencies) => {
+    res.render('agencies', { agencies });
   });
 });
 
-
-router.get('/routes', function(req, res, next) {
+router.get('/routes', (req, res, next) => {
   // show all routes
-  var agencyKey = req.query.agency_key;
+  const agencyKey = req.query.agency_key;
 
-  gtfs.getRoutesByAgency(agencyKey, function(e, routes) {
-    gtfs.getTimetablesByAgency(agencyKey, function(e, timetables) {
-      var timetablesByRoute = _.groupBy(timetables, 'route_id');
-      routes = _.sortBy(routes.map(function(route) {
+  gtfs.getRoutesByAgency(agencyKey, (e, routes) => {
+    if (e) return next(e);
+    gtfs.getTimetablesByAgency(agencyKey, (e, timetables) => {
+      if (e) return next(e);
+      const timetablesByRoute = _.groupBy(timetables, 'route_id');
+      routes = _.sortBy(routes.map((route) => {
         route = route.toObject();
         route.timetables = _.sortBy(timetablesByRoute[route.route_id], 'direction_id') || [];
         return route;
-      }), function(route) {
+      }), (route) => {
         return parseInt(route.route_id, 10);
       });
-      res.render('routes', {routes: routes, agencyKey: agencyKey});
+      res.render('routes', { routes, agencyKey });
     });
   });
 });
 
+router.get('/timetable', (req, res, next) => {
+  const agencyKey = req.query.agency_key;
+  const timetableId = req.query.timetable_id;
 
-router.get('/timetable', function(req, res, next) {
-  var agencyKey = req.query.agency_key;
-  var timetableId = req.query.timetable_id;
-
-  utils.generateHTML(agencyKey, timetableId, config, function(e, html) {
-    if(e) return next(e);
+  utils.generateHTML(agencyKey, timetableId, config, (e, html) => {
+    if (e) return next(e);
     res.send(html);
   });
 });
-
 
 module.exports = router;
