@@ -2,7 +2,16 @@
   "name": "gtfs-to-html",
   "description": "Builds HTML timetables from GTFS",
   "version": "0.1.7",
+  "keywords": [
+    "transit",
+    "gtfs",
+    "transportation"
+  ],
   "private": false,
+  "author": "Brendan Nee <me@bn.ee>",
+  "contributors": [
+    "Evan Siroky"
+  ],
   "repository": "git://github.com/brendannee/gtfs-to-html",
   "license": "MIT",
   "scripts": {
@@ -10,28 +19,28 @@
     "gtfs-to-html": "node scripts/gtfs-to-html.js"
   },
   "dependencies": {
-    "async": "1.5.2",
-    "body-parser": "1.14.2",
-    "cookie-parser": "1.4.1",
+    "async": "2.0.1",
+    "body-parser": "1.15.2",
+    "cookie-parser": "1.4.3",
     "debug": "2.2.0",
-    "express": "4.13.3",
-    "gtfs": "0.4.0",
+    "express": "4.14.0",
+    "gtfs": "0.4.8",
     "jade": "1.11.0",
     "mkdirp": "0.5.1",
-    "moment": "2.11.1",
-    "morgan": "1.6.1",
-    "rimraf": "2.5.0",
-    "sanitize-filename": "1.5.3",
+    "moment": "2.14.1",
+    "morgan": "1.7.0",
+    "rimraf": "2.5.4",
+    "sanitize-filename": "1.6.0",
     "underscore": "1.8.3",
-    "yargs": "3.31.0"
+    "yargs": "4.8.1"
   },
   "devDependencies": {
-    "babel-eslint": "4.1.6",
-    "eslint": "1.10.3",
-    "eslint-config-airbnb": "3.1.0",
-    "eslint-plugin-react": "3.15.0"
+    "babel-eslint": "6.1.2",
+    "eslint": "3.3.0",
+    "eslint-config-airbnb": "10.0.1",
+    "eslint-plugin-react": "6.1.0"
   },
   "engines": {
-    "node": ">=0.4.0"
+    "node": ">=4.0.0"
   }
 }
