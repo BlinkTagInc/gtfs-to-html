@@ -1,5 +1,3 @@
-'use strict';
-
 const _ = require('underscore');
 const async = require('async');
 const fs = require('fs');
@@ -44,7 +42,7 @@ function main(config, cb) {
     const exportPath = path.join('html', sanitize(agencyKey));
     let timetables;
 
-    log('Generating HTML schedules for ' + agencyKey);
+    log(`Generating HTML schedules for ${agencyKey}`);
 
     async.series([
       (cb) => {
@@ -64,7 +62,7 @@ function main(config, cb) {
       (cb) => {
         // copy css
         fs.createReadStream(path.join(__dirname, '..', 'public/timetable_styles.css'))
-          .pipe(fs.createWriteStream(exportPath + '/timetable_styles.css'));
+          .pipe(fs.createWriteStream(`${exportPath}/timetable_styles.css`));
         cb();
       },
       (cb) => {
@@ -81,8 +79,8 @@ function main(config, cb) {
             if (e) return cb(e);
             utils.generateFilename(agencyKey, timetable, (e, filename) => {
               if (e) return cb(e);
-              const datePath = sanitize(timetable.start_date + '-' + timetable.end_date);
-              log('  Creating ' + filename);
+              const datePath = sanitize(`${timetable.start_date}-${timetable.end_date}`);
+              log(`  Creating ${filename}`);
               mkdirp.sync(path.join(exportPath, datePath));
               fs.writeFile(path.join(exportPath, datePath, filename), html, cb);
             });
@@ -97,14 +95,14 @@ function main(config, cb) {
 
           log('  Writing log.txt');
           const text = [
-            'Feed Version: ' + feedVersion,
-            'Date Generated: ' + new Date()
+            `Feed Version: ${feedVersion}`,
+            `Date Generated: ${new Date()}`
           ];
 
           if (agency.url) {
-            text.push('Source: ' + agency.url);
+            text.push(`Source: ${agency.url}`);
           } else if (agency.path) {
-            text.push('Source: ' + agency.path);
+            text.push(`Source: ${agency.path}`);
           }
 
           fs.writeFile(path.join(exportPath, 'log.txt'), text.join('\n'), cb);
