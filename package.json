@@ -27,18 +27,19 @@
     "gtfs": "0.4.8",
     "jade": "1.11.0",
     "mkdirp": "0.5.1",
-    "moment": "2.14.1",
+    "moment": "2.15.0",
     "morgan": "1.7.0",
     "rimraf": "2.5.4",
     "sanitize-filename": "1.6.0",
     "underscore": "1.8.3",
-    "yargs": "4.8.1"
+    "yargs": "5.0.0"
   },
   "devDependencies": {
     "babel-eslint": "6.1.2",
-    "eslint": "3.3.0",
-    "eslint-config-airbnb": "10.0.1",
-    "eslint-plugin-react": "6.1.0"
+    "eslint": "3.5.0",
+    "eslint-config-airbnb": "11.1.0",
+    "eslint-plugin-import": "^1.15.0",
+    "eslint-plugin-jsx-a11y": "^2.2.2"
   },
   "engines": {
     "node": ">=4.0.0"
