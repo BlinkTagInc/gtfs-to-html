@@ -6,7 +6,7 @@ const mkdirp = require('mkdirp');
 const path = require('path');
 const rimraf = require('rimraf');
 const sanitize = require('sanitize-filename');
-const argv = require('yargs');
+const argv = require('yargs').argv;
 
 const download = require('../node_modules/gtfs/scripts/download');
 const utils = require('../lib/utils');
