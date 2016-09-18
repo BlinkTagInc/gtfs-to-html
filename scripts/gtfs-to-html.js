@@ -75,18 +75,30 @@ function main(config, cb) {
       (cb) => {
         // build HTML timetables
         async.each(timetables, (timetable, cb) => {
-          utils.generateHTML(agencyKey, timetable.timetable_id, options, (err, html) => {
-            if (err) return cb(err);
+          const datePath = utils.generateFolderName(timetable);
+          async.waterfall([
+            (cb) => {
+              // Make directory, if it doesn't exist
+              mkdirp(path.join(exportPath, datePath), cb);
+            },
+            (path, cb) => {
+              // Generate HTML and pass to next function
+              utils.generateHTML(agencyKey, timetable.timetable_id, options, cb);
+            },
+            (html, cb) => {
+              // Get filename for timetable and pass with HTML to next function
+              utils.generateFileName(agencyKey, timetable, (err, filename) => {
+                if (err) return cb(err);
 
-            utils.generateFileName(agencyKey, timetable, (err, filename) => {
-              if (err) return cb(err);
-
-              const datePath = utils.generateFolderName(timetable);
+                return cb(null, filename, html);
+              });
+            },
+            (filename, html, cb) => {
+              // Write file
               log(`  Creating ${filename}`);
-              mkdirp.sync(path.join(exportPath, datePath));
               fs.writeFile(path.join(exportPath, datePath, filename), html, cb);
-            });
-          });
+            }
+          ], cb);
         }, cb);
       },
       (cb) => {
