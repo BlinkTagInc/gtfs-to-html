@@ -8,17 +8,17 @@ block extraHead
 
 block content
   .content
-    if routes[0].route_color
-      .route-color(style="background:##{routes[0].route_color};")
+    if route.route_color
+      .route-color(style="background:##{route.route_color};")
     h1.route_name Timetable for #{timetable.route_label}
     h2.service_notes= timetable.service_notes
     
     if options.effectiveDate
       .effective-date Effective #{options.effectiveDate}
     
-    table.table-responsive.timetable(id="route_id_#{routes[0].route_id}_direction_#{timetable.direction_id}")
+    table.table-responsive.timetable(id="route_id_#{route.route_id}_direction_#{timetable.direction_id}")
       caption.direction 
-      .description= routes[0].description
+      .description= route.description
       .timetable_days= timetable.day_list
       
       if timetable.orientation === 'horizontal'
@@ -33,8 +33,6 @@ block content
               th.run_header(scope="column")
                 if trip.trip_short_name 
                   span= trip.trip_short_name 
-                else if routes.length > 1
-                  span= 'Route ' + trip.route_short_name
                 else
                   span= 'Run #' + (idx + 1)
                 span= options.showDayList ? ' ' + trip.day_list : ''
@@ -53,23 +51,16 @@ block content
                   span.stop_time_period= trip.formatted_period
       else
         colgroup
-          if routes.length > 1
-            col
           each stop, idx in stops
             col(id="stop_id_#{stop.stop_id}" class="stop_#{idx}")
         thead
           tr
-            if routes.length > 1
-              th.run_header(scope="column")
             each stop, idx in stops
               th.stop_header(scope="column")= stop.stop_name
               
         tbody
           each trip, idx in trips
             tr.trip_row(id="trip_id_#{trip.trip_id}")       
-              if routes.length > 1
-                th(scope="row")
-                  .route_name= 'Route ' + trip.route_short_name
               each stop in stops
                 td.stop_time(class="#{stop.trips[idx].classes.join(' ')}")
                   span.stop_time_text!= stop.trips[idx].formatted_time
@@ -84,13 +75,13 @@ block content
           .note #{options.noServiceSymbol} = No service at this timepoint
         
       .calendar_dates
-        if excludedDates.length
+        if specialDates.excludedDates.length
           .excluded_dates Service not provided on:
-            each date in excludedDates
+            each date in specialDates.excludedDates
               div= date
-        if includedDates.length
+        if specialDates.includedDates.length
           .included_dates Service provided on:
-            each date in includedDates
+            each date in specialDates.includedDates
               div= date
           
     if options.showMap
