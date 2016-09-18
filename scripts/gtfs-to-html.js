@@ -99,7 +99,7 @@ function main(config, cb) {
         });
       },
       (cb) => {
-        log(`HTML schedules for ${agencyKey} created at ${__dirname}/${exportPath}`);
+        log(`HTML schedules for ${agencyKey} created at ${process.cwd()}/${exportPath}`);
         cb();
       }
     ], cb);
