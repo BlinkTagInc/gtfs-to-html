@@ -16,10 +16,10 @@ router.get('/routes', (req, res, next) => {
   // show all routes
   const agencyKey = req.query.agency_key;
 
-  gtfs.getRoutesByAgency(agencyKey, (e, routes) => {
-    if (e) return next(e);
-    gtfs.getTimetablesByAgency(agencyKey, (e, timetables) => {
-      if (e) return next(e);
+  gtfs.getRoutesByAgency(agencyKey, (err, routes) => {
+    if (err) return next(err);
+    gtfs.getTimetablesByAgency(agencyKey, (err, timetables) => {
+      if (err) return next(err);
       const timetablesByRoute = _.groupBy(timetables, 'route_id');
       routes = _.sortBy(routes.map((route) => {
         route = route.toObject();
@@ -37,8 +37,8 @@ router.get('/timetable', (req, res, next) => {
   const agencyKey = req.query.agency_key;
   const timetableId = req.query.timetable_id;
 
-  utils.generateHTML(agencyKey, timetableId, config, (e, html) => {
-    if (e) return next(e);
+  utils.generateHTML(agencyKey, timetableId, config, (err, html) => {
+    if (err) return next(err);
     res.send(html);
   });
 });

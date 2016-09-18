@@ -18,7 +18,7 @@ let config = {};
 if (invocation === 'direct') {
   try {
     config = require('../config.js');
-  } catch (e) {
+  } catch (err) {
     console.error(new Error('Cannot find config.js. Use config-sample.js as a starting point'));
   }
 
@@ -46,40 +46,42 @@ function main(config, cb) {
 
     async.series([
       (cb) => {
-        // download GTFS
+        // Download GTFS
         const agencyConfig = _.clone(_.omit(config, 'agencies'));
         agencyConfig.agencies = [agency];
         download(agencyConfig, cb);
       },
       (cb) => {
-        // cleanup any previously generated files
+        // Cleanup any previously generated files
         rimraf(exportPath, cb);
       },
       (cb) => {
-        // create directory
+        // Create directory
         mkdirp(exportPath, cb);
       },
       (cb) => {
-        // copy css
+        // Copy css
         fs.createReadStream(path.join(__dirname, '..', 'public/timetable_styles.css'))
           .pipe(fs.createWriteStream(`${exportPath}/timetable_styles.css`));
         cb();
       },
       (cb) => {
         // get timetables
-        gtfs.getTimetablesByAgency(agencyKey, (e, results) => {
+        gtfs.getTimetablesByAgency(agencyKey, (err, results) => {
           timetables = results;
-          cb(e);
+          cb(err);
         });
       },
       (cb) => {
         // build HTML timetables
         async.each(timetables, (timetable, cb) => {
-          utils.generateHTML(agencyKey, timetable.timetable_id, options, (e, html) => {
-            if (e) return cb(e);
-            utils.generateFilename(agencyKey, timetable, (e, filename) => {
-              if (e) return cb(e);
-              const datePath = sanitize(`${timetable.start_date}-${timetable.end_date}`);
+          utils.generateHTML(agencyKey, timetable.timetable_id, options, (err, html) => {
+            if (err) return cb(err);
+
+            utils.generateFileName(agencyKey, timetable, (err, filename) => {
+              if (err) return cb(err);
+
+              const datePath = utils.generateFolderName(timetable);
               log(`  Creating ${filename}`);
               mkdirp.sync(path.join(exportPath, datePath));
               fs.writeFile(path.join(exportPath, datePath, filename), html, cb);
@@ -88,40 +90,32 @@ function main(config, cb) {
         }, cb);
       },
       (cb) => {
-        // create log file
-        gtfs.getFeedInfo(agencyKey, (e, results) => {
-          if (e) cb(e);
-          const feedVersion = results ? results.feed_version : 'Unknown';
+        // Create log file
+        utils.generateLogText(agency, (err, logText) => {
+          if (err) return cb(err);
 
           log('  Writing log.txt');
-          const text = [
-            `Feed Version: ${feedVersion}`,
-            `Date Generated: ${new Date()}`
-          ];
-
-          if (agency.url) {
-            text.push(`Source: ${agency.url}`);
-          } else if (agency.path) {
-            text.push(`Source: ${agency.path}`);
-          }
-
-          fs.writeFile(path.join(exportPath, 'log.txt'), text.join('\n'), cb);
+          fs.writeFile(path.join(exportPath, 'log.txt'), logText.join('\n'), cb);
         });
+      },
+      (cb) => {
+        log(`HTML schedules for ${agencyKey} created at ${__dirname}/${exportPath}`);
+        cb();
       }
     ], cb);
   }, cb);
 }
 
-// allow script to be called directly from commandline or required (for testable code)
+// Allow script to be called directly from commandline or required (for testable code)
 if (invocation === 'direct') {
-  main(config, (e) => {
-    if (e) {
-      console.error(e || 'Unknown Error');
-      process.exit(1);
-    } else {
-      console.log('Completed Generating HTML schedules');
-      process.exit();
+  main(config, (err) => {
+    if (err) {
+      console.error(err || 'Unknown Error');
+      return process.exit(1);
     }
+
+    console.log('Completed Generating HTML schedules');
+    return process.exit();
   });
 } else {
   module.exports = main;
