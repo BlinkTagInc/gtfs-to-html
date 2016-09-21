@@ -88,7 +88,7 @@ block content
       #map.map
         
       script.
-        L.mapbox.accessToken = 'pk.eyJ1IjoibWFwYm94IiwiYSI6IlhHVkZmaW8ifQ.hAMX5hSW-QnTeRCMAy9A8Q';
+        L.mapbox.accessToken = '#{mapboxAccessToken}';
         var map = L.mapbox.map('map', 'mapbox.streets');
         
         var stops = !{JSON.stringify(stops)};

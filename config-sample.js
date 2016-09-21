@@ -25,5 +25,6 @@ module.exports = {
   noServiceSymbol: '—',
   requestStopSymbol: '***',
   showMap: false,
-  showOnlyTimepoint: false
+  showOnlyTimepoint: false,
+  mapboxAccessToken: 'YOUR MAPBOX ACCESS TOKEN'
 };
