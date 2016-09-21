@@ -91,6 +91,8 @@ block content
         L.mapbox.accessToken = '#{mapboxAccessToken}';
         var map = L.mapbox.map('map', 'mapbox.streets');
         
+        map.scrollWheelZoom.disable();
+        
         var stops = !{JSON.stringify(stops)};
         var markers = L.featureGroup(stops.map(function(stop) {
           var popupContent = '<h2>' + stop.stop_name + '</h2>' + stop.stop_times.join('<br>');
