@@ -76,13 +76,11 @@ block content
         
       .calendar_dates
         if specialDates.excludedDates.length
-          .excluded_dates Service not provided on:
-            each date in specialDates.excludedDates
-              div= date
+          .excluded_dates Service not provided on:&nbsp;
+            span= specialDates.excludedDates.join(', ')
         if specialDates.includedDates.length
           .included_dates Service provided on:
-            each date in specialDates.includedDates
-              div= date
+            span= specialDates.includedDates.join(', ')
           
     if options.showMap
       #map.map

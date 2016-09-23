@@ -63,7 +63,7 @@ h1 {
 
 .included_dates,
 .excluded_dates {
-  width: 180px;
+  width: 300px;
   float: right;
 }
 
@@ -170,5 +170,23 @@ table > tbody > tr:nth-of-type(odd) {
   .table-responsive > .table-bordered > tbody > tr:last-child > td,
   .table-responsive > .table-bordered > tfoot > tr:last-child > td {
     border-bottom: 0;
+  }
+
+  .notes {
+    width: 100%;
+    float: none;
+    padding-bottom: 15px;
+  }
+
+  .calendar_dates {
+    width: 100%;
+    float: none;
+    padding-bottom: 15px;
+  }
+
+  .excluded_dates {
+    width: 100%;
+    float: none;
+    padding-bottom: 15px;
   }
 }
