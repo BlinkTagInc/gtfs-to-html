@@ -1,0 +1,12 @@
+extends layout.pug
+
+block content
+  .content
+    h1 Agencies
+
+    if !agencies || !agencies.length
+      .well No agencies found
+    else
+      .list-group
+        each agency in agencies
+          a.list-group-item(href=`/timetablepages?agency_key=${agency.agency_key}`)= agency.agency_name

@@ -24,11 +24,11 @@
     "cookie-parser": "1.4.3",
     "debug": "2.2.0",
     "express": "4.14.0",
-    "gtfs": "0.4.12",
-    "jade": "1.11.0",
+    "gtfs": "brendannee/node-gtfs#92a4bf63df9947ed87bb5e9b6f46da6b71ba900e",
     "mkdirp": "0.5.1",
     "moment": "2.15.1",
     "morgan": "1.7.0",
+    "pug": "2.0.0-beta6",
     "rimraf": "2.5.4",
     "sanitize-filename": "1.6.0",
     "underscore": "1.8.3",
@@ -38,8 +38,8 @@
     "babel-eslint": "6.1.2",
     "eslint": "3.5.0",
     "eslint-config-airbnb": "11.1.0",
-    "eslint-plugin-import": "^1.15.0",
-    "eslint-plugin-jsx-a11y": "^2.2.2"
+    "eslint-plugin-import": "1.15.0",
+    "eslint-plugin-jsx-a11y": "2.2.2"
   },
   "engines": {
     "node": ">=4.0.0"

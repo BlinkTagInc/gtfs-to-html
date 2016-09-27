@@ -15,19 +15,15 @@ h1 {
   margin: 20px;
 }
 
-.route-color {
-  width: 30px;
-  height: 30px;
-  float: left;
-  margin-right: 10px;
-}
-
-.direction {
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-
 .timetable {
+  margin-bottom: 35px;
+}
+
+.table-of-contents {
+  list-style-type: none;
+}
+
+.timetable .table {
   width: auto;
 }
 

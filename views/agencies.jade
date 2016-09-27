@@ -1,9 +1,0 @@
-extends layout
-
-block content
-  .content
-    h1 Agencies
-    
-    .list-group
-      each agency in agencies
-        a.list-group-item(href="/routes?agency_key=#{agency.agency_key}")= agency.agency_name

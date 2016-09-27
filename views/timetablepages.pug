@@ -1,0 +1,13 @@
+extends layout
+
+block content
+  .content
+    h1 Timetables
+
+    if !timetablePages || !timetablePages.length
+      .well No timetables found
+    else
+      ul.list-group
+        each timetablePage in timetablePages
+          li.list-group-item
+            a.btn.btn-default.btn-sm(href=`/timetablepage?agency_key=${agencyKey}&timetable_page_id=${timetablePage.timetable_page_id}`)= timetablePage.route_label
