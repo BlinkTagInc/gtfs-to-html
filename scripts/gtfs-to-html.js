@@ -1,4 +1,5 @@
 const _ = require('underscore');
+const archiver = require('archiver');
 const async = require('async');
 const fs = require('fs');
 const gtfs = require('gtfs');
@@ -92,8 +93,33 @@ function main(config, cb) {
         });
       },
       (cb) => {
-        log(`HTML schedules for ${agencyKey} created at ${process.cwd()}/${exportPath}`);
-        cb();
+        // Zip output, if desired
+        if (!config.zipOutput) {
+          log(`HTML schedules for ${agencyKey} created at ${process.cwd()}/${exportPath}`);
+          cb();
+        }
+
+        const output = fs.createWriteStream(path.join(exportPath, 'gtfs.zip'));
+        const archive = archiver('zip');
+
+        output.on('close', function() {
+          log(`HTML schedules for ${agencyKey} created and zipped at ${process.cwd()}/${exportPath}/gtfs.zip`);
+          cb();
+        });
+
+        archive.on('error', cb);
+
+        archive.pipe(output);
+
+        archive.bulk([
+          {
+            expand: true,
+            cwd: exportPath,
+            src: ['**/*.txt', '**/*.css', '**/*.html']
+          }
+        ]);
+
+        archive.finalize();
       }
     ], cb);
   }, cb);

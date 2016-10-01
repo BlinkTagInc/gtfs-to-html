@@ -119,6 +119,14 @@ Add the MongoDB URI to `config.json` with the key `mongo_url`. Running locally, 
     showOnlyTimepoint: false
 ```
 
+### `zipOutput`
+
+{Boolean} Whether or not to zip the output into one zip file
+
+```
+    zipOutput: false
+```
+
 ## Build `timetables.txt`
 
 This project requires that an additional file `timetables.txt` be added to an agencies GTFS. This file specifies which HTML timetables should be built.

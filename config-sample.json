@@ -11,5 +11,6 @@
   "requestStopSymbol": "***",
   "showMap": true,
   "showOnlyTimepoint": false,
-  "mapboxAccessToken": "YOUR MAPBOX ACCESS TOKEN'"
+  "mapboxAccessToken": "YOUR MAPBOX ACCESS TOKEN'",
+  "zipOutput": false
 }
