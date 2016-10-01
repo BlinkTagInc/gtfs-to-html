@@ -18,18 +18,31 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 
-// catch 404 and forward to error handler
-app.use((req, res, next) => {
-  const err = new Error('Not Found');
-  err.status = 404;
-  next(err);
-});
-
 // error handlers
+
+// 404 error handler
+app.use((req, res, next) => {
+  const err = {
+    message: 'Not Found',
+    status: 404
+  };
+  res.status(404);
+  if (req.xhr) {
+    res.send({
+      message: err.message,
+      error: err,
+    });
+  } else {
+    res.render('error', {
+      message: err.message,
+      error: err,
+    });
+  }
+});
 
 // development error handler
 // will print stacktrace
-if (app.get('env') === 'development') {
+if (process.env.NODE_ENV === 'development') {
   app.use((err, req, res) => {
     res.status(err.status || 500);
     res.render('error', {
