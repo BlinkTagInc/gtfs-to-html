@@ -1,0 +1,15 @@
+{
+  "mongo_url": "mongodb://localhost:27017/gtfs",
+  "agencies": [
+    {
+      "agency_key": "county-connection",
+      "url": "http://cccta.org/GTFS/google_transit.zip"
+    }
+  ],
+  "effectiveDate": "July 8, 2015",
+  "noServiceSymbol": "—",
+  "requestStopSymbol": "***",
+  "showMap": true,
+  "showOnlyTimepoint": false,
+  "mapboxAccessToken": "YOUR MAPBOX ACCESS TOKEN'"
+}

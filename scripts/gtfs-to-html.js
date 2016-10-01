@@ -8,27 +8,9 @@ const rimraf = require('rimraf');
 const sanitize = require('sanitize-filename');
 const argv = require('yargs').argv;
 
-const download = require('../node_modules/gtfs/scripts/download');
+const importGTFS = require('../node_modules/gtfs/lib/import');
 const utils = require('../lib/utils');
 
-// check if this file was invoked direct through command line or required as an export
-const invocation = (require.main === module) ? 'direct' : 'required';
-
-let config = {};
-if (invocation === 'direct') {
-  try {
-    config = require('../config');
-  } catch (err) {
-    console.error(new Error('Cannot find config.js. Use config-sample.js as a starting point'));
-  }
-
-  if (!config.agencies) {
-    let message = 'No agency_key specified in config.js';
-    message += 'Try adding \'capital-metro\' to the agencies in config.js to load transit data';
-    console.error(new Error(message));
-    process.exit();
-  }
-}
 
 function main(config, cb) {
   const log = (config.verbose === false) ? _.noop : console.log;
@@ -46,10 +28,10 @@ function main(config, cb) {
 
     async.series([
       (cb) => {
-        // Download GTFS
+        // Import GTFS
         const agencyConfig = _.clone(_.omit(config, 'agencies'));
         agencyConfig.agencies = [agency];
-        download(agencyConfig, cb);
+        importGTFS(agencyConfig, cb);
       },
       (cb) => {
         // Cleanup any previously generated files
@@ -117,16 +99,24 @@ function main(config, cb) {
   }, cb);
 }
 
+
 // Allow script to be called directly from commandline or required (for testable code)
-if (invocation === 'direct') {
+if (require.main === module) {
+  let config;
+  try {
+    config = require('../config.json');
+  } catch (err) {
+    console.error(new Error('Cannot find config.js. Use config-sample.js as a starting point'));
+  }
+
   main(config, (err) => {
     if (err) {
       console.error(err || 'Unknown Error');
-      return process.exit(1);
+      process.exit(1);
     }
 
     console.log('Completed Generating HTML schedules');
-    return process.exit();
+    process.exit();
   });
 } else {
   module.exports = main;

@@ -12,49 +12,74 @@ GTFS-to-HTML is currently used by [Sonoma Country Transit](http://sctransit.com/
 
     npm install
 
-### Configure
+## Configure
 
-Copy `config-sample.js` to `config.js`.
+Copy `config-sample.json` to `config.json`.
 
-    cp config-sample.js config.js
+    cp config-sample.json config.json
 
-Before you can use gtfs-to-html you must specify the transit agencies you'd like to use.
+### Agencies
+
+Before you can use gtfs-to-html you must specify the transit agencies you'd
+like to use.
 
 You can specify agencies using a `url` to the GTFS file or a local `path`.
 
-To find an agency's GTFS URL, visit transitfeeds.com. You can use the direct URL from the agency or you can use a URL generated from the transitfeeds.com API along with your API token.
+To find an agency's GTFS URL, visit transitfeeds.com. You can use the direct
+URL from the agency or you can use a URL generated from the transitfeeds.com
+API along with your API token.
 
 * Specify a download URL:
 ```
 {
-    agency_key: 'county-connection',
-    url: 'http://cccta.org/GTFS/google_transit.zip'
+  "agencies": [
+    {
+      "agency_key": "county-connection",
+      "url": "http://cccta.org/GTFS/google_transit.zip"
+    }
+  ]
 }
 ```
 
 * Specify a path to a zipped GTFS file:
 ```
 {
-    agency_key: 'localAgency',
-    path: '/path/to/the/gtfs.zip'
+  "agencies": [
+    {
+      "agency_key": "myAgency",
+      "path": "/path/to/the/gtfs.zip"
+    }
+  ]
 }
 ```
 * Specify a path to an unzipped GTFS file:
 ```
 {
-    agency_key: 'localAgency',
-    path: '/path/to/the/unzipped/gtfs/'
+  "agencies": [
+    {
+      "agency_key": "myAgency",
+      path: "/path/to/the/unzipped/gtfs/"
+    }
+  ]
 }
 ```
 
-The mongodb URI should also be configured in `config.js`. The default database URI is:
-`mongodb://localhost:27017/gtfs`
+### MongoDB URI
 
-#### Formatting Options
+Add the MongoDB URI to `config.json` with the key `mongo_url`. Running locally, you may want to use `mongodb://localhost:27017/gtfs`.
+```
+{
+  "mongo_url": "mongodb://localhost:27017/gtfs",
+  "agencies": [
+    {
+      "agency_key": "myAgency",
+      path: "/path/to/the/unzipped/gtfs/"
+    }
+  ]
+}
+```
 
-The following items can be added to the configuration object:
-
-##### `effectiveDate`
+### `effectiveDate`
 
 {String} This is printed at the top of the timetable.
 
@@ -62,7 +87,7 @@ The following items can be added to the configuration object:
     effectiveDate: 'July 8, 2015'
 ```
 
-##### `noServiceSymbol`
+### `noServiceSymbol`
 
 {String} The symbol to be used when a specific trip does not serve a specified stop.
 
@@ -70,7 +95,7 @@ The following items can be added to the configuration object:
     noServiceSymbol: '—'
 ```
 
-##### `requestStopSymbol`
+### `requestStopSymbol`
 
 {String} The symbol to be used to indicate that riders must request a stop.
 
@@ -78,7 +103,7 @@ The following items can be added to the configuration object:
     requestStopSymbol: '***'
 ```
 
-##### `showMap`
+### `showMap`
 
 {Boolean} Whether or not to show a map of the route on the timetable.
 
@@ -86,7 +111,7 @@ The following items can be added to the configuration object:
     showMap: false
 ```
 
-##### `showOnlyTimepoint`
+### `showOnlyTimepoint`
 
 {Boolean} Whether or not all stops should be shown, or only stops with a `timepoint` value in [stop_times.txt](https://developers.google.com/transit/gtfs/reference?hl=en#stop_times_fields) that is considered exact (i.e. empty or `1`). Default is `false`, all stops shown.
 
@@ -94,7 +119,7 @@ The following items can be added to the configuration object:
     showOnlyTimepoint: false
 ```
 
-### Build `timetables.txt`
+## Build `timetables.txt`
 
 This project requires that an additional file `timetables.txt` be added to an agencies GTFS. This file specifies which HTML timetables should be built.
 
@@ -118,7 +143,7 @@ An example of this file is located in [examples/timetables.txt](examples/timetab
 | `service_notes` | Text shown on the timetable about the service represented, for instance "Mon-Fri". |
 | `orientation` | Determines if the top row should be a list of trips or stops. Valid options are `vertical` and `horizontal`. `vertical` shows stops across the top row with each row being a list of stop times for each trip. `horizontal` shows trips across the top row with each row being stop times for a specific stop.  `horizontal` orientation is best for routes with lots of stops and fewer trips while `vertical` orientation is best for routes with lots of trips and a smaller number of stops. |
 
-#### Multi-route Timetables
+### Multi-route Timetables
 
 To allow creating a single timetable for multiple routes that overlap, you can have multiple entries in `timetables.txt` for the same `timetable_id`. These multi-route entries should have the same values `timetable_id`, `start_date`, `end_date`, calendar date, `service_notes` and `orientation` fields and should have different values for the `route_id` and `route_label` fields.
 
@@ -169,4 +194,4 @@ With this running, you can open [http://localhost:3000](http://localhost:3000) i
 
 ### Linting
 
-    eslint .
+    npm run lint
