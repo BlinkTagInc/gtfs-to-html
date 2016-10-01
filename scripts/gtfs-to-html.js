@@ -8,7 +8,7 @@ const rimraf = require('rimraf');
 const sanitize = require('sanitize-filename');
 const argv = require('yargs').argv;
 
-const importGTFS = require('../node_modules/gtfs/lib/import');
+const importGTFS = require('gtfs/lib/import');
 const utils = require('../lib/utils');
 
 
