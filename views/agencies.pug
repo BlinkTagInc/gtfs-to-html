@@ -7,6 +7,7 @@ block content
     if !agencies || !agencies.length
       .well No agencies found
     else
-      .list-group
+      ul.list-group
         each agency in agencies
-          a.list-group-item(href=`/timetablepages?agency_key=${agency.agency_key}`)= agency.agency_name
+          li.list-group-item
+            a.list-group-item(href=`/timetablepages?agency_key=${agency.agency_key}`)= agency.agency_name
