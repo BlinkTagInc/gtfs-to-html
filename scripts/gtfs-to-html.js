@@ -62,7 +62,7 @@ function main(config, cb) {
         // Build HTML timetables
         async.each(timetablePages, (timetablePage, cb) => {
           if (!timetablePage.timetables.length) {
-            return cb(new Error('TimetablePage has no timetables'));
+            return cb(new Error(`No timetables found for timetable_page_id=${timetablePage.timetable_page_id}`));
           }
 
           const datePath = utils.generateFolderName(timetablePage);
@@ -132,7 +132,7 @@ if (require.main === module) {
   try {
     config = require('../config.json');
   } catch (err) {
-    console.error(new Error('Cannot find config.js. Use config-sample.js as a starting point'));
+    console.error(new Error('Cannot find config.json. Use config-sample.json as a starting point'));
   }
 
   main(config, (err) => {
