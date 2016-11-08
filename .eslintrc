@@ -1,13 +1,10 @@
 ---
   root: true
   extends: airbnb-base
-  parser: babel-eslint
   env:
-    browser: true
+    browser: false
     node: true
-    protractor: true
-    jasmine: true
-    mocha: true
+    mocha: false
     es6: true
   rules:
     comma-dangle:
