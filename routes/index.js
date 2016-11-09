@@ -13,7 +13,7 @@ router.get('/', (req, res, next) => {
   gtfs.agencies((err, agencies) => {
     if (err) return next(err);
 
-    return res.render('agencies', { agencies });
+    return res.render('agencies', { agencies: _.sortBy(agencies, 'agency_name') });
   });
 });
 
