@@ -2,12 +2,27 @@ const _ = require('lodash');
 const archiver = require('archiver');
 const async = require('async');
 const fs = require('fs');
-const gtfs = require('gtfs');
 const mkdirp = require('mkdirp');
 const path = require('path');
 const rimraf = require('rimraf');
 const sanitize = require('sanitize-filename');
-const argv = require('yargs').argv;
+const mongoose = require('mongoose');
+const argv = require('yargs')
+    .usage('Usage: $0 --config ./config.json')
+    .help()
+    .option('c', {
+      alias: 'config-path',
+      describe: 'Path to config file',
+      default: './config.json',
+      type: 'string'
+    })
+    .option('n', {
+      alias: 'nohead',
+      describe: 'Skip header of HTML file',
+      default: false,
+      type: 'boolean'
+    })
+    .argv;
 
 const importGTFS = require('gtfs/lib/import');
 const utils = require('../lib/utils');
@@ -15,6 +30,9 @@ const utils = require('../lib/utils');
 
 function main(config, cb) {
   const log = (config.verbose === false) ? _.noop : console.log;
+
+  mongoose.Promise = global.Promise;
+  mongoose.connect(config.mongo_url);
 
   const options = _.extend(config, {
     nohead: !!argv.nohead
@@ -55,7 +73,7 @@ function main(config, cb) {
           if (err) return cb(err);
 
           timetablePages = results;
-          cb();
+          return cb();
         });
       },
       (cb) => {
@@ -66,7 +84,7 @@ function main(config, cb) {
           }
 
           const datePath = utils.generateFolderName(timetablePage);
-          async.waterfall([
+          return async.waterfall([
             (cb) => {
               // Make directory, if it doesn't exist
               mkdirp(path.join(exportPath, datePath), cb);
@@ -88,7 +106,7 @@ function main(config, cb) {
         utils.generateLogText(agency, (err, logText) => {
           if (err) return cb(err);
 
-          log('  Writing log.txt');
+          log(`  Writing ${path.join(exportPath, 'log.txt')}`);
           return fs.writeFile(path.join(exportPath, 'log.txt'), logText.join('\n'), cb);
         });
       },
@@ -102,7 +120,7 @@ function main(config, cb) {
         const output = fs.createWriteStream(path.join(exportPath, 'gtfs.zip'));
         const archive = archiver('zip');
 
-        output.on('close', function() {
+        output.on('close', () => {
           log(`HTML schedules for ${agencyKey} created and zipped at ${process.cwd()}/${exportPath}/gtfs.zip`);
           cb();
         });
@@ -126,24 +144,32 @@ function main(config, cb) {
 }
 
 
+function handleError(err) {
+  console.error(err || 'Unknown Error');
+  process.exit(1);
+}
+
+
 // Allow script to be called directly from commandline or required (for testable code)
 if (require.main === module) {
+  // Called from command line
+  const configPath = path.join(process.cwd(), argv['config-path']);
   let config;
   try {
-    config = require('../config.json');
-  } catch (err) {
-    console.error(new Error('Cannot find config.json. Use config-sample.json as a starting point'));
+    config = require(configPath);
+  } catch(err) {
+    handleError(new Error(`Cannot find configuration file at \`${configPath}\`. Use config-sample.json as a starting point, pass --config-path option`));
   }
 
   main(config, (err) => {
     if (err) {
-      console.error(err || 'Unknown Error');
-      process.exit(1);
+      handleError(err);
     }
 
     console.log('Completed Generating HTML schedules');
     process.exit();
   });
 } else {
+  // Required by script
   module.exports = main;
 }

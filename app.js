@@ -2,6 +2,25 @@ const express = require('express');
 const path = require('path');
 const logger = require('morgan');
 const bodyParser = require('body-parser');
+const argv = require('yargs')
+    .usage('Usage: $0 --config ./config.json')
+    .help()
+    .option('c', {
+      alias: 'config-path',
+      describe: 'Path to config file',
+      default: './config.json',
+      type: 'string'
+    })
+    .argv;
+
+const mongoose = require('mongoose');
+
+const configPath = path.join(process.cwd(), argv['config-path']);
+const config = require(configPath);
+
+mongoose.Promise = global.Promise;
+
+mongoose.connect(config.mongo_url);
 
 const routes = require('./routes/index');
 

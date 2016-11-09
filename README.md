@@ -177,11 +177,19 @@ To generate HTML timetables, run the 'gtfs-to-html' script.
 
     npm run gtfs-to-html
 
+By default, it will look for a `config.json` file in the project root. To specify a different path for the configuration file:
+
+    npm run gtfs-to-html -- --config-path /path/to/your/custom-config.json
+
 This will download the GTFS file specified in `config.js` .  Then, it will build the HTML timetables and save them in `html/:agency_key`.
 
 ### Options
 
 Note the use of two sets of `--` when running commands with arguments from npm.
+
+`config-path`
+
+    npm run gtfs-to-html -- --config-path /path/to/your/custom-config.json
 
 `nohead`
 
@@ -189,14 +197,21 @@ Note the use of two sets of `--` when running commands with arguments from npm.
 
 This will generate embeddable HTML without an `<html>`, `<head>` or `<body>` tag.
 
-
-## Testing
+## Quick preview of generated HTML
 
 After an initial run of the `gtfs-to-html` script, the GTFS data will be downloaded and loaded into mongo.
 
 You can view an individual route HTML on demand by running the included express app:
 
     DEBUG=gtfs-to-html npm start
+
+By default, it will look for a `config.json` file in the project root. To specify a different path for the configuration file:
+
+    DEBUG=gtfs-to-html npm start -- --config-path /path/to/your/custom-config.json
+
+## Contributing
+
+Pull requests are welcome, as is feedback and [reporting issues](https://github.com/brendannee/node-gtfs/issues).
 
 With this running, you can open [http://localhost:3000](http://localhost:3000) in your browser and view all timetables.  Note that this only works after GTFS has been imported to mongodb and mongodb is running locally.
 
