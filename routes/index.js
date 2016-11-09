@@ -1,4 +1,4 @@
-const _ = require('underscore');
+const _ = require('lodash');
 const gtfs = require('gtfs');
 const router = require('express').Router();
 
