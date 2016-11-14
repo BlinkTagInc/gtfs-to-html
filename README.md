@@ -262,11 +262,13 @@ After an initial run of the `gtfs-to-html` script, the GTFS data will be downloa
 
 You can view an individual route HTML on demand by running the included express app:
 
-    DEBUG=gtfs-to-html npm start
+    node app.js
 
 By default, it will look for a `config.json` file in the project root. To specify a different path for the configuration file:
 
-    DEBUG=gtfs-to-html npm start -- --config-path /path/to/your/custom-config.json
+    node app.js --config-path /path/to/your/custom-config.json
+
+Once running, you can view the HTML in your browser at [localhost:3000](http://localhost:3000)
 
 ## Contributing
 
