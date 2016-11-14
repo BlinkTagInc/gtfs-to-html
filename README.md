@@ -4,15 +4,15 @@
 [![David](https://img.shields.io/david/brendannee/gtfs-to-html.svg)]()
 [![npm](https://img.shields.io/npm/dm/gtfs-to-html.svg?style=flat)]()
 
-GTFS-to-HTML converts transit data in [GTFS format](https://developers.google.com/transit/gtfs/) into user-friendly HTML schedules. Many transit agencies have schedule data in GTFS format but need to show each route's schedule to users on a website. This project aims to automate the process of creating these schedules. Automating HTML schedule generation makes it easy to keep schedules up to date when data changes and reduces the likelihood of errors.
+`gtfs-to-html` converts transit data in [GTFS format](https://developers.google.com/transit/gtfs/) into user-friendly HTML schedules. Many transit agencies have schedule data in GTFS format but need to show each route's schedule to users on a website. This project aims to automate the process of creating these schedules. Automating HTML schedule generation makes it easy to keep schedules up to date when data changes and reduces the likelihood of errors.
 
-GTFS-to-HTML is currently used by [Sonoma Country Transit](http://sctransit.com/) to generate schedule pages for each route.
+`gtfs-to-html` is currently used by [Sonoma Country Transit](http://sctransit.com/) to generate schedule pages for each route.
 
 <img width="1265" src="https://cloud.githubusercontent.com/assets/96217/10262598/87674f70-6983-11e5-8150-15b6372c989c.png">
 
 ## Installation
 
-Install gtfs-to-html directly from [npm](https://npmjs.org):
+Install `gtfs-to-html` directly from [npm](https://npmjs.org):
 
     npm install gtfs-to-html -g
 
@@ -260,15 +260,15 @@ Ensure than mongodb is running locally.
 
     mongod
 
-To generate HTML timetables, run the 'gtfs-to-html' script.
+To generate HTML timetables, run `gtfs-to-html`.
 
     gtfs-to-html
 
-By default, it will look for a `config.json` file in the project root. To specify a different path for the configuration file:
+By default, `gtfs-to-html` will look for a `config.json` file in the project root. To specify a different path for the configuration file:
 
     gtfs-to-html --config-path /path/to/your/custom-config.json
 
-This will download the GTFS file specified in `config.js` .  Then, it will build the HTML timetables and save them in `html/:agency_key`.
+This will download the GTFS file specified in `config.js` .  Then, `gtfs-to-html` will build the HTML timetables and save them in `html/:agency_key`.
 
 ### Options
 
@@ -284,13 +284,13 @@ This will generate embeddable HTML without an `<html>`, `<head>` or `<body>` tag
 
 ## Quick preview of generated HTML
 
-After an initial run of the `gtfs-to-html` script, the GTFS data will be downloaded and loaded into mongo.
+After an initial run of `gtfs-to-html`, the GTFS data will be downloaded and loaded into mongo.
 
 You can view an individual route HTML on demand by running the included express app:
 
     node app.js
 
-By default, it will look for a `config.json` file in the project root. To specify a different path for the configuration file:
+By default, `gtfs-to-html` will look for a `config.json` file in the project root. To specify a different path for the configuration file:
 
     node app.js --config-path /path/to/your/custom-config.json
 
@@ -298,7 +298,7 @@ Once running, you can view the HTML in your browser at [localhost:3000](http://l
 
 ## Contributing
 
-Pull requests are welcome, as is feedback and [reporting issues](https://github.com/brendannee/node-gtfs/issues).
+Pull requests are welcome, as is feedback and [reporting issues](https://github.com/brendannee/gtfs-to-html/issues).
 
 With this running, you can open [http://localhost:3000](http://localhost:3000) in your browser and view all timetables.  Note that this only works after GTFS has been imported to mongodb and mongodb is running locally.
 
