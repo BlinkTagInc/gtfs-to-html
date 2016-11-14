@@ -1,5 +1,9 @@
 # GTFS to HTML
 
+[![NPM version](https://img.shields.io/npm/v/gtfs-to-html.svg?style=flat)](https://www.npmjs.com/package/gtfs-to-html)
+[![David](https://img.shields.io/david/brendannee/gtfs-to-html.svg)]()
+[![npm](https://img.shields.io/npm/dm/gtfs-to-html.svg?style=flat)]()
+
 GTFS-to-HTML converts transit data in [GTFS format](https://developers.google.com/transit/gtfs/) into user-friendly HTML schedules. Many transit agencies have schedule data in GTFS format but need to show each route's schedule to users on a website. This project aims to automate the process of creating these schedules. Automating HTML schedule generation makes it easy to keep schedules up to date when data changes and reduces the likelihood of errors.
 
 GTFS-to-HTML is currently used by [Sonoma Country Transit](http://sctransit.com/) to generate schedule pages for each route.
