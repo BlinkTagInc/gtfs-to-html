@@ -24,11 +24,9 @@ router.get('/', (req, res, next) => {
 router.get('/timetablepages', (req, res, next) => {
   const agencyKey = req.query.agency_key;
 
-  utils.getTimetablePages(agencyKey, (err, timetablePages) => {
-    if (err) return next(err);
-
-    return res.render('timetablepages', { agencyKey, timetablePages });
-  });
+  utils.getTimetablePages(agencyKey).then((timetablePages) => {
+    res.render('timetablepages', { agencyKey, timetablePages });
+  }, next);
 });
 
 
@@ -39,13 +37,12 @@ router.get('/timetablepage', (req, res, next) => {
   const agencyKey = req.query.agency_key;
   const timetablePageId = req.query.timetable_page_id;
 
-  utils.getTimetablePage(agencyKey, timetablePageId, (err, timetablePage) => {
-    if (err) return next(err);
+  utils.getTimetablePage(agencyKey, timetablePageId).then((timetablePage) => {
     utils.generateHTML(agencyKey, timetablePage, config, (err, html) => {
       if (err) return next(err);
       res.send(html);
     });
-  });
+  }, next);
 });
 
 module.exports = router;
