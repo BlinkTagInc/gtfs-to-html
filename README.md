@@ -6,11 +6,26 @@ GTFS-to-HTML is currently used by [Sonoma Country Transit](http://sctransit.com/
 
 <img width="1265" src="https://cloud.githubusercontent.com/assets/96217/10262598/87674f70-6983-11e5-8150-15b6372c989c.png">
 
-## Setup
+## Installation
 
-### Install dependencies
+Install gtfs-to-html directly from [npm](https://npmjs.org):
 
-    npm install
+    npm install gtfs-to-html -g
+
+## Command-line example
+
+    gtfs-to-html --config-path /path/to/your/custom-config.json
+
+## Code example
+
+    const gtfsToHTML = require('gtfs-to-html');
+    const config = require('config.json');
+
+    gtfsToHTML(config, (err) => {
+      if (err) return console.error(err);
+
+      console.log('HTML Generation Successful')
+    });
 
 ## Configuration
 
@@ -29,6 +44,7 @@ Copy `config-sample.json` to `config.json` and then add your projects configurat
 | `showMap` | boolean | Whether or not to show a map of the route on the timetable. |
 | `showOnlyTimepoint` | boolean | Whether or not all stops should be shown, or only stops with a `timepoint` value in `stops.txt`. |
 | `zipOutput` | boolean | Whether or not to zip the output into one zip file. |
+| `nohead` | boolean | Whether or not to skip the header and footer of the HTML document. |
 
 ### Agencies
 
@@ -186,6 +202,14 @@ If you don't want the import script to print any output to the console, you can 
     "zipOutput": false
 ```
 
+### Skip HTML head and footer
+
+{Boolean} Whether or not to skip the HTML head and footer when generating the HTML. Defaults to `false`.
+
+```
+    "nohead": false
+```
+
 ## Build `timetables.txt`
 
 This project requires that an additional file `timetables.txt` be added to an agencies GTFS. This file specifies which HTML timetables should be built.
@@ -234,25 +258,23 @@ Ensure than mongodb is running locally.
 
 To generate HTML timetables, run the 'gtfs-to-html' script.
 
-    npm run gtfs-to-html
+    gtfs-to-html
 
 By default, it will look for a `config.json` file in the project root. To specify a different path for the configuration file:
 
-    npm run gtfs-to-html -- --config-path /path/to/your/custom-config.json
+    gtfs-to-html --config-path /path/to/your/custom-config.json
 
 This will download the GTFS file specified in `config.js` .  Then, it will build the HTML timetables and save them in `html/:agency_key`.
 
 ### Options
 
-Note the use of two sets of `--` when running commands with arguments from npm.
-
 `config-path`
 
-    npm run gtfs-to-html -- --config-path /path/to/your/custom-config.json
+    gtfs-to-html --config-path /path/to/your/custom-config.json
 
 `nohead`
 
-    npm run gtfs-to-html -- --nohead
+    gtfs-to-html --nohead
 
 This will generate embeddable HTML without an `<html>`, `<head>` or `<body>` tag.
 
