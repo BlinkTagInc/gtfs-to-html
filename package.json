@@ -27,23 +27,23 @@
   "main": "index",
   "dependencies": {
     "archiver": "1.2.0",
-    "async": "2.1.2",
+    "async": "2.1.4",
     "body-parser": "1.15.2",
     "cli-table": "0.3.1",
     "express": "4.14.0",
-    "gtfs": "0.8.1",
-    "lodash": "4.17.0",
+    "gtfs": "0.8.3",
+    "lodash": "4.17.2",
     "mkdirp": "0.5.1",
-    "moment": "2.16.0",
+    "moment": "2.17.0",
     "mongoose": "4.6.7",
     "morgan": "1.7.0",
     "pug": "2.0.0-beta6",
     "rimraf": "2.5.4",
     "sanitize-filename": "1.6.1",
-    "yargs": "6.3.0"
+    "yargs": "6.4.0"
   },
   "devDependencies": {
-    "eslint": "3.10.0",
+    "eslint": "3.10.2",
     "eslint-config-airbnb-base": "10.0.1",
     "eslint-plugin-import": "2.2.0"
   },
