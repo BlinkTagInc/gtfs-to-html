@@ -31,11 +31,11 @@
     "body-parser": "1.15.2",
     "cli-table": "0.3.1",
     "express": "4.14.0",
-    "gtfs": "0.8.3",
+    "gtfs": "0.8.4",
     "lodash": "4.17.2",
     "mkdirp": "0.5.1",
     "moment": "2.17.0",
-    "mongoose": "4.6.7",
+    "mongoose": "4.7.0",
     "morgan": "1.7.0",
     "pug": "2.0.0-beta6",
     "rimraf": "2.5.4",
@@ -43,7 +43,7 @@
     "yargs": "6.4.0"
   },
   "devDependencies": {
-    "eslint": "3.10.2",
+    "eslint": "3.11.1",
     "eslint-config-airbnb-base": "10.0.1",
     "eslint-plugin-import": "2.2.0"
   },
