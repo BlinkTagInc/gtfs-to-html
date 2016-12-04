@@ -49,6 +49,7 @@ Copy `config-sample.json` to `config.json` and then add your projects configurat
 | `requestStopSymbol` | string | The symbol to be used to indicate that riders must request a stop. |
 | `showMap` | boolean | Whether or not to show a map of the route on the timetable. |
 | `showOnlyTimepoint` | boolean | Whether or not all stops should be shown, or only stops with a `timepoint` value in `stops.txt`. |
+| `showStopCity` | boolean | Whether or not to show each stop's city. |
 | `verbose` | boolean | Whether or not to print output to the console. |
 | `zipOutput` | boolean | Whether or not to zip the output into one zip file. |
 
@@ -189,6 +190,14 @@ Add the MongoDB URI to `config.json` with the key `mongo_url`. Running locally, 
 
 ```
     "showOnlyTimepoint": false
+```
+
+### Show stop city
+
+{Boolean} Whether or not to show the city for each stop. City is determined by the `stop_city` field in the non-standard `stop_attributes.txt`. Only has an effect when the timetable's `orientation` is `horizontal`. Defaults to `false`.
+
+```
+    "showStopCity": false
 ```
 
 ### Logging
