@@ -42,15 +42,15 @@ Copy `config-sample.json` to `config.json` and then add your projects configurat
 | option | type | description |
 | ------ | ---- | ----------- |
 | `agencies` | array | An array of GTFS files to be imported. |
-| `mongo_url` | string | The URL of the MongoDB database to import to. |
-| `verbose` | boolean | Whether or not to print output to the console. |
 | `effectiveDate` | string | A date to print at the top of the timetable |
+| `mongo_url` | string | The URL of the MongoDB database to import to. |
+| `nohead` | boolean | Whether or not to skip the header and footer of the HTML document. |
 | `noServiceSymbol` | string | The symbol to be used when a specific trip does not serve a specified stop. |
 | `requestStopSymbol` | string | The symbol to be used to indicate that riders must request a stop. |
 | `showMap` | boolean | Whether or not to show a map of the route on the timetable. |
 | `showOnlyTimepoint` | boolean | Whether or not all stops should be shown, or only stops with a `timepoint` value in `stops.txt`. |
+| `verbose` | boolean | Whether or not to print output to the console. |
 | `zipOutput` | boolean | Whether or not to zip the output into one zip file. |
-| `nohead` | boolean | Whether or not to skip the header and footer of the HTML document. |
 
 ### Agencies
 
@@ -128,6 +128,14 @@ API along with your API token.
 }
 ```
 
+### Effective Date
+
+{String} This is printed at the top of the timetable.
+
+```
+    "effectiveDate": "July 8, 2015"
+```
+
 ### MongoDB URI
 
 Add the MongoDB URI to `config.json` with the key `mongo_url`. Running locally, you may want to use `mongodb://localhost:27017/gtfs`.
@@ -143,29 +151,12 @@ Add the MongoDB URI to `config.json` with the key `mongo_url`. Running locally, 
 }
 ```
 
-### Logging
+### Skip HTML head and footer
 
-If you don't want the import script to print any output to the console, you can set `verbose` to `false`. Defaults to `true`.
-
-```
-{
-  "mongo_url": "mongodb://localhost:27017/gtfs",
-  "agencies": [
-    {
-      "agency_key": "localAgency",
-      "path": ""/path/to/the/unzipped/gtfs/"
-    }
-  ],
-  "verbose": false
-}
-```
-
-### Effective Date
-
-{String} This is printed at the top of the timetable.
+{Boolean} Whether or not to skip the HTML head and footer when generating the HTML. Defaults to `false`.
 
 ```
-    "effectiveDate": "July 8, 2015"
+    "nohead": false
 ```
 
 ### No Service Symbol
@@ -200,20 +191,29 @@ If you don't want the import script to print any output to the console, you can 
     "showOnlyTimepoint": false
 ```
 
+### Logging
+
+If you don't want the import script to print any output to the console, you can set `verbose` to `false`. Defaults to `true`.
+
+```
+{
+  "mongo_url": "mongodb://localhost:27017/gtfs",
+  "agencies": [
+    {
+      "agency_key": "localAgency",
+      "path": ""/path/to/the/unzipped/gtfs/"
+    }
+  ],
+  "verbose": false
+}
+```
+
 ### Zipping Output
 
 {Boolean} Whether or not to zip the output into one zip file. Defaults to `false`.
 
 ```
     "zipOutput": false
-```
-
-### Skip HTML head and footer
-
-{Boolean} Whether or not to skip the HTML head and footer when generating the HTML. Defaults to `false`.
-
-```
-    "nohead": false
 ```
 
 ## Build `timetables.txt`
