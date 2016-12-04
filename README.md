@@ -41,21 +41,21 @@ Copy `config-sample.json` to `config.json` and then add your projects configurat
 
 | option | type | description |
 | ------ | ---- | ----------- |
-| `agencies` | array | An array of GTFS files to be imported. |
-| `effectiveDate` | string | A date to print at the top of the timetable |
-| `mongo_url` | string | The URL of the MongoDB database to import to. |
-| `nohead` | boolean | Whether or not to skip the header and footer of the HTML document. |
-| `noServiceSymbol` | string | The symbol to be used when a specific trip does not serve a specified stop. |
-| `requestStopSymbol` | string | The symbol to be used to indicate that riders must request a stop. |
-| `showMap` | boolean | Whether or not to show a map of the route on the timetable. |
-| `showOnlyTimepoint` | boolean | Whether or not all stops should be shown, or only stops with a `timepoint` value in `stops.txt`. |
-| `showStopCity` | boolean | Whether or not to show each stop's city. |
-| `verbose` | boolean | Whether or not to print output to the console. |
-| `zipOutput` | boolean | Whether or not to zip the output into one zip file. |
+| [`agencies`](#agencies) | array | An array of GTFS files to be imported. |
+| [`effectiveDate`](#effectivedate) | string | A date to print at the top of the timetable |
+| [`mongo_url`](#mongo_url) | string | The URL of the MongoDB database to import to. |
+| [`nohead`](#nohead) | boolean | Whether or not to skip the header and footer of the HTML document. |
+| [`noServiceSymbol`](#noservicesymbol) | string | The symbol to be used when a specific trip does not serve a specified stop. |
+| [`requestStopSymbol`](#requeststopsymbol) | string | The symbol to be used to indicate that riders must request a stop. |
+| [`showMap`](#showmap) | boolean | Whether or not to show a map of the route on the timetable. |
+| [`showOnlyTimepoint`](#showonlytimepoint) | boolean | Whether or not all stops should be shown, or only stops with a `timepoint` value in `stops.txt`. |
+| [`showStopCity`](#showstopcity) | boolean | Whether or not to show each stop's city. |
+| [`verbose`](#verbose) | boolean | Whether or not to print output to the console. |
+| [`zipOutput`](#zipoutput) | boolean | Whether or not to zip the output into one zip file. |
 
-### Agencies
+### agencies
 
-Specify the GTFS files to be imported in an `agencies` array. GTFS files can be imported via a `url` or a local `path`.
+{Array} Specify the GTFS files to be imported in an `agencies` array. GTFS files can be imported via a `url` or a local `path`.
 
 Each file needs an `agency_key`, a short name you create that is specific to that GTFS file. For GTFS files that contain more than one agency, you only need to list each GTFS file once in the `agencies` array, not once per agency that it contains.
 
@@ -129,7 +129,7 @@ API along with your API token.
 }
 ```
 
-### Effective Date
+### effectiveDate
 
 {String} This is printed at the top of the timetable.
 
@@ -137,9 +137,10 @@ API along with your API token.
     "effectiveDate": "July 8, 2015"
 ```
 
-### MongoDB URI
+### mongo_url
 
-Add the MongoDB URI to `config.json` with the key `mongo_url`. Running locally, you may want to use `mongodb://localhost:27017/gtfs`.
+{String} The MongoDB URI use. When running locally, you may want to use `mongodb://localhost:27017/gtfs`.
+
 ```
 {
   "mongo_url": "mongodb://localhost:27017/gtfs",
@@ -152,7 +153,7 @@ Add the MongoDB URI to `config.json` with the key `mongo_url`. Running locally, 
 }
 ```
 
-### Skip HTML head and footer
+### nohead
 
 {Boolean} Whether or not to skip the HTML head and footer when generating the HTML. Defaults to `false`.
 
@@ -160,7 +161,7 @@ Add the MongoDB URI to `config.json` with the key `mongo_url`. Running locally, 
     "nohead": false
 ```
 
-### No Service Symbol
+### noServiceSymbol
 
 {String} The symbol to be used when a specific trip does not serve a specified stop. Defaults to `-`.
 
@@ -168,7 +169,7 @@ Add the MongoDB URI to `config.json` with the key `mongo_url`. Running locally, 
     "noServiceSymbol": "-"
 ```
 
-### Request Stop Symbol
+### requestStopSymbol
 
 {String} The symbol to be used to indicate that riders must request a stop. Defaults to `***`.
 
@@ -176,7 +177,7 @@ Add the MongoDB URI to `config.json` with the key `mongo_url`. Running locally, 
     "requestStopSymbol": "***"
 ```
 
-### Showing Map
+### showMap
 
 {Boolean} Whether or not to show a map of the route on the timetable. Defaults to `false`.
 
@@ -184,7 +185,7 @@ Add the MongoDB URI to `config.json` with the key `mongo_url`. Running locally, 
     "showMap": false
 ```
 
-### Showing Only Timepoints
+### showOnlyTimepoint
 
 {Boolean} Whether or not all stops should be shown, or only stops with a `timepoint` value in [stop_times.txt](https://developers.google.com/transit/gtfs/reference?hl=en#stop_times_fields) that is considered exact (i.e. empty or `1`). Defaults to `false`, all stops shown.
 
@@ -192,7 +193,7 @@ Add the MongoDB URI to `config.json` with the key `mongo_url`. Running locally, 
     "showOnlyTimepoint": false
 ```
 
-### Show stop city
+### showStopCity
 
 {Boolean} Whether or not to show the city for each stop. City is determined by the `stop_city` field in the non-standard `stop_attributes.txt`. Only has an effect when the timetable's `orientation` is `horizontal`. Defaults to `false`.
 
@@ -200,24 +201,15 @@ Add the MongoDB URI to `config.json` with the key `mongo_url`. Running locally, 
     "showStopCity": false
 ```
 
-### Logging
+### verbose
 
-If you don't want the import script to print any output to the console, you can set `verbose` to `false`. Defaults to `true`.
+{Boolean} If you don't want the import script to print any output to the console, you can set `verbose` to `false`. Defaults to `true`.
 
 ```
-{
-  "mongo_url": "mongodb://localhost:27017/gtfs",
-  "agencies": [
-    {
-      "agency_key": "localAgency",
-      "path": ""/path/to/the/unzipped/gtfs/"
-    }
-  ],
-  "verbose": false
-}
+    "verbose": false
 ```
 
-### Zipping Output
+### zipOutput
 
 {Boolean} Whether or not to zip the output into one zip file. Defaults to `false`.
 

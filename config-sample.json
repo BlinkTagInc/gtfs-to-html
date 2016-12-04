@@ -3,7 +3,7 @@
   "agencies": [
     {
       "agency_key": "county-connection",
-      "url": "http://cccta.org/GTFS/google_transit.zip"
+      "url": "countyconnection.com/GTFS/google_transit.zip"
     }
   ],
   "effectiveDate": "July 8, 2015",
@@ -11,6 +11,7 @@
   "requestStopSymbol": "***",
   "showMap": true,
   "showOnlyTimepoint": false,
+  "showStopCity": false,
   "mapboxAccessToken": "YOUR MAPBOX ACCESS TOKEN'",
   "zipOutput": false
 }
