@@ -6,7 +6,7 @@ const argv = require('yargs')
     .usage('Usage: $0 --config ./config.json')
     .help()
     .option('c', {
-      alias: 'config-path',
+      alias: 'configPath',
       describe: 'Path to config file',
       default: './config.json',
       type: 'string'
@@ -15,12 +15,12 @@ const argv = require('yargs')
 
 const mongoose = require('mongoose');
 
-const configPath = path.join(process.cwd(), argv['config-path']);
+const configPath = path.join(process.cwd(), argv['configPath']);
 const config = require(configPath);
 
 mongoose.Promise = global.Promise;
 
-mongoose.connect(config.mongo_url);
+mongoose.connect(config.mongoUrl);
 
 const routes = require('./routes/index');
 

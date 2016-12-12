@@ -1,25 +1,26 @@
 #!/usr/bin/env node
 
+const _ = require('lodash');
 const gtfsToHtml = require('../');
 const path = require('path');
 const argv = require('yargs')
     .usage('Usage: $0 --config ./config.json')
     .help()
     .option('c', {
-      alias: 'config-path',
+      alias: 'configPath',
       describe: 'Path to config file',
       default: './config.json',
       type: 'string'
     })
     .option('n', {
-      alias: 'nohead',
+      alias: 'noHead',
       describe: 'Skip header of HTML file',
       default: false,
       type: 'boolean'
     })
     .argv;
 
-const configPath = path.join(process.cwd(), argv['config-path']);
+const configPath = path.join(process.cwd(), argv.configPath);
 
 
 function handleError(err) {
@@ -31,18 +32,10 @@ function handleError(err) {
 function getConfig() {
   try {
     const config = require(configPath);
-
-    if (argv['skip-delete']) {
-      config.skip_delete = argv['skip-delete'];
-    }
-
-    if (argv.nohead) {
-      config.nohead = argv.nohead;
-    }
-
-    return config;
+    // Merge confiruration file with command-line arguments
+    return _.merge(config, argv);
   } catch (err) {
-    handleError(new Error(`Cannot find configuration file at \`${configPath}\`. Use config-sample.json as a starting point, pass --config-path option`));
+    handleError(new Error(`Cannot find configuration file at \`${configPath}\`. Use config-sample.json as a starting point, pass --configPath option`));
   }
 }
 

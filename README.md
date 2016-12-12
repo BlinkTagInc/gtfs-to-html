@@ -20,7 +20,7 @@ Install `gtfs-to-html` directly from [npm](https://npmjs.org):
 
 ## Command-line example
 
-    gtfs-to-html --config-path /path/to/your/custom-config.json
+    gtfs-to-html --configPath /path/to/your/custom-config.json
 
 ## Code example
 
@@ -43,8 +43,8 @@ Copy `config-sample.json` to `config.json` and then add your projects configurat
 | ------ | ---- | ----------- |
 | [`agencies`](#agencies) | array | An array of GTFS files to be imported. |
 | [`effectiveDate`](#effectivedate) | string | A date to print at the top of the timetable |
-| [`mongo_url`](#mongo_url) | string | The URL of the MongoDB database to import to. |
-| [`nohead`](#nohead) | boolean | Whether or not to skip the header and footer of the HTML document. |
+| [`mongoUrl`](#mongoUrl) | string | The URL of the MongoDB database to import to. |
+| [`noHead`](#noHead) | boolean | Whether or not to skip the header and footer of the HTML document. |
 | [`noServiceSymbol`](#noservicesymbol) | string | The symbol to be used when a specific trip does not serve a specified stop. |
 | [`requestStopSymbol`](#requeststopsymbol) | string | The symbol to be used to indicate that riders must request a stop. |
 | [`showMap`](#showmap) | boolean | Whether or not to show a map of the route on the timetable. |
@@ -137,13 +137,13 @@ API along with your API token.
     "effectiveDate": "July 8, 2015"
 ```
 
-### mongo_url
+### mongoUrl
 
 {String} The MongoDB URI use. When running locally, you may want to use `mongodb://localhost:27017/gtfs`.
 
 ```
 {
-  "mongo_url": "mongodb://localhost:27017/gtfs",
+  "mongoUrl": "mongodb://localhost:27017/gtfs",
   "agencies": [
     {
       "agency_key": "myAgency",
@@ -153,12 +153,12 @@ API along with your API token.
 }
 ```
 
-### nohead
+### noHead
 
 {Boolean} Whether or not to skip the HTML head and footer when generating the HTML. Defaults to `false`.
 
 ```
-    "nohead": false
+    "noHead": false
 ```
 
 ### noServiceSymbol
@@ -269,19 +269,19 @@ To generate HTML timetables, run `gtfs-to-html`.
 
 By default, `gtfs-to-html` will look for a `config.json` file in the project root. To specify a different path for the configuration file:
 
-    gtfs-to-html --config-path /path/to/your/custom-config.json
+    gtfs-to-html --configPath /path/to/your/custom-config.json
 
 This will download the GTFS file specified in `config.js` .  Then, `gtfs-to-html` will build the HTML timetables and save them in `html/:agency_key`.
 
 ### Options
 
-`config-path`
+`configPath`
 
-    gtfs-to-html --config-path /path/to/your/custom-config.json
+    gtfs-to-html --configPath /path/to/your/custom-config.json
 
-`nohead`
+`noHead`
 
-    gtfs-to-html --nohead
+    gtfs-to-html --noHead
 
 This will generate embeddable HTML without an `<html>`, `<head>` or `<body>` tag.
 
@@ -295,7 +295,7 @@ You can view an individual route HTML on demand by running the included express 
 
 By default, `gtfs-to-html` will look for a `config.json` file in the project root. To specify a different path for the configuration file:
 
-    node app.js --config-path /path/to/your/custom-config.json
+    node app.js --configPath /path/to/your/custom-config.json
 
 Once running, you can view the HTML in your browser at [localhost:3000](http://localhost:3000)
 
