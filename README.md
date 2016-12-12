@@ -16,7 +16,7 @@
 
 Install `gtfs-to-html` directly from [npm](https://npmjs.org):
 
-    npm install gtfs-to-html -g
+    npm install mongoose gtfs-to-html -g
 
 ## Command-line example
 
