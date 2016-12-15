@@ -2,7 +2,8 @@
 
 const _ = require('lodash');
 const gtfsToHtml = require('../');
-const path = require('path');
+const fs = require('fs');
+const resolve = require('path').resolve;
 const argv = require('yargs')
     .usage('Usage: $0 --config ./config.json')
     .help()
@@ -20,8 +21,6 @@ const argv = require('yargs')
     })
     .argv;
 
-const configPath = path.join(process.cwd(), argv.configPath);
-
 
 function handleError(err) {
   console.error(err || 'Unknown Error');
@@ -29,22 +28,35 @@ function handleError(err) {
 }
 
 
-function getConfig() {
-  try {
-    const config = require(configPath);
+function getConfig(cb) {
+  const configPath = resolve(argv.configPath);
+
+  fs.readFile(configPath, 'utf8', (err, data) => {
+    if (err) {
+      cb(err);
+    }
+
+    const config = JSON.parse(data);
+
     // Merge confiruration file with command-line arguments
-    return _.merge(config, argv);
-  } catch (err) {
-    handleError(new Error(`Cannot find configuration file at \`${configPath}\`. Use config-sample.json as a starting point, pass --configPath option`));
-  }
+    cb(null, _.merge(config, argv));
+  });
 }
 
 
-gtfsToHtml(getConfig(), (err) => {
+// Run gtfs-to-html
+getConfig((err, config) => {
   if (err) {
+    console.error(new Error(`Cannot find configuration file at \`${argv.configPath}\`. Use config-sample.json as a starting point, pass --configPath option`));
     handleError(err);
   }
 
-  console.log('Completed Generating HTML schedules');
-  process.exit();
+  gtfsToHtml(config, (err) => {
+    if (err) {
+      handleError(err);
+    }
+
+    console.log('Completed Generating HTML schedules');
+    process.exit();
+  });
 });
