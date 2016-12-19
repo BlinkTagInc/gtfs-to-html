@@ -19,6 +19,12 @@ const argv = require('yargs')
       default: false,
       type: 'boolean'
     })
+    .option('t', {
+      alias: 'showOnlyTimepoint',
+      describe: 'Show only stops with a `timepoint` value in `stops.txt`',
+      default: true,
+      type: 'boolean'
+    })
     .argv;
 
 

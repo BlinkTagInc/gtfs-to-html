@@ -10,7 +10,7 @@
   "noServiceSymbol": "—",
   "requestStopSymbol": "***",
   "showMap": true,
-  "showOnlyTimepoint": false,
+  "showOnlyTimepoint": true,
   "showStopCity": false,
   "mapboxAccessToken": "YOUR MAPBOX ACCESS TOKEN'",
   "zipOutput": false
