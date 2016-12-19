@@ -285,6 +285,12 @@ This will download the GTFS file specified in `config.js` .  Then, `gtfs-to-html
 
 This will generate embeddable HTML without an `<html>`, `<head>` or `<body>` tag.
 
+## Processing very large GTFS files.
+
+By default, node has a memory limit of 512 MB or 1 GB. If you have a very large GTFS file and want to use the option `showOnlyTimepoint` = `false` you may need to allocate more memory. Use the `max-old-space-size` option. For example to allocate 2 GB:
+
+    node --max-old-space-size=2000 /usr/local/bin/gtfs-to-html
+
 ## Quick preview of generated HTML
 
 After an initial run of `gtfs-to-html`, the GTFS data will be downloaded and loaded into mongo.
