@@ -215,7 +215,7 @@ API along with your API token.
 
 ### zipOutput
 
-{Boolean} Whether or not to zip the output into one zip file. Defaults to `false`.
+{Boolean} Whether or not to zip the output into one zip file named `timetables.zip`. Defaults to `false`.
 
 ```
     "zipOutput": false
