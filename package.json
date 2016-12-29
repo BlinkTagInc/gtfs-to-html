@@ -39,6 +39,7 @@
     "pug": "2.0.0-beta6",
     "rimraf": "2.5.4",
     "sanitize-filename": "1.6.1",
+    "timer-machine": "1.1.0",
     "yargs": "6.5.0"
   },
   "devDependencies": {
