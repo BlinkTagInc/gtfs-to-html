@@ -1,7 +1,7 @@
 {
   "name": "gtfs-to-html",
   "description": "Build transit timetables in HTML from a GTFS file",
-  "version": "0.6.6",
+  "version": "0.6.7",
   "keywords": [
     "transit",
     "gtfs",
@@ -19,7 +19,7 @@
   "license": "MIT",
   "scripts": {
     "start": "node ./app",
-    "lint": "eslint ."
+    "test": "xo"
   },
   "bin": {
     "gtfs-to-html": "bin/gtfs-to-html.js"
@@ -42,14 +42,16 @@
     "yargs": "6.5.0"
   },
   "devDependencies": {
-    "eslint": "3.12.2",
-    "eslint-config-airbnb-base": "11.0.0",
-    "eslint-plugin-import": "2.2.0"
+    "xo": "0.17.1"
   },
   "peerDependencies": {
     "mongoose": ">= 4.7.5"
   },
   "engines": {
     "node": ">= 6.9.0"
+  },
+  "xo": {
+    "esnext": true,
+    "space": true
   }
 }

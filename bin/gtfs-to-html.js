@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
-const _ = require('lodash');
-const gtfsToHtml = require('../');
 const fs = require('fs');
 const resolve = require('path').resolve;
+
+const _ = require('lodash');
 const mongoose = require('mongoose');
 const argv = require('yargs')
     .usage('Usage: $0 --config ./config.json')
@@ -28,12 +28,12 @@ const argv = require('yargs')
     })
     .argv;
 
+const gtfsToHtml = require('../');
 
 function handleError(err) {
   console.error(err || 'Unknown Error');
   process.exit(1);
 }
-
 
 function getConfig(cb) {
   const configPath = resolve(argv.configPath);
@@ -50,7 +50,6 @@ function getConfig(cb) {
   });
 }
 
-
 // Run gtfs-to-html
 getConfig((err, config) => {
   if (err) {
@@ -61,7 +60,7 @@ getConfig((err, config) => {
   mongoose.Promise = global.Promise;
   mongoose.connect(config.mongoUrl);
 
-  gtfsToHtml(config, (err) => {
+  gtfsToHtml(config, err => {
     if (err) {
       handleError(err);
     }

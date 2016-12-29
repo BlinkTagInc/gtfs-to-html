@@ -1,5 +1,6 @@
-const express = require('express');
 const path = require('path');
+
+const express = require('express');
 const logger = require('morgan');
 const bodyParser = require('body-parser');
 const argv = require('yargs')
@@ -15,7 +16,7 @@ const argv = require('yargs')
 
 const mongoose = require('mongoose');
 
-const configPath = path.join(process.cwd(), argv['configPath']);
+const configPath = path.join(process.cwd(), argv.configPath);
 const config = require(configPath);
 
 mongoose.Promise = global.Promise;
@@ -32,7 +33,7 @@ app.set('view engine', 'pug');
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
@@ -40,7 +41,7 @@ app.use('/', routes);
 // error handlers
 
 // 404 error handler
-app.use((req, res, next) => {
+app.use((req, res) => {
   const err = {
     message: 'Not Found',
     status: 404
@@ -49,12 +50,12 @@ app.use((req, res, next) => {
   if (req.xhr) {
     res.send({
       message: err.message,
-      error: err,
+      error: err
     });
   } else {
     res.render('error', {
       message: err.message,
-      error: err,
+      error: err
     });
   }
 });

@@ -3,6 +3,7 @@
 [![NPM version](https://img.shields.io/npm/v/gtfs-to-html.svg?style=flat)](https://www.npmjs.com/package/gtfs-to-html)
 [![David](https://img.shields.io/david/brendannee/gtfs-to-html.svg)]()
 [![npm](https://img.shields.io/npm/dm/gtfs-to-html.svg?style=flat)]()
+[![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/sindresorhus/xo)
 
 `gtfs-to-html` converts transit data in [GTFS format](https://developers.google.com/transit/gtfs/) into user-friendly HTML schedules. Many transit agencies have schedule data in GTFS format but need to show each route's schedule to users on a website. This project aims to automate the process of creating these schedules. Automating HTML schedule generation makes it easy to keep schedules up to date when data changes and reduces the likelihood of errors.
 
@@ -315,6 +316,6 @@ Pull requests are welcome, as is feedback and [reporting issues](https://github.
 
 With this running, you can open [http://localhost:3000](http://localhost:3000) in your browser and view all timetables.  Note that this only works after GTFS has been imported to mongodb and mongodb is running locally.
 
-### Linting
+### Tests
 
-    npm run lint
+    npm test
