@@ -4,6 +4,7 @@ const _ = require('lodash');
 const gtfsToHtml = require('../');
 const fs = require('fs');
 const resolve = require('path').resolve;
+const mongoose = require('mongoose');
 const argv = require('yargs')
     .usage('Usage: $0 --config ./config.json')
     .help()
@@ -56,6 +57,9 @@ getConfig((err, config) => {
     console.error(new Error(`Cannot find configuration file at \`${argv.configPath}\`. Use config-sample.json as a starting point, pass --configPath option`));
     handleError(err);
   }
+
+  mongoose.Promise = global.Promise;
+  mongoose.connect(config.mongoUrl);
 
   gtfsToHtml(config, (err) => {
     if (err) {

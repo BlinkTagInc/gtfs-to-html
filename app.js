@@ -20,7 +20,7 @@ const config = require(configPath);
 
 mongoose.Promise = global.Promise;
 
-mongoose.createConnection(config.mongoUrl);
+mongoose.connect(config.mongoUrl);
 
 const routes = require('./routes/index');
 
