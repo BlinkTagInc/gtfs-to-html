@@ -1,7 +1,7 @@
 .content
-  h1.route_name Timetable for #{timetablePage.route_label}
+  h1.route_name= `Timetable for ${timetablePage.route_label}`
   if options.effectiveDate
-    .effective-date Effective #{options.effectiveDate}
+    .effective-date= `Effective ${options.effectiveDate}`
 
   if timetablePage.timetables.length > 1
     h3 Jump to
@@ -76,9 +76,9 @@
       .timetable-bottom
         .notes
           if options.requestStopSymbolUsed
-            .note #{options.requestStopSymbol} = Request stop - call for pickup
+            .note= `${options.requestStopSymbol} = Request stop - call for pickup`
           if options.noServiceSymbolUsed
-            .note #{options.noServiceSymbol} = No service at this timepoint
+            .note= `${options.noServiceSymbol} = No service at this timepoint`
 
         .calendar_dates
           if timetable.specialDates.excludedDates.length
