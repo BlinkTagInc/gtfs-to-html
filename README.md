@@ -262,6 +262,10 @@ An example of this file is located in [examples/timetable_stop_order.txt](exampl
 | `stop_id` | The ID of the stop from `stops.txt`. |
 | `stop_sequence` | An assigned integer identifying the order of stops to be presented in the timetable. The values for `stop_sequence` must be non-negative integers, and they must increase along the trip. This value does not need to match the `stop_sequence` found in `stop_times.txt`. |
 
+#### Stops with different arrival and departure times
+
+If you would like to show a stop twice in a row to accommodate different arrival and departure times, just include this stop twice in a row in the `timetable_stop_order.txt` file. Otherwise, the value for `departure_time` from `stop_times.txt` will always be used.
+
 ## Running
 
 Ensure than mongodb is running locally.
