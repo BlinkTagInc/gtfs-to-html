@@ -5,6 +5,8 @@
 [![npm](https://img.shields.io/npm/dm/gtfs-to-html.svg?style=flat)]()
 [![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/sindresorhus/xo)
 
+[![NPM](https://nodei.co/npm/gtfs-to-html.png?downloads=true)](https://nodei.co/npm/gtfs-to-html/)
+
 `gtfs-to-html` converts transit data in [GTFS format](https://developers.google.com/transit/gtfs/) into user-friendly HTML schedules. Many transit agencies have schedule data in GTFS format but need to show each route's schedule to users on a website. This project aims to automate the process of creating these schedules. Automating HTML schedule generation makes it easy to keep schedules up to date when data changes and reduces the likelihood of errors.
 
 `gtfs-to-html` uses the [`node-gtfs`](https://github.com/brendannee/node-gtfs) library to handle importing and querying GTFS data.
