@@ -22,12 +22,12 @@
         if timetable.orientation === 'horizontal'
           colgroup
             col
-            each trip, idx in timetable.trips
+            each trip, idx in timetable.orderedTrips
               col(id=`trip_id_${trip.trip_id}` class=`run_${idx} ${(trip.trip_short_name) ? 'trip_short_name_' + trip.trip_short_name : ''}`)
           thead
             tr
               th.stop_header(scope="column") Stop
-              each trip, idx in timetable.trips
+              each trip, idx in timetable.orderedTrips
                 th.run_header(scope="column")
                   if trip.trip_short_name
                     span= trip.trip_short_name
@@ -74,7 +74,7 @@
                 th.stop_header(scope="column")= stop.stop_name
 
           tbody
-            each trip, idx in timetable.trips
+            each trip, idx in timetable.orderedTrips
               tr.trip_row(id=`trip_id_${trip.trip_id}`)
                 each stop in timetable.stops
                   td.stop_time(class=`${stop.trips[idx].classes.join(' ')}`)
