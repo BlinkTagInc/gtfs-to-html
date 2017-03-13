@@ -33,14 +33,14 @@ router.get('/timetablepage', (req, res, next) => {
   const agencyKey = req.query.agency_key;
   const timetablePageId = req.query.timetable_page_id;
 
-  utils.getTimetablePage(agencyKey, timetablePageId).then(timetablePage => {
-    utils.generateHTML(agencyKey, timetablePage, config, (err, html) => {
-      if (err) {
-        return next(err);
-      }
-      res.send(html);
-    });
-  }, next);
+  utils.getTimetablePage(agencyKey, timetablePageId)
+  .then(timetablePage => {
+    return utils.generateHTML(agencyKey, timetablePage, config);
+  })
+  .then(results => {
+    res.send(results.html);
+  })
+  .catch(next);
 });
 
 module.exports = router;
