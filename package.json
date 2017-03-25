@@ -1,20 +1,20 @@
 {
   "name": "gtfs-to-html",
   "description": "Build transit timetables in HTML from a GTFS file",
-  "version": "0.6.8",
+  "version": "0.6.9",
   "keywords": [
     "transit",
     "gtfs",
     "transportation"
   ],
   "private": false,
-  "author": "Brendan Nee <me@bn.ee>",
+  "author": "Brendan Nee <brendan@blinktag.com>",
   "contributors": [
     "Evan Siroky"
   ],
-  "repository": "git://github.com/brendannee/gtfs-to-html",
+  "repository": "git://github.com/blinktagimc/gtfs-to-html",
   "bugs": {
-    "url": "https://github.com/brendannee/gtfs-to-html/issues"
+    "url": "https://github.com/blinktagimc/gtfs-to-html/issues"
   },
   "license": "MIT",
   "scripts": {
