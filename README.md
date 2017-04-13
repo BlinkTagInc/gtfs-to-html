@@ -226,7 +226,7 @@ API along with your API token.
 
 ## Build `timetables.txt`
 
-This project requires that an additional file `timetables.txt` be added to an agencies GTFS. This file specifies which HTML timetables should be built.
+This project supports an additional non-standard file `timetables.txt` which can be included in an agency's GTFS. This file specifies to GTFS-to-HTML which HTML timetables should be built.
 
 An example of this file is located in [examples/timetables.txt](examples/timetables.txt). The format of this file is:
 
@@ -244,13 +244,13 @@ An example of this file is located in [examples/timetables.txt](examples/timetab
 | `friday` | A binary value that indicates whether this timetable should include service on Fridays.  Valid options are `0` and `1`. |
 | `saturday` | A binary value that indicates whether this timetable should include service on Saturdays.  Valid options are `0` and `1`. |
 | `sunday` | A binary value that indicates whether this timetable should include service on Sundays.  Valid options are `0` and `1`. |
-| `route_label` | A short text label describing the route, for instance "4". |
-| `service_notes` | Text shown on the timetable about the service represented, for instance "Mon-Fri". |
-| `orientation` | Determines if the top row should be a list of trips or stops. Valid options are `vertical` and `horizontal`. `vertical` shows stops across the top row with each row being a list of stop times for each trip. `horizontal` shows trips across the top row with each row being stop times for a specific stop.  `horizontal` orientation is best for routes with lots of stops and fewer trips while `vertical` orientation is best for routes with lots of trips and a smaller number of stops. |
+| `timetable_label` | A short text label describing the timetable, for instance "Route 4 Northbound Mon-Fri". Optional. |
+| `service_notes` | Text shown on the timetable about the service represented. Optional. |
+| `orientation` | Determines if the top row should be a list of trips or stops. Valid options are `vertical` and `horizontal`. `vertical` shows stops across the top row with each row being a list of stop times for each trip. `horizontal` shows trips across the top row with each row being stop times for a specific stop.  `horizontal` orientation is best for routes with lots of stops and fewer trips while `vertical` orientation is best for routes with lots of trips and a smaller number of stops. Default is `vertical` |
 
 ### Multi-route Timetables
 
-To allow creating a single timetable for multiple routes that overlap, you can have multiple entries in `timetables.txt` for the same `timetable_id`. These multi-route entries should have the same values `timetable_id`, `start_date`, `end_date`, calendar date, `service_notes` and `orientation` fields and should have different values for the `route_id` and `route_label` fields.
+To allow creating a single timetable for multiple routes that overlap, you can have multiple entries in `timetables.txt` for the same `timetable_id`. These multi-route entries should have the same values `timetable_id`, `start_date`, `end_date`, calendar date, `service_notes` and `orientation` fields and should have different values for the `route_id` and `timetable_label` fields.
 
 ### Build `timetable_stop_order.txt`
 
@@ -267,6 +267,19 @@ An example of this file is located in [examples/timetable_stop_order.txt](exampl
 #### Stops with different arrival and departure times
 
 If you would like to show a stop twice in a row to accommodate different arrival and departure times, just include this stop twice in a row in the `timetable_stop_order.txt` file. Otherwise, the value for `departure_time` from `stop_times.txt` will always be used.
+
+
+## Build `timetable_pages.txt`
+
+This project supports an additional non-standard file `timetable_pages.txt` which can be included in an agency's GTFS. This file specifies to GTFS-to-HTML which HTML timetable to group together into a single HTML page.
+
+An example of this file is located in [examples/timetable_pages.txt](examples/timetable_pages.txt). The format of this file is:
+
+| column name | description |
+| ----------- | ----------- |
+| `timetable_page_id` | A unique ID for the timetable page |
+| `timetable_page_label` | A label that will show up on the top of the page. |
+| `filename` | The filename to use for the generated HTML file. |
 
 ## Running
 

@@ -10,4 +10,4 @@ block content
       ul.list-group
         each timetablePage in timetablePages
           li.list-group-item
-            a.btn.btn-default.btn-sm(href=`/timetablepage?agency_key=${agencyKey}&timetable_page_id=${timetablePage.timetable_page_id}`)= timetablePage.route_label
+            a.btn.btn-default.btn-sm(href=`/timetablepage?agency_key=${agencyKey}&timetable_page_id=${timetablePage.timetable_page_id}`)= timetablePage.timetable_page_label

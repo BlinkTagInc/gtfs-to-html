@@ -21,7 +21,7 @@ router.get('/timetablepages', (req, res, next) => {
   const agencyKey = req.query.agency_key;
 
   utils.getTimetablePages(agencyKey).then(timetablePages => {
-    const sortedTimetablePages = _.sortBy(timetablePages, 'route_label');
+    const sortedTimetablePages = _.sortBy(timetablePages, 'timetable_page_label');
     res.render('timetablepages', {agencyKey, timetablePages: sortedTimetablePages});
   }, next);
 });

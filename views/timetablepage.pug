@@ -1,5 +1,5 @@
 .content
-  h1.route_name= `Timetable for ${timetablePage.route_label}`
+  h1.timetable_page_label= `${timetablePage.timetable_page_label}`
   if options.effectiveDate
     .effective-date= `Effective ${options.effectiveDate}`
 
@@ -8,13 +8,13 @@
     ul.table-of-contents
       each timetable in timetablePage.timetables
         li
-          a(href=`#timetable_id_${timetable.timetable_id}`)= timetable.route_label
+          a(href=`#timetable_id_${timetable.timetable_id}`)= timetable.timetable_label
 
   each timetable in timetablePage.timetables
 
     .timetable(id=`timetable_id_${timetable.timetable_id}`)
       if timetablePage.timetables.length > 1
-        h2.description= timetable.route_label
+        h2.description= timetable.timetable_label
       .service_notes= timetable.service_notes
       .timetable_days= timetable.day_list
       table.table.table-responsive
