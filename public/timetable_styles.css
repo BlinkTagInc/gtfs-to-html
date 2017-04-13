@@ -52,6 +52,10 @@ h1 {
   text-align: center;
 }
 
+.stop_time.pm {
+  font-weight: bold;
+}
+
 .city_row {
   font-size: 1.5em;
   color: #415d86;
