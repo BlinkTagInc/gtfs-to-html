@@ -23,10 +23,6 @@ h1 {
   list-style-type: none;
 }
 
-.timetable .table {
-  width: auto;
-}
-
 .timetable-bottom {
   overflow: hidden;
 }
@@ -48,11 +44,16 @@ h1 {
   line-height: 28px;
 }
 
-.stop_time {
+.timetable .stop_header {
+  text-align: center;
+  vertical-align: top;
+}
+
+.timetable .stop_time {
   text-align: center;
 }
 
-.stop_time.pm {
+.timetable .stop_time.pm {
   font-weight: bold;
 }
 
@@ -78,7 +79,7 @@ h1 {
   margin-top: 20px;
 }
 
-table {
+.timetable table {
   background-color: transparent;
   width: 100%;
   max-width: 100%;
@@ -86,45 +87,58 @@ table {
   border: 1px solid #dddddd;
   border-collapse: collapse;
   border-spacing: 0;
+  table-layout: fixed;
 }
-th {
+
+.timetable thead tr {
+  background: #ccc;
+}
+
+.timetable th {
   text-align: left;
 }
-td,
-th {
+
+.timetable td,
+.timetable th {
   padding: 0;
 }
-table > thead > tr > th,
-table > tbody > tr > th,
-table > tfoot > tr > th,
-table > thead > tr > td,
-table > tbody > tr > td,
-table > tfoot > tr > td {
+
+.timetable table > thead > tr > th,
+.timetable table > tbody > tr > th,
+.timetable table > tfoot > tr > th,
+.timetable table > thead > tr > td,
+.timetable table > tbody > tr > td,
+.timetable table > tfoot > tr > td {
   padding: 8px;
   line-height: 1.42857143;
   vertical-align: top;
   border: 1px solid #dddddd;
 }
-table > thead > tr > th {
+
+.timetable table > thead > tr > th {
   vertical-align: bottom;
   border-bottom: 2px solid #dddddd;
 }
-table > caption + thead > tr:first-child > th,
-table > colgroup + thead > tr:first-child > th,
-table > thead:first-child > tr:first-child > th,
-table > caption + thead > tr:first-child > td,
-table > colgroup + thead > tr:first-child > td,
-table > thead:first-child > tr:first-child > td {
+
+.timetable table > caption + thead > tr:first-child > th,
+.timetable table > colgroup + thead > tr:first-child > th,
+.timetable table > thead:first-child > tr:first-child > th,
+.timetable table > caption + thead > tr:first-child > td,
+.timetable table > colgroup + thead > tr:first-child > td,
+.timetable table > thead:first-child > tr:first-child > td {
   border-top: 0;
 }
-table > tbody + tbody {
+
+.timetable table > tbody + tbody {
   border-top: 2px solid #dddddd;
 }
-table > thead > tr > th,
-table > thead > tr > td {
+
+.timetable table > thead > tr > th,
+.timetable table > thead > tr > td {
   border-bottom-width: 2px;
 }
-table > tbody > tr:nth-of-type(odd) {
+
+.timetable table > tbody > tr:nth-of-type(odd) {
   background-color: #f9f9f9;
 }
 
@@ -132,6 +146,7 @@ table > tbody > tr:nth-of-type(odd) {
   min-height: .01%;
   overflow-x: auto;
 }
+
 @media screen and (max-width: 767px) {
   .table-responsive {
     width: 100%;
