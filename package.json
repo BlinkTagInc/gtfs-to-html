@@ -1,11 +1,12 @@
 {
   "name": "gtfs-to-html",
   "description": "Build transit timetables in HTML from a GTFS file",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "keywords": [
     "transit",
     "gtfs",
-    "transportation"
+    "transportation",
+    "timetables"
   ],
   "private": false,
   "author": "Brendan Nee <brendan@blinktag.com>",
@@ -32,6 +33,7 @@
     "cli-table": "0.3.1",
     "express": "4.15.2",
     "gtfs": "0.9.9",
+    "js-beautify": "1.6.12",
     "lodash": "4.17.4",
     "mkdirp-promise": "5.0.1",
     "moment": "2.18.1",

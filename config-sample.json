@@ -6,6 +6,7 @@
       "url": "https://transitfeeds.com/p/bart/58/latest/download"
     }
   ],
+  "beautify": false,
   "effectiveDate": "July 8, 2016",
   "noServiceSymbol": "—",
   "requestStopSymbol": "***",

@@ -49,6 +49,7 @@ Copy `config-sample.json` to `config.json` and then add your projects configurat
 | option | type | description |
 | ------ | ---- | ----------- |
 | [`agencies`](#agencies) | array | An array of GTFS files to be imported. |
+| [`beautify`](#beautify) | boolean | Whether or not to beautify the HTML output. |
 | [`effectiveDate`](#effectivedate) | string | A date to print at the top of the timetable |
 | [`mongoUrl`](#mongoUrl) | string | The URL of the MongoDB database to import to. |
 | [`noHead`](#noHead) | boolean | Whether or not to skip the header and footer of the HTML document. |
@@ -134,6 +135,14 @@ API along with your API token.
     }
   ]
 }
+```
+
+### beautify
+
+{Boolean} Whether or not to beautify the HTML output. Defaults to `false`.
+
+```
+    "beautify": false
 ```
 
 ### effectiveDate
