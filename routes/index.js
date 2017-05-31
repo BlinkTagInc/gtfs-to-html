@@ -2,8 +2,10 @@ const _ = require('lodash');
 const gtfs = require('gtfs');
 const router = require('express').Router();
 
-const config = require('../config');
 const utils = require('../lib/utils');
+
+const selectedConfig = require('../config');
+const config = utils.setDefaultConfig(selectedConfig);
 
 /*
  * Show all agencies
