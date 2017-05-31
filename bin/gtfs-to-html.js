@@ -14,12 +14,6 @@ const argv = require('yargs')
       default: './config.json',
       type: 'string'
     })
-    .option('n', {
-      alias: 'noHead',
-      describe: 'Skip header of HTML file',
-      default: false,
-      type: 'boolean'
-    })
     .option('t', {
       alias: 'showOnlyTimepoint',
       describe: 'Show only stops with a `timepoint` value in `stops.txt`',

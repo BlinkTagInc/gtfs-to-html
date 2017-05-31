@@ -171,7 +171,7 @@ API along with your API token.
 
 ### noHead
 
-{Boolean} Whether or not to skip the HTML head and footer when generating the HTML. Defaults to `false`.
+{Boolean} Whether or not to skip the HTML head and footer when generating the HTML. This is useful for creating embeddable HTML without `<html>`, `<head>` or `<body>` tags. Defaults to `false`.
 
 ```
     "noHead": false
@@ -311,12 +311,6 @@ This will download the GTFS file specified in `config.js` .  Then, `gtfs-to-html
 `configPath`
 
     gtfs-to-html --configPath /path/to/your/custom-config.json
-
-`noHead`
-
-    gtfs-to-html --noHead
-
-This will generate embeddable HTML without an `<html>`, `<head>` or `<body>` tag.
 
 ## Processing very large GTFS files.
 
