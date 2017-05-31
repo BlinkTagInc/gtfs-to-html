@@ -3,9 +3,4 @@ block content
   include timetablepage.pug
 
 block extraHead
-  if options.showMap
-    script(src="https://api.mapbox.com/mapbox-gl-js/v0.35.1/mapbox-gl.js")
-    link(href="https://api.mapbox.com/mapbox-gl-js/v0.35.1/mapbox-gl.css" rel="stylesheet")
-    script.
-      mapboxgl.accessToken = '#{options.mapboxAccessToken}';
-    script(src="../timetable_map.js")
+  

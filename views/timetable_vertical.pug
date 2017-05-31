@@ -1,0 +1,16 @@
+table.table.table-responsive.table-vertical
+  colgroup
+    each stop, idx in timetable.stops
+      col(id=`stop_id_${stop.stop_id}` class=`stop-${idx}`)
+  thead
+    tr
+      each stop, idx in timetable.stops
+        th.stop-header(scope="column")= stop.stop_name
+
+  tbody
+    each trip, idx in timetable.orderedTrips
+      tr.trip-row(id=`trip_id_${trip.trip_id}`)
+        each stop in timetable.stops
+          td.stop-time(class=`${stop.trips[idx].classes.join(' ')}`)
+            span.stop-time-text!= stop.trips[idx].arrival_formatted_time
+            span.stop-time-period= stop.trips[idx].arrival_formatted_period

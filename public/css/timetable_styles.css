@@ -19,12 +19,20 @@ h2 {
   margin: 20px;
 }
 
+.jump-menu ul {
+  list-style-type: none;
+}
+
+.menu-title label {
+  text-transform: uppercase;
+}
+
 .timetable {
   margin-bottom: 35px;
 }
 
-.table-of-contents {
-  list-style-type: none;
+.menu-type-radio .timetables .timetable {
+  display: none;
 }
 
 .timetable-bottom {

@@ -51,6 +51,7 @@ Copy `config-sample.json` to `config.json` and then add your projects configurat
 | [`agencies`](#agencies) | array | An array of GTFS files to be imported. |
 | [`beautify`](#beautify) | boolean | Whether or not to beautify the HTML output. |
 | [`effectiveDate`](#effectivedate) | string | A date to print at the top of the timetable |
+| [`menuType`](#menuType) | string | The type of menu to use for selecting timetables on a timetable page. |
 | [`mongoUrl`](#mongoUrl) | string | The URL of the MongoDB database to import to. |
 | [`noHead`](#noHead) | boolean | Whether or not to skip the header and footer of the HTML document. |
 | [`noServiceSymbol`](#noservicesymbol) | string | The symbol to be used when a specific trip does not serve a specified stop. |
@@ -151,6 +152,14 @@ API along with your API token.
 
 ```
     "effectiveDate": "July 8, 2015"
+```
+
+### menuType
+
+{String} The type of menu to use for selecting or navigating to timetables on timetable pages with multiple timetables. Valid choices are `none`, `jump` and `radio`. Defaults to `jump`.
+
+```
+    "menuType": "jump"
 ```
 
 ### mongoUrl
@@ -256,6 +265,9 @@ An example of this file is located in [examples/timetables.txt](examples/timetab
 | `timetable_label` | A short text label describing the timetable, for instance "Route 4 Northbound Mon-Fri". Optional. |
 | `service_notes` | Text shown on the timetable about the service represented. Optional. |
 | `orientation` | Determines if the top row should be a list of trips or stops. Valid options are `vertical` and `horizontal`. `vertical` shows stops across the top row with each row being a list of stop times for each trip. `horizontal` shows trips across the top row with each row being stop times for a specific stop.  `horizontal` orientation is best for routes with lots of stops and fewer trips while `vertical` orientation is best for routes with lots of trips and a smaller number of stops. Default is `vertical` |
+| `timetable_page_id` | The timetable page to include this timetable on |
+| `timetable_sequence` | The order that this timetable should appear on the timetable page |
+| `direction_name` | The human readable name of the direction of the timetable, such as "Southbound" |
 
 ### Multi-route Timetables
 

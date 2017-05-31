@@ -1,0 +1,30 @@
+if timetablePage.timetables.length > 1
+  if options.menuType === 'jump'
+    .jump-menu
+      .menu-title
+        label Jump to
+      ul
+        each timetable in timetablePage.timetables
+          li
+            a(href=`#timetable_id_${timetable.timetable_id}`)= timetable.timetable_label
+  
+  if options.menuType === 'radio'
+    .row
+      .col-md-4
+        #direction_name_selector.radio-menu(class=timetablePage.directionNames.length <= 1 ? 'hide' : '')
+          .menu-title
+            label Service Direction
+          .btn-group(data-toggle="buttons")
+            each directionName, idx in timetablePage.directionNames
+              label.btn.btn-primary(class=idx === 0 ? 'active': '')
+                input(type="radio" name="directionName" autocomplete="off" value=directionName checked=(idx === 0))
+                span= directionName
+      .col-md-4
+        #day_list_selector.radio-menu(class=timetablePage.dayLists.length <= 1 ? 'hide' : '')
+          .menu-title
+            label Days of Week
+          .btn-group(data-toggle="buttons")
+            each dayList, idx in timetablePage.dayLists
+              label.btn.btn-primary(class=idx === 0 ? 'active': '')
+                input(type="radio" name="dayList" autocomplete="off" value=dayList checked=(idx === 0))
+                span= dayList

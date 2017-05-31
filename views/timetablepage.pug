@@ -1,109 +1,45 @@
-.content.timetable-page
+.content.timetable-page(class=`menu-type-${options.menuType}`)
   h1.timetable-page-label= `${timetablePage.timetable_page_label}`
   if options.effectiveDate
     .effective-date= `Effective ${options.effectiveDate}`
+    
+  include timetable_menu.pug
 
-  if timetablePage.timetables.length > 1
-    div Jump to
-    ul.table-of-contents
-      each timetable in timetablePage.timetables
-        li
-          a(href=`#timetable_id_${timetable.timetable_id}`)= timetable.timetable_label
-
-  each timetable in timetablePage.timetables
-
-    .timetable(id=`timetable_id_${timetable.timetable_id}`)
-      if timetablePage.timetables.length > 1
-        h2.description= timetable.timetable_label
-      .service-notes= timetable.service_notes
-      .timetable-days= timetable.day_list
-      table.table.table-responsive
+  .timetables
+    each timetable in timetablePage.timetables
+      .timetable(id=`timetable_id_${timetable.timetable_id}` data-day-list=timetable.dayList data-direction-name=timetable.direction_name)
+        if timetablePage.timetables.length > 1
+          h2.description= timetable.timetable_label
+        .service-notes= timetable.service_notes
+        .timetable-days= timetable.dayList
 
         if timetable.orientation === 'horizontal'
-          colgroup
-            col
-            each trip, idx in timetable.orderedTrips
-              col(id=`trip_id_${trip.trip_id}` class=`run_${idx} ${(trip.trip_short_name) ? 'trip_short_name_' + trip.trip_short_name : ''}`)
-          thead
-            tr
-              th.stop-header(scope="column") Stop
-              each trip, idx in timetable.orderedTrips
-                th.run-header(scope="column")
-                  if trip.trip_short_name
-                    span= trip.trip_short_name
-                  else
-                    span= `Run #${idx + 1}`
-
-                  if options.showDayList
-                    span= ` ${trip.day_list}`
-
-          tbody
-            -var previousCity
-            each stop in timetable.stops
-              if previousCity !== stop.stop_city && options.showStopCity
-                tr.city-row
-                  th(scope="row" colspan=`${stop.trips.length + 1}`)= stop.stop_city
-              -previousCity = stop.stop_city
-
-              tr.stop-row(id=`stop_id_${stop.stop_id}`)
-                th(scope="row")
-                  .stop-name
-                    span= stop.stop_name
-                    if stop.type === 'arrival'
-                      span &nbsp;(Arrival)
-                    else if stop.type === 'departure'
-                      span &nbsp;(Departure)
-                  .stop-code= stop.stop_code
-                  .stop-description= stop.stop_desc
-
-                each trip in stop.trips
-                  td.stop-time(class=`${trip.classes.join(' ')}`)
-                    if stop.type === 'arrival'
-                      span.stop-time-text!= trip.arrival_formatted_time
-                      span.stop-time-period= trip.arrival_formatted_period
-                    else
-                      span.stop-time-text!= trip.departure_formatted_time
-                      span.stop-time-period= trip.departure_formatted_period
+          include timetable_horizontal.pug
         else
-          colgroup
-            each stop, idx in timetable.stops
-              col(id=`stop_id_${stop.stop_id}` class=`stop-${idx}`)
-          thead
-            tr
-              each stop, idx in timetable.stops
-                th.stop-header(scope="column")= stop.stop_name
+          include timetable_vertical.pug
+            
+        .timetable-bottom
+          .notes
+            if options.requestStopSymbolUsed
+              .note= `${options.requestStopSymbol} = Request stop - call for pickup`
+            if options.noServiceSymbolUsed
+              .note= `${options.noServiceSymbol} = No service at this timepoint`
 
-          tbody
-            each trip, idx in timetable.orderedTrips
-              tr.trip-row(id=`trip_id_${trip.trip_id}`)
-                each stop in timetable.stops
-                  td.stop-time(class=`${stop.trips[idx].classes.join(' ')}`)
-                    span.stop-time-text!= stop.trips[idx].arrival_formatted_time
-                    span.stop-time-period= stop.trips[idx].arrival_formatted_period
+          .calendar-dates
+            if timetable.specialDates.excludedDates.length
+              .excluded-dates Service not provided on:&nbsp;
+                span= timetable.specialDates.excludedDates.join(', ')
+            if timetable.specialDates.includedDates.length
+              .included-dates Service provided on:
+                span= timetable.specialDates.includedDates.join(', ')
 
+        if options.showMap
+          div(id=`map_${timetable.timetable_id}`).map
 
-      .timetable-bottom
-        .notes
-          if options.requestStopSymbolUsed
-            .note= `${options.requestStopSymbol} = Request stop - call for pickup`
-          if options.noServiceSymbolUsed
-            .note= `${options.noServiceSymbol} = No service at this timepoint`
-
-        .calendar-dates
-          if timetable.specialDates.excludedDates.length
-            .excluded-dates Service not provided on:&nbsp;
-              span= timetable.specialDates.excludedDates.join(', ')
-          if timetable.specialDates.includedDates.length
-            .included-dates Service provided on:
-              span= timetable.specialDates.includedDates.join(', ')
-
-      if options.showMap
-        div(id=`map_${timetable.timetable_id}`).map
-
-        script.
-          (function() {
-            var id = '#{timetable.timetable_id}';
-            var stops = !{JSON.stringify(timetable.stopsForMap)};
-            var shapes = !{JSON.stringify(timetable.shapes)};
-            createMap(id, stops, shapes);
-          })();
+          script.
+            (function() {
+              var id = '#{timetable.timetable_id}';
+              var stops = !{JSON.stringify(timetable.stopsForMap)};
+              var shapes = !{JSON.stringify(timetable.shapes)};
+              createMap(id, stops, shapes);
+            })();

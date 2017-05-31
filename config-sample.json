@@ -8,6 +8,7 @@
   ],
   "beautify": false,
   "effectiveDate": "July 8, 2016",
+  "menuType": "jump",
   "noServiceSymbol": "—",
   "requestStopSymbol": "***",
   "showMap": true,
