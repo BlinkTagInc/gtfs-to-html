@@ -48,31 +48,31 @@ h2 {
   line-height: 28px;
 }
 
-.timetable .stop_header {
+.timetable .stop-header {
   text-align: center;
   vertical-align: top;
 }
 
-.timetable .stop_time {
+.timetable .stop-time {
   text-align: center;
 }
 
-.timetable .stop_time.pm {
+.timetable .stop-time.pm {
   font-weight: bold;
 }
 
-.city_row {
+.city-row {
   font-size: 1.5em;
   color: #415d86;
 }
 
-.calendar_dates {
+.calendar-dates {
   width: 50%;
   float: right;
 }
 
-.included_dates,
-.excluded_dates {
+.included-dates,
+.excluded-dates {
   width: 300px;
   float: right;
 }
@@ -212,13 +212,13 @@ h2 {
     padding-bottom: 15px;
   }
 
-  .calendar_dates {
+  .calendar-dates {
     width: 100%;
     float: none;
     padding-bottom: 15px;
   }
 
-  .excluded_dates {
+  .excluded-dates {
     width: 100%;
     float: none;
     padding-bottom: 15px;
