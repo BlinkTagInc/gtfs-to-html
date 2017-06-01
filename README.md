@@ -59,6 +59,7 @@ Copy `config-sample.json` to `config.json` and then add your projects configurat
 | [`showMap`](#showmap) | boolean | Whether or not to show a map of the route on the timetable. |
 | [`showOnlyTimepoint`](#showonlytimepoint) | boolean | Whether or not all stops should be shown, or only stops with a `timepoint` value in `stops.txt`. |
 | [`showStopCity`](#showstopcity) | boolean | Whether or not to show each stop's city. |
+| [`templatePath`](#templatePath) | string | Path to custom pug template for rendering timetable. |
 | [`verbose`](#verbose) | boolean | Whether or not to print output to the console. |
 | [`zipOutput`](#zipoutput) | boolean | Whether or not to zip the output into one zip file. |
 
@@ -180,7 +181,7 @@ API along with your API token.
 
 ### noHead
 
-{Boolean} Whether or not to skip the HTML head and footer when generating the HTML. This is useful for creating embeddable HTML without `<html>`, `<head>` or `<body>` tags. Defaults to `false`.
+{Boolean} Whether or not to skip the HTML head and footer when generating the HTML. This is useful for creating embeddable HTML without `<html>`, `<head>` or `<body>` tags. Note that this may not have any effect if you build your own custom template and specify it with `templatePath` option. Defaults to `false`.
 
 ```
     "noHead": false
@@ -224,6 +225,14 @@ API along with your API token.
 
 ```
     "showStopCity": false
+```
+
+### templatePath
+
+{String} Path to a (pug)[https://pugjs.org/] template for rendering timetables. This is optional. Defaults to using the templates provided in `views/timetable`.
+
+```
+    "templatePath": '/my/path/to/template.pug'
 ```
 
 ### verbose

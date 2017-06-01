@@ -12,7 +12,7 @@ const config = utils.setDefaultConfig(selectedConfig);
  */
 router.get('/', (req, res, next) => {
   gtfs.agencies().then(agencies => {
-    return res.render('agencies', {agencies: _.sortBy(agencies, 'agency_name')});
+    return res.render('app/agencies', {agencies: _.sortBy(agencies, 'agency_name')});
   }, next);
 });
 
@@ -24,7 +24,7 @@ router.get('/timetablepages', (req, res, next) => {
 
   utils.getTimetablePages(agencyKey).then(timetablePages => {
     const sortedTimetablePages = _.sortBy(timetablePages, 'timetable_page_label');
-    res.render('timetablepages', {agencyKey, timetablePages: sortedTimetablePages});
+    res.render('app/timetablepages', {agencyKey, timetablePages: sortedTimetablePages});
   }, next);
 });
 
@@ -34,6 +34,14 @@ router.get('/timetablepages', (req, res, next) => {
 router.get('/timetablepage', (req, res, next) => {
   const agencyKey = req.query.agency_key;
   const timetablePageId = req.query.timetable_page_id;
+
+  if (!agencyKey) {
+    return next(new Error('No agencyKey provided'));
+  }
+
+  if (!timetablePageId) {
+    return next(new Error('No timetablePageId provided'));
+  }
 
   utils.getTimetablePage(agencyKey, timetablePageId)
   .then(timetablePage => {

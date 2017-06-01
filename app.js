@@ -53,7 +53,7 @@ app.use((req, res) => {
       error: err
     });
   } else {
-    res.render('error', {
+    res.render('app/error', {
       message: err.message,
       error: err
     });
@@ -65,7 +65,7 @@ app.use((req, res) => {
 if (process.env.NODE_ENV === 'development') {
   app.use((err, req, res) => {
     res.status(err.status || 500);
-    res.render('error', {
+    res.render('app/error', {
       message: err.message,
       error: err
     });

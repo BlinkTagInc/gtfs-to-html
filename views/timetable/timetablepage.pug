@@ -7,7 +7,7 @@
 
   .timetables
     each timetable in timetablePage.timetables
-      .timetable(id=`timetable_id_${timetable.timetable_id}` data-day-list=timetable.dayList data-direction-name=timetable.direction_name)
+      .timetable(id=`timetable_id_${timetable.timetable_id}` data-day-list=timetable.dayList data-direction-name=timetable.direction_name data-timetable-id=timetable.timetable_id)
         if timetablePage.timetables.length > 1
           h2.description= timetable.timetable_label
         .service-notes= timetable.service_notes
