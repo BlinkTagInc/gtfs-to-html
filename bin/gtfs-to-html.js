@@ -14,6 +14,11 @@ const argv = require('yargs')
       default: './config.json',
       type: 'string'
     })
+    .option('s', {
+      alias: 'skipImport',
+      describe: 'Don\'t import GTFS file.',
+      type: 'boolean'
+    })
     .option('t', {
       alias: 'showOnlyTimepoint',
       describe: 'Show only stops with a `timepoint` value in `stops.txt`',

@@ -304,7 +304,7 @@ An example of this file is located in [examples/timetable_pages.txt](examples/ti
 
 ## Running
 
-Ensure than mongodb is running locally.
+Ensure than MongoDB is running locally.
 
     mongod
 
@@ -322,7 +322,15 @@ This will download the GTFS file specified in `config.js` .  Then, `gtfs-to-html
 
 `configPath`
 
+Allows specifying a configuration json file. Defaults to config.json in the current directory.
+
     gtfs-to-html --configPath /path/to/your/custom-config.json
+
+`skipImport`
+
+Skips importing GTFS into MongoDB. Useful if you are rerunning with an unchanged GTFS file. If you use this option and the GTFS file hasn't been imported, you'll get an error.
+
+    gtfs-to-html --skipImport
 
 ## Processing very large GTFS files.
 
