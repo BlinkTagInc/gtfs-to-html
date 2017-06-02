@@ -7,6 +7,8 @@ const utils = require('../lib/utils');
 const selectedConfig = require('../config');
 
 const config = utils.setDefaultConfig(selectedConfig);
+// Override noHead config option so full HTML pages are generated
+config.noHead = false;
 
 /*
  * Show all agencies
