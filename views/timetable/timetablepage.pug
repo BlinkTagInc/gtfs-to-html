@@ -8,7 +8,7 @@
   include timetable_menu.pug
 
   each timetable in timetablePage.timetables
-    .timetable(id=`timetable_id_${timetable.timetable_id}` data-day-list=timetable.dayList data-direction-name=timetable.direction_name data-timetable-id=timetable.timetable_id)
+    .timetable(id=`timetable_id_${timetable.timetable_id}` data-day-list=timetable.dayList data-direction-name=timetable.direction_name data-timetable-id=timetable.timetable_id data-direction-id=timetable.direction_id data-route-id=timetable.route_id)
       .row
         .col-md-12
           if timetablePage.timetables.length > 1
