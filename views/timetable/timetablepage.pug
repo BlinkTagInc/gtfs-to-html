@@ -23,9 +23,9 @@
           
       .row.timetable-bottom
         .col-md-6.notes
-          if config.requestStopSymbolUsed
+          if timetable.requestStopSymbolUsed
             .note= `${config.requestStopSymbol} = Request stop - call for pickup`
-          if config.noServiceSymbolUsed
+          if timetable.noServiceSymbolUsed
             .note= `${config.noServiceSymbol} = No service at this timepoint`
             
         .col-md-3
