@@ -7,10 +7,10 @@
     
   include timetable_menu.pug
 
-  .row
-    .col-md-12
-      each timetable in timetablePage.timetables
-        .timetable(id=`timetable_id_${timetable.timetable_id}` data-day-list=timetable.dayList data-direction-name=timetable.direction_name data-timetable-id=timetable.timetable_id)
+  each timetable in timetablePage.timetables
+    .timetable(id=`timetable_id_${timetable.timetable_id}` data-day-list=timetable.dayList data-direction-name=timetable.direction_name data-timetable-id=timetable.timetable_id)
+      .row
+        .col-md-12
           if timetablePage.timetables.length > 1
             h2.description= timetable.timetable_label
           .service-notes= timetable.service_notes
@@ -20,29 +20,32 @@
             include timetable_horizontal.pug
           else
             include timetable_vertical.pug
-              
-          .timetable-bottom
-            .notes
-              if config.requestStopSymbolUsed
-                .note= `${config.requestStopSymbol} = Request stop - call for pickup`
-              if config.noServiceSymbolUsed
-                .note= `${config.noServiceSymbol} = No service at this timepoint`
+          
+      .row.timetable-bottom
+        .col-md-6.notes
+          if config.requestStopSymbolUsed
+            .note= `${config.requestStopSymbol} = Request stop - call for pickup`
+          if config.noServiceSymbolUsed
+            .note= `${config.noServiceSymbol} = No service at this timepoint`
+            
+        .col-md-3
+          if timetable.specialDates.includedDates.length
+            .included-dates Service provided on:
+              span= timetable.specialDates.includedDates.join(', ')
+        .col-md-3
+          if timetable.specialDates.excludedDates.length
+          .excluded-dates Service not provided on:&nbsp;
+              span= timetable.specialDates.excludedDates.join(', ')
 
-            .calendar-dates
-              if timetable.specialDates.excludedDates.length
-                .excluded-dates Service not provided on:&nbsp;
-                  span= timetable.specialDates.excludedDates.join(', ')
-              if timetable.specialDates.includedDates.length
-                .included-dates Service provided on:
-                  span= timetable.specialDates.includedDates.join(', ')
+      if config.showMap
+        .row
+          .col-md-12
+            .map(id=`map_${timetable.timetable_id}`)
 
-          if config.showMap
-            div(id=`map_${timetable.timetable_id}`).map
-
-            script.
-              (function() {
-                var id = '#{timetable.timetable_id}';
-                var stops = !{JSON.stringify(timetable.stopsForMap)};
-                var shapes = !{JSON.stringify(timetable.shapes)};
-                createMap(id, stops, shapes);
-              })();
+        script.
+          (function() {
+            var id = '#{timetable.timetable_id}';
+            var stops = !{JSON.stringify(timetable.stopsForMap)};
+            var shapes = !{JSON.stringify(timetable.shapes)};
+            createMap(id, stops, shapes);
+          })();

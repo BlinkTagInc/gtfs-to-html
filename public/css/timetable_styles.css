@@ -1,7 +1,7 @@
 body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
-  line-height: 1.42857143;
+  line-height: 1.4;
   color: #333333;
   background-color: #ffffff;
 }
@@ -30,15 +30,6 @@ h2 {
   display: none;
 }
 
-.timetable-bottom {
-  overflow: hidden;
-}
-
-.notes {
-  width: 50%;
-  float: left;
-}
-
 .notes .note {
   display: inline-block;
   margin-right: 15px;
@@ -62,17 +53,6 @@ h2 {
 .city-row {
   font-size: 1.5em;
   color: #415d86;
-}
-
-.calendar-dates {
-  width: 50%;
-  float: right;
-}
-
-.included-dates,
-.excluded-dates {
-  width: 300px;
-  float: right;
 }
 
 .map {
@@ -154,6 +134,7 @@ h2 {
 
 .table-horizontal tbody tr th {
   width: 250px;
+  display: block;
 }
 
 @media screen and (max-width: 767px) {
@@ -199,23 +180,5 @@ h2 {
   .table-responsive > .table-bordered > tbody > tr:last-child > td,
   .table-responsive > .table-bordered > tfoot > tr:last-child > td {
     border-bottom: 0;
-  }
-
-  .notes {
-    width: 100%;
-    float: none;
-    padding-bottom: 15px;
-  }
-
-  .calendar-dates {
-    width: 100%;
-    float: none;
-    padding-bottom: 15px;
-  }
-
-  .excluded-dates {
-    width: 100%;
-    float: none;
-    padding-bottom: 15px;
   }
 }
