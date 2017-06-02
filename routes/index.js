@@ -5,6 +5,7 @@ const router = require('express').Router();
 const utils = require('../lib/utils');
 
 const selectedConfig = require('../config');
+
 const config = utils.setDefaultConfig(selectedConfig);
 
 /*
@@ -12,15 +13,20 @@ const config = utils.setDefaultConfig(selectedConfig);
  */
 router.get('/', (req, res, next) => {
   gtfs.agencies().then(agencies => {
-    return res.render('app/agencies', {agencies: _.sortBy(agencies, 'agency_name')});
+    const sortedAgencies = _.sortBy(agencies, 'agency_name');
+    return res.render('app/agencies', {agencies: sortedAgencies});
   }, next);
 });
 
 /*
  * Show all timetable pages for an agency
  */
-router.get('/timetablepages', (req, res, next) => {
-  const agencyKey = req.query.agency_key;
+router.get('/timetable/:agencyKey', (req, res, next) => {
+  const agencyKey = req.params.agencyKey;
+
+  if (!agencyKey) {
+    return next(new Error('No agencyKey provided'));
+  }
 
   utils.getTimetablePages(agencyKey).then(timetablePages => {
     const sortedTimetablePages = _.sortBy(timetablePages, 'timetable_page_label');
@@ -31,9 +37,9 @@ router.get('/timetablepages', (req, res, next) => {
 /*
  * Show a specific timetable page
  */
-router.get('/timetablepage', (req, res, next) => {
-  const agencyKey = req.query.agency_key;
-  const timetablePageId = req.query.timetable_page_id;
+router.get('/timetable/:agencyKey/:timetablePageId', (req, res, next) => {
+  const agencyKey = req.params.agencyKey;
+  const timetablePageId = req.params.timetablePageId;
 
   if (!agencyKey) {
     return next(new Error('No agencyKey provided'));
@@ -44,9 +50,7 @@ router.get('/timetablepage', (req, res, next) => {
   }
 
   utils.getTimetablePage(agencyKey, timetablePageId)
-  .then(timetablePage => {
-    return utils.generateHTML(agencyKey, timetablePage, config);
-  })
+  .then(timetablePage => utils.generateHTML(agencyKey, timetablePage, config))
   .then(results => {
     res.send(results.html);
   })

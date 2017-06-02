@@ -1,13 +1,16 @@
 extends layout
 
 block content
-  .content
-    h1 Timetables
-
+  .row
+    .col-md-12
+      h1 Timetables
+  .row
     if !timetablePages || !timetablePages.length
-      .well No timetables found
+      .col-md-6.col-md-offset-3
+        .well No timetables found
     else
-      ul.list-group
-        each timetablePage in timetablePages
-          li.list-group-item
-            a.btn.btn-default.btn-sm(href=`/timetablepage?agency_key=${agencyKey}&timetable_page_id=${timetablePage.timetable_page_id}`)= timetablePage.timetable_page_label
+      .col-md-12
+        ul.list-group
+          each timetablePage in timetablePages
+            li.list-group-item
+              a.btn.btn-default.btn-sm(href=`/timetable/${agencyKey}/${timetablePage.timetable_page_id}`)= timetablePage.timetable_page_label

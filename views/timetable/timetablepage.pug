@@ -1,45 +1,48 @@
-.content.timetable-page(class=`menu-type-${options.menuType}`)
-  h1.timetable-page-label= `${timetablePage.timetable_page_label}`
-  if options.effectiveDate
-    .effective-date= `Effective ${options.effectiveDate}`
+.timetable-page(class=`menu-type-${config.menuType}`)
+  .row
+    .col-md-12
+      h1.timetable-page-label= `${timetablePage.timetable_page_label}`
+      if config.effectiveDate
+        .effective-date= `Effective ${config.effectiveDate}`
     
   include timetable_menu.pug
 
-  .timetables
-    each timetable in timetablePage.timetables
-      .timetable(id=`timetable_id_${timetable.timetable_id}` data-day-list=timetable.dayList data-direction-name=timetable.direction_name data-timetable-id=timetable.timetable_id)
-        if timetablePage.timetables.length > 1
-          h2.description= timetable.timetable_label
-        .service-notes= timetable.service_notes
-        .timetable-days= timetable.dayList
+  .row
+    .col-md-12
+      each timetable in timetablePage.timetables
+        .timetable(id=`timetable_id_${timetable.timetable_id}` data-day-list=timetable.dayList data-direction-name=timetable.direction_name data-timetable-id=timetable.timetable_id)
+          if timetablePage.timetables.length > 1
+            h2.description= timetable.timetable_label
+          .service-notes= timetable.service_notes
+          .timetable-days= timetable.dayList
 
-        if timetable.orientation === 'horizontal'
-          include timetable_horizontal.pug
-        else
-          include timetable_vertical.pug
-            
-        .timetable-bottom
-          .notes
-            if options.requestStopSymbolUsed
-              .note= `${options.requestStopSymbol} = Request stop - call for pickup`
-            if options.noServiceSymbolUsed
-              .note= `${options.noServiceSymbol} = No service at this timepoint`
+          if timetable.orientation === 'horizontal'
+            include timetable_horizontal.pug
+          else
+            include timetable_vertical.pug
+              
+          .timetable-bottom
+            .notes
+              if config.requestStopSymbolUsed
+                .note= `${config.requestStopSymbol} = Request stop - call for pickup`
+              if config.noServiceSymbolUsed
+                .note= `${config.noServiceSymbol} = No service at this timepoint`
 
-          .calendar-dates
-            if timetable.specialDates.excludedDates.length
-              .excluded-dates Service not provided on:&nbsp;
-                span= timetable.specialDates.excludedDates.join(', ')
-            if timetable.specialDates.includedDates.length
-              .included-dates Service provided on:
-                span= timetable.specialDates.includedDates.join(', ')
+            .calendar-dates
+              if timetable.specialDates.excludedDates.length
+                .excluded-dates Service not provided on:&nbsp;
+                  span= timetable.specialDates.excludedDates.join(', ')
+              if timetable.specialDates.includedDates.length
+                .included-dates Service provided on:
+                  span= timetable.specialDates.includedDates.join(', ')
 
-        if options.showMap
-          div(id=`map_${timetable.timetable_id}`).map
+          if config.showMap
+            div(id=`map_${timetable.timetable_id}`).map
 
-          script.
-            (function() {
-              var id = '#{timetable.timetable_id}';
-              var stops = !{JSON.stringify(timetable.stopsForMap)};
-              var shapes = !{JSON.stringify(timetable.shapes)};
-              createMap(id, stops, shapes);
-            })();
+            script.
+              (function() {
+                var id = '#{timetable.timetable_id}';
+                var stops = !{JSON.stringify(timetable.stopsForMap)};
+                var shapes = !{JSON.stringify(timetable.shapes)};
+                createMap(id, stops, shapes);
+              })();

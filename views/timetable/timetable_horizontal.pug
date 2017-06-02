@@ -1,45 +1,46 @@
-table.table.table-responsive.table-horizontal
-  colgroup
-    col
-    each trip, idx in timetable.orderedTrips
-      col(id=`trip_id_${trip.trip_id}` class=`run_${idx} ${(trip.trip_short_name) ? 'trip_short_name_' + trip.trip_short_name : ''}`)
-  thead
-    tr
-      th.stop-header(scope="column") Stop
+.table-container
+  table.table.table-striped.table-horizontal
+    colgroup
+      col
       each trip, idx in timetable.orderedTrips
-        th.run-header(scope="column")
-          if trip.trip_short_name
-            span= trip.trip_short_name
-          else
-            span= `Run #${idx + 1}`
-
-          if options.showDayList
-            span= ` ${trip.dayList}`
-
-  tbody
-    -var previousCity
-    each stop in timetable.stops
-      if previousCity !== stop.stop_city && options.showStopCity
-        tr.city-row
-          th(scope="row" colspan=`${stop.trips.length + 1}`)= stop.stop_city
-      -previousCity = stop.stop_city
-
-      tr.stop-row(id=`stop_id_${stop.stop_id}`)
-        th(scope="row")
-          .stop-name
-            span= stop.stop_name
-            if stop.type === 'arrival'
-              span &nbsp;(Arrival)
-            else if stop.type === 'departure'
-              span &nbsp;(Departure)
-          .stop-code= stop.stop_code
-          .stop-description= stop.stop_desc
-
-        each trip in stop.trips
-          td.stop-time(class=`${trip.classes.join(' ')}`)
-            if stop.type === 'arrival'
-              span.stop-time-text!= trip.arrival_formatted_time
-              span.stop-time-period= trip.arrival_formatted_period
+        col(id=`trip_id_${trip.trip_id}` class=`run_${idx} ${(trip.trip_short_name) ? 'trip_short_name_' + trip.trip_short_name : ''}`)
+    thead
+      tr
+        th.stop-header(scope="column") Stop
+        each trip, idx in timetable.orderedTrips
+          th.run-header(scope="column")
+            if trip.trip_short_name
+              span= trip.trip_short_name
             else
-              span.stop-time-text!= trip.departure_formatted_time
-              span.stop-time-period= trip.departure_formatted_period
+              span= `Run #${idx + 1}`
+
+            if config.showDayList
+              span= ` ${trip.dayList}`
+
+    tbody
+      -var previousCity
+      each stop in timetable.stops
+        if previousCity !== stop.stop_city && config.showStopCity
+          tr.city-row
+            th(scope="row" colspan=`${stop.trips.length + 1}`)= stop.stop_city
+        -previousCity = stop.stop_city
+
+        tr.stop-row(id=`stop_id_${stop.stop_id}`)
+          th(scope="row")
+            .stop-name
+              span= stop.stop_name
+              if stop.type === 'arrival'
+                span &nbsp;(Arrival)
+              else if stop.type === 'departure'
+                span &nbsp;(Departure)
+            .stop-code= stop.stop_code
+            .stop-description= stop.stop_desc
+
+          each trip in stop.trips
+            td.stop-time(class=`${trip.classes.join(' ')}`)
+              if stop.type === 'arrival'
+                span.stop-time-text!= trip.arrival_formatted_time
+                span.stop-time-period= trip.arrival_formatted_period
+              else
+                span.stop-time-text!= trip.departure_formatted_time
+                span.stop-time-period= trip.departure_formatted_period

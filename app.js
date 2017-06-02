@@ -1,8 +1,10 @@
 const path = require('path');
 
+const bodyParser = require('body-parser');
 const express = require('express');
 const logger = require('morgan');
-const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+
 const argv = require('yargs')
     .usage('Usage: $0 --config ./config.json')
     .help()
@@ -14,20 +16,17 @@ const argv = require('yargs')
     })
     .argv;
 
-const mongoose = require('mongoose');
+const routes = require('./routes/index');
 
 const configPath = path.join(process.cwd(), argv.configPath);
 const config = require(configPath);
 
 mongoose.Promise = global.Promise;
-
 mongoose.connect(config.mongoUrl);
-
-const routes = require('./routes/index');
 
 const app = express();
 
-// view engine setup
+// View engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
@@ -38,7 +37,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 
-// error handlers
+// Error handlers
 
 // 404 error handler
 app.use((req, res) => {
@@ -60,8 +59,7 @@ app.use((req, res) => {
   }
 });
 
-// development error handler
-// will print stacktrace
+// Development error handler: will print stacktrace
 if (process.env.NODE_ENV === 'development') {
   app.use((err, req, res) => {
     res.status(err.status || 500);
@@ -72,8 +70,7 @@ if (process.env.NODE_ENV === 'development') {
   });
 }
 
-// production error handler
-// no stacktraces leaked to user
+// Production error handler: no stacktraces leaked to user
 app.use((err, req, res) => {
   res.status(err.status || 500);
   res.render('error', {

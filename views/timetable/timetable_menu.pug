@@ -1,14 +1,15 @@
 if timetablePage.timetables.length > 1
-  if options.menuType === 'jump'
-    .jump-menu
-      .menu-title
-        label Jump to
-      ul
-        each timetable in timetablePage.timetables
-          li
-            a(href=`#timetable_id_${timetable.timetable_id}`)= timetable.timetable_label
+  if config.menuType === 'jump'
+    .row.jump-menu
+      .col-md-12
+        .menu-title
+          label Jump to
+        ul
+          each timetable in timetablePage.timetables
+            li
+              a(href=`#timetable_id_${timetable.timetable_id}`)= timetable.timetable_label
   
-  if options.menuType === 'radio'
+  if config.menuType === 'radio'
     .row
       .col-md-4
         #direction_name_selector.radio-menu(class=timetablePage.directionNames.length <= 1 ? 'hide' : '')

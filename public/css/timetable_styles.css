@@ -14,11 +14,6 @@ h2 {
   font-size: 18px;
 }
 
-.content {
-  min-height: 400px;
-  margin: 20px;
-}
-
 .jump-menu ul {
   list-style-type: none;
 }
@@ -31,7 +26,7 @@ h2 {
   margin-bottom: 35px;
 }
 
-.menu-type-radio .timetables .timetable {
+.menu-type-radio .timetable {
   display: none;
 }
 
@@ -54,11 +49,6 @@ h2 {
   display: inline-block;
   font-weight: bold;
   line-height: 28px;
-}
-
-.timetable .stop-header {
-  text-align: center;
-  vertical-align: top;
 }
 
 .timetable .stop-time {
@@ -101,19 +91,12 @@ h2 {
   opacity: 0.9;
 }
 
-.timetable table {
-  background-color: transparent;
-  width: 100%;
-  max-width: 100%;
-  margin-bottom: 20px;
-  border: 1px solid #dddddd;
-  border-collapse: collapse;
-  border-spacing: 0;
-  table-layout: fixed;
+.timetable .table-container {
+  overflow-x: scroll;
 }
 
 .timetable thead tr {
-  background: #ccc;
+  background: #72b1e6;
 }
 
 .timetable th {
@@ -138,7 +121,7 @@ h2 {
 }
 
 .timetable table > thead > tr > th {
-  vertical-align: bottom;
+  vertical-align: top;
   border-bottom: 2px solid #dddddd;
 }
 
@@ -167,6 +150,10 @@ h2 {
 .table-responsive {
   min-height: .01%;
   overflow-x: auto;
+}
+
+.table-horizontal tbody tr th {
+  width: 250px;
 }
 
 @media screen and (max-width: 767px) {

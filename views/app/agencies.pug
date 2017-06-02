@@ -1,13 +1,16 @@
 extends layout.pug
 
 block content
-  .content
-    h1 Agencies
-
+  .row
+    .col-md-12
+      h1 Agencies
+  .row
     if !agencies || !agencies.length
-      .well No agencies found
+      .col-md-6.col-md-offset-3
+        .well No agencies found
     else
-      ul.list-group
-        each agency in agencies
-          li.list-group-item
-            a.list-group-item(href=`/timetablepages?agency_key=${agency.agency_key}`)= agency.agency_name
+      .col-md-12
+        ul.list-group
+          each agency in agencies
+            li.list-group-item
+              a.list-group-item(href=`/timetable/${agency.agency_key}`)= agency.agency_name

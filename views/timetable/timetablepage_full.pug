@@ -4,16 +4,16 @@ block content
 
 block extraHeader
   
-  if options.showMap
+  if config.showMap
     script(src="https://api.mapbox.com/mapbox-gl-js/v0.35.1/mapbox-gl.js")
     script.
-      mapboxgl.accessToken = '#{options.mapboxAccessToken}';
-    script(src="/js/timetable_map.js")
+      mapboxgl.accessToken = '#{config.mapboxAccessToken}';
+    script(src="../../js/timetable_map.js")
       
     link(href="https://api.mapbox.com/mapbox-gl-js/v0.35.1/mapbox-gl.css" rel="stylesheet")
   
 block extraFooter
-  if options.menuType === 'radio'
+  if config.menuType === 'radio'
     script(src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous")
     script(src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous")
-    script(src="..//js/timetable_menu.js")
+    script(src="../../js/timetable_menu.js")
