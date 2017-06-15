@@ -1,5 +1,6 @@
 node_modules
 downloads
 html
-config.json
+config*
+!config-sample.json
 views/custom

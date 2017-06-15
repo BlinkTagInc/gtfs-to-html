@@ -229,7 +229,7 @@ API along with your API token.
 
 ### templatePath
 
-{String} Path to a (pug)[https://pugjs.org/] template for rendering timetables. This is optional. Defaults to using the templates provided in `views/timetable`.
+{String} Path to a (pug)[https://pugjs.org/] template for rendering timetables. This is optional. Defaults to using the templates provided in `views/timetable`. All files in /views/custom will be .gitignored
 
 ```
     "templatePath": '/my/path/to/template.pug'
