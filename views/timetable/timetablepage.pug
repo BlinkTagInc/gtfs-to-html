@@ -1,3 +1,6 @@
+- function getTimetableLabel(timetable) { return timetable.timetable_label || `${timetable.stops[0].stop_name} to ${timetable.stops[timetable.stops.length - 1].stop_name}`; }
+
+
 .timetable-page(class=`menu-type-${config.menuType}`)
   .row
     .col-md-12
@@ -12,9 +15,10 @@
       .row
         .col-md-12
           if timetablePage.timetables.length > 1
-            h2.description= timetable.timetable_label
+            h2.description
+              span= getTimetableLabel(timetable)
+              span= ` | ${timetable.dayList}`
           .service-notes= timetable.service_notes
-          .timetable-days= timetable.dayList
 
           if timetable.orientation === 'horizontal'
             include timetable_horizontal.pug
