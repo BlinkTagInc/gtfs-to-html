@@ -271,7 +271,7 @@ An example of this file is located in [examples/timetables.txt](examples/timetab
 | `friday` | A binary value that indicates whether this timetable should include service on Fridays.  Valid options are `0` and `1`. |
 | `saturday` | A binary value that indicates whether this timetable should include service on Saturdays.  Valid options are `0` and `1`. |
 | `sunday` | A binary value that indicates whether this timetable should include service on Sundays.  Valid options are `0` and `1`. |
-| `timetable_label` | A short text label describing the timetable, for instance "Route 4 Northbound Mon-Fri". Optional. |
+| `timetable_label` | A short text label describing the timetable, for instance "Route 4 Northbound Mon-Fri". Optional, defaults to route name. |
 | `service_notes` | Text shown on the timetable about the service represented. Optional. |
 | `orientation` | Determines if the top row should be a list of trips or stops. Valid options are `vertical` and `horizontal`. `vertical` shows stops across the top row with each row being a list of stop times for each trip. `horizontal` shows trips across the top row with each row being stop times for a specific stop.  `horizontal` orientation is best for routes with lots of stops and fewer trips while `vertical` orientation is best for routes with lots of trips and a smaller number of stops. Default is `vertical` |
 | `timetable_page_id` | The timetable page to include this timetable on |
@@ -308,7 +308,7 @@ An example of this file is located in [examples/timetable_pages.txt](examples/ti
 | column name | description |
 | ----------- | ----------- |
 | `timetable_page_id` | A unique ID for the timetable page |
-| `timetable_page_label` | A label that will show up on the top of the page. |
+| `timetable_page_label` | A label that will show up on the top of the page. Optional, defaults to using route name. |
 | `filename` | The filename to use for the generated HTML file. |
 
 ## Running
