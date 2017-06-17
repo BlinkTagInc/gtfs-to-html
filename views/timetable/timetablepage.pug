@@ -1,5 +1,14 @@
-- function getTimetableLabel(timetable) { return timetable.timetable_label || `${timetable.stops[0].stop_name} to ${timetable.stops[timetable.stops.length - 1].stop_name}`; }
+- function getTimetableLabel(timetable) {
+-   return timetable.timetable_label || `${timetable.stops[0].stop_name} to ${timetable.stops[timetable.stops.length - 1].stop_name}`;
+- }
 
+- function formatStopName(stop) {
+-   return `${stop.stop_name}${stop.type === 'arrival' ? ' (Arrival)' : stop.type === 'departure' ? ' (Departure)' : ''}`;
+- }
+
+- function formatTripName(trip, idx, showDayList) {
+-   return `${trip.trip_short_name || `Run #${idx + 1}`}${showDayList ? ` ${trip.dayList}` : ''}`;
+- }
 
 .timetable-page(class=`menu-type-${config.menuType}`)
   .row

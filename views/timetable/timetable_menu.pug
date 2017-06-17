@@ -1,13 +1,18 @@
 if timetablePage.timetables.length > 1
   if config.menuType === 'jump'
     .row.jump-menu
-      .col-md-12
-        .menu-title
-          label Jump to
-        ul
-          each timetable in timetablePage.timetables
-            li
-              a(href=`#timetable_id_${timetable.timetable_id}`)= timetable.timetable_label
+      - var groupedTimetables = timetablePage.timetables.reduce((memo, timetable) => {
+      -   if (!memo.hasOwnProperty(timetable.dayList)) {
+      -     memo[timetable.dayList] = []
+      -   }
+      -   memo[timetable.dayList].push(timetable);
+      -   return memo;
+      - }, {});
+      each group, dayList in groupedTimetables
+        .col-md-4
+          h3= dayList
+          each timetable in group
+            a.btn.btn-default(href=`#timetable_id_${timetable.timetable_id}`)= getTimetableLabel(timetable)
   
   if config.menuType === 'radio'
     .row

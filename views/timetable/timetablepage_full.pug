@@ -5,12 +5,12 @@ block content
 block extraHeader
   
   if config.showMap
-    script(src="https://api.mapbox.com/mapbox-gl-js/v0.35.1/mapbox-gl.js")
+    script(src="https://api.mapbox.com/mapbox-gl-js/v0.38.0/mapbox-gl.js")
     script.
       mapboxgl.accessToken = '#{config.mapboxAccessToken}';
     script(src="../../js/timetable_map.js")
       
-    link(href="https://api.mapbox.com/mapbox-gl-js/v0.35.1/mapbox-gl.css" rel="stylesheet")
+    link(href="https://api.mapbox.com/mapbox-gl-js/v0.38.0/mapbox-gl.css" rel="stylesheet")
   
 block extraFooter
   if config.menuType === 'radio'
