@@ -8,18 +8,20 @@ body {
 
 h1 {
   margin-bottom: 10px;
+  font-size: 32px;
 }
 
 h2 {
   font-size: 18px;
 }
 
-.jump-menu ul {
-  list-style-type: none;
+h3 {
+  font-size: 16px;
 }
 
-.menu-title label {
-  text-transform: uppercase;
+.jump-menu .btn {
+  margin-top: 5px;
+  white-space: normal;
 }
 
 .timetable {
@@ -42,6 +44,10 @@ h2 {
   line-height: 28px;
 }
 
+.timetable .stop-header {
+  text-align: center;
+}
+
 .timetable .stop-time {
   text-align: center;
 }
@@ -54,6 +60,8 @@ h2 {
   font-size: 1.5em;
   color: #415d86;
 }
+
+/* Map Styles */
 
 .map {
   width: 100%;
@@ -69,6 +77,10 @@ h2 {
   background: #4171ff;
   cursor: pointer;
   opacity: 0.9;
+}
+
+.map .mapboxgl-popup-content h3 {
+  margin-top: 4px;
 }
 
 .timetable .table-container {
@@ -138,6 +150,22 @@ h2 {
 }
 
 @media screen and (max-width: 767px) {
+  h1 {
+    font-size: 24px;
+  }
+
+  h2 {
+    font-size: 16px;
+  }
+
+  h3 {
+    font-size: 15px;
+  }
+
+  .map {
+    height: 300px;
+  }
+
   .table-responsive {
     width: 100%;
     margin-bottom: 15px;

@@ -1,3 +1,7 @@
+function getStopInfoText(stop) {
+  return '<h3>' + stop.stop_name + '</h3>';
+}
+
 function createMap(id, stops, shapes) {
   var bounds = new mapboxgl.LngLatBounds();
   var map = new mapboxgl.Map({
@@ -20,7 +24,7 @@ function createMap(id, stops, shapes) {
     stops.forEach(function(stop) {
       var coord = [stop.stop_lon, stop.stop_lat];
 
-      var popup = new mapboxgl.Popup({offset: 15}).setHTML('<b>' + stop.stop_name + '</b>');
+      var popup = new mapboxgl.Popup({offset: 15}).setHTML(getStopInfoText(stop));
       var marker = new mapboxgl.Marker(createMarker(), {offset: [-7, -7]})
         .setLngLat(coord)
         .setPopup(popup)
