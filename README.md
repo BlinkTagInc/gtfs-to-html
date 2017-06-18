@@ -34,10 +34,12 @@ Install `gtfs-to-html` directly from [npm](https://npmjs.org):
     mongoose.Promise = global.Promise;
     mongoose.connect(config.mongoUrl);
 
-    gtfsToHTML(config, (err) => {
-      if (err) return console.error(err);
-
-      console.log('HTML Generation Successful')
+    gtfsToHTML(config)
+    .then(() => {
+      console.log('HTML Generation Successful');
+    })
+    .catch(err => {
+      console.error(err);
     });
 
 ## Configuration

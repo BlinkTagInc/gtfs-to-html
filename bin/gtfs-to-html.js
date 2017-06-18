@@ -59,12 +59,10 @@ getConfig((err, config) => {
   mongoose.Promise = global.Promise;
   mongoose.connect(config.mongoUrl);
 
-  gtfsToHtml(config, err => {
-    if (err) {
-      handleError(err);
-    }
-
+  gtfsToHtml(config)
+  .then(() => {
     console.log('Completed Generating HTML schedules');
     process.exit();
-  });
+  })
+  .catch(handleError);
 });
