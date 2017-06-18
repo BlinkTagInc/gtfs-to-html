@@ -13,9 +13,9 @@
   "contributors": [
     "Evan Siroky"
   ],
-  "repository": "git://github.com/blinktagimc/gtfs-to-html",
+  "repository": "git://github.com/blinktaginc/gtfs-to-html",
   "bugs": {
-    "url": "https://github.com/blinktagimc/gtfs-to-html/issues"
+    "url": "https://github.com/blinktaginc/gtfs-to-html/issues"
   },
   "license": "MIT",
   "scripts": {
