@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
-const fs = require('fs');
 const resolve = require('path').resolve;
 
 const _ = require('lodash');
+const fs = require('fs-extra');
 const mongoose = require('mongoose');
 const argv = require('yargs')
     .usage('Usage: $0 --config ./config.json')
@@ -34,35 +34,22 @@ function handleError(err) {
   process.exit(1);
 }
 
-function getConfig(cb) {
-  const configPath = resolve(argv.configPath);
-
-  fs.readFile(configPath, 'utf8', (err, data) => {
-    if (err) {
-      cb(err);
-    }
-
-    const config = JSON.parse(data);
-
-    // Merge confiruration file with command-line arguments
-    cb(null, _.merge(config, argv));
-  });
-}
-
-// Run gtfs-to-html
-getConfig((err, config) => {
-  if (err) {
-    console.error(new Error(`Cannot find configuration file at \`${argv.configPath}\`. Use config-sample.json as a starting point, pass --configPath option`));
-    handleError(err);
-  }
-
+// Read config JSON file and merge confiruration file with command-line arguments
+fs.readFile(resolve(argv.configPath), 'utf8')
+.then(data => JSON.parse(data))
+.then(config => _.merge(config, argv))
+.catch(err => {
+  console.error(new Error(`Cannot find configuration file at \`${argv.configPath}\`. Use config-sample.json as a starting point, pass --configPath option`));
+  handleError(err);
+})
+.then(config => {
   mongoose.Promise = global.Promise;
   mongoose.connect(config.mongoUrl);
 
-  gtfsToHtml(config)
-  .then(() => {
-    console.log('Completed Generating HTML schedules');
-    process.exit();
-  })
-  .catch(handleError);
-});
+  return gtfsToHtml(config);
+})
+.then(() => {
+  console.log('Completed Generating HTML schedules');
+  process.exit();
+})
+.catch(handleError);
