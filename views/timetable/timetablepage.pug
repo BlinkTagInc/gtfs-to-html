@@ -23,10 +23,9 @@
     .timetable(id=`timetable_id_${timetable.timetable_id}` data-day-list=timetable.dayList data-direction-name=timetable.direction_name data-timetable-id=timetable.timetable_id data-direction-id=timetable.direction_id data-route-id=timetable.route_id)
       .row
         .col-md-12
-          if timetablePage.timetables.length > 1
-            h2.description
-              span= getTimetableLabel(timetable)
-              span= ` | ${timetable.dayList}`
+          h2.description
+            span= getTimetableLabel(timetable)
+            span= ` | ${timetable.dayList}`
           .service-notes= timetable.service_notes
 
           if timetable.orientation === 'horizontal'
@@ -35,17 +34,17 @@
             include timetable_vertical.pug
           
       .row.timetable-bottom
-        .col-md-6.notes
+        .col-md-4.notes
           if timetable.requestStopSymbolUsed
             .note= `${config.requestStopSymbol} = Request stop - call for pickup`
           if timetable.noServiceSymbolUsed
             .note= `${config.noServiceSymbol} = No service at this timepoint`
             
-        .col-md-3
+        .col-md-4
           if timetable.specialDates.includedDates.length
             .included-dates Service provided on:
               span= timetable.specialDates.includedDates.join(', ')
-        .col-md-3
+        .col-md-4
           if timetable.specialDates.excludedDates.length
           .excluded-dates Service not provided on:&nbsp;
               span= timetable.specialDates.excludedDates.join(', ')
