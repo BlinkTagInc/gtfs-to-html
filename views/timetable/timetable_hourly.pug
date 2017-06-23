@@ -1,0 +1,32 @@
+- function formatMinutesAfterTheHour(time) {
+-   var parts = time.split(':');
+-   return parts.length > 1 ? `:${parts[1]}` : '';
+- }
+
+.table-container
+  table.table.table-striped.table-hourly
+    thead
+      tr
+        th.stop-header(scope="column") Stop
+        th(scope="column") Minutes after the hour
+
+    tbody
+      - var previousCity
+      each stop in timetable.stops
+        if previousCity !== stop.stop_city && config.showStopCity
+          tr.city-row
+            th(scope="row" colspan="2")= stop.stop_city
+        - previousCity = stop.stop_city
+
+        tr.stop-row(id=`stop_id_${stop.stop_id}`)
+          th(scope="row")
+            include timetable_stopname.pug
+          
+          - trip = stop.trips[0]
+          td.stop-time(class=`${trip.classes.join(' ')}`)= formatMinutesAfterTheHour(trip.arrival_formatted_time)
+
+- var firstStop = timetable.stops[0]
+- var firstTripStartTime = firstStop.trips[0]
+- var lastStop = timetable.stops[timetable.stops.length - 1]
+- var lastTripEndTime = lastStop.trips[lastStop.trips.length - 1]
+.table-hourly-notes= `Service begins at ${firstStop.stop_name} at ${firstTripStartTime.arrival_formatted_time} ${firstTripStartTime.arrival_formatted_period} and ends at ${lastStop.stop_name} at ${lastTripEndTime.arrival_formatted_time} ${lastTripEndTime.arrival_formatted_period}.`

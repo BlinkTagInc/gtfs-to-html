@@ -30,6 +30,8 @@
 
           if timetable.orientation === 'horizontal'
             include timetable_horizontal.pug
+          else if timetable.orientation === 'hourly'
+            include timetable_hourly.pug
           else
             include timetable_vertical.pug
           
