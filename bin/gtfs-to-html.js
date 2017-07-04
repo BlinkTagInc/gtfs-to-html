@@ -44,7 +44,7 @@ fs.readFile(resolve(argv.configPath), 'utf8')
 })
 .then(config => {
   mongoose.Promise = global.Promise;
-  mongoose.connect(config.mongoUrl);
+  mongoose.connect(config.mongoUrl, {useMongoClient: true});
 
   return gtfsToHtml(config);
 })
