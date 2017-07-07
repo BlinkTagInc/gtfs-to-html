@@ -27,7 +27,22 @@
             span= getTimetableLabel(timetable)
             span= ` | ${timetable.dayList}`
           .service-notes= timetable.service_notes
+          
+      if config.showMap
+        .row
+          .col-md-12
+            .map(id=`map_${timetable.timetable_id}`)
 
+        script.
+          (function() {
+            var id = '#{timetable.timetable_id}';
+            var geojson = !{JSON.stringify(timetable.geojson)};
+            var routeColor = '#{timetable.route.route_color}';
+            createMap(id, geojson, routeColor);
+          })();
+          
+      .row
+        .col-md-12
           if timetable.orientation === 'horizontal'
             include timetable_horizontal.pug
           else if timetable.orientation === 'hourly'
@@ -50,16 +65,3 @@
           if timetable.specialDates.excludedDates.length
             .excluded-dates Service not provided on:&nbsp;
               span= timetable.specialDates.excludedDates.join(', ')
-
-      if config.showMap
-        .row
-          .col-md-12
-            .map(id=`map_${timetable.timetable_id}`)
-
-        script.
-          (function() {
-            var id = '#{timetable.timetable_id}';
-            var stops = !{JSON.stringify(timetable.stopsForMap)};
-            var shapes = !{JSON.stringify(timetable.shapes)};
-            createMap(id, stops, shapes);
-          })();

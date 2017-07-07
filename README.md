@@ -52,6 +52,7 @@ Copy `config-sample.json` to `config.json` and then add your projects configurat
 | ------ | ---- | ----------- |
 | [`agencies`](#agencies) | array | An array of GTFS files to be imported. |
 | [`beautify`](#beautify) | boolean | Whether or not to beautify the HTML output. |
+| [`coordinatePrecision`](#coordinatePrecision) | integer | Number of decimal places to include in geoJSON map output. |
 | [`effectiveDate`](#effectivedate) | string | A date to print at the top of the timetable |
 | [`menuType`](#menuType) | string | The type of menu to use for selecting timetables on a timetable page. |
 | [`mongoUrl`](#mongoUrl) | string | The URL of the MongoDB database to import to. |
@@ -147,6 +148,14 @@ API along with your API token.
 
 ```
     "beautify": false
+```
+
+### coordinatePrecision
+
+{Integer} The number of decimal places to include in the latitude and longitude of coordinates in GeoJSON used in maps. Omit to avoid any rounding. `5` is a reasonable value (about 1.1 meters).
+
+```
+    "coordinatePrecision": 5
 ```
 
 ### effectiveDate
