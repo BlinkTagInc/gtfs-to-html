@@ -19,6 +19,11 @@ function formatPopup(feature) {
 
 function createMap(id, geojson, routeColor) {
   var bounds = new mapboxgl.LngLatBounds();
+  var defaultRouteColor = 'FF4728';
+
+  if (!routeColor) {
+    routeColor = defaultRouteColor;
+  }
 
   geojson.features.forEach(function(feature) {
     if (feature.geometry.type === 'Point') {
@@ -59,13 +64,14 @@ function createMap(id, geojson, routeColor) {
         data: geojson
       },
       paint: {
-        'line-color': routeColor ? '#' + routeColor : 'rgb(255, 71, 40)',
+        'line-color': '#' + routeColor,
         'line-width': 6
       },
       layout: {
         'line-join': 'round',
         'line-cap': 'round'
-      }
+      },
+      filter: ['!has', 'stop_id']
     });
 
     map.addLayer({
@@ -81,9 +87,27 @@ function createMap(id, geojson, routeColor) {
         },
         'circle-stroke-width': 1,
         'circle-stroke-color': '#363636',
-        'circle-color': routeColor ? '#' + routeColor : 'rgb(255, 71, 40)'
+        'circle-color': '#' + routeColor
       },
       filter: ['has', 'stop_id']
+    });
+
+    map.addLayer({
+      id: 'stops-highlighted',
+      type: 'circle',
+      source: {
+        type: 'geojson',
+        data: geojson
+      },
+      paint: {
+        'circle-radius': {
+          stops: [[9, 6], [13, 9], [15, 10]]
+        },
+        'circle-stroke-width': 2,
+        'circle-stroke-color': '#111111',
+        'circle-color': '#' + routeColor
+      },
+      filter: ['==', 'stop_id', '']
     });
 
     map.on('mouseenter', 'stops', function() {
@@ -110,6 +134,36 @@ function createMap(id, geojson, routeColor) {
         .setLngLat(feature.geometry.coordinates)
         .setHTML(formatPopup(feature))
         .addTo(map);
+    });
+
+    function highlightStop(stopId) {
+      map.setFilter('stops-highlighted', ['==', 'stop_id', (stopId).toString()]);
+      map.setPaintProperty('stops', 'circle-opacity', 0.5);
+    }
+
+    function unHighlightStop() {
+      map.setFilter('stops-highlighted', ['==', 'stop_id', '']);
+      map.setPaintProperty('stops', 'circle-opacity', 1);
+    }
+
+    // On table hover, highlight stop on map
+    $(function() {
+      var verticalTimetable = $('#timetable_id_' + id + ' .table.table-vertical');
+      var horizontalTimetable = $('#timetable_id_' + id + ' .table.table-horizontal');
+
+      $('th, td', verticalTimetable).hover(function() {
+        var index = $(this).index();
+        var stopId = $('colgroup col', verticalTimetable).eq(index).data('stop-id');
+        highlightStop(stopId);
+      }, unHighlightStop);
+
+      $('th, td', horizontalTimetable).hover(function() {
+        var stopId = $(this).parents('tr').data('stop-id');
+        if (stopId === undefined) {
+          return false;
+        }
+        highlightStop(stopId);
+      }, unHighlightStop);
     });
   });
 }
