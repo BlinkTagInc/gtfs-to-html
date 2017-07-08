@@ -78,8 +78,8 @@ h3 {
   opacity: 0.9;
 }
 
-.map .mapboxgl-popup-content h3 {
-  margin-top: 4px;
+.map .mapboxgl-popup-content h4 {
+  margin: 0 20px 0 0;
 }
 
 .timetable .table-container {
