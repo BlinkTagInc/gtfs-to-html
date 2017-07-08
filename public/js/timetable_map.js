@@ -21,6 +21,11 @@ function createMap(id, geojson, routeColor) {
   var bounds = new mapboxgl.LngLatBounds();
   var defaultRouteColor = 'FF4728';
 
+  if (!geojson || !geojson.features.length) {
+    $('#map_' + id).hide();
+    return false;
+  }
+
   if (!routeColor) {
     routeColor = defaultRouteColor;
   }
