@@ -31,11 +31,11 @@
       if config.showMap
         .row
           .col-md-12
-            .map(id=`map_${timetable.timetable_id}`)
+            .map(id=`map_timetable_id_${timetable.timetable_id}`)
 
         script.
           (function() {
-            var id = '#{timetable.timetable_id}';
+            var id = 'timetable_id_#{timetable.timetable_id}';
             var geojson = !{JSON.stringify(timetable.geojson)};
             var routeColor = '#{timetable.route.route_color}';
             createMap(id, geojson, routeColor);

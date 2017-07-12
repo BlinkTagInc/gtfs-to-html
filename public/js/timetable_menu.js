@@ -10,9 +10,21 @@ $(function() {
   });
 
   function showSelectedTimetable() {
+    if ($('.timetable').length === 1) {
+      showTimetable($('.timetable').attr('id'));
+      return false;
+    }
     var dayList = $('#day_list_selector input[name="dayList"]:checked').val();
     var directionName = $('#direction_name_selector input[name="directionName"]:checked').val();
     $('.timetable').hide();
-    $('.timetable[data-day-list="' + dayList + '"][data-direction-name="' + directionName + '"]').show();
+    var id = $('.timetable[data-day-list="' + dayList + '"][data-direction-name="' + directionName + '"]').attr('id');
+    showTimetable(id);
   }
 });
+
+function showTimetable(id) {
+  $('#' + id).show();
+  if (maps[id]) {
+    maps[id].resize();
+  }
+}

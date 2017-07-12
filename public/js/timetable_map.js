@@ -1,3 +1,5 @@
+var maps = {};
+
 function formatPopup(feature) {
   var html = '';
   html += '<h4>' + feature.properties.stop_name  + '</h4><div>'
@@ -153,8 +155,8 @@ function createMap(id, geojson, routeColor) {
 
     // On table hover, highlight stop on map
     $(function() {
-      var verticalTimetable = $('#timetable_id_' + id + ' .table.table-vertical');
-      var horizontalTimetable = $('#timetable_id_' + id + ' .table.table-horizontal');
+      var verticalTimetable = $('#' + id + ' .table.table-vertical');
+      var horizontalTimetable = $('#' + id + ' .table.table-horizontal');
 
       $('th, td', verticalTimetable).hover(function() {
         var index = $(this).index();
@@ -171,4 +173,6 @@ function createMap(id, geojson, routeColor) {
       }, unHighlightStop);
     });
   });
+
+  maps[id] = map;
 }
