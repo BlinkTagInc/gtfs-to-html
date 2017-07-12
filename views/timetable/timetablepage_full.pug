@@ -8,12 +8,12 @@ block extraHeader
       
   if config.menuType === 'radio'
     script(src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous")
-    script(src="../../js/timetable_menu.js")  
+    script(src=`${config.assetPath}/js/timetable_menu.js`)  
   
   if config.showMap
     script(src="https://api.mapbox.com/mapbox-gl-js/v0.38.0/mapbox-gl.js")
     script.
       mapboxgl.accessToken = '#{config.mapboxAccessToken}';
-    script(src="../../js/timetable_map.js")
+    script(src=`${config.assetPath}/js/timetable_map.js`)
       
     link(href="https://api.mapbox.com/mapbox-gl-js/v0.38.0/mapbox-gl.css" rel="stylesheet")
