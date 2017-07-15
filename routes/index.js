@@ -14,33 +14,38 @@ config.assetPath = '';
 /*
  * Show all agencies
  */
-router.get('/', (req, res, next) => {
-  gtfs.agencies().then(agencies => {
+router.get('/', async (req, res, next) => {
+  try {
+    const agencies = await gtfs.getAgencies();
     const sortedAgencies = _.sortBy(agencies, 'agency_name');
     return res.render('app/agencies', {agencies: sortedAgencies});
-  }, next);
+  } catch (err) {
+    next(err);
+  }
 });
 
 /*
  * Show all timetable pages for an agency
  */
-router.get('/timetable/:agencyKey', (req, res, next) => {
+router.get('/timetable/:agencyKey', async (req, res, next) => {
   const agencyKey = req.params.agencyKey;
 
   if (!agencyKey) {
     return next(new Error('No agencyKey provided'));
   }
-
-  utils.getTimetablePages(agencyKey).then(timetablePages => {
+  try {
+    const timetablePages = await utils.getTimetablePages(agencyKey);
     const sortedTimetablePages = _.sortBy(timetablePages, 'timetable_page_label');
     res.render('app/timetablepages', {agencyKey, timetablePages: sortedTimetablePages});
-  }, next);
+  } catch (err) {
+    next(err);
+  }
 });
 
 /*
  * Show a specific timetable page
  */
-router.get('/timetable/:agencyKey/:timetablePageId', (req, res, next) => {
+router.get('/timetable/:agencyKey/:timetablePageId', async (req, res, next) => {
   const agencyKey = req.params.agencyKey;
   const timetablePageId = req.params.timetablePageId;
 
@@ -51,13 +56,13 @@ router.get('/timetable/:agencyKey/:timetablePageId', (req, res, next) => {
   if (!timetablePageId) {
     return next(new Error('No timetablePageId provided'));
   }
-
-  utils.getTimetablePage(agencyKey, timetablePageId)
-  .then(timetablePage => utils.generateHTML(agencyKey, timetablePage, config))
-  .then(results => {
+  try {
+    const timetablePage = await utils.getTimetablePage(agencyKey, timetablePageId);
+    const results = await utils.generateHTML(agencyKey, timetablePage, config);
     res.send(results.html);
-  })
-  .catch(next);
+  } catch (err) {
+    next(err);
+  }
 });
 
 module.exports = router;
