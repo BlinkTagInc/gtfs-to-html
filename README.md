@@ -55,9 +55,9 @@ Copy `config-sample.json` to `config.json` and then add your projects configurat
 | ------ | ---- | ----------- |
 | [`agencies`](#agencies) | array | An array of GTFS files to be imported. |
 | [`beautify`](#beautify) | boolean | Whether or not to beautify the HTML output. |
-| [`coordinatePrecision`](#coordinatePrecision) | integer | Number of decimal places to include in geoJSON map output. |
+| [`coordinatePrecision`](#coordinateprecision) | integer | Number of decimal places to include in geoJSON map output. |
 | [`effectiveDate`](#effectivedate) | string | A date to print at the top of the timetable |
-| [`mapboxAccessToken`](#mapboxAccessToken) | string | The Mapbox access token for generating a map of the route. |
+| [`mapboxAccessToken`](#mapboxaccesstoken) | string | The Mapbox access token for generating a map of the route. |
 | [`menuType`](#menuType) | string | The type of menu to use for selecting timetables on a timetable page. |
 | [`mongoUrl`](#mongoUrl) | string | The URL of the MongoDB database to import to. |
 | [`noHead`](#noHead) | boolean | Whether or not to skip the header and footer of the HTML document. |
@@ -66,7 +66,7 @@ Copy `config-sample.json` to `config.json` and then add your projects configurat
 | [`showMap`](#showmap) | boolean | Whether or not to show a map of the route on the timetable. |
 | [`showOnlyTimepoint`](#showonlytimepoint) | boolean | Whether or not all stops should be shown, or only stops with a `timepoint` value in `stops.txt`. |
 | [`showStopCity`](#showstopcity) | boolean | Whether or not to show each stop's city. |
-| [`templatePath`](#templatePath) | string | Path to custom pug template for rendering timetable. |
+| [`templatePath`](#templatepath) | string | Path to custom pug template for rendering timetable. |
 | [`verbose`](#verbose) | boolean | Whether or not to print output to the console. |
 | [`zipOutput`](#zipoutput) | boolean | Whether or not to zip the output into one zip file. |
 
