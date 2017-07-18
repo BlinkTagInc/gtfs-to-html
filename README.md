@@ -9,11 +9,14 @@
 
 `gtfs-to-html` converts transit data in [GTFS format](https://developers.google.com/transit/gtfs/) into user-friendly HTML schedules. Many transit agencies have schedule data in GTFS format but need to show each route's schedule to users on a website. This project aims to automate the process of creating these schedules. Automating HTML schedule generation makes it easy to keep schedules up to date when data changes and reduces the likelihood of errors.
 
+Additionally, a map showing the route and all stops can be included in the HTML schedule page. See the `showMap` configuration option below.
+
 `gtfs-to-html` uses the [`node-gtfs`](https://github.com/blinktaginc/node-gtfs) library to handle importing and querying GTFS data.
 
-`gtfs-to-html` is currently used by [Sonoma Country Transit](http://sctransit.com/) to generate schedule pages for each route.
+`gtfs-to-html` is currently used by [Sonoma Country Transit](http://sctransit.com/) to generate the schedules pages used on their website.
 
-<img width="1265" src="https://cloud.githubusercontent.com/assets/96217/10262598/87674f70-6983-11e5-8150-15b6372c989c.png">
+<img width="1265" src="https://user-images.githubusercontent.com/96217/28296063-aed45568-6b1a-11e7-9794-94b3d915d668.png">
+
 
 ## Installation
 
@@ -54,6 +57,7 @@ Copy `config-sample.json` to `config.json` and then add your projects configurat
 | [`beautify`](#beautify) | boolean | Whether or not to beautify the HTML output. |
 | [`coordinatePrecision`](#coordinatePrecision) | integer | Number of decimal places to include in geoJSON map output. |
 | [`effectiveDate`](#effectivedate) | string | A date to print at the top of the timetable |
+| [`mapboxAccessToken`](#mapboxAccessToken) | string | The Mapbox access token for generating a map of the route. |
 | [`menuType`](#menuType) | string | The type of menu to use for selecting timetables on a timetable page. |
 | [`mongoUrl`](#mongoUrl) | string | The URL of the MongoDB database to import to. |
 | [`noHead`](#noHead) | boolean | Whether or not to skip the header and footer of the HTML document. |
@@ -164,6 +168,14 @@ API along with your API token.
 
 ```
     "effectiveDate": "July 8, 2015"
+```
+
+### mapboxAccessToken
+
+{String} The [Mapbox access token](https://www.mapbox.com/help/define-access-token/) for generating a map of the route.
+
+```
+    "mapboxAccessToken": "pk.eyXaX5F8oCJSYedim3yCnTGsVBfnRjsoXdy4Ej7ZZZydrCn2WMDXha5bPj5.bPj5xsBo8u8N8GJqJh"
 ```
 
 ### menuType

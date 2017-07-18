@@ -34,21 +34,25 @@ function handleError(err) {
   process.exit(1);
 }
 
-// Read config JSON file and merge confiruration file with command-line arguments
-fs.readFile(resolve(argv.configPath), 'utf8')
-.then(data => JSON.parse(data))
-.then(config => _.merge(config, argv))
+const getConfig = async () => {
+  const data = await fs.readFile(resolve(argv.configPath), 'utf8');
+  return _.merge(JSON.parse(data), argv);
+};
+
+getConfig()
 .catch(err => {
   console.error(new Error(`Cannot find configuration file at \`${argv.configPath}\`. Use config-sample.json as a starting point, pass --configPath option`));
   handleError(err);
 })
-.then(config => {
+.then(async config => {
+  const log = (config.verbose === false) ? _.noop : console.log;
+
   mongoose.Promise = global.Promise;
   mongoose.connect(config.mongoUrl);
-  return gtfsToHtml(config);
-})
-.then(() => {
-  console.log('Completed Generating HTML schedules');
+
+  await gtfsToHtml(config);
+
+  log('Completed Generating HTML schedules');
   process.exit();
 })
 .catch(handleError);

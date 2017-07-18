@@ -58,7 +58,7 @@ router.get('/timetable/:agencyKey/:timetablePageId', async (req, res, next) => {
   }
   try {
     const timetablePage = await utils.getTimetablePage(agencyKey, timetablePageId);
-    const results = await utils.generateHTML(agencyKey, timetablePage, config);
+    const results = await utils.generateHTML(timetablePage, config);
     res.send(results.html);
   } catch (err) {
     next(err);
