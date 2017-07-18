@@ -44,7 +44,7 @@ function createMap(id, geojson, routeColor) {
 
   var map = new mapboxgl.Map({
     container: 'map_' + id,
-    style: 'mapbox://styles/mapbox/streets-v9',
+    style: 'mapbox://styles/mapbox/light-v9',
     center: bounds.getCenter(),
     zoom: 12
   });
@@ -72,7 +72,10 @@ function createMap(id, geojson, routeColor) {
       },
       paint: {
         'line-color': '#' + routeColor,
-        'line-width': 6
+        'line-opacity': 0.7,
+        'line-width': {
+          stops: [[9, 3], [13, 6]]
+        }
       },
       layout: {
         'line-join': 'round',

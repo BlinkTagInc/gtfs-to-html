@@ -48,6 +48,10 @@ h3 {
   text-align: center;
 }
 
+.timetable .stop-code {
+  font-weight: normal;
+}
+
 .timetable .stop-time {
   text-align: center;
 }
