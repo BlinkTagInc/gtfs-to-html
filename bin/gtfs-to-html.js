@@ -28,6 +28,7 @@ const argv = require('yargs')
     .argv;
 
 const gtfsToHtml = require('../');
+const utils = require('../lib/utils');
 
 function handleError(err) {
   console.error(err || 'Unknown Error');
@@ -45,14 +46,14 @@ getConfig()
   handleError(err);
 })
 .then(async config => {
-  const log = (config.verbose === false) ? _.noop : console.log;
+  const log = utils.log(config);
 
   mongoose.Promise = global.Promise;
   mongoose.connect(config.mongoUrl);
 
   await gtfsToHtml(config);
 
-  log('Completed Generating HTML schedules');
+  log('Completed Generating HTML schedules\n');
   process.exit();
 })
 .catch(handleError);
