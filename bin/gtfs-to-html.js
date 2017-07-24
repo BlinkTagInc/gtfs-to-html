@@ -19,12 +19,13 @@ const argv = require('yargs')
       describe: 'Don\'t import GTFS file.',
       type: 'boolean'
     })
+    .default('skipImport', undefined)
     .option('t', {
       alias: 'showOnlyTimepoint',
       describe: 'Show only stops with a `timepoint` value in `stops.txt`',
-      default: true,
       type: 'boolean'
     })
+    .default('showOnlyTimepoint', undefined)
     .argv;
 
 const gtfsToHtml = require('../');
@@ -37,7 +38,17 @@ function handleError(err) {
 
 const getConfig = async () => {
   const data = await fs.readFile(resolve(argv.configPath), 'utf8');
-  return _.merge(JSON.parse(data), argv);
+  const config = JSON.parse(data);
+
+  if (argv.skipImport === true) {
+    config.skipImport = argv.skipImport;
+  }
+
+  if (argv.showOnlyTimepoint === true) {
+    config.showOnlyTimepoint = argv.showOnlyTimepoint;
+  }
+
+  return utils.setDefaultConfig(config);
 };
 
 getConfig()
