@@ -35,7 +35,7 @@ Install `gtfs-to-html` directly from [npm](https://npmjs.org):
     const config = require('config.json');
 
     mongoose.Promise = global.Promise;
-    mongoose.connect(config.mongoUrl);
+    mongoose.connect(config.mongoUrl, {useMongoClient: true});
 
     gtfsToHTML(config)
     .then(() => {

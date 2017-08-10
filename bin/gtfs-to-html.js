@@ -60,7 +60,7 @@ getConfig()
   const log = utils.log(config);
 
   mongoose.Promise = global.Promise;
-  mongoose.connect(config.mongoUrl);
+  mongoose.connect(config.mongoUrl, {useMongoClient: true});
 
   await gtfsToHtml(config);
 
