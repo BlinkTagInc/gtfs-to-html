@@ -147,7 +147,7 @@ h3 {
   overflow-x: auto;
 }
 
-.table-horizontal tbody tr th {
+.table-horizontal tbody tr th.stop-name-container {
   width: 250px;
   display: block;
 }
