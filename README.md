@@ -51,6 +51,8 @@ Copy `config-sample.json` to `config.json` and then add your projects configurat
 
     cp config-sample.json config.json
 
+All files starting with `config*.json` are .gitignored - so you can create multiple configuration files such as `config-caltrain.json`.
+
 | option | type | description |
 | ------ | ---- | ----------- |
 | [`agencies`](#agencies) | array | An array of GTFS files to be imported. |
@@ -252,7 +254,7 @@ API along with your API token.
 
 ### templatePath
 
-{String} Path to a (pug)[https://pugjs.org/] template for rendering timetables. This is optional. Defaults to using the templates provided in `views/timetable`. All files in /views/custom will be .gitignored
+{String} Path to a (pug)[https://pugjs.org/] template for rendering timetables. This is optional. Defaults to using the templates provided in `views/timetable`. All files within the `/views/custom` folder will be .gitignored
 
 ```
     "templatePath": '/my/path/to/template.pug'
