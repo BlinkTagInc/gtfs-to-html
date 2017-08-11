@@ -1,0 +1,26 @@
+.row
+  .col-md-12
+    h1.overview-label= `${agency.agency_name} Routes`
+.row
+  if !timetablePages || !timetablePages.length
+    .col-md-6.col-md-offset-3
+      .well No timetables found
+  else
+    .col-md-3
+      .list-group.overview-list
+        each timetablePage in timetablePages
+          a.list-group-item(href=`${timetablePage.path}` data-route-ids=`${timetablePage.routeIds.join(',')}`)
+            h4.list-group-item-heading
+              if timetablePage.routeColors.length === 1
+                .route-color-swatch(style=`background-color: #${timetablePage.routeColors[0]}`)
+              span= timetablePage.timetable_page_label
+            .list-group-item-text= timetablePage.dayList
+    if config.showMap
+      .col-md-9
+        .map(id="system_map")
+
+      script.
+        (function() {
+          var geojson = !{JSON.stringify(agency.geojson) || '\'\''};
+          createSystemMap('system_map', geojson);
+        })();

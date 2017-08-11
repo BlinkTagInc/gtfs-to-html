@@ -1,6 +1,6 @@
 var maps = {};
 
-function formatPopup(feature) {
+function formatStopPopup(feature) {
   var html = '';
   html += '<h4>' + feature.properties.stop_name  + '</h4><div>'
   if (feature.properties.stop_code !== undefined) {
@@ -19,8 +19,41 @@ function formatPopup(feature) {
   return html;
 }
 
-function createMap(id, geojson, routeColor) {
+function formatRoutePopup(feature) {
+  var html = '';
+  html += '<h4>';
+  if (feature.properties.route_url) {
+    html += '<a href="' + feature.properties.route_url + '">';
+  }
+
+  if (feature.properties.route_color) {
+    html += '<div class="route-color-swatch" style="background-color: #' + feature.properties.route_color + '"></div>';
+  }
+
+  html += feature.properties.route_short_name + ' ' + feature.properties.route_long_name;
+
+  if (feature.properties.route_url) {
+    html += '</a>';
+  }
+  html += '</h4>';
+  return html;
+}
+
+function getBounds(geojson) {
   var bounds = new mapboxgl.LngLatBounds();
+  geojson.features.forEach(function(feature) {
+    if (feature.geometry.type === 'Point') {
+      bounds.extend(feature.geometry.coordinates);
+    } else if (feature.geometry.type === 'LineString') {
+      feature.geometry.coordinates.forEach(function(coordinate) {
+        bounds.extend(coordinate);
+      });
+    }
+  });
+  return bounds;
+}
+
+function createMap(id, geojson, routeColor) {
   var defaultRouteColor = 'FF4728';
 
   if (!geojson || !geojson.features.length) {
@@ -32,16 +65,7 @@ function createMap(id, geojson, routeColor) {
     routeColor = defaultRouteColor;
   }
 
-  geojson.features.forEach(function(feature) {
-    if (feature.geometry.type === 'Point') {
-      bounds.extend(feature.geometry.coordinates);
-    } else if (feature.geometry.type === 'LineString') {
-      feature.geometry.coordinates.forEach(function(coordinate) {
-        bounds.extend(coordinate);
-      });
-    }
-  });
-
+  var bounds = getBounds(geojson);
   var map = new mapboxgl.Map({
     container: 'map_' + id,
     style: 'mapbox://styles/mapbox/light-v9',
@@ -138,16 +162,16 @@ function createMap(id, geojson, routeColor) {
       }
 
       // Get the first feature and show popup
-      feature = features[0]
+      var feature = features[0];
 
       new mapboxgl.Popup()
         .setLngLat(feature.geometry.coordinates)
-        .setHTML(formatPopup(feature))
+        .setHTML(formatStopPopup(feature))
         .addTo(map);
     });
 
     function highlightStop(stopId) {
-      map.setFilter('stops-highlighted', ['==', 'stop_id', (stopId).toString()]);
+      map.setFilter('stops-highlighted', ['==', 'stop_id', stopId]);
       map.setPaintProperty('stops', 'circle-opacity', 0.5);
     }
 
@@ -163,17 +187,156 @@ function createMap(id, geojson, routeColor) {
 
       $('th, td', verticalTimetable).hover(function() {
         var index = $(this).index();
-        var stopId = $('colgroup col', verticalTimetable).eq(index).data('stop-id');
+        var stopId = $('colgroup col', verticalTimetable).eq(index).data('stop-id').toString();
         highlightStop(stopId);
       }, unHighlightStop);
 
       $('th, td', horizontalTimetable).hover(function() {
-        var stopId = $(this).parents('tr').data('stop-id');
-        if (stopId === undefined) {
-          return false;
-        }
+        var stopId = $(this).parents('tr').data('stop-id').toString();
         highlightStop(stopId);
       }, unHighlightStop);
+    });
+  });
+
+  maps[id] = map;
+}
+
+function createSystemMap(id, geojson) {
+  var defaultRouteColor = 'FF4728';
+  var routeLayerIds = [];
+
+  if (!geojson || !geojson.features.length) {
+    $('#' + id).hide();
+    return false;
+  }
+  var headerHeight = 65;
+  $('#' + id).height($(window).height() - headerHeight);
+  $('.overview-list').height($(window).height() - headerHeight);
+
+  var bounds = getBounds(geojson);
+  var map = new mapboxgl.Map({
+    container: id,
+    style: 'mapbox://styles/mapbox/light-v9',
+    center: bounds.getCenter(),
+    zoom: 12
+  });
+  var routes = geojson.features.reduce(function(memo, feature) {
+    memo[feature.properties.route_id] = feature.properties;
+    return memo;
+  }, {});
+
+  map.scrollZoom.disable();
+  map.addControl(new mapboxgl.NavigationControl());
+
+  map.on('load', function () {
+    map.fitBounds(bounds, {
+      padding: 20
+    });
+
+    Object.keys(routes).forEach(function(routeId) {
+      routeLayerIds.push(routeId);
+      var routeColor = routes[routeId].route_color || defaultRouteColor
+      map.addLayer({
+        id: routeId,
+        type: 'line',
+        source: {
+          type: 'geojson',
+          data: geojson
+        },
+        paint: {
+          'line-color': '#' + routeColor,
+          'line-opacity': 0.7,
+          'line-width': {
+            stops: [[9, 3], [13, 6]]
+          }
+        },
+        layout: {
+          'line-join': 'round',
+          'line-cap': 'round'
+        },
+        filter: ['==', 'route_id', routeId]
+      });
+
+      map.on('mouseenter', routeId, function() {
+        map.getCanvas().style.cursor = 'pointer';
+      });
+
+      map.on('mouseleave', routeId, function() {
+        map.getCanvas().style.cursor = '';
+      });
+    });
+
+    map.addLayer({
+      id: 'routes-label',
+      type: 'symbol',
+      source: {
+        type: 'geojson',
+        data: geojson
+      },
+      layout: {
+        'text-field': '{route_short_name}',
+        'text-font': [
+          'DIN Offc Pro Medium',
+          'Arial Unicode MS Bold'
+        ],
+        'text-size': 14
+      },
+      filter: ['==', 'route_id', '']
+    });
+
+    map.on('click', function(e) {
+      // set bbox as 5px reactangle area around clicked point
+      var bbox = [[e.point.x - 5, e.point.y - 5], [e.point.x + 5, e.point.y + 5]];
+      var features = map.queryRenderedFeatures(bbox, {layers: routeLayerIds});
+
+      if (!features || !features.length) {
+        return;
+      }
+
+      // Get the first feature and show popup
+      var feature = features[0];
+
+      new mapboxgl.Popup()
+        .setLngLat(e.lngLat)
+        .setHTML(formatRoutePopup(feature))
+        .addTo(map);
+    });
+
+    function highlightRoutes(routeIds) {
+      routeLayerIds.forEach(function(layerId) {
+        if (routeIds.indexOf(layerId) !== -1) {
+          map.setPaintProperty(layerId, 'line-opacity', 1);
+        } else {
+          map.setPaintProperty(layerId, 'line-opacity', 0.1);
+        }
+      });
+
+      map.setFilter('routes-label', ['in', 'route_id'].concat(routeIds));
+
+      var highlightedFeatures = geojson.features.reduce(function(memo, feature) {
+        if (routeIds.indexOf(feature.properties.route_id) !== -1) {
+          memo.push(feature)
+        }
+        return memo;
+      }, []);
+      var zoomBounds = getBounds({features: highlightedFeatures});
+      map.fitBounds(zoomBounds, {padding: 20});
+    }
+
+    function unHighlightRoutes() {
+      routeLayerIds.forEach(function(layerId) {
+        map.setPaintProperty(layerId, 'line-opacity', 0.7);
+      });
+      map.setFilter('routes-label', ['==', 'route_id', '']);
+      map.fitBounds(bounds);
+    }
+
+    // On table hover, highlight route on map
+    $(function() {
+      $('.list-group-item').hover(function() {
+        var routeIds = $(this).data('route-ids').toString().split(',');
+        highlightRoutes(routeIds);
+      }, unHighlightRoutes);
     });
   });
 

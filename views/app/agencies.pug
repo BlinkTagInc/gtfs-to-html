@@ -10,7 +10,7 @@ block content
         .well No agencies found
     else
       .col-md-12
-        ul.list-group
+        .list-group
           each agency in agencies
-            li.list-group-item
-              a.list-group-item(href=`/timetable/${agency.agency_key}`)= agency.agency_name
+            a.list-group-item(href=`/timetable/${agency.agency_key}`)
+              h4.list-group-item-heading= agency.agency_name

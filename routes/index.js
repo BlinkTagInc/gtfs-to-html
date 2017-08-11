@@ -1,7 +1,10 @@
 const _ = require('lodash');
 const gtfs = require('gtfs');
+const pug = require('pug');
 const router = require('express').Router();
 
+const fileUtils = require('../lib/file-utils');
+const geoJSONUtils = require('../lib/geojson-utils');
 const utils = require('../lib/utils');
 
 const selectedConfig = require('../config');
@@ -9,7 +12,7 @@ const selectedConfig = require('../config');
 const config = utils.setDefaultConfig(selectedConfig);
 // Override noHead config option so full HTML pages are generated
 config.noHead = false;
-config.assetPath = '';
+config.assetPath = '/';
 
 /*
  * Show all agencies
@@ -35,8 +38,11 @@ router.get('/timetable/:agencyKey', async (req, res, next) => {
   }
   try {
     const timetablePages = await utils.getTimetablePages(agencyKey);
-    const sortedTimetablePages = _.sortBy(timetablePages, 'timetable_page_label');
-    res.render('app/timetablepages', {agencyKey, timetablePages: sortedTimetablePages});
+    for (const timetablePage of timetablePages) {
+      timetablePage.path = `/timetable/${agencyKey}/${timetablePage.timetable_page_id}`;
+    }
+    const html = await utils.generateOverviewHTML(agencyKey, timetablePages, config);
+    res.send(html);
   } catch (err) {
     next(err);
   }

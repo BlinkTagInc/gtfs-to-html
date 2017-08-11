@@ -17,6 +17,7 @@ Additionally, a map showing the route and all stops can be included in the HTML 
 
 <img width="1265" src="https://user-images.githubusercontent.com/96217/28296063-aed45568-6b1a-11e7-9794-94b3d915d668.png">
 
+<img width="1265" src="https://user-images.githubusercontent.com/96217/29205138-dd3ee5c6-7e2f-11e7-9d86-f17cebd5f118.png">
 
 ## Installation
 

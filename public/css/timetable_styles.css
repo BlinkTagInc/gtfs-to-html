@@ -156,6 +156,19 @@ h3 {
   width: auto;
 }
 
+.route-color-swatch {
+  width: 15px;
+  height: 15px;
+  margin-right: 6px;
+  display: inline-block;
+  vertical-align: -1px;
+}
+
+.overview-list {
+  overflow-y: scroll;
+  margin-bottom: 0;
+}
+
 @media screen and (max-width: 767px) {
   h1 {
     font-size: 24px;
