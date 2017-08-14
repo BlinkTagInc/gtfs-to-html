@@ -4,11 +4,12 @@
 - }
 
 .table-container
-  table.table.table-striped.table-hourly
+  table.table.table-striped.table-hourly(summary= getTimetableSummary(timetable))
+    caption.sr-only= `${timetable.timetable_label} | ${timetable.dayList}`
     thead
       tr
-        th.stop-header(scope="column") Stop
-        th(scope="column") Minutes after the hour
+        th.stop-header(scope="col") Stop
+        th(scope="col") Minutes after the hour
 
     tbody
       - var previousCity
@@ -21,7 +22,7 @@
         tr.stop-row(id=`stop_id_${stop.stop_id}`)
           th(scope="row")
             include timetable_stopname.pug
-          
+
           - trip = stop.trips[0]
           td.stop-time(class=`${trip.classes.join(' ')}`)= formatMinutesAfterTheHour(trip.arrival_formatted_time)
 

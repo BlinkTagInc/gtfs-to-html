@@ -12,8 +12,8 @@ if timetablePage.timetables.length > 1
         .col-md-4
           h3= dayList
           each timetable in group
-            a.btn.btn-default(href=`#timetable_id_${timetable.timetable_id}`)= getTimetableLabel(timetable)
-  
+            a.btn.btn-default(href=`#timetable_id_${timetable.timetable_id}`)= timetable.timetable_label
+
   if config.menuType === 'radio'
     .row
       .col-md-4

@@ -1,5 +1,13 @@
-- function getTimetableLabel(timetable) {
--   return timetable.timetable_label || `${timetable.stops[0].stop_name} to ${timetable.stops[timetable.stops.length - 1].stop_name}`;
+- function getTimetableSummary(timetable) {
+-   var summary = `This table shows schedules for a selection of key stops on the route for ${timetable.timetable_label} ${timetable.dayList}.`;
+-   if (timetable.orientation = 'vertical') {
+-     summary += ' Stops and their schedule times are listed in the columns.';
+-   } else if (timetable.orientation = 'horizontal') {
+-     summary += ' Schedule times are listed in rows, starting with the stop name in the first cell of the row.';
+-   } else if (timetable.orientation = 'hourly') {
+-     summary += ' Schedule times are listed in rows, starting with the stop name in the first cell of the row and the minutes after the hour in the second row.';
+-   }
+-   return summary;
 - }
 
 - function formatStopName(stop) {
@@ -16,18 +24,16 @@
       h1.timetable-page-label= `${timetablePage.timetable_page_label}`
       if config.effectiveDate
         .effective-date= `Effective ${config.effectiveDate}`
-    
+
   include timetable_menu.pug
 
   each timetable in timetablePage.timetables
     .timetable(id=`timetable_id_${timetable.timetable_id}` data-day-list=timetable.dayList data-direction-name=timetable.direction_name data-timetable-id=timetable.timetable_id data-direction-id=timetable.direction_id data-route-id=timetable.route_id)
       .row
         .col-md-12
-          h2.description
-            span= getTimetableLabel(timetable)
-            span= ` | ${timetable.dayList}`
+          h2.description= `${timetable.timetable_label} | ${timetable.dayList}`
           .service-notes= timetable.service_notes
-          
+
       if config.showMap
         .row
           .col-md-12
@@ -40,7 +46,7 @@
             var routeColor = '#{timetable.route.route_color}';
             createMap(id, geojson, routeColor);
           })();
-          
+
       .row
         .col-md-12
           if timetable.orientation === 'horizontal'
@@ -49,14 +55,14 @@
             include timetable_hourly.pug
           else
             include timetable_vertical.pug
-          
+
       .row.timetable-bottom
         .col-md-4.notes
           if timetable.requestStopSymbolUsed
             .note= `${config.requestStopSymbol} = Request stop - call for pickup`
           if timetable.noServiceSymbolUsed
             .note= `${config.noServiceSymbol} = No service at this timepoint`
-            
+
         .col-md-4
           if timetable.specialDates.includedDates.length
             .included-dates Service provided on:
