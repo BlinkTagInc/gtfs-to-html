@@ -29,6 +29,7 @@ const argv = require('yargs')
     .argv;
 
 const gtfsToHtml = require('../');
+const logUtils = require('../lib/log-utils');
 const utils = require('../lib/utils');
 
 function handleError(err) {
@@ -57,7 +58,7 @@ getConfig()
   handleError(err);
 })
 .then(async config => {
-  const log = utils.log(config);
+  const log = logUtils.log(config);
 
   mongoose.Promise = global.Promise;
   mongoose.connect(config.mongoUrl, {useMongoClient: true});

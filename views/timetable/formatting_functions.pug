@@ -1,0 +1,49 @@
+- function getTimetableLabel(timetable) {
+-   if (timetable.timetable_label !== '' && timetable.timetable_label !== undefined) {
+-     return timetable.timetable_label;
+-   }
+-   var timetableLabel = `Route `;
+-   if (timetable.route.route_short_name !== '' && timetable.route.route_short_name !== undefined) {
+-     timetableLabel += timetable.route.route_short_name;
+-   } else if (timetable.route.route_long_name !== '' && timetable.route.route_long_name !== undefined) {
+-     timetableLabel += timetable.route.route_long_name;
+-   }
+-   timetableLabel += ` - ${timetable.stops[0].stop_name} to ${timetable.stops[timetable.stops.length - 1].stop_name}`;
+-   return timetableLabel;
+- }
+
+- function getTimetablePageLabel(timetablePage) {
+-   if (timetablePage.timetable_page_label !== '' && timetablePage.timetable_page_label !== undefined) {
+-     return timetablePage.timetable_page_label;
+-   }
+-   // Get route info from first timetable
+-   var route = timetablePage.timetables[0].route;
+-   var timetableLabel = 'Route ';
+-   if (route.route_short_name !== '' && route.route_short_name !== undefined) {
+-     timetableLabel += `${route.route_short_name} - `;
+-   }
+-   if (route.route_long_name !== '' && route.route_long_name !== undefined) {
+-     timetableLabel += route.route_long_name;
+-   }
+-   return timetableLabel;
+- }
+
+- function getTimetableSummary(timetable) {
+-   var summary = `This table shows schedules for a selection of key stops on the route for ${getTimetableLabel(timetable)} ${timetable.dayList}.`;
+-   if (timetable.orientation = 'vertical') {
+-     summary += ' Stops and their schedule times are listed in the columns.';
+-   } else if (timetable.orientation = 'horizontal') {
+-     summary += ' Schedule times are listed in rows, starting with the stop name in the first cell of the row.';
+-   } else if (timetable.orientation = 'hourly') {
+-     summary += ' Schedule times are listed in rows, starting with the stop name in the first cell of the row and the minutes after the hour in the second row.';
+-   }
+-   return summary;
+- }
+
+- function formatStopName(stop) {
+-   return `${stop.stop_name}${stop.type === 'arrival' ? ' (Arrival)' : stop.type === 'departure' ? ' (Departure)' : ''}`;
+- }
+
+- function formatTripName(trip, idx, showDayList) {
+-   return `${trip.trip_short_name || `Run #${idx + 1}`}${showDayList ? ` ${trip.dayList}` : ''}`;
+- }

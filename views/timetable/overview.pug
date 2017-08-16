@@ -1,3 +1,5 @@
+include formatting_functions.pug
+
 .row
   .col-md-12
     h1.overview-label= `${agency.agency_name} Routes`
@@ -13,7 +15,7 @@
             h4.list-group-item-heading
               if timetablePage.routeColors.length === 1
                 .route-color-swatch(style=`background-color: #${timetablePage.routeColors[0]}`)
-              span= timetablePage.timetable_page_label
+              span= getTimetablePageLabel(timetablePage)
             .list-group-item-text= timetablePage.dayList
     if config.showMap
       .col-md-9

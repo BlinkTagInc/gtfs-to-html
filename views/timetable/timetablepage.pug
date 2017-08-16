@@ -1,27 +1,9 @@
-- function getTimetableSummary(timetable) {
--   var summary = `This table shows schedules for a selection of key stops on the route for ${timetable.timetable_label} ${timetable.dayList}.`;
--   if (timetable.orientation = 'vertical') {
--     summary += ' Stops and their schedule times are listed in the columns.';
--   } else if (timetable.orientation = 'horizontal') {
--     summary += ' Schedule times are listed in rows, starting with the stop name in the first cell of the row.';
--   } else if (timetable.orientation = 'hourly') {
--     summary += ' Schedule times are listed in rows, starting with the stop name in the first cell of the row and the minutes after the hour in the second row.';
--   }
--   return summary;
-- }
-
-- function formatStopName(stop) {
--   return `${stop.stop_name}${stop.type === 'arrival' ? ' (Arrival)' : stop.type === 'departure' ? ' (Departure)' : ''}`;
-- }
-
-- function formatTripName(trip, idx, showDayList) {
--   return `${trip.trip_short_name || `Run #${idx + 1}`}${showDayList ? ` ${trip.dayList}` : ''}`;
-- }
+include formatting_functions.pug
 
 .timetable-page(class=`menu-type-${config.menuType}`)
   .row
     .col-md-12
-      h1.timetable-page-label= `${timetablePage.timetable_page_label}`
+      h1.timetable-page-label= `${getTimetablePageLabel(timetablePage)}`
       if config.effectiveDate
         .effective-date= `Effective ${config.effectiveDate}`
 
@@ -31,7 +13,7 @@
     .timetable(id=`timetable_id_${timetable.timetable_id}` data-day-list=timetable.dayList data-direction-name=timetable.direction_name data-timetable-id=timetable.timetable_id data-direction-id=timetable.direction_id data-route-id=timetable.route_id)
       .row
         .col-md-12
-          h2.description= `${timetable.timetable_label} | ${timetable.dayList}`
+          h2.description= `${getTimetableLabel(timetable)} | ${timetable.dayList}`
           .service-notes= timetable.service_notes
 
       if config.showMap

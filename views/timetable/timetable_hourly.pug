@@ -5,7 +5,7 @@
 
 .table-container
   table.table.table-striped.table-hourly(summary= getTimetableSummary(timetable))
-    caption.sr-only= `${timetable.timetable_label} | ${timetable.dayList}`
+    caption.sr-only= `${getTimetableLabel(timetable)} | ${timetable.dayList}`
     thead
       tr
         th.stop-header(scope="col") Stop

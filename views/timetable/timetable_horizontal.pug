@@ -1,6 +1,6 @@
 .table-container
   table.table.table-striped.table-horizontal(summary= getTimetableSummary(timetable))
-    caption.sr-only= `${timetable.timetable_label} | ${timetable.dayList}`
+    caption.sr-only= `${getTimetableLabel(timetable)} | ${timetable.dayList}`
     colgroup
       col
       each trip, idx in timetable.orderedTrips
