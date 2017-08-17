@@ -39,17 +39,19 @@ include formatting_functions.pug
             include timetable_vertical.pug
 
       .row.timetable-bottom
-        .col-md-4.notes
-          if timetable.requestStopSymbolUsed
-            .note= `${config.requestStopSymbol} = Request stop - call for pickup`
-          if timetable.noServiceSymbolUsed
-            .note= `${config.noServiceSymbol} = No service at this timepoint`
+        if timetable.requestStopSymbolUsed || timetable.noServiceSymbolUsed
+          .col-md-3.notes
+            if timetable.requestStopSymbolUsed
+              .note= `${config.requestStopSymbol} = Request stop - call for pickup`
+            if timetable.noServiceSymbolUsed
+              .note= `${config.noServiceSymbol} = No service at this timepoint`
 
-        .col-md-4
-          if timetable.specialDates.includedDates.length
+        if timetable.specialDates.includedDates.length
+          .col-md-5
             .included-dates Service provided on:&nbsp;
               span= timetable.specialDates.includedDates.join(', ')
-        .col-md-4
-          if timetable.specialDates.excludedDates.length
+
+        if timetable.specialDates.excludedDates.length
+          .col-md-4
             .excluded-dates Service not provided on:&nbsp;
               span= timetable.specialDates.excludedDates.join(', ')
