@@ -60,6 +60,11 @@ h3 {
   font-weight: bold;
 }
 
+.timetable .trip-frequency {
+  text-align: center;
+  font-weight: bold;
+}
+
 .city-row {
   font-size: 1.5em;
   color: #415d86;

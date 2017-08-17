@@ -12,6 +12,9 @@
 
     tbody
       each trip, idx in timetable.orderedTrips
+        each frequency in trip.frequencies
+          tr.trip-row
+            td.trip-frequency(colspan=`${timetable.stops.length}`)= `Runs every ${frequency.headway_min} minutes between ${frequency.start_formatted_time}${frequency.start_formatted_period} and ${frequency.end_formatted_time}${frequency.end_formatted_period}`
         tr.trip-row(id=`trip_id_${trip.trip_id}`)
           each stop in timetable.stops
             - trip = stop.trips[idx]
