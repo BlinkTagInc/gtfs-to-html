@@ -8,7 +8,13 @@
 -   } else if (timetable.route.route_long_name !== '' && timetable.route.route_long_name !== undefined) {
 -     timetableLabel += timetable.route.route_long_name;
 -   }
--   timetableLabel += ` - ${timetable.stops[0].stop_name} to ${timetable.stops[timetable.stops.length - 1].stop_name}`;
+-   var firstStop = timetable.stops[0].stop_name;
+-   var lastStop = timetable.stops[timetable.stops.length - 1].stop_name;
+-   if (firstStop !== lastStop) {
+-     timetableLabel += ` - ${firstStop} to ${lastStop}`;
+-   } else {
+-     timetableLabel += ' - Loop';
+-   }
 -   return timetableLabel;
 - }
 
