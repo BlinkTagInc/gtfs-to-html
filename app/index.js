@@ -15,7 +15,7 @@ const argv = require('yargs')
     })
     .argv;
 
-const routes = require('./routes/index');
+const routes = require('./routes');
 
 const configPath = path.join(process.cwd(), argv.configPath);
 const config = require(configPath);
@@ -30,7 +30,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
 app.use(logger('dev'));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '../public')));
 
 app.use('/', routes);
 
@@ -49,7 +49,7 @@ app.use((req, res) => {
       error: err
     });
   } else {
-    res.render('app/error', {
+    res.render('error', {
       message: err.message,
       error: err
     });
@@ -60,7 +60,7 @@ app.use((req, res) => {
 if (process.env.NODE_ENV === 'development') {
   app.use((err, req, res) => {
     res.status(err.status || 500);
-    res.render('app/error', {
+    res.render('error', {
       message: err.message,
       error: err
     });

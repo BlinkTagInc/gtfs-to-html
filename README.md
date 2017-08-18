@@ -373,17 +373,19 @@ By default, node has a memory limit of 512 MB or 1 GB. If you have a very large 
 
     node --max-old-space-size=2000 /usr/local/bin/gtfs-to-html
 
-## Quick preview of generated HTML
+## Example Application / Previewing generated HTML
 
-After an initial run of `gtfs-to-html`, the GTFS data will be downloaded and loaded into mongo.
+An example Express application that uses `gtfs-to-html` is included in the `app` folder.
 
-You can view an individual route HTML on demand by running the included express app:
+After an initial run of `gtfs-to-html`, the GTFS data will be downloaded and loaded into MongoDB.
 
-    node app.js
+You can view an individual route HTML on demand by running the included Express app:
+
+    node app
 
 By default, `gtfs-to-html` will look for a `config.json` file in the project root. To specify a different path for the configuration file:
 
-    node app.js --configPath /path/to/your/custom-config.json
+    node app --configPath /path/to/your/custom-config.json
 
 Once running, you can view the HTML in your browser at [localhost:3000](http://localhost:3000)
 

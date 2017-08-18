@@ -21,7 +21,7 @@ router.get('/', async (req, res, next) => {
   try {
     const agencies = await gtfs.getAgencies();
     const sortedAgencies = _.sortBy(agencies, 'agency_name');
-    return res.render('app/agencies', {agencies: sortedAgencies});
+    return res.render('agencies', {agencies: sortedAgencies});
   } catch (err) {
     next(err);
   }
