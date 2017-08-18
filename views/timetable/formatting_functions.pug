@@ -53,3 +53,17 @@
 - function formatTripName(trip, idx, showDayList) {
 -   return `${trip.trip_short_name || `Run #${idx + 1}`}${showDayList ? ` ${trip.dayList}` : ''}`;
 - }
+
+- function formatFrequencyWarning(frequencies) {
+-   var warning = 'Trip times shown below are an example only. ';
+-   frequencies.forEach((frequency, idx) => {
+-     if (idx === 0) {
+-       warning += 'This route runs every ';
+-     } else {
+-       warning += ' and ';
+-     }
+-     warning += `${frequency.headway_min} minutes between ${frequency.start_formatted_time}${frequency.start_formatted_period} and ${frequency.end_formatted_time}${frequency.end_formatted_period}`;
+-   });
+-   warning += '.';
+-   return warning;
+- }
