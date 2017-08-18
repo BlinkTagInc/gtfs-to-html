@@ -1,6 +1,28 @@
-- function formatMinutesAfterTheHour(time) {
--   var parts = time.split(':');
--   return parts.length > 1 ? `:${parts[1]}` : '';
+- function getMinutesFromTime(time) {
+-   const tripParts = time.split(':');
+-   return parseInt(tripParts[0], 10) * 60 + parseInt(tripParts[1], 10);
+- }
+
+- function formatTime(time) {
+-   const tripParts = time.split(':');
+-   return `:${tripParts[1]}`
+- }
+
+- function formatTrips(trips, hasFrequencies) {
+-   const times = [];
+-   const firstTripMinutes = getMinutesFromTime(trips[0].arrival_time);
+-   if (hasFrequencies) {
+-     for (const trip of trips) {
+-       const minutes = getMinutesFromTime(trip.arrival_time);
+-       if (minutes >= firstTripMinutes + 60) {
+-         break;
+-       }
+-       times.push(trip.arrival_time);
+-     }
+-   } else {
+-     times.push(trips[0].arrival_time);
+-   }
+-   return times.map(formatTime).join(', ');
 - }
 
 .table-container
@@ -12,6 +34,9 @@
         th(scope="col") Minutes after the hour
 
     tbody
+      if timetable.frequencies
+        tr.trip-row
+          td.trip-frequency(colspan="2")= formatFrequencyWarning(timetable.frequencies)
       - var previousCity
       each stop in timetable.stops
         if previousCity !== stop.stop_city && config.showStopCity
@@ -23,8 +48,7 @@
           th(scope="row")
             include timetable_stopname.pug
 
-          - trip = stop.trips[0]
-          td.stop-time(class=`${trip.classes.join(' ')}`)= formatMinutesAfterTheHour(trip.arrival_formatted_time)
+          td.stop-time= formatTrips(stop.trips, !!timetable.frequencies)
 
 - var firstStop = timetable.stops[0]
 - var firstTripStartTime = firstStop.trips[0]
