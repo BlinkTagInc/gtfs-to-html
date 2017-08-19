@@ -1,5 +1,5 @@
 .table-container
-  table.table.table-vertical(summary= getTimetableSummary(timetable))
+  table.table.table-vertical(summary= getTimetableSummary(timetable) data-orientation="vertical")
     caption.sr-only= `${getTimetableLabel(timetable)} | ${timetable.dayList}`
     colgroup
       each stop, idx in timetable.stops

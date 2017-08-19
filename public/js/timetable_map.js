@@ -181,21 +181,22 @@ function createMap(id, geojson, routeColor) {
     }
 
     // On table hover, highlight stop on map
-    $(function() {
-      var verticalTimetable = $('#' + id + ' .table.table-vertical');
-      var horizontalTimetable = $('#' + id + ' .table.table-horizontal');
-
-      $('th, td', verticalTimetable).hover(function() {
+    $('th, td', $('#' + id + ' table')).hover(function() {
+      var stopId;
+      var table = $(this).parents('table');
+      if (table.data('orientation') === 'vertical') {
         var index = $(this).index();
-        var stopId = $('colgroup col', verticalTimetable).eq(index).data('stop-id').toString();
-        highlightStop(stopId);
-      }, unHighlightStop);
+        stopId = $('colgroup col', table).eq(index).data('stop-id');
+      } else {
+        stopId = $(this).parents('tr').data('stop-id');
+      }
 
-      $('th, td', horizontalTimetable).hover(function() {
-        var stopId = $(this).parents('tr').data('stop-id').toString();
-        highlightStop(stopId);
-      }, unHighlightStop);
-    });
+      if (stopId === undefined) {
+        return;
+      }
+
+      highlightStop(stopId.toString());
+    }, unHighlightStop);
   });
 
   maps[id] = map;

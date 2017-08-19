@@ -13,7 +13,11 @@ Additionally, a map showing the route and all stops can be included in the HTML 
 
 `gtfs-to-html` uses the [`node-gtfs`](https://github.com/blinktaginc/node-gtfs) library to handle importing and querying GTFS data.
 
-`gtfs-to-html` is currently used by [Sonoma Country Transit](http://sctransit.com/) to generate the schedules pages used on their website.
+## Current Usage
+`gtfs-to-html` is currently used by the following transit agencies to generate the schedule pages used on their website:
+
+* [County Connection](https://countyconnectionc.com)
+* [Sonoma Country Transit](http://sctransit.com/)
 
 <img width="1265" src="https://user-images.githubusercontent.com/96217/28296063-aed45568-6b1a-11e7-9794-94b3d915d668.png">
 

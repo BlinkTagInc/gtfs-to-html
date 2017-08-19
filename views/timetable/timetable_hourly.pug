@@ -26,7 +26,7 @@
 - }
 
 .table-container
-  table.table.table-striped.table-hourly(summary= getTimetableSummary(timetable))
+  table.table.table-striped.table-hourly(summary= getTimetableSummary(timetable) data-orientation="hourly")
     caption.sr-only= `${getTimetableLabel(timetable)} | ${timetable.dayList}`
     thead
       tr
@@ -44,8 +44,8 @@
             th(scope="row" colspan="2")= stop.stop_city
         - previousCity = stop.stop_city
 
-        tr.stop-row(id=`stop_id_${stop.stop_id}`)
-          th(scope="row")
+        tr.stop-row(id=`stop_id_${stop.stop_id}` data-stop-id=`${stop.stop_id}`)
+          th.stop-name-container(scope="row")
             include timetable_stopname.pug
 
           td.stop-time= formatTrips(stop.trips, !!timetable.frequencies)
