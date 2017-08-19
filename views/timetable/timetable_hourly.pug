@@ -34,7 +34,7 @@
         th(scope="col") Minutes after the hour
 
     tbody
-      if timetable.frequencies
+      if timetable.frequencies && !timetable.frequencyExactTimes
         tr.trip-row
           td.trip-frequency(colspan="2")= formatFrequencyWarning(timetable.frequencies)
       - var previousCity

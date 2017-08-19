@@ -11,7 +11,7 @@
             include timetable_stopname.pug
 
     tbody
-      if timetable.frequencies
+      if timetable.frequencies && !timetable.frequencyExactTimes
         tr.trip-row
           td.trip-frequency(colspan=`${timetable.stops.length}`)= formatFrequencyWarning(timetable.frequencies)
       each trip, idx in timetable.orderedTrips

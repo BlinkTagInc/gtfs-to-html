@@ -10,7 +10,7 @@
         th.stop-header(scope="col") Stop
         each trip, idx in timetable.orderedTrips
           th.run-header(scope="col")= formatTripName(trip, idx, timetable.showDayList)
-      if timetable.frequencies
+      if timetable.frequencies && !timetable.frequencyExactTimes
         tr.trip-row
           td.trip-frequency(colspan=`${timetable.orderedTrips.length + 1}`)= formatFrequencyWarning(timetable.frequencies)
     tbody
