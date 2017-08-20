@@ -1,30 +1,3 @@
-- function getMinutesFromTime(time) {
--   const tripParts = time.split(':');
--   return parseInt(tripParts[0], 10) * 60 + parseInt(tripParts[1], 10);
-- }
-
-- function formatTime(time) {
--   const tripParts = time.split(':');
--   return `:${tripParts[1]}`
-- }
-
-- function formatTrips(trips, hasFrequencies) {
--   const times = [];
--   const firstTripMinutes = getMinutesFromTime(trips[0].arrival_time);
--   if (hasFrequencies) {
--     for (const trip of trips) {
--       const minutes = getMinutesFromTime(trip.arrival_time);
--       if (minutes >= firstTripMinutes + 60) {
--         break;
--       }
--       times.push(trip.arrival_time);
--     }
--   } else {
--     times.push(trips[0].arrival_time);
--   }
--   return times.map(formatTime).join(', ');
-- }
-
 .table-container
   table.table.table-striped.table-hourly(summary= getTimetableSummary(timetable) data-orientation="hourly")
     caption.sr-only= `${getTimetableLabel(timetable)} | ${timetable.dayList}`
@@ -48,7 +21,7 @@
           th.stop-name-container(scope="row")
             include timetable_stopname.pug
 
-          td.stop-time= formatTrips(stop.trips, !!timetable.frequencies)
+          td.stop-time= stop.hourlyTimes.join(', ')
 
 - var firstStop = timetable.stops[0]
 - var firstTripStartTime = firstStop.trips[0]
