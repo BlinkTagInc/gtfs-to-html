@@ -11,7 +11,8 @@
   "private": false,
   "author": "Brendan Nee <brendan@blinktag.com>",
   "contributors": [
-    "Evan Siroky"
+    "Evan Siroky",
+    "Nathan Selikoff"
   ],
   "repository": "git://github.com/blinktaginc/gtfs-to-html",
   "bugs": {

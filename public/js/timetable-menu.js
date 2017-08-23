@@ -1,11 +1,14 @@
-$(function() {
+/* global window, document, $, maps */
+/* eslint no-var: "off", prefer-arrow-callback: "off", no-unused-vars: "off" */
+
+$(function () {
   showSelectedTimetable();
 
-  $('#day_list_selector input[name="dayList"]').change(function() {
+  $('#day_list_selector input[name="dayList"]').change(function () {
     showSelectedTimetable();
   });
 
-  $('#direction_name_selector input[name="directionName"]').change(function() {
+  $('#direction_name_selector input[name="directionName"]').change(function () {
     showSelectedTimetable();
   });
 

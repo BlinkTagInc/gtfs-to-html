@@ -1,10 +1,7 @@
 const _ = require('lodash');
 const gtfs = require('gtfs');
-const pug = require('pug');
 const router = require('express').Router();
 
-const fileUtils = require('../lib/file-utils');
-const geoJSONUtils = require('../lib/geojson-utils');
 const utils = require('../lib/utils');
 
 const selectedConfig = require('../config');

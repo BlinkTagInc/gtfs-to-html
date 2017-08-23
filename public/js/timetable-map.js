@@ -1,15 +1,18 @@
+/* global window, document, $, mapboxgl */
+/* eslint no-var: "off", prefer-arrow-callback: "off", no-unused-vars: "off" */
+
 var maps = {};
 
 function formatStopPopup(feature) {
   var html = '';
-  html += '<h4>' + feature.properties.stop_name  + '</h4><div>'
+  html += '<h4>' + feature.properties.stop_name + '</h4><div>';
   if (feature.properties.stop_code !== undefined) {
     html += '<label>Stop Code:</label> ' + feature.properties.stop_code + '</div>';
   }
 
   var routes = JSON.parse(feature.properties.routes);
   html += '<div><label>Routes Served:</label></div>';
-  routes.forEach(function(route) {
+  routes.forEach(function (route) {
     if (route.route_url) {
       html += '<div><a href="' + route.route_url + '">' + route.route_short_name + ' ' + route.route_long_name + '</a></div>';
     } else {
@@ -41,11 +44,11 @@ function formatRoutePopup(feature) {
 
 function getBounds(geojson) {
   var bounds = new mapboxgl.LngLatBounds();
-  geojson.features.forEach(function(feature) {
+  geojson.features.forEach(function (feature) {
     if (feature.geometry.type === 'Point') {
       bounds.extend(feature.geometry.coordinates);
     } else if (feature.geometry.type === 'LineString') {
-      feature.geometry.coordinates.forEach(function(coordinate) {
+      feature.geometry.coordinates.forEach(function (coordinate) {
         bounds.extend(coordinate);
       });
     }
@@ -56,7 +59,7 @@ function getBounds(geojson) {
 function createMap(id, geojson, routeColor) {
   var defaultRouteColor = 'FF4728';
 
-  if (!geojson || !geojson.features.length) {
+  if (!geojson || geojson.features.length === 0) {
     $('#map_' + id).hide();
     return false;
   }
@@ -144,20 +147,20 @@ function createMap(id, geojson, routeColor) {
       filter: ['==', 'stop_id', '']
     });
 
-    map.on('mouseenter', 'stops', function() {
+    map.on('mouseenter', 'stops', function () {
       map.getCanvas().style.cursor = 'pointer';
     });
 
-    map.on('mouseleave', 'stops', function() {
+    map.on('mouseleave', 'stops', function () {
       map.getCanvas().style.cursor = '';
     });
 
-    map.on('click', function(e) {
-      // set bbox as 5px reactangle area around clicked point
+    map.on('click', function (e) {
+      // Set bbox as 5px reactangle area around clicked point
       var bbox = [[e.point.x - 5, e.point.y - 5], [e.point.x + 5, e.point.y + 5]];
-      var features = map.queryRenderedFeatures(bbox, { layers: ['stops'] });
+      var features = map.queryRenderedFeatures(bbox, {layers: ['stops']});
 
-      if (!features || !features.length) {
+      if (!features || features.length === 0) {
         return;
       }
 
@@ -181,7 +184,7 @@ function createMap(id, geojson, routeColor) {
     }
 
     // On table hover, highlight stop on map
-    $('th, td', $('#' + id + ' table')).hover(function() {
+    $('th, td', $('#' + id + ' table')).hover(function () {
       var stopId;
       var table = $(this).parents('table');
       if (table.data('orientation') === 'vertical') {
@@ -206,7 +209,7 @@ function createSystemMap(id, geojson) {
   var defaultRouteColor = 'FF4728';
   var routeLayerIds = [];
 
-  if (!geojson || !geojson.features.length) {
+  if (!geojson || geojson.features.length === 0) {
     $('#' + id).hide();
     return false;
   }
@@ -221,7 +224,7 @@ function createSystemMap(id, geojson) {
     center: bounds.getCenter(),
     zoom: 12
   });
-  var routes = geojson.features.reduce(function(memo, feature) {
+  var routes = geojson.features.reduce(function (memo, feature) {
     memo[feature.properties.route_id] = feature.properties;
     return memo;
   }, {});
@@ -234,9 +237,9 @@ function createSystemMap(id, geojson) {
       padding: 20
     });
 
-    Object.keys(routes).forEach(function(routeId) {
+    Object.keys(routes).forEach(function (routeId) {
       routeLayerIds.push(routeId);
-      var routeColor = routes[routeId].route_color || defaultRouteColor
+      var routeColor = routes[routeId].route_color || defaultRouteColor;
       map.addLayer({
         id: routeId,
         type: 'line',
@@ -258,11 +261,11 @@ function createSystemMap(id, geojson) {
         filter: ['==', 'route_id', routeId]
       });
 
-      map.on('mouseenter', routeId, function() {
+      map.on('mouseenter', routeId, function () {
         map.getCanvas().style.cursor = 'pointer';
       });
 
-      map.on('mouseleave', routeId, function() {
+      map.on('mouseleave', routeId, function () {
         map.getCanvas().style.cursor = '';
       });
     });
@@ -285,12 +288,12 @@ function createSystemMap(id, geojson) {
       filter: ['==', 'route_id', '']
     });
 
-    map.on('click', function(e) {
-      // set bbox as 5px reactangle area around clicked point
+    map.on('click', function (e) {
+      // Set bbox as 5px reactangle area around clicked point
       var bbox = [[e.point.x - 5, e.point.y - 5], [e.point.x + 5, e.point.y + 5]];
       var features = map.queryRenderedFeatures(bbox, {layers: routeLayerIds});
 
-      if (!features || !features.length) {
+      if (!features || features.length === 0) {
         return;
       }
 
@@ -304,19 +307,16 @@ function createSystemMap(id, geojson) {
     });
 
     function highlightRoutes(routeIds) {
-      routeLayerIds.forEach(function(layerId) {
-        if (routeIds.indexOf(layerId) !== -1) {
-          map.setPaintProperty(layerId, 'line-opacity', 1);
-        } else {
-          map.setPaintProperty(layerId, 'line-opacity', 0.1);
-        }
+      routeLayerIds.forEach(function (layerId) {
+        var lineOpacity = (routeIds.indexOf(layerId) === -1) ? 0.1 : 1;
+        map.setPaintProperty(layerId, 'line-opacity', lineOpacity);
       });
 
       map.setFilter('routes-label', ['in', 'route_id'].concat(routeIds));
 
-      var highlightedFeatures = geojson.features.reduce(function(memo, feature) {
+      var highlightedFeatures = geojson.features.reduce(function (memo, feature) {
         if (routeIds.indexOf(feature.properties.route_id) !== -1) {
-          memo.push(feature)
+          memo.push(feature);
         }
         return memo;
       }, []);
@@ -325,7 +325,7 @@ function createSystemMap(id, geojson) {
     }
 
     function unHighlightRoutes() {
-      routeLayerIds.forEach(function(layerId) {
+      routeLayerIds.forEach(function (layerId) {
         map.setPaintProperty(layerId, 'line-opacity', 0.7);
       });
       map.setFilter('routes-label', ['==', 'route_id', '']);
@@ -333,8 +333,8 @@ function createSystemMap(id, geojson) {
     }
 
     // On table hover, highlight route on map
-    $(function() {
-      $('.list-group-item').hover(function() {
+    $(function () {
+      $('.list-group-item').hover(function () {
         var routeIds = $(this).data('route-ids').toString().split(',');
         highlightRoutes(routeIds);
       }, unHighlightRoutes);

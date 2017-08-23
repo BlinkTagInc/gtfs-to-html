@@ -2,7 +2,6 @@
 
 const resolve = require('path').resolve;
 
-const _ = require('lodash');
 const fs = require('fs-extra');
 const mongoose = require('mongoose');
 const argv = require('yargs')
