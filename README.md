@@ -211,7 +211,7 @@ API along with your API token.
 
 ### noHead
 
-{Boolean} Whether or not to skip the HTML head and footer when generating the HTML. This is useful for creating embeddable HTML without `<html>`, `<head>` or `<body>` tags. Note that this may not have any effect if you build your own custom template and specify it with `templatePath` option. Defaults to `false`.
+{Boolean} Whether or not to skip the HTML head and footer when generating the HTML. This is useful for creating embeddable HTML without `<html>`, `<head>` or `<body>` tags. Defaults to `false`.
 
 ```
     "noHead": false
@@ -259,10 +259,10 @@ API along with your API token.
 
 ### templatePath
 
-{String} Path to a (pug)[https://pugjs.org/] template for rendering timetables. This is optional. Defaults to using the templates provided in `views/timetable`. All files within the `/views/custom` folder will be .gitignored
+{String} Path to a folder containing (pug)[https://pugjs.org/] template for rendering timetables. This is optional. Defaults to using the templates provided in `views/timetable`. All files within the `/views/custom` folder will be .gitignored. The folder should contain pug templates called `timetablepage.pug`, `timetablepage_full.pug`,  `overview.pug`, and `overview_full.pug`.
 
 ```
-    "templatePath": '/my/path/to/template.pug'
+    "templatePath": 'views/custom/my-agency/'
 ```
 
 ### verbose
