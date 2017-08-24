@@ -1,6 +1,6 @@
 .table-container
   table.table.table-vertical(summary= getTimetableSummary(timetable) data-orientation="vertical")
-    caption.sr-only= `${getTimetableLabel(timetable)} | ${timetable.dayList}`
+    caption.sr-only= `${timetable.timetable_label} | ${timetable.dayList}`
     colgroup
       each stop, idx in timetable.stops
         col(id=`stop_id_${stop.stop_id}` class=`stop-${idx}` data-stop-id=`${stop.stop_id}`)
