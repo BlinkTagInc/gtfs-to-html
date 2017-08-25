@@ -68,8 +68,9 @@ All files starting with `config*.json` are .gitignored - so you can create multi
 | [`menuType`](#menuType) | string | The type of menu to use for selecting timetables on a timetable page. |
 | [`mongoUrl`](#mongoUrl) | string | The URL of the MongoDB database to import to. |
 | [`noHead`](#noHead) | boolean | Whether or not to skip the header and footer of the HTML document. |
-| [`noServiceSymbol`](#noservicesymbol) | string | The symbol to be used when a specific trip does not serve a specified stop. |
-| [`requestStopSymbol`](#requeststopsymbol) | string | The symbol to be used to indicate that riders must request a stop. |
+| [`noServiceSymbol`](#noservicesymbol) | string | The symbol used when a specific trip does not serve a specified stop. |
+| [`requestStopSymbol`](#requeststopsymbol) | string | The symbol used to indicate that riders must request a stop. |
+| [`interpolatedStopSymbol`](#interpolatedStopSymbol) | string | The symbol used to indicate that a timepoint isn't fixed, but just interpolated. |
 | [`showMap`](#showmap) | boolean | Whether or not to show a map of the route on the timetable. |
 | [`showOnlyTimepoint`](#showonlytimepoint) | boolean | Whether or not all stops should be shown, or only stops with a `timepoint` value in `stops.txt`. |
 | [`showStopCity`](#showstopcity) | boolean | Whether or not to show each stop's city. |
@@ -219,7 +220,7 @@ API along with your API token.
 
 ### noServiceSymbol
 
-{String} The symbol to be used when a specific trip does not serve a specified stop. Defaults to `-`.
+{String} The symbol used when a specific trip does not serve a specified stop. Defaults to `-`.
 
 ```
     "noServiceSymbol": "-"
@@ -227,10 +228,18 @@ API along with your API token.
 
 ### requestStopSymbol
 
-{String} The symbol to be used to indicate that riders must request a stop. Defaults to `***`.
+{String} The symbol used to indicate that riders must request a stop. Defaults to `***`.
 
 ```
     "requestStopSymbol": "***"
+```
+
+### interpolatedStopSymbol
+
+{String} The symbol used to indicate that a timepoint isn't fixed, but just interpolated. Defaults to `•`.
+
+```
+    "interpolatedStopSymbol": "•"
 ```
 
 ### showMap

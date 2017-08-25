@@ -12,6 +12,7 @@
   "menuType": "jump",
   "noServiceSymbol": "—",
   "requestStopSymbol": "***",
+  "interpolatedStopSymbol": "•",
   "showMap": true,
   "showOnlyTimepoint": true,
   "showStopCity": false,
