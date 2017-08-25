@@ -2,6 +2,7 @@ const _ = require('lodash');
 const gtfs = require('gtfs');
 const router = require('express').Router();
 
+const formatters = require('../lib/formatters');
 const utils = require('../lib/utils');
 
 const selectedConfig = require('../config');
@@ -37,6 +38,9 @@ router.get('/timetable/:agencyKey', async (req, res, next) => {
     const timetablePages = await utils.getTimetablePages(agencyKey);
     for (const timetablePage of timetablePages) {
       timetablePage.path = `/timetable/${agencyKey}/${timetablePage.timetable_page_id}`;
+      for (const timetable of timetablePage.timetables) {
+        timetable.timetable_label = formatters.formatTimetableLabel(timetable);
+      }
     }
     const html = await utils.generateOverviewHTML(agencyKey, timetablePages, config);
     res.send(html);
@@ -61,6 +65,8 @@ router.get('/timetable/:agencyKey/:timetablePageId', async (req, res, next) => {
   }
   try {
     const timetablePage = await utils.getTimetablePage(agencyKey, timetablePageId);
+    timetablePage.timetables = await utils.formatTimetables(timetablePage.timetables, config);
+
     const results = await utils.generateHTML(timetablePage, config);
     res.send(results.html);
   } catch (err) {
