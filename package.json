@@ -1,7 +1,7 @@
 {
   "name": "gtfs-to-html",
   "description": "Build transit timetables in HTML from a GTFS file",
-  "version": "0.12.3",
+  "version": "0.12.4",
   "keywords": [
     "transit",
     "gtfs",
@@ -12,7 +12,10 @@
   "author": "Brendan Nee <brendan@blinktag.com>",
   "contributors": [
     "Evan Siroky",
-    "Nathan Selikoff"
+    "Nathan Selikoff",
+    "Aaron Antrim <aaron@trilliumtransit.com>",
+    "thomastrillium",
+    "hkvlhm"
   ],
   "repository": "git://github.com/blinktaginc/gtfs-to-html",
   "bugs": {
