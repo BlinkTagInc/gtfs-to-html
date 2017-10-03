@@ -14,9 +14,14 @@ Additionally, a map showing the route and all stops can be included in the HTML 
 `gtfs-to-html` uses the [`node-gtfs`](https://github.com/blinktaginc/node-gtfs) library to handle importing and querying GTFS data.
 
 ## Current Usage
-`gtfs-to-html` is currently used by the following transit agencies to generate the schedule pages used on their website:
+Many transit agencies use `gtfs-to-html` to generate the schedule pages used on their websites, including:
 
-* [County Connection](https://countyconnectionc.com)
+* [Capital Transit (Juneau)](https://juneaucapitaltransit.org/)
+* [County Connection](https://countyconnection.com)
+* [El Dorado County](http://eldoradotransit.com/)
+* [Madera County Connection](http://mcctransit.com/)
+* [NW Connector (Oregon)](http://www.nworegontransit.org/)
+* [Petaluma Transit](http://transit.cityofpetaluma.net/)
 * [Sonoma Country Transit](http://sctransit.com/)
 
 <img width="1265" src="https://user-images.githubusercontent.com/96217/28296063-aed45568-6b1a-11e7-9794-94b3d915d668.png">
