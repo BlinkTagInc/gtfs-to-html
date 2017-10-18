@@ -42,7 +42,15 @@ router.get('/timetable/:agencyKey', async (req, res, next) => {
         timetable.timetable_label = formatters.formatTimetableLabel(timetable);
       }
     }
-    const html = await utils.generateOverviewHTML(agencyKey, timetablePages, config);
+    const sortedTimetablePages = _.sortBy(timetablePages, timetablePage => {
+      if (timetablePage.timetable_page_label !== '' && timetablePage.timetable_page_label !== undefined) {
+        return timetablePage.timetable_page_label;
+      }
+      // Get route info from first timetable
+      return timetablePage.timetables[0].timetable_label;
+    });
+
+    const html = await utils.generateOverviewHTML(agencyKey, sortedTimetablePages, config);
     res.send(html);
   } catch (err) {
     next(err);
