@@ -36,13 +36,17 @@ router.get('/timetable/:agencyKey', async (req, res, next) => {
   }
   try {
     const timetablePages = await utils.getTimetablePages(agencyKey);
-    for (const timetablePage of timetablePages) {
+
+    const formattedTimetablePages = await Promise.all(timetablePages.map(async timetablePage => {
+      timetablePage.timetables = await utils.formatTimetables(timetablePage.timetables, config);
       timetablePage.path = `/timetable/${agencyKey}/${timetablePage.timetable_page_id}`;
       for (const timetable of timetablePage.timetables) {
         timetable.timetable_label = formatters.formatTimetableLabel(timetable);
       }
-    }
-    const sortedTimetablePages = _.sortBy(timetablePages, timetablePage => {
+      return utils.formatTimetablePage(timetablePage);
+    }));
+
+    const sortedTimetablePages = _.sortBy(formattedTimetablePages, timetablePage => {
       if (timetablePage.timetable_page_label !== '' && timetablePage.timetable_page_label !== undefined) {
         return timetablePage.timetable_page_label;
       }
@@ -75,7 +79,9 @@ router.get('/timetable/:agencyKey/:timetablePageId', async (req, res, next) => {
     const timetablePage = await utils.getTimetablePage(agencyKey, timetablePageId);
     timetablePage.timetables = await utils.formatTimetables(timetablePage.timetables, config);
 
-    const results = await utils.generateHTML(timetablePage, config);
+    const formattedTimetablePage = await utils.formatTimetablePage(timetablePage);
+
+    const results = await utils.generateHTML(formattedTimetablePage, config);
     res.send(results.html);
   } catch (err) {
     next(err);
