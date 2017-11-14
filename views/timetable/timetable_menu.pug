@@ -1,13 +1,14 @@
 if timetablePage.timetables.length > 1
   if config.menuType === 'jump'
+    -
+      var groupedTimetables = timetablePage.timetables.reduce((memo, timetable) => {
+        if (!memo.hasOwnProperty(timetable.dayList)) {
+          memo[timetable.dayList] = []
+        }
+        memo[timetable.dayList].push(timetable);
+        return memo;
+      }, {});
     .row.jump-menu
-      - var groupedTimetables = timetablePage.timetables.reduce((memo, timetable) => {
-      -   if (!memo.hasOwnProperty(timetable.dayList)) {
-      -     memo[timetable.dayList] = []
-      -   }
-      -   memo[timetable.dayList].push(timetable);
-      -   return memo;
-      - }, {});
       each group, dayList in groupedTimetables
         .col-md-4
           h3= dayList
