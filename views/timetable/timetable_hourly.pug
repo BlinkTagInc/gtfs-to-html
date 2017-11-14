@@ -19,7 +19,9 @@
 
         tr.stop-row(id=`stop_id_${stop.stop_id}` data-stop-id=`${stop.stop_id}`)
           th.stop-name-container(scope="row")
-            include timetable_stopname.pug
+            .stop-name= formatStopName(stop)
+            .stop-code= stop.stop_code
+            .stop-description= stop.stop_desc
 
           td.stop-time= stop.hourlyTimes.join(', ')
 
@@ -27,4 +29,4 @@
 - var firstTripStartTime = firstStop.trips[0]
 - var lastStop = timetable.stops[timetable.stops.length - 1]
 - var lastTripEndTime = lastStop.trips[lastStop.trips.length - 1]
-.table-hourly-notes= `Service begins at ${firstStop.stop_name} at ${firstTripStartTime.arrival_formatted_time} ${firstTripStartTime.arrival_formatted_period} and ends at ${lastStop.stop_name} at ${lastTripEndTime.arrival_formatted_time} ${lastTripEndTime.arrival_formatted_period}.`
+.table-hourly-notes= `Service begins at ${firstStop.stop_name} at ${firstTripStartTime.formatted_time} ${firstTripStartTime.formatted_period} and ends at ${lastStop.stop_name} at ${lastTripEndTime.formatted_time} ${lastTripEndTime.formatted_period}.`

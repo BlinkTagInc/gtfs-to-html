@@ -8,7 +8,9 @@
       tr
         each stop, idx in timetable.stops
           th.stop-header(scope="col" width=`${(100 / timetable.stops.length).toFixed(2)}%`)
-            include timetable_stopname.pug
+            .stop-name= formatStopName(stop)
+            .stop-code= stop.stop_code
+            .stop-description= stop.stop_desc
 
     tbody
       if timetable.frequencies && !timetable.frequencyExactTimes
@@ -18,4 +20,6 @@
         tr.trip-row(id=`trip_id_${trip.trip_id}`)
           each stop in timetable.stops
             - trip = stop.trips[idx]
-            include timetable_stoptime.pug
+            td.stop-time(class=`${trip.classes.join(' ')}`)
+              span.stop-time-text= trip.formatted_time
+              span.stop-time-period= trip.formatted_period
