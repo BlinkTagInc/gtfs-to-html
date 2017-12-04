@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const gtfs = require('gtfs');
-const router = require('express').Router();
+const express = require('express');
 
 const formatters = require('../lib/formatters');
 const utils = require('../lib/utils');
@@ -11,6 +11,8 @@ const config = utils.setDefaultConfig(selectedConfig);
 // Override noHead config option so full HTML pages are generated
 config.noHead = false;
 config.assetPath = '/';
+
+const router = new express.Router();
 
 /*
  * Show all agencies
