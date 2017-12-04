@@ -57,7 +57,15 @@
   },
   "xo": {
     "esnext": true,
-    "space": true
+    "space": true,
+    "rules": {
+      "camelcase": [
+        "error",
+        {
+          "properties": "never"
+        }
+      ]
+    }
   },
   "false": {}
 }
