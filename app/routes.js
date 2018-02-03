@@ -41,7 +41,7 @@ router.get('/timetable/:agencyKey', async (req, res, next) => {
 
     const formattedTimetablePages = await Promise.all(timetablePages.map(async timetablePage => {
       timetablePage.timetables = await utils.formatTimetables(timetablePage.timetables, config);
-      timetablePage.path = `/timetable/${agencyKey}/${timetablePage.timetable_page_id}`;
+      timetablePage.relativePath = `/timetable/${agencyKey}/${timetablePage.timetable_page_id}`;
       for (const timetable of timetablePage.timetables) {
         timetable.timetable_label = formatters.formatTimetableLabel(timetable);
       }

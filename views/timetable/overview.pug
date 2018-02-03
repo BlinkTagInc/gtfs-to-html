@@ -11,7 +11,7 @@ include formatting_functions.pug
     .col-md-3
       .list-group.overview-list
         each timetablePage in timetablePages
-          a.list-group-item(href=`${timetablePage.path}` data-route-ids=`${timetablePage.routeIds.join(',')}`)
+          a.list-group-item(href=`${timetablePage.relativePath}` data-route-ids=`${timetablePage.routeIds.join(',')}`)
             h4.list-group-item-heading
               if timetablePage.routeColors.length === 1
                 .route-color-swatch(style=`background-color: #${timetablePage.routeColors[0]}`)
