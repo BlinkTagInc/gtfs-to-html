@@ -27,7 +27,7 @@ $(function () {
 
 function showTimetable(id) {
   $('#' + id).show();
-  if (maps[id]) {
+  if (typeof maps !== 'undefined' && maps[id]) {
     maps[id].resize();
   }
 }
