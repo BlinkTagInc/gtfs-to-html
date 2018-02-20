@@ -9,7 +9,7 @@
   "beautify": false,
   "coordinatePrecision": 5,
   "effectiveDate": "July 8, 2016",
-  "menuType": "jump",
+  "menuType": "simple",
   "noServiceSymbol": "—",
   "requestStopSymbol": "***",
   "interpolatedStopSymbol": "•",

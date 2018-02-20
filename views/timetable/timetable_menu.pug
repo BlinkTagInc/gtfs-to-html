@@ -1,4 +1,34 @@
 if timetablePage.timetables.length > 1
+  if config.menuType === 'simple'
+    .row.row-menu
+      .col-md-12
+        ul
+          -
+            var showTimetableLabel = timetablePage.timetables.reduce((memo, timetable, idx) => {
+              if (idx === 0 || memo === true) {
+                return memo;
+              }
+              memo = timetable.timetable_label !== timetablePage.timetables[idx - 1].timetable_label;
+              return memo;
+            }, false);
+            
+            var showDayList = timetablePage.timetables.reduce((memo, timetable, idx) => {
+              if (idx === 0 || memo === true) {
+                return memo;
+              }
+              memo = timetable.dayListLong !== timetablePage.timetables[idx - 1].dayListLong;
+              return memo;
+            }, false);
+          each timetable in timetablePage.timetables
+            li
+              a(href=`#timetable_id_${timetable.timetable_id}`)
+                if showTimetableLabel
+                  span= timetable.timetable_label
+                if showTimetableLabel && showDayList
+                  span &nbsp;|&nbsp;
+                if showDayList
+                  span= timetable.dayListLong
+            
   if config.menuType === 'jump'
     -
       var groupedTimetables = timetablePage.timetables.reduce((memo, timetable) => {
@@ -13,7 +43,7 @@ if timetablePage.timetables.length > 1
         .col-md-4
           h3= dayList
           each timetable in group
-            a.btn.btn-secondary.btn-jump-menu(href=`#timetable_id_${timetable.timetable_id}`)= timetable.timetable_label
+            a.btn.btn-primary.btn-jump-menu(href=`#timetable_id_${timetable.timetable_id}`)= timetable.timetable_label
 
   if config.menuType === 'radio'
     .row.row-menu

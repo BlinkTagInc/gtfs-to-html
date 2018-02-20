@@ -195,7 +195,7 @@ API along with your API token.
 
 ### menuType
 
-{String} The type of menu to use for selecting or navigating to timetables on timetable pages with multiple timetables. Valid choices are `none`, `jump` and `radio`. Defaults to `jump`.
+{String} The type of menu to use for selecting or navigating to timetables on timetable pages with multiple timetables. Valid choices are `none`, `simple`, `jump` and `radio`. Defaults to `simple`.
 
 ```
     "menuType": "jump"

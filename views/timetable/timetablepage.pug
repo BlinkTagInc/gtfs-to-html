@@ -13,7 +13,7 @@ include formatting_functions.pug
     .timetable(id=`timetable_id_${timetable.timetable_id}` data-day-list=timetable.dayList data-direction-name=timetable.direction_name data-timetable-id=timetable.timetable_id data-direction-id=timetable.direction_id data-route-id=timetable.route_id)
       .row
         .col-md-12
-          h2.description= `${timetable.timetable_label} | ${timetable.dayList}`
+          h2.description= `${timetable.timetable_label} | ${timetable.dayListLong}`
           .service-notes= timetable.service_notes
 
       if config.showMap
