@@ -19,7 +19,23 @@ h3 {
   font-size: 16px;
 }
 
-.jump-menu .btn {
+.timetable-page {
+  padding-top: 10px;
+}
+
+.timetable-page-label {
+  margin-bottom: 0;
+}
+
+.effective-date {
+  margin-bottom: 10px;
+}
+
+.row-menu {
+  padding-bottom: 15px;
+}
+
+.btn-jump-menu {
   margin-top: 5px;
   white-space: normal;
 }
@@ -150,11 +166,6 @@ h3 {
 .table-responsive {
   min-height: .01%;
   overflow-x: auto;
-}
-
-.table-horizontal tbody tr th.stop-name-container {
-  width: 250px;
-  display: block;
 }
 
 .table-hourly {
