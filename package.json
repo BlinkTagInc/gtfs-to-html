@@ -1,7 +1,7 @@
 {
   "name": "gtfs-to-html",
   "description": "Build transit timetables in HTML from a GTFS file",
-  "version": "0.13.7",
+  "version": "0.13.8",
   "keywords": [
     "transit",
     "gtfs",
@@ -36,11 +36,11 @@
     "cli-table": "^0.3.1",
     "express": "^4.16.2",
     "fs-extra": "^5.0.0",
-    "gtfs": "1.5.0",
+    "gtfs": "1.5.1",
     "js-beautify": "^1.7.5",
     "lodash": "^4.17.5",
     "moment": "^2.20.1",
-    "mongoose": "5.0.3",
+    "mongoose": "5.0.6",
     "morgan": "^1.9.0",
     "pug": "^2.0.0-rc.4",
     "sanitize-filename": "^1.6.1",
@@ -50,7 +50,7 @@
     "yargs": "^11.0.0"
   },
   "devDependencies": {
-    "xo": "^0.18.2"
+    "xo": "^0.20.3"
   },
   "engines": {
     "node": ">= 8.1.4"
