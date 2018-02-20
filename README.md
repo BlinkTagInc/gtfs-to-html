@@ -355,7 +355,7 @@ An example of this file is located in [examples/timetable_pages.txt](examples/ti
 | ----------- | ----------- |
 | `timetable_page_id` | A unique ID for the timetable page |
 | `timetable_page_label` | A label that will show up on the top of the page. Optional, defaults to using route name. |
-| `filename` | The filename to use for the generated HTML file. |
+| `filename` | The filename to use for the generated HTML file. Optional, defaults to `timetable_page_id` with file extension `.html`, for example `1.html`. |
 
 ## Running
 
