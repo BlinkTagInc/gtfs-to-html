@@ -168,6 +168,10 @@ h3 {
   overflow-x: auto;
 }
 
+.table-horizontal tbody tr th.stop-name-container {
+  min-width: 250px;
+}
+
 .table-hourly {
   width: auto;
 }
@@ -244,5 +248,9 @@ h3 {
   .table-responsive > .table-bordered > tbody > tr:last-child > td,
   .table-responsive > .table-bordered > tfoot > tr:last-child > td {
     border-bottom: 0;
+  }
+
+  .table-horizontal tbody tr th.stop-name-container {
+    min-width: 175px;
   }
 }
