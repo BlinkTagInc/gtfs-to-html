@@ -31,7 +31,6 @@
   },
   "main": "index",
   "dependencies": {
-    "@mapbox/geojson-merge": "^1.0.2",
     "archiver": "^2.1.1",
     "cli-table": "^0.3.1",
     "express": "^4.16.2",
