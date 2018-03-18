@@ -32,9 +32,11 @@ Many transit agencies use `gtfs-to-html` to generate the schedule pages used on 
 
 ## Installation
 
-Install `gtfs-to-html` directly from [npm](https://npmjs.org):
+If you would like to use this library as a command-line utility, you can install it globally directly from [npm](https://npmjs.org):
 
     npm install gtfs-to-html -g
+
+If you are using this as a node module as part of an application, you can include it in your project's `package.json` file.
 
 ## Command-line example
 
