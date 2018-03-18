@@ -17,14 +17,17 @@ Additionally, a map showing the route and all stops can be included in the HTML 
 Many transit agencies use `gtfs-to-html` to generate the schedule pages used on their websites, including:
 
 * [Capital Transit (Juneau)](https://juneaucapitaltransit.org/)
-* [County Connection](https://countyconnection.com)
+* [County Connection (Contra Costa County, California)](https://countyconnection.com)
 * [El Dorado County](http://eldoradotransit.com/)
 * [Madera County Connection](http://mcctransit.com/)
+* [Marin transit](https://marintransit.org/)
 * [NW Connector (Oregon)](http://www.nworegontransit.org/)
 * [Petaluma Transit](http://transit.cityofpetaluma.net/)
 * [Sonoma Country Transit](http://sctransit.com/)
 
 `gtfs-to-html` is used as an integral part of [`transit-custom-posts`](https://trilliumtransit.github.io/transit-custom-posts/) - a GTFS-optimized Wordpress plugin for transit websites.
+
+Let us know via opening a github issue or pull request if your agency is using this library.
 
 <img width="1265" src="https://user-images.githubusercontent.com/96217/28296063-aed45568-6b1a-11e7-9794-94b3d915d668.png">
 
