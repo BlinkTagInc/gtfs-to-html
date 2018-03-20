@@ -315,13 +315,14 @@ An example of this file is located in [examples/timetables.txt](examples/timetab
 | `direction_id` | The `direction_id` from `trips.txt` for the timetable. This can be blank. |
 | `start_date` | The start date for this timetable in `YYYY-MM-DD` format. |
 | `end_date` | The end date for this timetable in `YYYY-MM-DD` format. |
-| `monday` | A binary value that indicates whether this timetable should include service on Mondays.  Valid options are `0` and `1`. |
-| `tuesday` | A binary value that indicates whether this timetable should include service on Tuesdays.  Valid options are `0` and `1`. |
-| `wednesday` | A binary value that indicates whether this timetable should include service on Wednesdays.  Valid options are `0` and `1`. |
-| `thursday` | A binary value that indicates whether this timetable should include service on Thursdays.  Valid options are `0` and `1`. |
-| `friday` | A binary value that indicates whether this timetable should include service on Fridays.  Valid options are `0` and `1`. |
-| `saturday` | A binary value that indicates whether this timetable should include service on Saturdays.  Valid options are `0` and `1`. |
-| `sunday` | A binary value that indicates whether this timetable should include service on Sundays.  Valid options are `0` and `1`. |
+| `monday` | A binary value that indicates whether this timetable should include service on Mondays. Valid options are `0` and `1`. |
+| `tuesday` | A binary value that indicates whether this timetable should include service on Tuesdays. Valid options are `0` and `1`. |
+| `wednesday` | A binary value that indicates whether this timetable should include service on Wednesdays. Valid options are `0` and `1`. |
+| `thursday` | A binary value that indicates whether this timetable should include service on Thursdays. Valid options are `0` and `1`. |
+| `friday` | A binary value that indicates whether this timetable should include service on Fridays. Valid options are `0` and `1`. |
+| `saturday` | A binary value that indicates whether this timetable should include service on Saturdays. Valid options are `0` and `1`. |
+| `sunday` | A binary value that indicates whether this timetable should include service on Sundays. Valid options are `0` and `1`. |
+| `exclude_exceptions` | A binary value that indicates whether or not to exclude exceptions of type `1` from `calendar_dates.txt`, such as holiday service on a weekday. Valid options are `0` and `1`. Optional, defaults to `0`. |
 | `timetable_label` | A short text label describing the timetable, for instance "Route 4 Northbound Mon-Fri". Optional, defaults to route name and first and last stops. |
 | `service_notes` | Text shown on the timetable about the service represented. Optional. |
 | `orientation` | Determines if the top row should be a list of trips or stops. Valid options are `vertical`, `horizontal` or `hourly`. `vertical` shows stops across the top row with each row being a list of stop times for each trip. `horizontal` shows trips across the top row with each row being stop times for a specific stop. `hourly` is for routes that run the same time each hour and will print a simplified schedule showing minutes after the hour for each stop. `horizontal` orientation is best for routes with lots of stops and fewer trips while `vertical` orientation is best for routes with lots of trips and a smaller number of stops. Default is `vertical` |
