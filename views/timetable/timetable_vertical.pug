@@ -20,6 +20,4 @@
         tr.trip-row(id=`trip_id_${trip.trip_id}`)
           each stop in timetable.stops
             - trip = stop.trips[idx]
-            td.stop-time(class=`${trip.classes.join(' ')}`)
-              span.stop-time-text= trip.formatted_time
-              span.stop-time-period= trip.formatted_period
+            include timetable_stoptime.pug

@@ -28,6 +28,4 @@
             .stop-description= stop.stop_desc
 
           each trip in stop.trips
-            td.stop-time(class=`${trip.classes.join(' ')}`)
-              span.stop-time-text= trip.formatted_time
-              span.stop-time-period= trip.formatted_period
+            include timetable_stoptime.pug
