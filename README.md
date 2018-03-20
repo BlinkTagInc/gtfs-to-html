@@ -353,7 +353,7 @@ If you would like to show a stop twice in a row to accommodate different arrival
 
 ## Build `timetable_pages.txt`
 
-This project supports an additional non-standard file `timetable_pages.txt` which can be included in an agency's GTFS. This file specifies to GTFS-to-HTML which HTML timetable to group together into a single HTML page.
+This project supports an additional non-standard file `timetable_pages.txt` which can be included in an agency's GTFS. This file specifies which HTML timetable to group together into a single HTML page.
 
 An example of this file is located in [examples/timetable_pages.txt](examples/timetable_pages.txt). The format of this file is:
 
@@ -362,6 +362,21 @@ An example of this file is located in [examples/timetable_pages.txt](examples/ti
 | `timetable_page_id` | A unique ID for the timetable page |
 | `timetable_page_label` | A label that will show up on the top of the page. Optional, defaults to using route name. |
 | `filename` | The filename to use for the generated HTML file. Optional, defaults to `timetable_page_id` with file extension `.html`, for example `1.html`. |
+
+
+
+## Build `stop_attributes.txt`
+
+This is an optional file which can be included in an agency's GTFS to include additional information about specific stops. This can be used when styling timetables to add additional useful information not included in GTFS, such as the city that the stop is in
+
+An example of this file is located in [examples/stop_attributes.txt](examples/stop_attributes.txt). This feature is in development and additional fields may be added or changes to the way this works could happen in the future.
+
+The format of this file is:
+
+| column name | description |
+| ----------- | ----------- |
+| `stop_id` | A `stop_id` from `stops.txt` |
+| `stop_city` | The name of the city or region that the stop is in. |
 
 ## Running
 
