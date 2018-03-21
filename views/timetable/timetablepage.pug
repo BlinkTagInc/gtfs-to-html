@@ -46,7 +46,7 @@ include formatting_functions.pug
             if timetable.noServiceSymbolUsed
               .note= `${config.noServiceSymbol} = No service at this stop`
             if timetable.interpolatedStopSymbolUsed
-              .note= `${config.interpolatedStopSymbol} = Vehicle will serve stop between adjacent timed stops`
+              .note= `${config.interpolatedStopSymbol} = Stop times between timepoints are approximate`
 
         if timetable.specialDates.includedDates.length
           .col-md-4
