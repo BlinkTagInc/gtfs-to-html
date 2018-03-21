@@ -64,6 +64,10 @@ h3 {
   text-align: center;
 }
 
+.timetable .run-header {
+  text-align: center;
+}
+
 .timetable .stop-code {
   font-weight: normal;
 }
