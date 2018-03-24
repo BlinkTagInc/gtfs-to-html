@@ -48,12 +48,12 @@ include formatting_functions.pug
             if timetable.interpolatedStopSymbolUsed
               .note= `${config.interpolatedStopSymbol} = Stop times between timepoints are approximate`
 
-        if timetable.specialDates.includedDates.length
+        if timetable.calendarDates.includedDates.length
           .col-md-4
             .included-dates Service provided on:&nbsp;
-              span= timetable.specialDates.includedDates.join(', ')
+              span= timetable.calendarDates.includedDates.join(', ')
 
-        if timetable.specialDates.excludedDates.length
+        if timetable.calendarDates.excludedDates.length
           .col-md-4
             .excluded-dates Service not provided on:&nbsp;
-              span= timetable.specialDates.excludedDates.join(', ')
+              span= timetable.calendarDates.excludedDates.join(', ')
