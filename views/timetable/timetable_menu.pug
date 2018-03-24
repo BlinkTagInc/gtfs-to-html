@@ -2,7 +2,7 @@ if timetablePage.timetables.length > 1
   if config.menuType === 'simple'
     .row.row-menu
       .col-md-12
-        ul
+        ul.timetable-menu
           -
             var showTimetableLabel = timetablePage.timetables.reduce((memo, timetable, idx) => {
               if (idx === 0 || memo === true) {
