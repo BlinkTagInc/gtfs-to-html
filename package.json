@@ -33,6 +33,7 @@
   "dependencies": {
     "archiver": "^2.1.1",
     "cli-table": "^0.3.1",
+    "colors": "^1.2.1",
     "express": "^4.16.3",
     "fs-extra": "^5.0.0",
     "gtfs": "1.6.1",
