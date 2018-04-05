@@ -85,6 +85,7 @@ All files starting with `config*.json` are .gitignored - so you can create multi
 | [`interpolatedStopSymbol`](#interpolatedStopSymbol) | string | The symbol used to indicate that a timepoint isn't fixed, but just interpolated. |
 | [`showMap`](#showmap) | boolean | Whether or not to show a map of the route on the timetable. |
 | [`showOnlyTimepoint`](#showonlytimepoint) | boolean | Whether or not all stops should be shown, or only stops with a `timepoint` value in `stops.txt`. |
+| [`showRouteTitle`](#showroutetitle) | boolean | Whether or not to show the route title at the top of the timetable page. |
 | [`showStopCity`](#showstopcity) | boolean | Whether or not to show each stop's city. |
 | [`templatePath`](#templatepath) | string | Path to custom pug template for rendering timetable. |
 | [`verbose`](#verbose) | boolean | Whether or not to print output to the console. |
@@ -268,6 +269,14 @@ API along with your API token.
 
 ```
     "showOnlyTimepoint": false
+```
+
+### showRouteTitle
+
+{Boolean} Whether or not to show the route title at the top of the timetable page. Defaults to `true`, showing the route title.
+
+```
+    "showRouteTitle": true
 ```
 
 ### showStopCity

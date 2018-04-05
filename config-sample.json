@@ -15,6 +15,7 @@
   "interpolatedStopSymbol": "•",
   "showMap": true,
   "showOnlyTimepoint": true,
+  "showRouteTitle": true,
   "showStopCity": false,
   "mapboxAccessToken": "YOUR MAPBOX ACCESS TOKEN'",
   "zipOutput": false

@@ -1,11 +1,12 @@
 include formatting_functions.pug
 
 .timetable-page(class=`menu-type-${config.menuType}`)
-  .row
-    .col-md-12
-      h1.timetable-page-label= getTimetablePageLabel(timetablePage)
-      if config.effectiveDate
-        .effective-date= `Effective ${config.effectiveDate}`
+  if config.showRouteTitle
+    .row
+      .col-md-12
+        h1.timetable-page-label= getTimetablePageLabel(timetablePage)
+        if config.effectiveDate
+          .effective-date= `Effective ${config.effectiveDate}`
 
   include timetable_menu.pug
 
