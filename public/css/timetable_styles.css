@@ -90,27 +90,6 @@ h3 {
   color: #415d86;
 }
 
-/* Map Styles */
-
-.map {
-  width: 100%;
-  height: 300px;
-}
-
-.map .marker {
-  width: 15px;
-  height: 15px;
-  border: 1px solid #111;
-  border-radius: 16px;
-  background: #4171ff;
-  cursor: pointer;
-  opacity: 0.9;
-}
-
-.map .mapboxgl-popup-content h4 {
-  margin: 0 20px 0 0;
-}
-
 .timetable .table-container {
   overflow-x: scroll;
 }
@@ -191,6 +170,27 @@ h3 {
 .overview-list {
   overflow-y: scroll;
   margin-bottom: 0;
+}
+
+/* Map Styles */
+
+.map {
+  width: 100%;
+  height: 300px;
+}
+
+.map .marker {
+  width: 15px;
+  height: 15px;
+  border: 1px solid #111;
+  border-radius: 16px;
+  background: #4171ff;
+  cursor: pointer;
+  opacity: 0.9;
+}
+
+.map .mapboxgl-popup-content h4 {
+  margin: 0 20px 0 0;
 }
 
 @media screen and (max-width: 767px) {
