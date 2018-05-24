@@ -7,21 +7,26 @@
 
 [![NPM](https://nodei.co/npm/gtfs-to-html.png?downloads=true)](https://nodei.co/npm/gtfs-to-html/)
 
-`gtfs-to-html` converts transit data in [GTFS format](https://developers.google.com/transit/gtfs/) into user-friendly HTML schedules. Many transit agencies have schedule data in GTFS format but need to show each route's schedule to users on a website. This project aims to automate the process of creating these schedules. Automating HTML schedule generation makes it easy to keep schedules up to date when data changes and reduces the likelihood of errors.
+`gtfs-to-html` converts transit data in [GTFS format](https://developers.google.com/transit/gtfs/) into user-friendly HTML schedules. Many transit agencies have schedule data in GTFS format but need to show each route's schedule to users on a website. This project automates the process of creating schedules in HTML format for posting to a transit agency website. This makes it easy to keep schedules up to date and accurate when schedule changes happen and reduces the likelihood of errors.
 
-Additionally, a map showing the route and all stops can be included in the HTML schedule page. See the `showMap` configuration option below.
+`gtfs-to-html` can also generate a map for each route that can be included with the schedule page. The map shows all stops for the route and lists all routes that serve each stop. See the `showMap` configuration option below. If you'd rather just get all stops and route info as geoJSON, see [gtfs-to-geojson](https://github.com/blinktaginc/gtfs-to-geojson).
 
 `gtfs-to-html` uses the [`node-gtfs`](https://github.com/blinktaginc/node-gtfs) library to handle importing and querying GTFS data.
 
 ## Current Usage
 Many transit agencies use `gtfs-to-html` to generate the schedule pages used on their websites, including:
 
+* [Advance Transit](https://advancetransit.com/)
 * [Capital Transit (Juneau)](https://juneaucapitaltransit.org/)
 * [County Connection (Contra Costa County, California)](https://countyconnection.com)
 * [El Dorado County](http://eldoradotransit.com/)
+* [Humboldt Trasnit Authority](http://hta.org/)
+* [Kings Area Rural Transit (KART)](http://mykartbus.com/)
 * [Madera County Connection](http://mcctransit.com/)
-* [Marin transit](https://marintransit.org/)
+* [Marin Transit](https://marintransit.org/)
+* [Mountain Transit](http://mountaintransit.org/)
 * [NW Connector (Oregon)](http://www.nworegontransit.org/)
+* [Palo Verde Valley Transit Agency](http://pvvta.com/)
 * [Petaluma Transit](http://transit.cityofpetaluma.net/)
 * [Sonoma Country Transit](http://sctransit.com/)
 
@@ -259,6 +264,8 @@ API along with your API token.
 
 {Boolean} Whether or not to show a map of the route on the timetable. Defaults to `false`.
 
+If you'd rather just get all stops and route info as geoJSON, see [gtfs-to-geojson](https://github.com/blinktaginc/gtfs-to-geojson).
+
 ```
     "showMap": false
 ```
@@ -289,7 +296,7 @@ API along with your API token.
 
 ### templatePath
 
-{String} Path to a folder containing (pug)[https://pugjs.org/] template for rendering timetables. This is optional. Defaults to using the templates provided in `views/timetable`. All files within the `/views/custom` folder will be .gitignored. The folder should contain pug templates called `timetablepage.pug`, `timetablepage_full.pug`,  `overview.pug`, and `overview_full.pug`.
+{String} Path to a folder containing (pug)[https://pugjs.org/] template for rendering timetables. This is optional. Defaults to using the templates provided in `views/timetable`. All files within the `/views/custom` folder will be .gitignored, so you can copy the `views/timetable` folder to `views/custom/myagency` and make any modifications needed. Any custom views folder should conatain pug templates called `timetablepage.pug`, `timetablepage_full.pug`,  `overview.pug`, and `overview_full.pug`.
 
 ```
     "templatePath": 'views/custom/my-agency/'
