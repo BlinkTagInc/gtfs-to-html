@@ -1,4 +1,4 @@
-timetable_id,route_id,direction_id,start_date,end_date,monday,tuesday,wednesday,thursday,friday,saturday,sunday,exclude_exceptions,timetable_label,service_notes,orientation,timetable_page_id,timetable_sequence,direction_name
+timetable_id,route_id,direction_id,start_date,end_date,monday,tuesday,wednesday,thursday,friday,saturday,sunday,include_exceptions,timetable_label,service_notes,orientation,timetable_page_id,timetable_sequence,direction_name
 0,2034,0,20150101,20151122,1,1,1,1,1,1,0,0,101 Northbound,Mon-Sat,horizontal,1,0,Northbound
 1,2035,1,20150819,20151122,1,1,0,1,1,0,0,0,101T Northbound,"Mon,Tue,Thur,Fri",horizontal,1,0,Northbound
 2,2035,0,20150819,20151122,0,0,1,0,0,0,0,0,101T Southbound,Wednesday,horizontal,1,0,Southbound
