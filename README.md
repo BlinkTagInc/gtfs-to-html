@@ -7,9 +7,11 @@
 
 [![NPM](https://nodei.co/npm/gtfs-to-html.png?downloads=true)](https://nodei.co/npm/gtfs-to-html/)
 
-`gtfs-to-html` converts transit data in [GTFS format](https://developers.google.com/transit/gtfs/) into user-friendly HTML schedules. Many transit agencies have schedule data in GTFS format but need to show each route's schedule to users on a website. This project automates the process of creating schedules in HTML format for posting to a transit agency website. This makes it easy to keep schedules up to date and accurate when schedule changes happen and reduces the likelihood of errors.
+`gtfs-to-html` creates human-readable, user-friendly transit timetables in HTML format from [GTFS transit data](https://developers.google.com/transit/gtfs/). Most transit agencies have schedule data in GTFS format but need to show each route's schedule to users on a website. This project automates the process of creating nicely formatted HTML schedules for inclusion on a transit agency website. This makes it easy to keep schedules up to date and accurate when schedule changes happen and reduces the likelihood of errors.
 
-`gtfs-to-html` can also generate a map for each route that can be included with the schedule page. The map shows all stops for the route and lists all routes that serve each stop. See the `showMap` configuration option below. If you'd rather just get all stops and route info as geoJSON, see [gtfs-to-geojson](https://github.com/blinktaginc/gtfs-to-geojson).
+`gtfs-to-html` has many options that configure how schedules are presented. It also allows using a completely custom template which makes it easy to build chunks of HTML that will fit perfectly into any website using any HTML structure and classes that you'd like.
+
+`gtfs-to-html` can also generate a map for each route that can be included with the schedule page. The map shows all stops for the route and lists all routes that serve each stop. See the `showMap` configuration option below. If you'd rather just get all stops and route info as geoJSON, check out the  [gtfs-to-geojson](https://github.com/blinktaginc/gtfs-to-geojson) package.
 
 `gtfs-to-html` uses the [`node-gtfs`](https://github.com/blinktaginc/node-gtfs) library to handle importing and querying GTFS data.
 
@@ -20,7 +22,7 @@ Many transit agencies use `gtfs-to-html` to generate the schedule pages used on 
 * [Capital Transit (Juneau)](https://juneaucapitaltransit.org/)
 * [County Connection (Contra Costa County, California)](https://countyconnection.com)
 * [El Dorado County](http://eldoradotransit.com/)
-* [Humboldt Trasnit Authority](http://hta.org/)
+* [Humboldt Transit Authority](http://hta.org/)
 * [Kings Area Rural Transit (KART)](http://mykartbus.com/)
 * [Madera County Connection](http://mcctransit.com/)
 * [Marin Transit](https://marintransit.org/)
@@ -30,9 +32,9 @@ Many transit agencies use `gtfs-to-html` to generate the schedule pages used on 
 * [Petaluma Transit](http://transit.cityofpetaluma.net/)
 * [Sonoma Country Transit](http://sctransit.com/)
 
-`gtfs-to-html` is used as an integral part of [`transit-custom-posts`](https://trilliumtransit.github.io/transit-custom-posts/) - a GTFS-optimized Wordpress plugin for transit websites.
+Are you using `gtfs-to-html`? Let us know via opening a github issue or pull request if your agency is using this library.
 
-Let us know via opening a github issue or pull request if your agency is using this library.
+`gtfs-to-html` is used as an integral part of [`transit-custom-posts`](https://trilliumtransit.github.io/transit-custom-posts/) - a GTFS-optimized Wordpress plugin for transit websites.
 
 <img width="1265" src="https://user-images.githubusercontent.com/96217/28296063-aed45568-6b1a-11e7-9794-94b3d915d668.png">
 
