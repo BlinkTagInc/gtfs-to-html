@@ -41,6 +41,11 @@ router.get('/timetable/:agencyKey', async (req, res, next) => {
 
     const formattedTimetablePages = await Promise.all(timetablePages.map(async timetablePage => {
       timetablePage.timetables = await utils.formatTimetables(timetablePage.timetables, config);
+
+      if (!timetablePage.timetables || timetablePage.timetables.length === 0) {
+        console.error(`No timetables found for timetable_page_id=${timetablePage.timetable_page_id}`);
+      }
+
       timetablePage.relativePath = `/timetable/${agencyKey}/${timetablePage.timetable_page_id}`;
       for (const timetable of timetablePage.timetables) {
         timetable.timetable_label = formatters.formatTimetableLabel(timetable);
@@ -80,6 +85,10 @@ router.get('/timetable/:agencyKey/:timetablePageId', async (req, res, next) => {
   try {
     const timetablePage = await utils.getTimetablePage(agencyKey, timetablePageId);
     timetablePage.timetables = await utils.formatTimetables(timetablePage.timetables, config);
+
+    if (!timetablePage.timetables || timetablePage.timetables.length === 0) {
+      throw new Error(`No timetables found for timetable_page_id=${timetablePage.timetable_page_id}`);
+    }
 
     const formattedTimetablePage = await utils.formatTimetablePage(timetablePage);
 
