@@ -12,12 +12,21 @@
             .stop-code= stop.stop_code
             .stop-description= stop.stop_desc
 
+        if timetable.show_continues_as = 1
+          th.stop-header.continues-as Continues as route
+
     tbody
       if timetable.frequencies && !timetable.frequencyExactTimes
         tr.trip-row
           td.trip-frequency(colspan=`${timetable.stops.length}`)= formatFrequencyWarning(timetable.frequencies)
+            
+          if timetable.show_continues_as = 1
+            td
       each trip, idx in timetable.orderedTrips
         tr.trip-row(id=`trip_id_${trip.trip_id}`)
           each stop in timetable.stops
-            - trip = stop.trips[idx]
+            - stoptime = stop.trips[idx]
             include timetable_stoptime.pug
+            
+          if timetable.show_continues_as = 1
+            include timetable_continuation.pug

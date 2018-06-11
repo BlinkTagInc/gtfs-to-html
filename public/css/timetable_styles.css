@@ -68,6 +68,14 @@ h3 {
   text-align: center;
 }
 
+.timetable .run-footer {
+  text-align: center;
+}
+
+.timetable .run-footer .continues-as-route{
+  font-weight: bold;
+}
+
 .timetable .stop-code {
   font-weight: normal;
 }
