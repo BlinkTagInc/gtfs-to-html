@@ -345,6 +345,8 @@ An example of this file is located in [examples/timetables.txt](examples/timetab
 | `timetable_page_id` | The timetable page to include this timetable on |
 | `timetable_sequence` | The order that this timetable should appear on the timetable page |
 | `direction_name` | The human readable name of the direction of the timetable, such as "Southbound" |
+| `show_continues_as` | A binary value that indicates whether this timetable should show an additional column or row indicating which trips continue on as a different route. This is calculated by trips that share the same `block_id` in `trips.txt`. Valid options are `0` and `1`.  Optional, defaults to `0`. |
+
 
 ### Multi-route Timetables
 
