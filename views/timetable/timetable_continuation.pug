@@ -1,0 +1,6 @@
+td.run-footer
+  if trip.continues_as
+    if trip.continues_as.route.route_url
+      a.continues-as-route(href=`${trip.continues_as.route.route_url}`)= trip.continues_as.route.route_short_name
+    else
+      .continues-as-route= trip.continues_as.route.route_short_name

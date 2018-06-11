@@ -1,9 +1,9 @@
-td.stop-time(class=`${trip.classes.join(' ')}`)
-  span.stop-time-text= trip.formatted_time
-  span.stop-time-period= trip.formatted_period
-  if trip.skipped
+td.stop-time(class=`${stoptime.classes.join(' ')}`)
+  span.stop-time-text= stoptime.formatted_time
+  span.stop-time-period= stoptime.formatted_period
+  if stoptime.skipped
     span.symbol= timetable.noServiceSymbol
-  if trip.interpolated
+  if stoptime.interpolated
     span.symbol= timetable.interpolatedStopSymbol
-  if trip.request
+  if stoptime.request
     span.symbol= timetable.requestStopSymbol
