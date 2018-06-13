@@ -1,0 +1,6 @@
+if config.linkStopUrls && stop.stop_url
+  a.stop-name(href=`${stop.stop_url}`)= formatStopName(stop)
+else
+  .stop-name= formatStopName(stop)
+.stop-code= stop.stop_code
+.stop-description= stop.stop_desc

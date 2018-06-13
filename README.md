@@ -95,6 +95,7 @@ All files starting with `config*.json` are .gitignored - so you can create multi
 | [`beautify`](#beautify) | boolean | Whether or not to beautify the HTML output. |
 | [`coordinatePrecision`](#coordinateprecision) | integer | Number of decimal places to include in geoJSON map output. |
 | [`effectiveDate`](#effectivedate) | string | A date to print at the top of the timetable |
+| [`linkStopUrls`](#linkStopUrls) | boolean | Whether or not to hyperlink timetable stop names to the `stop_url` defined in `stops.txt`. |
 | [`mapboxAccessToken`](#mapboxaccesstoken) | string | The Mapbox access token for generating a map of the route. |
 | [`menuType`](#menuType) | string | The type of menu to use for selecting timetables on a timetable page. |
 | [`mongoUrl`](#mongoUrl) | string | The URL of the MongoDB database to import to. |
@@ -208,6 +209,14 @@ API along with your API token.
 
 ```
     "effectiveDate": "July 8, 2015"
+```
+
+### linkStopUrls
+
+{Boolean} Whether or not to hyperlink timetable stop names to the `stop_url` defined in `stops.txt`. If no `stop_url` is defined for a stop, no link will be created. Defaults to `false`.
+
+```
+    "linkStopUrls": false
 ```
 
 ### mapboxAccessToken

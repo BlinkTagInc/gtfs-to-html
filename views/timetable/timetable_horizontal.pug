@@ -23,9 +23,7 @@
 
         tr.stop-row(id=`stop_id_${stop.stop_id}` data-stop-id=`${stop.stop_id}`)
           th.stop-name-container(scope="row")
-            .stop-name= formatStopName(stop)
-            .stop-code= stop.stop_code
-            .stop-description= stop.stop_desc
+            include timetable_stop_name.pug
 
           each stoptime in stop.trips
             include timetable_stoptime.pug

@@ -8,9 +8,7 @@
       tr
         each stop, idx in timetable.stops
           th.stop-header(scope="col" width=`${(100 / timetable.stops.length).toFixed(2)}%`)
-            .stop-name= formatStopName(stop)
-            .stop-code= stop.stop_code
-            .stop-description= stop.stop_desc
+            include timetable_stop_name.pug
 
         if timetable.show_continues_as === 1
           th.stop-header.continues-as Continues as route

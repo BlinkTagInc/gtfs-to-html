@@ -9,14 +9,15 @@
   "beautify": false,
   "coordinatePrecision": 5,
   "effectiveDate": "July 8, 2016",
+  "interpolatedStopSymbol": "•",
+  "linkStopUrls": true,
+  "mapboxAccessToken": "YOUR MAPBOX ACCESS TOKEN'",
   "menuType": "simple",
   "noServiceSymbol": "—",
   "requestStopSymbol": "***",
-  "interpolatedStopSymbol": "•",
   "showMap": true,
   "showOnlyTimepoint": true,
   "showRouteTitle": true,
   "showStopCity": false,
-  "mapboxAccessToken": "YOUR MAPBOX ACCESS TOKEN'",
   "zipOutput": false
 }
