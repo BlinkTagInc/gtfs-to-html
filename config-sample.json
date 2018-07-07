@@ -15,6 +15,7 @@
   "menuType": "simple",
   "noServiceSymbol": "—",
   "requestPickupSymbol": "***",
+  "requestDropoffSymbol": "†",
   "showMap": true,
   "showOnlyTimepoint": true,
   "showRouteTitle": true,
