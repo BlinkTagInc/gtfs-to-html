@@ -14,7 +14,7 @@
   "mapboxAccessToken": "YOUR MAPBOX ACCESS TOKEN'",
   "menuType": "simple",
   "noServiceSymbol": "—",
-  "requestStopSymbol": "***",
+  "requestPickupSymbol": "***",
   "showMap": true,
   "showOnlyTimepoint": true,
   "showRouteTitle": true,

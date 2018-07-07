@@ -5,5 +5,5 @@ td.stop-time(class=`${stoptime.classes.join(' ')}`)
     span.symbol= timetable.noServiceSymbol
   if stoptime.interpolated
     span.symbol= timetable.interpolatedStopSymbol
-  if stoptime.request
-    span.symbol= timetable.requestStopSymbol
+  if stoptime.requestPickup
+    span.symbol= timetable.requestPickupSymbol

@@ -101,7 +101,7 @@ All files starting with `config*.json` are .gitignored - so you can create multi
 | [`mongoUrl`](#mongoUrl) | string | The URL of the MongoDB database to import to. |
 | [`noHead`](#noHead) | boolean | Whether or not to skip the header and footer of the HTML document. |
 | [`noServiceSymbol`](#noservicesymbol) | string | The symbol used when a specific trip does not serve a specified stop. |
-| [`requestStopSymbol`](#requeststopsymbol) | string | The symbol used to indicate that riders must request a stop. |
+| [`requestPickupSymbol`](#requestpickupsymbol) | string | The symbol used to indicate that riders must request a pickup at a stop. |
 | [`interpolatedStopSymbol`](#interpolatedStopSymbol) | string | The symbol used to indicate that a timepoint isn't fixed, but just interpolated. |
 | [`showMap`](#showmap) | boolean | Whether or not to show a map of the route on the timetable. |
 | [`showOnlyTimepoint`](#showonlytimepoint) | boolean | Whether or not all stops should be shown, or only stops with a `timepoint` value in `stops.txt`. |
@@ -267,12 +267,12 @@ API along with your API token.
     "noServiceSymbol": "-"
 ```
 
-### requestStopSymbol
+### requestPickupSymbol
 
-{String} The symbol used to indicate that riders must request a stop. Defaults to `***`.
+{String} The symbol used to indicate that riders must request pickup at a stop. Defaults to `***`.
 
 ```
-    "requestStopSymbol": "***"
+    "requestPickupSymbol": "***"
 ```
 
 ### interpolatedStopSymbol
