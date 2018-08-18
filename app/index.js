@@ -21,7 +21,7 @@ const configPath = path.join(process.cwd(), argv.configPath);
 const config = require(configPath);
 
 mongoose.Promise = global.Promise;
-mongoose.connect(config.mongoUrl);
+mongoose.connect(config.mongoUrl, {useNewUrlParser: true});
 
 const app = express();
 
