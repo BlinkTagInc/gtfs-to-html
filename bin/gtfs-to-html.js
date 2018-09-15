@@ -60,6 +60,7 @@ getConfig()
   const log = logUtils.log(config);
 
   mongoose.Promise = global.Promise;
+  mongoose.set('useCreateIndex', true);
   mongoose.connect(config.mongoUrl, {useNewUrlParser: true});
 
   await gtfsToHtml(config);
