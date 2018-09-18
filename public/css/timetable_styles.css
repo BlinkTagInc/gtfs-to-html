@@ -118,6 +118,25 @@ h3 {
 
 .timetable .table-container {
   overflow-x: scroll;
+  margin-bottom: 1rem;
+}
+
+.timetable .table-container .table {
+  margin-bottom: 0;
+}
+
+.timetable .table-container::-webkit-scrollbar {
+  -webkit-appearance: none;
+  height: 8px;
+}
+
+.timetable .table-container::-webkit-scrollbar-track {
+  background-color: rgba(57, 57, 57, .2);
+  border-radius: 4px;
+}
+.timetable .table-container::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background-color: rgba(156, 156, 156, 0.8);
 }
 
 .timetable thead tr {
