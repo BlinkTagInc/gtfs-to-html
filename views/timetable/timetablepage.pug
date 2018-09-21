@@ -53,7 +53,7 @@ include formatting_functions.pug
             if timetable.noServiceSymbolUsed
               .note= `${config.noServiceSymbol} = No service at this stop`
             if timetable.interpolatedStopSymbolUsed
-              .note= `${config.interpolatedStopSymbol} = Stop times between timepoints are approximate`
+              .note= `${config.interpolatedStopSymbol} = Estimated time of arrival`
 
         if timetable.calendarDates.includedDates.length
           .col-md-4
