@@ -40,12 +40,16 @@ include formatting_functions.pug
             include timetable_vertical.pug
 
       .row.timetable-bottom
-        if timetable.requestPickupSymbolUsed || timetable.requestDropoffSymbolUsed || timetable.noServiceSymbolUsed || timetable.interpolatedStopSymbolUsed
+        if timetable.requestPickupSymbolUsed || timetable.noPickupSymbolUsed || timetable.requestDropoffSymbolUsed || timetable.noDropoffSymbolUsed || timetable.noServiceSymbolUsed || timetable.interpolatedStopSymbolUsed
           .col-md-4.notes
             if timetable.requestPickupSymbolUsed
               .note= `${config.requestPickupSymbol} = Request stop - call for pickup`
+            if timetable.noPickupSymbolUsed
+              .note= `${config.noPickupSymbol} = No pickup available`
             if timetable.requestDropoffSymbolUsed
-              .note= `${config.requestDropoffSymbol} = Must request dropoff`
+              .note= `${config.requestDropoffSymbol} = Must request drop off`
+            if timetable.noDropoffSymbolUsed
+              .note= `${config.noDropoffSymbol} = No drop off available`
             if timetable.noServiceSymbolUsed
               .note= `${config.noServiceSymbol} = No service at this stop`
             if timetable.interpolatedStopSymbolUsed
