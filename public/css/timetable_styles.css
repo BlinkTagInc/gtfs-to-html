@@ -107,6 +107,10 @@ h3 {
   font-weight: bold;
 }
 
+.timetable .symbol {
+  padding-left: 4px;
+}
+
 .timetable .trip-frequency {
   text-align: center;
   font-weight: bold;
