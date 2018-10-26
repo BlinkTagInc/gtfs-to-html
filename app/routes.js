@@ -22,8 +22,8 @@ router.get('/', async (req, res, next) => {
     const agencies = await gtfs.getAgencies();
     const sortedAgencies = _.sortBy(agencies, 'agency_name');
     return res.render('agencies', {agencies: sortedAgencies});
-  } catch (err) {
-    next(err);
+  } catch (error) {
+    next(error);
   }
 });
 
@@ -31,40 +31,37 @@ router.get('/', async (req, res, next) => {
  * Show all timetable pages for an agency
  */
 router.get('/timetable/:agencyKey', async (req, res, next) => {
-  const agencyKey = req.params.agencyKey;
+  const {agencyKey} = req.params;
 
   if (!agencyKey) {
     return next(new Error('No agencyKey provided'));
   }
   try {
-    const timetablePages = await utils.getTimetablePages(agencyKey);
+    const formattedTimetablePages = await utils.getFormattedTimetablePages(agencyKey, config);
 
-    const formattedTimetablePages = await Promise.all(timetablePages.map(async timetablePage => {
-      timetablePage.timetables = await utils.formatTimetables(timetablePage.timetables, config);
-
-      if (!timetablePage.timetables || timetablePage.timetables.length === 0) {
+    for (const timetablePage of formattedTimetablePages) {
+      if (!timetablePage.consolidatedTimetables || timetablePage.consolidatedTimetables.length === 0) {
         console.error(`No timetables found for timetable_page_id=${timetablePage.timetable_page_id}`);
       }
 
       timetablePage.relativePath = `/timetable/${agencyKey}/${timetablePage.timetable_page_id}`;
-      for (const timetable of timetablePage.timetables) {
+      for (const timetable of timetablePage.consolidatedTimetables) {
         timetable.timetable_label = formatters.formatTimetableLabel(timetable);
       }
-      return utils.formatTimetablePage(timetablePage);
-    }));
+    }
 
     const sortedTimetablePages = _.sortBy(formattedTimetablePages, timetablePage => {
       if (timetablePage.timetable_page_label !== '' && timetablePage.timetable_page_label !== undefined) {
         return timetablePage.timetable_page_label;
       }
       // Get route info from first timetable
-      return timetablePage.timetables[0].timetable_label;
+      return timetablePage.consolidatedTimetables[0].timetable_label;
     });
 
     const html = await utils.generateOverviewHTML(agencyKey, sortedTimetablePages, config);
     res.send(html);
-  } catch (err) {
-    next(err);
+  } catch (error) {
+    next(error);
   }
 });
 
@@ -72,8 +69,7 @@ router.get('/timetable/:agencyKey', async (req, res, next) => {
  * Show a specific timetable page
  */
 router.get('/timetable/:agencyKey/:timetablePageId', async (req, res, next) => {
-  const agencyKey = req.params.agencyKey;
-  const timetablePageId = req.params.timetablePageId;
+  const {agencyKey, timetablePageId} = req.params;
 
   if (!agencyKey) {
     return next(new Error('No agencyKey provided'));
@@ -82,20 +78,14 @@ router.get('/timetable/:agencyKey/:timetablePageId', async (req, res, next) => {
   if (!timetablePageId) {
     return next(new Error('No timetablePageId provided'));
   }
+
   try {
-    const timetablePage = await utils.getTimetablePage(agencyKey, timetablePageId);
-    timetablePage.timetables = await utils.formatTimetables(timetablePage.timetables, config);
+    const timetablePage = await utils.getFormattedTimetablePage(agencyKey, timetablePageId, config);
 
-    if (!timetablePage.timetables || timetablePage.timetables.length === 0) {
-      throw new Error(`No timetables found for timetable_page_id=${timetablePage.timetable_page_id}`);
-    }
-
-    const formattedTimetablePage = await utils.formatTimetablePage(timetablePage);
-
-    const results = await utils.generateHTML(formattedTimetablePage, config);
+    const results = await utils.generateHTML(timetablePage, config);
     res.send(results.html);
-  } catch (err) {
-    next(err);
+  } catch (error) {
+    next(error);
   }
 });
 

@@ -1,25 +1,25 @@
-if timetablePage.timetables.length > 1
+if timetablePage.consolidatedTimetables.length > 1
   if config.menuType === 'simple'
     .row.row-menu
       .col-md-12
         ul.timetable-menu
           -
-            var showTimetableLabel = timetablePage.timetables.reduce((memo, timetable, idx) => {
+            var showTimetableLabel = timetablePage.consolidatedTimetables.reduce((memo, timetable, idx) => {
               if (idx === 0 || memo === true) {
                 return memo;
               }
-              memo = timetable.timetable_label !== timetablePage.timetables[idx - 1].timetable_label;
+              memo = timetable.timetable_label !== timetablePage.consolidatedTimetables[idx - 1].timetable_label;
               return memo;
             }, false);
             
-            var showDayList = timetablePage.timetables.reduce((memo, timetable, idx) => {
+            var showDayList = timetablePage.consolidatedTimetables.reduce((memo, timetable, idx) => {
               if (idx === 0 || memo === true) {
                 return memo;
               }
-              memo = timetable.dayListLong !== timetablePage.timetables[idx - 1].dayListLong;
+              memo = timetable.dayListLong !== timetablePage.consolidatedTimetables[idx - 1].dayListLong;
               return memo;
             }, false);
-          each timetable in timetablePage.timetables
+          each timetable in timetablePage.consolidatedTimetables
             li
               a(href=`#timetable_id_${timetable.timetable_id}`)
                 if showTimetableLabel
@@ -31,7 +31,7 @@ if timetablePage.timetables.length > 1
             
   if config.menuType === 'jump'
     -
-      var groupedTimetables = timetablePage.timetables.reduce((memo, timetable) => {
+      var groupedTimetables = timetablePage.consolidatedTimetables.reduce((memo, timetable) => {
         if (!memo.hasOwnProperty(timetable.dayList)) {
           memo[timetable.dayList] = []
         }
