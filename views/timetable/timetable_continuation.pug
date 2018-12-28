@@ -1,6 +1,13 @@
-td.run-footer
+if trip.continues_as && trip.continues_as.route.route_color
+  - var tdStyle = `background: #${trip.continues_as.route.route_color};`
+  - var aStyle = 'color: #ffffff;'
+else 
+  - var tdStyle = ''
+  - var aStyle = ''
+  
+td.run-footer(style=tdStyle)
   if trip.continues_as
     if trip.continues_as.route.route_url
-      a.continues-as-route(href=`${trip.continues_as.route.route_url}`)= trip.continues_as.route.route_short_name
+      a.continues-as-route(href=`${trip.continues_as.route.route_url}` style=aStyle)= trip.continues_as.route.route_short_name
     else
       .continues-as-route= trip.continues_as.route.route_short_name
