@@ -22,5 +22,6 @@
   "showOnlyTimepoint": true,
   "showRouteTitle": true,
   "showStopCity": false,
+  "showStopDescription": false,
   "zipOutput": false
 }

@@ -21,7 +21,8 @@
           th.stop-name-container(scope="row")
             .stop-name= formatStopName(stop)
             .stop-code= stop.stop_code
-            .stop-description= stop.stop_desc
+            if config.showStopDescription
+              .stop-description= stop.stop_desc
 
           td.stop-time= stop.hourlyTimes.join(', ')
 

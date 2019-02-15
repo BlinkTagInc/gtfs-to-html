@@ -3,4 +3,5 @@ if config.linkStopUrls && stop.stop_url
 else
   .stop-name= formatStopName(stop)
 .stop-code= stop.stop_code
-.stop-description= stop.stop_desc
+if config.showStopDescription
+  .stop-description= stop.stop_desc

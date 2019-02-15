@@ -110,6 +110,7 @@ All files starting with `config*.json` are .gitignored - so you can create multi
 | [`showOnlyTimepoint`](#showonlytimepoint) | boolean | Whether or not all stops should be shown, or only stops with a `timepoint` value in `stops.txt`. |
 | [`showRouteTitle`](#showroutetitle) | boolean | Whether or not to show the route title at the top of the timetable page. |
 | [`showStopCity`](#showstopcity) | boolean | Whether or not to show each stop's city. |
+| [`showStopDescription`](#showstopdescription) | boolean | Whether or not to show a stop description. |
 | [`templatePath`](#templatepath) | string | Path to custom pug template for rendering timetable. |
 | [`verbose`](#verbose) | boolean | Whether or not to print output to the console. |
 | [`zipOutput`](#zipoutput) | boolean | Whether or not to zip the output into one zip file. |
@@ -342,6 +343,14 @@ If you'd rather just get all stops and route info as geoJSON, see [gtfs-to-geojs
 
 ```
     "showStopCity": false
+```
+
+### showStopDescription
+
+{Boolean} Whether or not to show a stop description for each stop. Stop description is taken from the `stop_desc` field in`stops.txt`. Defaults to `false`.
+
+```
+    "showStopDescription": false
 ```
 
 ### templatePath
