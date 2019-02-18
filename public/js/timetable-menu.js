@@ -17,6 +17,7 @@ $(function () {
       showTimetable($('.timetable').attr('id'));
       return false;
     }
+
     var dayList = $('#day_list_selector input[name="dayList"]:checked').val();
     var directionName = $('#direction_name_selector input[name="directionName"]:checked').val();
     $('.timetable').hide();

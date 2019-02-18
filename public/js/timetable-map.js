@@ -38,6 +38,7 @@ function formatRoutePopup(feature) {
   if (feature.properties.route_url) {
     html += '</a>';
   }
+
   html += '</h4>';
   return html;
 }
@@ -213,6 +214,7 @@ function createSystemMap(id, geojson) {
     $('#' + id).hide();
     return false;
   }
+
   var headerHeight = 65;
   $('#' + id).height($(window).height() - headerHeight);
   $('.overview-list').height($(window).height() - headerHeight);
@@ -318,6 +320,7 @@ function createSystemMap(id, geojson) {
         if (routeIds.indexOf(feature.properties.route_id) !== -1) {
           memo.push(feature);
         }
+
         return memo;
       }, []);
       var zoomBounds = getBounds({features: highlightedFeatures});

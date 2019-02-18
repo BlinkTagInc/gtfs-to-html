@@ -32,25 +32,25 @@
   "main": "index",
   "dependencies": {
     "archiver": "^3.0.0",
+    "chalk": "^2.4.2",
     "cli-table": "^0.3.1",
-    "colors": "^1.3.2",
-    "express": "^4.16.3",
-    "fs-extra": "^7.0.0",
-    "gtfs": "1.6.10",
-    "js-beautify": "^1.8.6",
+    "express": "^4.16.4",
+    "fs-extra": "^7.0.1",
+    "gtfs": "1.7.1",
+    "js-beautify": "^1.8.9",
     "lodash": "^4.17.11",
-    "moment": "^2.22.2",
-    "mongoose": "^5.2.17",
+    "moment": "^2.24.0",
+    "mongoose": "^5.4.13",
     "morgan": "^1.9.1",
     "pug": "^2.0.3",
     "sanitize-filename": "^1.6.1",
     "simplify-geojson": "^1.0.3",
     "timer-machine": "^1.1.0",
     "untildify": "^3.0.3",
-    "yargs": "^12.0.2"
+    "yargs": "^13.2.0"
   },
   "devDependencies": {
-    "xo": "^0.23.0"
+    "xo": "^0.24.0"
   },
   "engines": {
     "node": ">= 8.11.1"

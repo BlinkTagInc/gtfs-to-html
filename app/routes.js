@@ -36,6 +36,7 @@ router.get('/timetable/:agencyKey', async (req, res, next) => {
   if (!agencyKey) {
     return next(new Error('No agencyKey provided'));
   }
+
   try {
     const formattedTimetablePages = await utils.getFormattedTimetablePages(agencyKey, config);
 
@@ -54,6 +55,7 @@ router.get('/timetable/:agencyKey', async (req, res, next) => {
       if (timetablePage.timetable_page_label !== '' && timetablePage.timetable_page_label !== undefined) {
         return timetablePage.timetable_page_label;
       }
+
       // Get route info from first timetable
       return timetablePage.consolidatedTimetables[0].timetable_label;
     });

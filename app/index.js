@@ -4,16 +4,17 @@ const express = require('express');
 const logger = require('morgan');
 const mongoose = require('mongoose');
 
+// eslint-disable-next-line prefer-destructuring
 const argv = require('yargs')
-    .usage('Usage: $0 --config ./config.json')
-    .help()
-    .option('c', {
-      alias: 'configPath',
-      describe: 'Path to config file',
-      default: './config.json',
-      type: 'string'
-    })
-    .argv;
+  .usage('Usage: $0 --config ./config.json')
+  .help()
+  .option('c', {
+    alias: 'configPath',
+    describe: 'Path to config file',
+    default: './config.json',
+    type: 'string'
+  })
+  .argv;
 
 const routes = require('./routes');
 
