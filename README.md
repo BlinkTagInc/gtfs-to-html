@@ -425,8 +425,7 @@ An example of this file is located in [examples/timetable_stop_order.txt](exampl
 
 #### Stops with different arrival and departure times
 
-If you would like to show a stop twice in a row to accommodate different arrival and departure times, just include this stop twice in a row in the `timetable_stop_order.txt` file. Otherwise, the value for `departure_time` from `stop_times.txt` will always be used.
-
+Stoptimes with different arrival and departure times will be shown twice in a row and labeled as "(arrival)" and "(departure)".
 
 ## Build `timetable_pages.txt`
 
@@ -439,8 +438,6 @@ An example of this file is located in [examples/timetable_pages.txt](examples/ti
 | `timetable_page_id` | A unique ID for the timetable page |
 | `timetable_page_label` | A label that will show up on the top of the page. Optional, defaults to using route name. |
 | `filename` | The filename to use for the generated HTML file. Optional, defaults to `timetable_page_id` with file extension `.html`, for example `1.html`. |
-
-
 
 ## Build `stop_attributes.txt`
 
