@@ -91,7 +91,7 @@ h3 {
   text-align: center;
 }
 
-.timetable .run-footer .continues-as-route{
+.timetable .run-footer .continues-as-route {
   font-weight: bold;
 }
 
@@ -146,6 +146,10 @@ h3 {
 
 .timetable thead tr {
   background: #72b1e6;
+}
+
+.timetable thead tr a {
+  color: #333333;
 }
 
 .timetable th {
