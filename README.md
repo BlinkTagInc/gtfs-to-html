@@ -265,7 +265,7 @@ API along with your API token.
 
 ### noServiceSymbol
 
-{String} The symbol used when a specific trip does not serve a specified stop. Defaults to `-`.
+{String} The symbol used when a specific trip does not serve a specified stop. Defaults to `-`. To avoid having this symbol used in timetables, set it to `null`.
 
 ```
     "noServiceSymbol": "-"
@@ -273,7 +273,7 @@ API along with your API token.
 
 ### requestDropoffSymbol
 
-{String} The symbol used to indicate that riders must request to be dropped off at a stop. Defaults to `†`.
+{String} The symbol used to indicate that riders must request to be dropped off at a stop. Defaults to `†`. To avoid having this symbol used in timetables, set it to `null`.
 
 ```
     "requestDropoffSymbol": "†"
@@ -281,7 +281,7 @@ API along with your API token.
 
 ### noDropoffSymbol
 
-{String} The symbol used to indicate that no drop off is available at a stop. Defaults to `‡`.
+{String} The symbol used to indicate that no drop off is available at a stop. Defaults to `‡`. To avoid having this symbol used in timetables, set it to `null`.
 
 ```
     "noDropoffSymbol": "‡"
@@ -289,7 +289,7 @@ API along with your API token.
 
 ### requestPickupSymbol
 
-{String} The symbol used to indicate that riders must request pickup at a stop. Defaults to `***`.
+{String} The symbol used to indicate that riders must request pickup at a stop. Defaults to `***`. To avoid having this symbol used in timetables, set it to `null`.
 
 ```
     "requestPickupSymbol": "***"
@@ -297,7 +297,7 @@ API along with your API token.
 
 ### noPickupSymbol
 
-{String} The symbol used to indicate that no pickup is available at a stop. Defaults to `**`.
+{String} The symbol used to indicate that no pickup is available at a stop. Defaults to `**`. To avoid having this symbol used in timetables, set it to `null`.
 
 ```
     "requestPickupSymbol": "**"
@@ -305,7 +305,7 @@ API along with your API token.
 
 ### interpolatedStopSymbol
 
-{String} The symbol used to indicate that a timepoint isn't fixed, but just interpolated. Defaults to `•`.
+{String} The symbol used to indicate that a timepoint isn't fixed, but just interpolated. Defaults to `•`. To avoid having this symbol used in timetables, set it to `null`.
 
 ```
     "interpolatedStopSymbol": "•"

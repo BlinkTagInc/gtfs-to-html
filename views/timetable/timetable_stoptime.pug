@@ -1,15 +1,15 @@
 td.stop-time(class=`${stoptime.classes.join(' ')}`)
   span.stop-time-text= stoptime.formatted_time
   span.stop-time-period= stoptime.formatted_period
-  if stoptime.skipped
+  if stoptime.skipped && timetable.noServiceSymbol !== null
     span.symbol= timetable.noServiceSymbol
-  if stoptime.interpolated
+  if stoptime.interpolated && timetable.interpolatedStopSymbol !== null
     span.symbol= timetable.interpolatedStopSymbol
-  if stoptime.requestPickup
+  if stoptime.requestPickup && timetable.requestPickupSymbol !== null
     span.symbol= timetable.requestPickupSymbol
-  if stoptime.noPickup
+  if stoptime.noPickup && timetable.noPickupSymbol !== null
     span.symbol= timetable.noPickupSymbol
-  if stoptime.requestDropoff
+  if stoptime.requestDropoff && timetable.requestDropoffSymbol !== null
     span.symbol= timetable.requestDropoffSymbol
-  if stoptime.noDropoff
+  if stoptime.noDropoff && timetable.noDropoffSymbol !== null
     span.symbol= timetable.noDropoffSymbol
