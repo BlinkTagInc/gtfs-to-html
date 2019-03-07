@@ -214,11 +214,19 @@ h3 {
 }
 
 .route-color-swatch {
-  width: 15px;
-  height: 15px;
+  width: 16px;
+  height: 16px;
+  border-radius: 8px;
   margin-right: 6px;
   display: inline-block;
-  vertical-align: -1px;
+}
+
+.route-color-swatch-large {
+  width: 24px;
+  height: 24px;
+  border-radius: 12px;
+  margin-right: 8px;
+  display: inline-block;
 }
 
 .overview-list {

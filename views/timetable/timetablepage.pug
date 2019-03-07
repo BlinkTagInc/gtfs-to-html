@@ -4,7 +4,10 @@ include formatting_functions.pug
   if config.showRouteTitle
     .row
       .col-md-12
-        h1.timetable-page-label= getTimetablePageLabel(timetablePage)
+        h1.timetable-page-label
+          if timetablePage.routeColors && timetablePage.routeColors.length === 1
+            .route-color-swatch-large(style=`background-color: #${timetablePage.routeColors[0]}`)
+          span= getTimetablePageLabel(timetablePage)
         if config.effectiveDate
           .effective-date= `Effective ${config.effectiveDate}`
 
