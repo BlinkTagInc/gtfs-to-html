@@ -8,6 +8,6 @@ else
 td.run-footer(style=tdStyle)
   if trip.continues_as
     if trip.continues_as.route.route_url
-      a.continues-as-route(href=`${trip.continues_as.route.route_url}` style=aStyle)= trip.continues_as.route.route_short_name
+      a.continues-as-route(href=`${trip.continues_as.route.route_url}` style=aStyle data-trip-id=trip.continues_as.trip_id)= trip.continues_as.route.route_short_name
     else
-      .continues-as-route= trip.continues_as.route.route_short_name
+      .continues-as-route(data-trip-id=trip.continues_as.trip_id)= trip.continues_as.route.route_short_name
