@@ -66,7 +66,6 @@ getConfig()
 
     await gtfsToHtml(config);
 
-    log('Completed Generating HTML schedules\n');
     process.exit();
   })
   .catch(handleError);

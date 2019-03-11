@@ -7,11 +7,11 @@
 
 [![NPM](https://nodei.co/npm/gtfs-to-html.png?downloads=true)](https://nodei.co/npm/gtfs-to-html/)
 
-`gtfs-to-html` creates human-readable, user-friendly transit timetables in HTML format directly from [GTFS transit data](https://developers.google.com/transit/gtfs/). Most transit agencies have schedule data in GTFS format but need to show each route's schedule to users on a website. This project automates the process of creating nicely formatted HTML schedules for inclusion on a transit agency website. This makes it easy to keep schedules up to date and accurate when schedule changes happen and reduces the likelihood of errors.
+`gtfs-to-html` creates human-readable, user-friendly transit timetables in HTML format directly from [GTFS transit data](https://developers.google.com/transit/gtfs/). Most transit agencies have schedule data in GTFS format but need to show each route's schedule to users on a website. This project automates the process of creating nicely formatted HTML timetables for inclusion on a transit agency website. This makes it easy to keep timetables up to date and accurate when schedule changes happen and reduces the likelihood of errors.
 
 
 ### Configurable and customizable
-`gtfs-to-html` has many options that configure how schedules are presented. It also allows using a completely custom template which makes it easy to build chunks of HTML that will fit perfectly into any website using any HTML structure and classes that you'd like.
+`gtfs-to-html` has many options that configure how timetables are presented. It also allows using a completely custom template which makes it easy to build chunks of HTML that will fit perfectly into any website using any HTML structure and classes that you'd like.
 
 ### Accessibility for all
 `gtfs-to-html` properly formats timetables to ensure they are screen-reader accessible and WCAG 2.0 compliant.
