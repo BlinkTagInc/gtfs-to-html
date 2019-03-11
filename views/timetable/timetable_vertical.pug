@@ -10,7 +10,7 @@
           th.stop-header(scope="col" width=`${(100 / timetable.stops.length).toFixed(2)}%`)
             include timetable_stop_name.pug
 
-        if timetable.show_continues_as === 1
+        if timetable.has_continues_as_route
           th.stop-header.continues-as Continues as route
 
     tbody
@@ -18,7 +18,7 @@
         tr.trip-row
           td.trip-frequency(colspan=`${timetable.stops.length}`)= formatFrequencyWarning(timetable.frequencies)
             
-          if timetable.show_continues_as === 1
+          if timetable.has_continues_as_route
             td
       each trip, idx in timetable.orderedTrips
         tr.trip-row(id=`trip_id_${trip.trip_id}`)
@@ -26,5 +26,5 @@
             - stoptime = stop.trips[idx]
             include timetable_stoptime.pug
             
-          if timetable.show_continues_as === 1
+          if timetable.has_continues_as_route
             include timetable_continuation.pug

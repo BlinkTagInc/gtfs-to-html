@@ -1,13 +1,13 @@
-if trip.continues_as && trip.continues_as.route.route_color
-  - var tdStyle = `background: #${trip.continues_as.route.route_color};`
+if trip.continues_as_route && trip.continues_as_route.route.route_color
+  - var tdStyle = `background: #${trip.continues_as_route.route.route_color};`
   - var aStyle = 'color: #ffffff;'
 else 
   - var tdStyle = ''
   - var aStyle = ''
   
 td.run-footer(style=tdStyle)
-  if trip.continues_as
-    if trip.continues_as.route.route_url
-      a.continues-as-route(href=`${trip.continues_as.route.route_url}` style=aStyle data-trip-id=trip.continues_as.trip_id)= trip.continues_as.route.route_short_name
+  if trip.continues_as_route
+    if trip.continues_as_route.route.route_url
+      a.continues-as-route(href=`${trip.continues_as_route.route.route_url}` style=aStyle data-trip-id=trip.continues_as_route.trip_id)= trip.continues_as_route.route.route_short_name
     else
-      .continues-as-route(data-trip-id=trip.continues_as.trip_id)= trip.continues_as.route.route_short_name
+      .continues-as-route(data-trip-id=trip.continues_as_route.trip_id)= trip.continues_as_route.route.route_short_name

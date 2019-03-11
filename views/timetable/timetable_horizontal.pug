@@ -28,7 +28,7 @@
           each stoptime in stop.trips
             include timetable_stoptime.pug
 
-      if timetable.show_continues_as === 1
+      if timetable.has_continues_as_route
         tr.continues-as-row
           th Continues as route
           each trip in timetable.orderedTrips
