@@ -14,6 +14,11 @@
         tr.trip-row
           td.trip-frequency(colspan=`${timetable.orderedTrips.length + 1}`)= formatFrequencyWarning(timetable.frequencies)
     tbody
+      if timetable.has_continues_from_route
+        tr.continues-from-row
+          th Continues from route
+          each trip in timetable.orderedTrips
+            include timetable_continuation_from.pug
       - var previousCity
       each stop in timetable.stops
         if stop.stop_city !== '' && previousCity !== stop.stop_city && config.showStopCity
@@ -32,4 +37,4 @@
         tr.continues-as-row
           th Continues as route
           each trip in timetable.orderedTrips
-            include timetable_continuation.pug
+            include timetable_continuation_as.pug

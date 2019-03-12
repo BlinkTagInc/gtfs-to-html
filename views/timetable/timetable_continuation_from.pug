@@ -1,0 +1,13 @@
+if trip.continues_from_route && trip.continues_from_route.route.route_color
+  - var tdStyle = `background: #${trip.continues_from_route.route.route_color};`
+  - var aStyle = 'color: #ffffff;'
+else 
+  - var tdStyle = ''
+  - var aStyle = ''
+  
+td.run-footer(style=tdStyle)
+  if trip.continues_from_route
+    if trip.continues_from_route.route.route_url
+      a.continues-from-route(href=`${trip.continues_from_route.route.route_url}` style=aStyle data-trip-id=trip.continues_from_route.trip_id)= trip.continues_from_route.route.route_short_name
+    else
+      .continues-as-route(data-trip-id=trip.continues_from_route.trip_id)= trip.continues_from_route.route.route_short_name
