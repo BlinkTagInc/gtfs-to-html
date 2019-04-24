@@ -1,3 +1,4 @@
+
 # GTFS to HTML
 
 [![NPM version](https://img.shields.io/npm/v/gtfs-to-html.svg?style=flat)](https://www.npmjs.com/package/gtfs-to-html)
@@ -241,7 +242,7 @@ API along with your API token.
 
 ### defaultOrientation
 
-{Array \[String\]} Specifies timetable orientation, when not mentioned in `timetables.txt`. For options see [Build `timetables.txt`] (#Build timetables.txt)
+{String} Specifies timetable orientation, when not mentioned in `timetables.txt`. For options see `timetables.txt` specification
 
 ```
     "defaultOrientation": "vertical",
@@ -353,7 +354,7 @@ API along with your API token.
 
 ### showArrivalOnDifference
 
-{Float} Whether or not to show an arrival column/row in the timetable. It means, that if on at least one stop difference (stay on that stop) is equal or greater than specified here, the arrival time will be shown. Use `0` to show on each stop or `null` to supress for showing arrival at all.
+{Float} Whether or not to show an arrival column/row in the timetable. It means, that if on at least one stop difference (stay on that stop) is **equal or greater** than specified here, the arrival time will be shown. Use `0` to show on each stop or `null` to supress for showing arrival at all.
 
 ```
     "showArrivalOnDifference": 0.2,
@@ -595,3 +596,4 @@ Pull requests are welcome, as is feedback and [reporting issues](https://github.
 ### Tests
 
     npm test
+
