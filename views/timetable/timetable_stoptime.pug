@@ -1,6 +1,5 @@
 td.stop-time(class=`${stoptime.classes.join(' ')}`)
   span.stop-time-text= stoptime.formatted_time
-  span.stop-time-period= stoptime.formatted_period
   if stoptime.skipped && timetable.noServiceSymbol !== null
     span.symbol= timetable.noServiceSymbol
   if stoptime.interpolated && timetable.interpolatedStopSymbol !== null
