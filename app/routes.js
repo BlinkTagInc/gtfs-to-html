@@ -38,9 +38,12 @@ router.get('/timetable/:agencyKey', async (req, res, next) => {
   }
 
   try {
-    const formattedTimetablePages = await utils.getFormattedTimetablePages(agencyKey, config);
+    const timetablePages = [];
+    const timetablePageIds = _.map(await utils.getTimetablePages(agencyKey, config), 'timetable_page_id');
 
-    for (const timetablePage of formattedTimetablePages) {
+    for (const timetablePageId of timetablePageIds) {
+      const timetablePage = await utils.getFormattedTimetablePage(agencyKey, timetablePageId, config);
+
       if (!timetablePage.consolidatedTimetables || timetablePage.consolidatedTimetables.length === 0) {
         console.error(`No timetables found for timetable_page_id=${timetablePage.timetable_page_id}`);
       }
@@ -49,9 +52,10 @@ router.get('/timetable/:agencyKey', async (req, res, next) => {
       for (const timetable of timetablePage.consolidatedTimetables) {
         timetable.timetable_label = formatters.formatTimetableLabel(timetable);
       }
+      timetablePages.push(timetablePage);
     }
 
-    const sortedTimetablePages = _.sortBy(formattedTimetablePages, timetablePage => {
+    const sortedTimetablePages = _.sortBy(timetablePages, timetablePage => {
       if (timetablePage.timetable_page_label !== '' && timetablePage.timetable_page_label !== undefined) {
         return timetablePage.timetable_page_label;
       }
