@@ -117,6 +117,7 @@ All files starting with `config*.json` are .gitignored - so you can create multi
 | [`showRouteTitle`](#showroutetitle) | boolean | Whether or not to show the route title at the top of the timetable page. |
 | [`showStopCity`](#showstopcity) | boolean | Whether or not to show each stop's city. |
 | [`showStopDescription`](#showstopdescription) | boolean | Whether or not to show a stop description. |
+| [`skipImport`](#skipImport) | boolean | Whether or not to skip importing GTFS data into mongoDB. |
 | [`sortingAlgorithm`](#sortingAlgorithm) | string | Defines trip-sorting algorithm. |
 | [`templatePath`](#templatepath) | string | Path to custom pug template for rendering timetable. |
 | [`timeFormat`](#timeFormat) | string | A string defining time format in moment.js style. |
@@ -400,6 +401,14 @@ If you'd rather just get all stops and route info as geoJSON, see [gtfs-to-geojs
 
 ```
     "showStopDescription": false
+```
+
+### skipImport
+
+{Boolean} Whether or not to skip importing from GTFS into mongoDB. Useful for re-running the script if the GTFS data has not changed. Defaults to `false`.
+
+```
+    "skipImport": false
 ```
 
 ### sortingAlgorithm
