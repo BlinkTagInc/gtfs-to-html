@@ -39,6 +39,12 @@ include formatting_functions.pug
             include timetable_horizontal.pug
           else if timetable.orientation === 'hourly'
             include timetable_hourly.pug
+          else if timetable.orientation === 'vertical'
+            include timetable_vertical.pug
+          else if config.defaultOrientation === 'horizontal'
+            include timetable_horizontal.pug
+          else if config.defaultOrientation === 'hourly'
+            include timetable_hourly.pug
           else
             include timetable_vertical.pug
 

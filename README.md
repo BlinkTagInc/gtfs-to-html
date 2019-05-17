@@ -1,3 +1,4 @@
+
 # GTFS to HTML
 
 [![NPM version](https://img.shields.io/npm/v/gtfs-to-html.svg?style=flat)](https://www.npmjs.com/package/gtfs-to-html)
@@ -94,6 +95,10 @@ All files starting with `config*.json` are .gitignored - so you can create multi
 | [`agencies`](#agencies) | array | An array of GTFS files to be imported. |
 | [`beautify`](#beautify) | boolean | Whether or not to beautify the HTML output. |
 | [`coordinatePrecision`](#coordinateprecision) | integer | Number of decimal places to include in geoJSON map output. |
+| [`dateFormat`](#dateFormat) | string | A string defining date format in moment.js style. |
+| [`dayShortStrings`](#dayShortStrings) | array of strings | An array defining contractions of weekdays names from Monday to Sunday. |
+| [`dayStrings`](#dayStrings) | array of strings | An array defining weekdays names from Monday to Sunday. |
+| [`defaultOrientation`](#defaultOrientation) | string | Specifies timetable orientation, when not mentioned in `timetables.txt` |
 | [`effectiveDate`](#effectivedate) | string | A date to print at the top of the timetable |
 | [`linkStopUrls`](#linkStopUrls) | boolean | Whether or not to hyperlink timetable stop names to the `stop_url` defined in `stops.txt`. |
 | [`mapboxAccessToken`](#mapboxaccesstoken) | string | The Mapbox access token for generating a map of the route. |
@@ -106,12 +111,15 @@ All files starting with `config*.json` are .gitignored - so you can create multi
 | [`requestPickupSymbol`](#requestpickupsymbol) | string | The symbol used to indicate that riders must request a pickup at a stop. |
 | [`noPickupSymbol`](#nopickupsymbol) | string | The symbol used to indicate that no pickup is available at a stop. |
 | [`interpolatedStopSymbol`](#interpolatedStopSymbol) | string | The symbol used to indicate that a timepoint isn't fixed, but just interpolated. |
+| [`showArrivalOnDifference`](#showArrivalOnDifference) | float | Defines a difference between departure and arrival, on which arrival column/row will be shown. |
 | [`showMap`](#showmap) | boolean | Whether or not to show a map of the route on the timetable. |
 | [`showOnlyTimepoint`](#showonlytimepoint) | boolean | Whether or not all stops should be shown, or only stops with a `timepoint` value in `stops.txt`. |
 | [`showRouteTitle`](#showroutetitle) | boolean | Whether or not to show the route title at the top of the timetable page. |
 | [`showStopCity`](#showstopcity) | boolean | Whether or not to show each stop's city. |
 | [`showStopDescription`](#showstopdescription) | boolean | Whether or not to show a stop description. |
+| [`sortingAlgorithm`](#sortingAlgorithm) | string | Defines trip-sorting algorithm. |
 | [`templatePath`](#templatepath) | string | Path to custom pug template for rendering timetable. |
+| [`timeFormat`](#timeFormat) | string | A string defining time format in moment.js style. |
 | [`verbose`](#verbose) | boolean | Whether or not to print output to the console. |
 | [`zipOutput`](#zipoutput) | boolean | Whether or not to zip the output into one zip file. |
 
@@ -205,6 +213,39 @@ API along with your API token.
 
 ```
     "coordinatePrecision": 5
+```
+
+### dateFormat
+
+{String} A string defining date format in moment.js manner. Change it, when you want to customize date format shown in timetables
+
+```
+    "dateFormat": "MMM D, YYYY",
+```
+
+### daysShortStrings
+
+{Array \[String\]} An array of strings defining contractions of weekday names. Specify from Monday to Sunday. 
+
+```
+    "daysShortStrings": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+```
+
+
+### daysStrings
+
+{Array \[String\]} An array of strings defining contractions of weekday names. Specify from Monday to Sunday. 
+
+```
+    "daysStrings": ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"],
+```
+
+### defaultOrientation
+
+{String} Specifies timetable orientation, when not mentioned in `timetables.txt`. For options see `timetables.txt` specification
+
+```
+    "defaultOrientation": "vertical",
 ```
 
 ### effectiveDate
@@ -311,6 +352,14 @@ API along with your API token.
     "interpolatedStopSymbol": "•"
 ```
 
+### showArrivalOnDifference
+
+{Float} Whether or not to show an arrival column/row in the timetable. It means, that if on at least one stop difference (stay on that stop) is **equal or greater** than specified here, the arrival time will be shown. Use `0` to show on each stop or `null` to supress for showing arrival at all.
+
+```
+    "showArrivalOnDifference": 0.2,
+```
+
 ### showMap
 
 {Boolean} Whether or not to show a map of the route on the timetable. Defaults to `false`.
@@ -351,6 +400,28 @@ If you'd rather just get all stops and route info as geoJSON, see [gtfs-to-geojs
 
 ```
     "showStopDescription": false
+```
+
+### sortingAlgorithm
+
+{String} Defines trip-sorting algorithm. There is two main groups of algorithms full and simplified. 
+
+Full means, that sorting is done on every stop on that route. If there is no time specified, the trip will remain on its previous place. `beginning` sorts from beginning to end, `end` otherwise.
+
+Simplified algorithms sorts trips by one stoptime in every trip only. `common` fonds the coommon stop (used by all trips) and sorts by it (if not found `first` is used). `first` and `last` use first or last stop of every trip respectively.
+
+Prefer simplified algorithms, unless they don't give expected results.
+
+```
+    "sortingAlgorithm": "common",
+```
+
+### dateFormat
+
+{String} A string defining time format in moment.js manner. Change it, when you want to customize time format shown in timetables.
+
+```
+    "timeFormat": "h:mma",
 ```
 
 ### templatePath
@@ -525,3 +596,4 @@ Pull requests are welcome, as is feedback and [reporting issues](https://github.
 ### Tests
 
     npm test
+
