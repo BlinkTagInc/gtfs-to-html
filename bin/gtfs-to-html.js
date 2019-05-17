@@ -58,8 +58,6 @@ getConfig()
     handleError(error);
   })
   .then(async config => {
-    const log = logUtils.log(config);
-
     mongoose.Promise = global.Promise;
     mongoose.set('useCreateIndex', true);
     mongoose.connect(config.mongoUrl, {useNewUrlParser: true});
