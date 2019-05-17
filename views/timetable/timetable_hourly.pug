@@ -30,4 +30,4 @@
 - var firstTripStartTime = firstStop.trips[0]
 - var lastStop = timetable.stops[timetable.stops.length - 1]
 - var lastTripEndTime = lastStop.trips[lastStop.trips.length - 1]
-.table-hourly-notes= `Service begins at ${firstStop.stop_name} at ${firstTripStartTime.formatted_time} ${firstTripStartTime.formatted_period} and ends at ${lastStop.stop_name} at ${lastTripEndTime.formatted_time} ${lastTripEndTime.formatted_period}.`
+.table-hourly-notes= `Service begins at ${firstStop.stop_name} at ${firstTripStartTime.formatted_time} and ends at ${lastStop.stop_name} at ${lastTripEndTime.formatted_time}.`
