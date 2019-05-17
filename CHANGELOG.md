@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.17.0] - 2019-05-17
+### Added
+- More sorting algorithms (`sortingAlgorithm` config variable)
+- Both arrival and departure shown if difference specified (`showArrivalOnDifference` config variable)
+- Default timetable orientation (`defaultOrientation` config variable)
+- Configurable day strings (`daysStrings` and `daysShortStrings` config variables)
+- Configurable date and time formatting (`dateFormat` and `timeFormat` config variables)
+
 ## [0.16.3] - 2019-04-09
 ### Changed
 - Updated node-gtfs library to 1.8.5 to avoid query timeout on long imports
