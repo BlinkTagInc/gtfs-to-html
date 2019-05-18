@@ -43,9 +43,10 @@ Many transit agencies use `gtfs-to-html` to generate the schedule pages used on 
 * [NW Connector (Oregon)](http://www.nworegontransit.org/)
 * [Palo Verde Valley Transit Agency](http://pvvta.com/)
 * [Petaluma Transit](http://transit.cityofpetaluma.net/)
+* [Santa Barbara Metropolitan Transit District](https://sbmtd.gov)
 * [Sonoma Country Transit](http://sctransit.com/)
 
-Are you using `gtfs-to-html`? Let us know via opening a github issue or pull request if your agency is using this library.
+Are you using `gtfs-to-html`? Let us know via email (brendan@blinktag.com) or via opening a github issue or pull request if your agency is using this library.
 
 `gtfs-to-html` is used as an integral part of [`transit-custom-posts`](https://trilliumtransit.github.io/transit-custom-posts/) - a GTFS-optimized Wordpress plugin for transit websites.
 
