@@ -4,3 +4,7 @@ html
 config*
 !config-sample.json
 views/custom
+
+.git
+.DS_Store
+.vscode
