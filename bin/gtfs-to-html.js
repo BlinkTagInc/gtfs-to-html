@@ -30,7 +30,6 @@ const argv = require('yargs').usage('Usage: $0 --config ./config.json')
 
 const gtfsToHtml = require('..');
 const logUtils = require('../lib/log-utils');
-const utils = require('../lib/utils');
 
 function handleError(err) {
   logUtils.error(err || 'Unknown Error');
@@ -49,7 +48,7 @@ const getConfig = async () => {
     config.showOnlyTimepoint = argv.showOnlyTimepoint;
   }
 
-  return utils.setDefaultConfig(config);
+  return config;
 };
 
 getConfig()
