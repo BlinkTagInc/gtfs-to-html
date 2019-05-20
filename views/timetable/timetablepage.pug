@@ -2,75 +2,76 @@ include formatting_functions.pug
 
 <!-- Timetable generated on #{Date()} using GTFS-to-HTML version #{config.gtfsToHtmlVersion} -->
 .timetable-page(class=`menu-type-${config.menuType}`)
-  if config.showRouteTitle
-    .row
-      .col-md-12
-        h1.timetable-page-label
-          if timetablePage.routeColors && timetablePage.routeColors.length === 1
-            .route-color-swatch-large(style=`background-color: #${timetablePage.routeColors[0]}`)
-          span= getTimetablePageLabel(timetablePage)
-        if config.effectiveDate
-          .effective-date= `Effective ${config.effectiveDate}`
-
-  include timetable_menu.pug
-
-  each timetable in timetablePage.consolidatedTimetables
-    .timetable(id=`timetable_id_${timetable.timetable_id}` data-day-list=timetable.dayList data-direction-name=timetable.direction_name data-timetable-id=timetable.timetable_id data-direction-id=timetable.direction_id data-route-id=timetable.route_id)
-      .row
+  .container-fluid
+    if config.showRouteTitle
+      .row.mt-4.mb-4
         .col-md-12
-          h2.description= `${timetable.timetable_label} | ${timetable.dayListLong}`
-          .service-notes= timetable.service_notes
+          h1.timetable-page-label
+            if timetablePage.routeColors && timetablePage.routeColors.length === 1
+              .route-color-swatch-large(style=`background-color: #${timetablePage.routeColors[0]}`)
+            span= getTimetablePageLabel(timetablePage)
+          if config.effectiveDate
+            .effective-date= `Effective ${config.effectiveDate}`
 
-      if config.showMap
+    include timetable_menu.pug
+
+    each timetable in timetablePage.consolidatedTimetables
+      .timetable(id=`timetable_id_${timetable.timetable_id}` data-day-list=timetable.dayList data-direction-name=timetable.direction_name data-timetable-id=timetable.timetable_id data-direction-id=timetable.direction_id data-route-id=timetable.route_id)
         .row
           .col-md-12
-            .map(id=`map_timetable_id_${timetable.timetable_id}`)
+            h2.description= `${timetable.timetable_label} | ${timetable.dayListLong}`
+            .service-notes= timetable.service_notes
 
-        script.
-          (function() {
-            var id = 'timetable_id_#{timetable.timetable_id}';
-            var geojson = !{JSON.stringify(timetable.geojson)};
-            var routeColor = '#{timetable.route.route_color}';
-            createMap(id, geojson, routeColor);
-          })();
+        if config.showMap
+          .row
+            .col-md-12
+              .map(id=`map_timetable_id_${timetable.timetable_id}`)
 
-      .row
-        .col-md-12
-          if timetable.orientation === 'horizontal'
-            include timetable_horizontal.pug
-          else if timetable.orientation === 'hourly'
-            include timetable_hourly.pug
-          else if timetable.orientation === 'vertical'
-            include timetable_vertical.pug
-          else if config.defaultOrientation === 'horizontal'
-            include timetable_horizontal.pug
-          else if config.defaultOrientation === 'hourly'
-            include timetable_hourly.pug
-          else
-            include timetable_vertical.pug
+          script.
+            (function() {
+              var id = 'timetable_id_#{timetable.timetable_id}';
+              var geojson = !{JSON.stringify(timetable.geojson)};
+              var routeColor = '#{timetable.route.route_color}';
+              createMap(id, geojson, routeColor);
+            })();
 
-      .row.timetable-bottom
-        if timetable.requestPickupSymbolUsed || timetable.noPickupSymbolUsed || timetable.requestDropoffSymbolUsed || timetable.noDropoffSymbolUsed || timetable.noServiceSymbolUsed || timetable.interpolatedStopSymbolUsed
-          .col-md-4.notes
-            if timetable.requestPickupSymbolUsed
-              .note= `${config.requestPickupSymbol} = Request stop - call for pickup`
-            if timetable.noPickupSymbolUsed
-              .note= `${config.noPickupSymbol} = No pickup available`
-            if timetable.requestDropoffSymbolUsed
-              .note= `${config.requestDropoffSymbol} = Must request drop off`
-            if timetable.noDropoffSymbolUsed
-              .note= `${config.noDropoffSymbol} = No drop off available`
-            if timetable.noServiceSymbolUsed
-              .note= `${config.noServiceSymbol} = No service at this stop`
-            if timetable.interpolatedStopSymbolUsed
-              .note= `${config.interpolatedStopSymbol} = Estimated time of arrival`
+        .row
+          .col-md-12
+            if timetable.orientation === 'horizontal'
+              include timetable_horizontal.pug
+            else if timetable.orientation === 'hourly'
+              include timetable_hourly.pug
+            else if timetable.orientation === 'vertical'
+              include timetable_vertical.pug
+            else if config.defaultOrientation === 'horizontal'
+              include timetable_horizontal.pug
+            else if config.defaultOrientation === 'hourly'
+              include timetable_hourly.pug
+            else
+              include timetable_vertical.pug
 
-        if timetable.calendarDates.includedDates.length
-          .col-md-4
-            .included-dates Service provided on:&nbsp;
-              span= timetable.calendarDates.includedDates.join(', ')
+        .row.timetable-bottom
+          if timetable.requestPickupSymbolUsed || timetable.noPickupSymbolUsed || timetable.requestDropoffSymbolUsed || timetable.noDropoffSymbolUsed || timetable.noServiceSymbolUsed || timetable.interpolatedStopSymbolUsed
+            .col-md-4.notes
+              if timetable.requestPickupSymbolUsed
+                .note= `${config.requestPickupSymbol} = Request stop - call for pickup`
+              if timetable.noPickupSymbolUsed
+                .note= `${config.noPickupSymbol} = No pickup available`
+              if timetable.requestDropoffSymbolUsed
+                .note= `${config.requestDropoffSymbol} = Must request drop off`
+              if timetable.noDropoffSymbolUsed
+                .note= `${config.noDropoffSymbol} = No drop off available`
+              if timetable.noServiceSymbolUsed
+                .note= `${config.noServiceSymbol} = No service at this stop`
+              if timetable.interpolatedStopSymbolUsed
+                .note= `${config.interpolatedStopSymbol} = Estimated time of arrival`
 
-        if timetable.calendarDates.excludedDates.length
-          .col-md-4
-            .excluded-dates Service not provided on:&nbsp;
-              span= timetable.calendarDates.excludedDates.join(', ')
+          if timetable.calendarDates.includedDates.length
+            .col-md-4
+              .included-dates Service provided on:&nbsp;
+                span= timetable.calendarDates.includedDates.join(', ')
+
+          if timetable.calendarDates.excludedDates.length
+            .col-md-4
+              .excluded-dates Service not provided on:&nbsp;
+                span= timetable.calendarDates.excludedDates.join(', ')
