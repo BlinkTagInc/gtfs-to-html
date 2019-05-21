@@ -1,7 +1,7 @@
 {
   "name": "gtfs-to-html",
   "description": "Build human readable transit timetables in HTML from GTFS",
-  "version": "0.17.1",
+  "version": "0.17.2",
   "keywords": [
     "transit",
     "gtfs",
@@ -41,7 +41,7 @@
     "js-beautify": "^1.10.0",
     "lodash": "^4.17.11",
     "moment": "^2.24.0",
-    "mongoose": "^5.5.9",
+    "mongoose": "^5.5.10",
     "morgan": "^1.9.1",
     "progress": "^2.0.3",
     "pug": "^2.0.3",

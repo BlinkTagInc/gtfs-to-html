@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.17.2] - 2019-05-20
+### Added
+- Add GTFS-to-HTML version to log.txt
+- Add version and date to timetable HTML as comment
+
+### Changed
+- Use config defaults when running as npm module
+- Style improvements for views without maps
+
+### Fixed
+- fix for convertRouteToTimetablePage
+- fix for log output
+
 ## [0.17.1] - 2019-05-17
 ### Changed
 - Update .gitignore
