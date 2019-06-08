@@ -22,8 +22,7 @@ const configPath = path.join(process.cwd(), argv.configPath);
 const config = require(configPath);
 
 mongoose.Promise = global.Promise;
-mongoose.set('useCreateIndex', true);
-mongoose.connect(config.mongoUrl, {useNewUrlParser: true});
+mongoose.connect(config.mongoUrl, { useNewUrlParser: true, useCreateIndex: true });
 
 const app = express();
 

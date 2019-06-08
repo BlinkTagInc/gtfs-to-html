@@ -73,7 +73,7 @@ If you are using this as a node module as part of an application, you can includ
     const config = require('config.json');
 
     mongoose.Promise = global.Promise;
-    mongoose.connect(config.mongoUrl, {useNewUrlParser: true});
+    mongoose.connect(config.mongoUrl, { useNewUrlParser: true, useCreateIndex: true });
 
     gtfsToHTML(config)
     .then(() => {

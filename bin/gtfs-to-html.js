@@ -58,8 +58,7 @@ getConfig()
   })
   .then(async config => {
     mongoose.Promise = global.Promise;
-    mongoose.set('useCreateIndex', true);
-    mongoose.connect(config.mongoUrl, {useNewUrlParser: true});
+    mongoose.connect(config.mongoUrl, { useNewUrlParser: true, useCreateIndex: true });
 
     await gtfsToHtml(config);
 
