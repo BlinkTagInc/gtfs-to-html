@@ -1,5 +1,4 @@
 node_modules
-gtfs-downloads
 html
 config*
 !config-sample.json
