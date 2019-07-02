@@ -85,7 +85,7 @@ If you are using this as a node module as part of an application, you can includ
 
 ## Configuration
 
-Copy `config-sample.json` to `config.json` and then add your projects configuration to `config.json`.
+Copy `config-sample.json` to `config.json` and then add your projects configuration to `config.json`. This is a JSON file, so ensure that your config.json is valid JSON.
 
     cp config-sample.json config.json
 
@@ -222,7 +222,7 @@ API along with your API token.
 {String} A string defining date format in moment.js manner. Change it, when you want to customize date format shown in timetables
 
 ```
-    "dateFormat": "MMM D, YYYY",
+    "dateFormat": "MMM D, YYYY"
 ```
 
 ### daysShortStrings
@@ -230,7 +230,7 @@ API along with your API token.
 {Array \[String\]} An array of strings defining contractions of weekday names. Specify from Monday to Sunday. 
 
 ```
-    "daysShortStrings": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    "daysShortStrings": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 ```
 
 
@@ -239,7 +239,7 @@ API along with your API token.
 {Array \[String\]} An array of strings defining contractions of weekday names. Specify from Monday to Sunday. 
 
 ```
-    "daysStrings": ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"],
+    "daysStrings": ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
 ```
 
 ### defaultOrientation
@@ -247,7 +247,7 @@ API along with your API token.
 {String} Specifies timetable orientation, when not mentioned in `timetables.txt`. For options see `timetables.txt` specification
 
 ```
-    "defaultOrientation": "vertical",
+    "defaultOrientation": "vertical"
 ```
 
 ### effectiveDate
@@ -359,7 +359,7 @@ API along with your API token.
 {Float} Whether or not to show an arrival column/row in the timetable. It means, that if on at least one stop difference (stay on that stop) is **equal or greater** than specified here, the arrival time will be shown. Use `0` to show on each stop or `null` to supress for showing arrival at all.
 
 ```
-    "showArrivalOnDifference": 0.2,
+    "showArrivalOnDifference": 0.2
 ```
 
 ### showMap
@@ -423,7 +423,7 @@ Simplified algorithms sorts trips by one stoptime in every trip only. `common` f
 Prefer simplified algorithms, unless they don't give expected results.
 
 ```
-    "sortingAlgorithm": "common",
+    "sortingAlgorithm": "common"
 ```
 
 ### dateFormat
@@ -431,7 +431,7 @@ Prefer simplified algorithms, unless they don't give expected results.
 {String} A string defining time format in moment.js manner. Change it, when you want to customize time format shown in timetables.
 
 ```
-    "timeFormat": "h:mma",
+    "timeFormat": "h:mma"
 ```
 
 ### templatePath
@@ -439,7 +439,7 @@ Prefer simplified algorithms, unless they don't give expected results.
 {String} Path to a folder containing (pug)[https://pugjs.org/] template for rendering timetables. This is optional. Defaults to using the templates provided in `views/timetable`. All files within the `/views/custom` folder will be .gitignored, so you can copy the `views/timetable` folder to `views/custom/myagency` and make any modifications needed. Any custom views folder should conatain pug templates called `timetablepage.pug`, `timetablepage_full.pug`,  `overview.pug`, and `overview_full.pug`.
 
 ```
-    "templatePath": 'views/custom/my-agency/'
+    "templatePath": "views/custom/my-agency/"
 ```
 
 ### verbose
