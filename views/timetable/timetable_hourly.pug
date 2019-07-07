@@ -9,7 +9,7 @@
     tbody
       if timetable.frequencies && !timetable.frequencyExactTimes
         tr.trip-row
-          td.trip-frequency(colspan="2")= formatFrequencyWarning(timetable.frequencies)
+          td.trip-frequency(colspan="2")!= formatFrequencyWarning(timetable.frequencies)
       - var previousCity
       each stop in timetable.stops
         if previousCity !== stop.stop_city && config.showStopCity
@@ -30,4 +30,4 @@
 - var firstTripStartTime = firstStop.trips[0]
 - var lastStop = timetable.stops[timetable.stops.length - 1]
 - var lastTripEndTime = lastStop.trips[lastStop.trips.length - 1]
-.table-hourly-notes= `Service begins at ${firstStop.stop_name} at ${firstTripStartTime.formatted_time} and ends at ${lastStop.stop_name} at ${lastTripEndTime.formatted_time}.`
+.table-hourly-notes!= `Service begins at ${firstStop.stop_name} at ${firstTripStartTime.formatted_time} and ends at ${lastStop.stop_name} at ${lastTripEndTime.formatted_time}.`

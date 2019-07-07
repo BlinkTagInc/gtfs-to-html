@@ -12,7 +12,7 @@
           th.run-header(scope="col")= formatTripName(trip, idx, timetable.showDayList)
       if timetable.frequencies && !timetable.frequencyExactTimes
         tr.trip-row
-          td.trip-frequency(colspan=`${timetable.orderedTrips.length + 1}`)= formatFrequencyWarning(timetable.frequencies)
+          td.trip-frequency(colspan=`${timetable.orderedTrips.length + 1}`)!= formatFrequencyWarning(timetable.frequencies)
     tbody
       if timetable.has_continues_from_route
         tr.continues-from-row

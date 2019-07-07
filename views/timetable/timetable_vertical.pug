@@ -22,7 +22,7 @@
           if timetable.has_continues_from_route
             td
 
-          td.trip-frequency(colspan=`${timetable.stops.length}`)= formatFrequencyWarning(timetable.frequencies)
+          td.trip-frequency(colspan=`${timetable.stops.length}`)!= formatFrequencyWarning(timetable.frequencies)
             
           if timetable.has_continues_as_route
             td
