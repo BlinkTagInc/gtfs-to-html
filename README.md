@@ -239,7 +239,7 @@ API along with your API token.
 {Array \[String\]} An array of strings defining contractions of weekday names. Specify from Monday to Sunday. 
 
 ```
-    "daysStrings": ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+    "daysStrings": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 ```
 
 ### defaultOrientation
