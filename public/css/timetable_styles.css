@@ -112,9 +112,14 @@ h3 {
   font-weight: bold;
 }
 
-.city-row {
+.timetable  .city-row {
   font-size: 1.5em;
   color: #415d86;
+}
+
+.timetable th.city-column {
+  font-size: 1.5em;
+  text-align: center;
 }
 
 .timetable .table-container {
