@@ -45,6 +45,7 @@ Many transit agencies use `gtfs-to-html` to generate the schedule pages used on 
 * [Petaluma Transit](http://transit.cityofpetaluma.net/)
 * [Santa Barbara Metropolitan Transit District](https://sbmtd.gov)
 * [Sonoma County Transit](http://sctransit.com/)
+* [Tulare County Area Transit](https://ridetcat.org/)
 
 Are you using `gtfs-to-html`? Let us know via email (brendan@blinktag.com) or via opening a github issue or pull request if your agency is using this library.
 
@@ -568,6 +569,34 @@ Skips importing GTFS into MongoDB. Useful if you are rerunning with an unchanged
 By default, node has a memory limit of 512 MB or 1 GB. If you have a very large GTFS file and want to use the option `showOnlyTimepoint` = `false` you may need to allocate more memory. Use the `max-old-space-size` option. For example to allocate 2 GB:
 
     node --max-old-space-size=2000 /usr/local/bin/gtfs-to-html
+
+## Logging
+
+If you want to route logs to a custom function, you can pass a function that takes a single `text` argument as `logFunction`. This con't be defined in `config.json` but instead passed in a config object to `gtfsToHtml()`.  For example:
+
+    const gtfsToHTML = require('gtfs-to-html');
+    const mongoose = require('mongoose');
+    
+    const config = {
+      mongoUrl: 'mongodb://localhost:27017/gtfs',
+      agencies: [
+        {
+          agency_key: 'county-connection',
+          url: 'http://countyconnection.com/GTFS/google_transit.zip',
+          exclude: [
+            'shapes'
+          ]
+        }
+      ],
+      logFunction: function(text) {
+        // Do something with the logs here, like save it or send it somewhere
+        console.log(text);
+      }
+    };
+
+    mongoose.connect(config.mongoUrl, { useNewUrlParser: true, useCreateIndex: true });
+
+    gtfsToHTML(config);
 
 ## Example Application / Previewing generated HTML
 

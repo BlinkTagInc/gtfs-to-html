@@ -32,7 +32,8 @@ const gtfsToHtml = require('..');
 const logUtils = require('../lib/log-utils');
 
 function handleError(err) {
-  logUtils.error(err || 'Unknown Error');
+  const text = err || 'Unknown Error';
+  process.stdout.write(`\n${logUtils.formatError(text)}\n`);
   process.exit(1);
 }
 
