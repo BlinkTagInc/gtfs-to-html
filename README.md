@@ -97,6 +97,7 @@ All files starting with `config*.json` are .gitignored - so you can create multi
 | [`agencies`](#agencies) | array | An array of GTFS files to be imported. |
 | [`beautify`](#beautify) | boolean | Whether or not to beautify the HTML output. |
 | [`coordinatePrecision`](#coordinateprecision) | integer | Number of decimal places to include in geoJSON map output. |
+| [`dataExpireAfterSeconds`] | integer | The number of seconds after which the data will be deleted from mongodb using a TTL index. |
 | [`dateFormat`](#dateFormat) | string | A string defining date format in moment.js style. |
 | [`dayShortStrings`](#dayShortStrings) | array of strings | An array defining contractions of weekdays names from Monday to Sunday. |
 | [`dayStrings`](#dayStrings) | array of strings | An array defining weekdays names from Monday to Sunday. |
@@ -216,6 +217,14 @@ API along with your API token.
 
 ```
     "coordinatePrecision": 5
+```
+
+### dataExpireAfterSeconds
+
+{Integer} The number of seconds after which the data will be deleted from mongodb using a TTL index. Optional, if not specified then data will not be automatically deleted.
+
+```
+    "dataExpireAfterSeconds": 3600
 ```
 
 ### dateFormat
