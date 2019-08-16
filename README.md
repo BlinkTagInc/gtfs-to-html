@@ -79,9 +79,11 @@ If you are using this as a node module as part of an application, you can includ
     gtfsToHTML(config)
     .then(() => {
       console.log('HTML Generation Successful');
+      process.exit();
     })
     .catch(err => {
       console.error(err);
+      process.exit(1);
     });
 
 ## Configuration
