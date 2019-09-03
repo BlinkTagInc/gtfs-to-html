@@ -103,17 +103,25 @@ All files starting with `config*.json` are .gitignored - so you can create multi
 | [`dayStrings`](#dayStrings) | array of strings | An array defining weekdays names from Monday to Sunday. |
 | [`defaultOrientation`](#defaultOrientation) | string | Specifies timetable orientation, when not mentioned in `timetables.txt` |
 | [`effectiveDate`](#effectivedate) | string | A date to print at the top of the timetable |
+| [`interpolatedStopSymbol`](#interpolatedStopSymbol) | string | The symbol used to indicate that a timepoint isn't fixed, but just interpolated. |
+| [`interpolatedStopText`](#interpolatedStopText) | string | The text used to describe a timepoint isn't fixed, but just interpolated. |
 | [`linkStopUrls`](#linkStopUrls) | boolean | Whether or not to hyperlink timetable stop names to the `stop_url` defined in `stops.txt`. |
 | [`mapboxAccessToken`](#mapboxaccesstoken) | string | The Mapbox access token for generating a map of the route. |
 | [`menuType`](#menuType) | string | The type of menu to use for selecting timetables on a timetable page. |
 | [`mongoUrl`](#mongoUrl) | string | The URL of the MongoDB database to import to. |
+| [`noDropoffSymbol`](#noDropoffSymbol) | string | The symbol used to indicate ta stop where no drop off is available. |
+| [`noDropoffText`](#noDropoffText) | string | The text used to describe a stop where no drop off is available. |
 | [`noHead`](#noHead) | boolean | Whether or not to skip the header and footer of the HTML document. |
-| [`noServiceSymbol`](#noservicesymbol) | string | The symbol used when a specific trip does not serve a specified stop. |
-| [`requestDropoffSymbol`](#requestdropoffsymbol) | string | The symbol used to indicate that riders must request a drop off at a stop. |
-| [`noDropoffSymbol`](#nodropoffsymbol) | string | The symbol used to indicate that no drop off is available at a stop. |
-| [`requestPickupSymbol`](#requestpickupsymbol) | string | The symbol used to indicate that riders must request a pickup at a stop. |
-| [`noPickupSymbol`](#nopickupsymbol) | string | The symbol used to indicate that no pickup is available at a stop. |
-| [`interpolatedStopSymbol`](#interpolatedStopSymbol) | string | The symbol used to indicate that a timepoint isn't fixed, but just interpolated. |
+| [`noServiceSymbol`](#noServiceSymbol) | string | The symbol used when a specific trip does not serve a specified stop. |
+| [`noServiceText`](#noServiceText) | string | The text used to describe a stop which is not served by a specific trip. |
+| [`noPickupSymbol`](#noPickupSymbol) | string | The symbol used to indicate a stop where no pickup is available. |
+| [`noPickupText`](#noPickupText) | string | The text used to describe a stop where no pickup is available. |
+| [`requestDropoffSymbol`](#requestDropoffSymbol) | string | The symbol used to indicate a stop where riders must request a drop off. |
+| [`requestDropoffText`](#requestDropoffText) | string | The text used to describe a stop where riders must request a drop off. |
+| [`requestPickupSymbol`](#requestPickupSymbol) | string | The symbol used to indicate a stop where riders must request a pickup. |
+| [`requestPickupText`](#requestPickupText) | string | The text used to describe a stop where riders must request a pickup. |
+| [`serviceNotProvidedOnText`](#serviceNotProvidedOnText) | string | The text used to label days where service is not provided. |
+| [`serviceProvidedOnText`](#serviceProvidedOnText) | string | The text used to label days where service is provided. |
 | [`showArrivalOnDifference`](#showArrivalOnDifference) | float | Defines a difference between departure and arrival, on which arrival column/row will be shown. |
 | [`showMap`](#showmap) | boolean | Whether or not to show a map of the route on the timetable. |
 | [`showOnlyTimepoint`](#showonlytimepoint) | boolean | Whether or not all stops should be shown, or only stops with a `timepoint` value in `stops.txt`. |
@@ -268,6 +276,22 @@ API along with your API token.
     "effectiveDate": "July 8, 2015"
 ```
 
+### interpolatedStopSymbol
+
+{String} The symbol used to indicate that a timepoint isn't fixed, but just interpolated. Defaults to `•`. To avoid having this symbol used in timetables, set it to `null`.
+
+```
+    "interpolatedStopSymbol": "•"
+```
+
+### interpolatedStopText
+
+{String} The text used to describe that a timepoint isn't fixed, but just interpolated. Defaults to `Estimated time of arrival`.
+
+```
+    "interpolatedStopText": "Estimated time of arrival"
+```
+
 ### linkStopUrls
 
 {Boolean} Whether or not to hyperlink timetable stop names to the `stop_url` defined in `stops.txt`. If no `stop_url` is defined for a stop, no link will be created. Defaults to `false`.
@@ -308,12 +332,44 @@ API along with your API token.
 }
 ```
 
+### noDropoffSymbol
+
+{String} The symbol used to indicate that no drop off is available at a stop. Defaults to `‡`. To avoid having this symbol used in timetables, set it to `null`.
+
+```
+    "noDropoffSymbol": "‡"
+```
+
+### noDropoffText
+
+{String} The text used to describe that no drop off is available at a stop. Defaults to `No drop off available`.
+
+```
+    "noDropoffText": "No drop off available"
+```
+
 ### noHead
 
 {Boolean} Whether or not to skip the HTML head and footer when generating the HTML. This is useful for creating embeddable HTML without `<html>`, `<head>` or `<body>` tags. Defaults to `false`.
 
 ```
     "noHead": false
+```
+
+### noPickupSymbol
+
+{String} The symbol used to indicate that no pickup is available at a stop. Defaults to `**`. To avoid having this symbol used in timetables, set it to `null`.
+
+```
+    "noPickupSymbol": "**"
+```
+
+### noPickupText
+
+{String} The text used to describe that no pickup is available at a stop. Defaults to `No pickup available`.
+
+```
+    "noPickupText": "No pickup available"
 ```
 
 ### noServiceSymbol
@@ -324,6 +380,14 @@ API along with your API token.
     "noServiceSymbol": "-"
 ```
 
+### noServiceText
+
+{String} The text used to describe when a specific trip does not serve a specified stop. Defaults to `No service at this stop`.
+
+```
+    "noServiceText": "No service at this stop"
+```
+
 ### requestDropoffSymbol
 
 {String} The symbol used to indicate that riders must request to be dropped off at a stop. Defaults to `†`. To avoid having this symbol used in timetables, set it to `null`.
@@ -332,12 +396,12 @@ API along with your API token.
     "requestDropoffSymbol": "†"
 ```
 
-### noDropoffSymbol
+### requestDropoffText
 
-{String} The symbol used to indicate that no drop off is available at a stop. Defaults to `‡`. To avoid having this symbol used in timetables, set it to `null`.
+{String} The text used to describe that riders must request to be dropped off at a stop. Defaults to `Must request drop off`.
 
 ```
-    "noDropoffSymbol": "‡"
+    "requestDropoffText": "Must request drop off"
 ```
 
 ### requestPickupSymbol
@@ -348,20 +412,28 @@ API along with your API token.
     "requestPickupSymbol": "***"
 ```
 
-### noPickupSymbol
+### requestPickupText
 
-{String} The symbol used to indicate that no pickup is available at a stop. Defaults to `**`. To avoid having this symbol used in timetables, set it to `null`.
-
-```
-    "requestPickupSymbol": "**"
-```
-
-### interpolatedStopSymbol
-
-{String} The symbol used to indicate that a timepoint isn't fixed, but just interpolated. Defaults to `•`. To avoid having this symbol used in timetables, set it to `null`.
+{String} The text used to describe that riders must request pickup at a stop. Defaults to `Request stop - call for pickup`.
 
 ```
-    "interpolatedStopSymbol": "•"
+    "requestPickupText": "Request stop - call for pickup"
+```
+
+### serviceNotProvidedOnText
+
+{String} The text used to label days where service is not provided. Defaults to `Service not provided on`.
+
+```
+    "serviceNotProvidedOnText": "Service not provided on"
+```
+
+### serviceProvidedOnText
+
+{String} The text used to label days where service is provided. Defaults to `Service provided on`.
+
+```
+    "serviceProvidedOnText": "Service provided on"
 ```
 
 ### showArrivalOnDifference

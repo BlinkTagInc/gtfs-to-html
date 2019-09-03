@@ -54,24 +54,22 @@ include formatting_functions.pug
           if timetable.requestPickupSymbolUsed || timetable.noPickupSymbolUsed || timetable.requestDropoffSymbolUsed || timetable.noDropoffSymbolUsed || timetable.noServiceSymbolUsed || timetable.interpolatedStopSymbolUsed
             .col-md-4.notes
               if timetable.requestPickupSymbolUsed
-                .note= `${config.requestPickupSymbol} = Request stop - call for pickup`
+                .note= `${config.requestPickupSymbol} = ${config.requestPickupText}`
               if timetable.noPickupSymbolUsed
-                .note= `${config.noPickupSymbol} = No pickup available`
+                .note= `${config.noPickupSymbol} = ${config.noPickupText}`
               if timetable.requestDropoffSymbolUsed
-                .note= `${config.requestDropoffSymbol} = Must request drop off`
+                .note= `${config.requestDropoffSymbol} = ${config.requestDropoffText}`
               if timetable.noDropoffSymbolUsed
-                .note= `${config.noDropoffSymbol} = No drop off available`
+                .note= `${config.noDropoffSymbol} = ${config.noDropoffText}`
               if timetable.noServiceSymbolUsed
-                .note= `${config.noServiceSymbol} = No service at this stop`
+                .note= `${config.noServiceSymbol} = ${config.noServiceText}`
               if timetable.interpolatedStopSymbolUsed
-                .note= `${config.interpolatedStopSymbol} = Estimated time of arrival`
+                .note= `${config.interpolatedStopSymbol} = ${config.interpolatedStopText}`
 
           if timetable.calendarDates.includedDates.length
             .col-md-4
-              .included-dates Service provided on:&nbsp;
-                span= timetable.calendarDates.includedDates.join(', ')
+              .included-dates= `${config.serviceProvidedOnText}: ${timetable.calendarDates.includedDates.join(', ')}`
 
           if timetable.calendarDates.excludedDates.length
             .col-md-4
-              .excluded-dates Service not provided on:&nbsp;
-                span= timetable.calendarDates.excludedDates.join(', ')
+              .excluded-dates= `${config.serviceNotProvidedOnText}: ${timetable.calendarDates.excludedDates.join(', ')}`
