@@ -74,7 +74,8 @@ function createMap(id, geojson, routeColor) {
     container: 'map_' + id,
     style: 'mapbox://styles/mapbox/light-v9',
     center: bounds.getCenter(),
-    zoom: 12
+    zoom: 12,
+    preserveDrawingBuffer: true
   });
 
   map.scrollZoom.disable();
@@ -88,7 +89,12 @@ function createMap(id, geojson, routeColor) {
 
   map.on('load', function () {
     map.fitBounds(bounds, {
-      padding: 20
+      padding: {
+        top: 40,
+        bottom: 40,
+        left: 20,
+        right: 40
+      }
     });
 
     map.addLayer({

@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.18.0] - 2019-09-25
+### Added
+- PDF export support using `outputFormat` config option
+
 ## [0.17.9] - 2019-08-12
 ### Updated
 - Handle GTFS with no calendars.txt
