@@ -28,6 +28,10 @@ By generating future timetables and including dates in table metadata, your time
 
 `gtfs-to-html` uses the [`node-gtfs`](https://github.com/blinktaginc/node-gtfs) library to handle importing and querying GTFS data.
 
+## GTFS-to-HTML on the web
+
+You can now use `gtfs-to-html` without actually downloading any code or doing any configuration. [gtfstohtml.com](https://gtfstohtml.com) provides a web based interface for finding GTFS feeds for agenices, setting configuration and then generates a previewable and downloadable set of timetables.
+
 ## Current Usage
 Many transit agencies use `gtfs-to-html` to generate the schedule pages used on their websites, including:
 
