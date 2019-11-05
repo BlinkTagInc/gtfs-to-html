@@ -78,7 +78,7 @@ If you are using this as a node module as part of an application, you can includ
     const config = require('config.json');
 
     mongoose.Promise = global.Promise;
-    mongoose.connect(config.mongoUrl, { useNewUrlParser: true, useCreateIndex: true });
+    mongoose.connect(config.mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true });
 
     gtfsToHTML(config)
     .then(() => {
@@ -690,7 +690,7 @@ If you want to route logs to a custom function, you can pass a function that tak
       }
     };
 
-    mongoose.connect(config.mongoUrl, { useNewUrlParser: true, useCreateIndex: true });
+    mongoose.connect(config.mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true });
 
     gtfsToHTML(config);
 

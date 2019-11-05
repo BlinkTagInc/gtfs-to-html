@@ -25,6 +25,7 @@
   "noPickupText": "No pickup available",
   "noServiceSymbol": "—",
   "noServiceText": "No service at this stop",
+  "outputFormat": "html",
   "requestDropoffSymbol": "†",
   "requestDropoffText": " Must request drop off",
   "requestPickupSymbol": "***",
@@ -39,6 +40,7 @@
   "showStopDescription": false,
   "skipImport": false,
   "sortingAlgorithm": "common",
+  "templatePath": "views/timetable",
   "timeFormat": "h:mma",
   "verbose": true,
   "zipOutput": false
