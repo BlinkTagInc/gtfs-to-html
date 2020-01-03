@@ -316,14 +316,14 @@ function createSystemMap(id, geojson) {
 
     function highlightRoutes(routeIds) {
       routeLayerIds.forEach(function (layerId) {
-        var lineOpacity = (routeIds.indexOf(layerId) === -1) ? 0.1 : 1;
+        var lineOpacity = (routeIds.includes(layerId)) ? 0.1 : 1;
         map.setPaintProperty(layerId, 'line-opacity', lineOpacity);
       });
 
       map.setFilter('routes-label', ['in', 'route_id'].concat(routeIds));
 
       var highlightedFeatures = geojson.features.reduce(function (memo, feature) {
-        if (routeIds.indexOf(feature.properties.route_id) !== -1) {
+        if (routeIds.includes(feature.properties.route_id)) {
           memo.push(feature);
         }
 

@@ -45,6 +45,7 @@ router.get('/timetable/:agencyKey', async (req, res, next) => {
     const timetablePageIds = _.map(await utils.getTimetablePages(agencyKey, config), 'timetable_page_id');
 
     for (const timetablePageId of timetablePageIds) {
+      // eslint-disable-next-line no-await-in-loop
       const timetablePage = await utils.getFormattedTimetablePage(agencyKey, timetablePageId, config);
 
       if (!timetablePage.consolidatedTimetables || timetablePage.consolidatedTimetables.length === 0) {
@@ -55,6 +56,7 @@ router.get('/timetable/:agencyKey', async (req, res, next) => {
       for (const timetable of timetablePage.consolidatedTimetables) {
         timetable.timetable_label = formatters.formatTimetableLabel(timetable);
       }
+
       timetablePages.push(timetablePage);
     }
 
