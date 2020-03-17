@@ -16,7 +16,7 @@ const argv = require('yargs').usage('Usage: $0 --config ./config.json')
   })
   .option('s', {
     alias: 'skipImport',
-    describe: 'Don\'t import GTFS file.',
+    describe: 'Don’t import GTFS file.',
     type: 'boolean'
   })
   .default('skipImport', undefined)

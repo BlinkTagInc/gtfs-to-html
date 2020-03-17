@@ -82,9 +82,9 @@ function createMap(id, geojson, routeColor) {
   map.addControl(new mapboxgl.NavigationControl());
 
   function createMarker() {
-    var el = document.createElement('div');
-    el.className = 'marker';
-    return el;
+    var element = document.createElement('div');
+    element.className = 'marker';
+    return element;
   }
 
   map.on('load', function () {
@@ -162,9 +162,9 @@ function createMap(id, geojson, routeColor) {
       map.getCanvas().style.cursor = '';
     });
 
-    map.on('click', function (e) {
+    map.on('click', function (event) {
       // Set bbox as 5px reactangle area around clicked point
-      var bbox = [[e.point.x - 5, e.point.y - 5], [e.point.x + 5, e.point.y + 5]];
+      var bbox = [[event.point.x - 5, event.point.y - 5], [event.point.x + 5, event.point.y + 5]];
       var features = map.queryRenderedFeatures(bbox, {layers: ['stops']});
 
       if (!features || features.length === 0) {
@@ -296,9 +296,9 @@ function createSystemMap(id, geojson) {
       filter: ['==', 'route_id', '']
     });
 
-    map.on('click', function (e) {
+    map.on('click', function (event) {
       // Set bbox as 5px reactangle area around clicked point
-      var bbox = [[e.point.x - 5, e.point.y - 5], [e.point.x + 5, e.point.y + 5]];
+      var bbox = [[event.point.x - 5, event.point.y - 5], [event.point.x + 5, event.point.y + 5]];
       var features = map.queryRenderedFeatures(bbox, {layers: routeLayerIds});
 
       if (!features || features.length === 0) {
@@ -309,7 +309,7 @@ function createSystemMap(id, geojson) {
       var feature = features[0];
 
       new mapboxgl.Popup()
-        .setLngLat(e.lngLat)
+        .setLngLat(event.lngLat)
         .setHTML(formatRoutePopup(feature))
         .addTo(map);
     });

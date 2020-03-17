@@ -20,11 +20,11 @@ const router = new express.Router();
 /*
  * Show all agencies
  */
-router.get('/', async (req, res, next) => {
+router.get('/', async (request, response, next) => {
   try {
     const agencies = await gtfs.getAgencies();
     const sortedAgencies = _.sortBy(agencies, 'agency_name');
-    return res.render('agencies', {agencies: sortedAgencies});
+    return response.render('agencies', {agencies: sortedAgencies});
   } catch (error) {
     next(error);
   }
@@ -33,8 +33,8 @@ router.get('/', async (req, res, next) => {
 /*
  * Show all timetable pages for an agency
  */
-router.get('/timetable/:agencyKey', async (req, res, next) => {
-  const {agencyKey} = req.params;
+router.get('/timetable/:agencyKey', async (request, response, next) => {
+  const {agencyKey} = request.params;
 
   if (!agencyKey) {
     return next(new Error('No agencyKey provided'));
@@ -70,7 +70,7 @@ router.get('/timetable/:agencyKey', async (req, res, next) => {
     });
 
     const html = await utils.generateOverviewHTML(agencyKey, sortedTimetablePages, config);
-    res.send(html);
+    response.send(html);
   } catch (error) {
     next(error);
   }
@@ -79,8 +79,8 @@ router.get('/timetable/:agencyKey', async (req, res, next) => {
 /*
  * Show a specific timetable page
  */
-router.get('/timetable/:agencyKey/:timetablePageId', async (req, res, next) => {
-  const {agencyKey, timetablePageId} = req.params;
+router.get('/timetable/:agencyKey/:timetablePageId', async (request, response, next) => {
+  const {agencyKey, timetablePageId} = request.params;
 
   if (!agencyKey) {
     return next(new Error('No agencyKey provided'));
@@ -94,7 +94,7 @@ router.get('/timetable/:agencyKey/:timetablePageId', async (req, res, next) => {
     const timetablePage = await utils.getFormattedTimetablePage(agencyKey, timetablePageId, config);
 
     const results = await utils.generateHTML(timetablePage, config);
-    res.send(results.html);
+    response.send(results.html);
   } catch (error) {
     next(error);
   }

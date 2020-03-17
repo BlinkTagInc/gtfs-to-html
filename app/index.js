@@ -38,41 +38,41 @@ app.use('/', routes);
 // Error handlers
 
 // 404 error handler
-app.use((req, res) => {
-  const err = {
+app.use((request, response) => {
+  const error = {
     message: 'Not Found',
     status: 404
   };
-  res.status(404);
-  if (req.xhr) {
-    res.send({
-      message: err.message,
-      error: err
+  response.status(404);
+  if (request.xhr) {
+    response.send({
+      message: error.message,
+      error
     });
   } else {
-    res.render('error', {
-      message: err.message,
-      error: err
+    response.render('error', {
+      message: error.message,
+      error
     });
   }
 });
 
 // Development error handler: will print stacktrace
 if (process.env.NODE_ENV === 'development') {
-  app.use((err, req, res) => {
-    res.status(err.status || 500);
-    res.render('error', {
-      message: err.message,
-      error: err
+  app.use((error, request, response) => {
+    response.status(error.status || 500);
+    response.render('error', {
+      message: error.message,
+      error
     });
   });
 }
 
 // Production error handler: no stacktraces leaked to user
-app.use((err, req, res) => {
-  res.status(err.status || 500);
-  res.render('error', {
-    message: err.message,
+app.use((error, request, response) => {
+  response.status(error.status || 500);
+  response.render('error', {
+    message: error.message,
     error: {}
   });
 });
