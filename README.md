@@ -50,6 +50,7 @@ Many transit agencies use `gtfs-to-html` to generate the schedule pages used on 
 * [Santa Barbara Metropolitan Transit District](https://sbmtd.gov)
 * [Sonoma County Transit](http://sctransit.com/)
 * [Tulare County Area Transit](https://ridetcat.org/)
+* [Worcester Regional Transit Authority](https://therta.com/)
 
 Are you using `gtfs-to-html`? Let us know via email (brendan@blinktag.com) or via opening a github issue or pull request if your agency is using this library.
 
