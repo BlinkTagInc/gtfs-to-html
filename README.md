@@ -140,6 +140,7 @@ All files starting with `config*.json` are .gitignored - so you can create multi
 | [`sortingAlgorithm`](#sortingAlgorithm) | string | Defines the trip-sorting algorithm. |
 | [`templatePath`](#templatepath) | string | Path to custom pug template for rendering timetable. |
 | [`timeFormat`](#timeFormat) | string | A string defining time format in moment.js style. |
+| [`useParentStation`](#useParentStation) | boolean | Whether or not to use a stop's `parent_station`. |
 | [`verbose`](#verbose) | boolean | Whether or not to print output to the console. |
 | [`zipOutput`](#zipoutput) | boolean | Whether or not to zip the output into one zip file. |
 
@@ -544,6 +545,14 @@ The default trip-sorting algorithm is `common`.
 
 ```
     "templatePath": "views/custom/my-agency/"
+```
+
+### useParentStation
+
+{Boolean} Whether or not to use the `parent_station` of a stop, if specified instead of the platform or boarding area. Useful if different trips for the same route have different platforms that you want to show up in the timetable as separate stops. Defaults to `true`.
+
+```
+    "useParentStation": true
 ```
 
 ### verbose

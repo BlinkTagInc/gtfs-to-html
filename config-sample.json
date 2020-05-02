@@ -42,6 +42,7 @@
   "sortingAlgorithm": "common",
   "templatePath": "views/timetable",
   "timeFormat": "h:mma",
+  "useParentStation": true,
   "verbose": true,
   "zipOutput": false
 }
