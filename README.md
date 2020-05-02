@@ -137,7 +137,7 @@ All files starting with `config*.json` are .gitignored - so you can create multi
 | [`showStopCity`](#showstopcity) | boolean | Whether or not to show each stop's city. |
 | [`showStopDescription`](#showstopdescription) | boolean | Whether or not to show a stop description. |
 | [`skipImport`](#skipImport) | boolean | Whether or not to skip importing GTFS data into mongoDB. |
-| [`sortingAlgorithm`](#sortingAlgorithm) | string | Defines trip-sorting algorithm. |
+| [`sortingAlgorithm`](#sortingAlgorithm) | string | Defines the trip-sorting algorithm. |
 | [`templatePath`](#templatepath) | string | Path to custom pug template for rendering timetable. |
 | [`timeFormat`](#timeFormat) | string | A string defining time format in moment.js style. |
 | [`verbose`](#verbose) | boolean | Whether or not to print output to the console. |
@@ -512,13 +512,19 @@ If you'd rather just get all stops and route info as geoJSON, see [gtfs-to-geojs
 
 ### sortingAlgorithm
 
-{String} Defines trip-sorting algorithm. There is two main groups of algorithms full and simplified. 
+{String} Defines trip-sorting algorithm. There are two main groups of algorithms: simplified and full. 
 
-Full means, that sorting is done on every stop on that route. If there is no time specified, the trip will remain on its previous place. `beginning` sorts from beginning to end, `end` otherwise.
+Simplified algorithms sort trips by using one specific stop.
 
-Simplified algorithms sorts trips by one stoptime in every trip only. `common` fonds the coommon stop (used by all trips) and sorts by it (if not found `first` is used). `first` and `last` use first or last stop of every trip respectively.
+* `common` finds a coommon stop (used by all trips) (if not found `first` is used).
+* `first` uses the first stop stop on the longest trip
+* `last` uses the last stop on the longest trip
 
-Prefer simplified algorithms, unless they don't give expected results.
+Full algorithms sorting usinig every stop on the route. If there is no time specified, the trip will remain in its previous place.
+* `beginning` sorts from beginning to end
+* `end` sorts from end to beginning
+
+The default trip-sorting algorithm is `common`.
 
 ```
     "sortingAlgorithm": "common"
