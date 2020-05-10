@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const {resolve} = require('path');
+const { resolve } = require('path');
 
 const fs = require('fs-extra');
 const mongoose = require('mongoose');
@@ -63,7 +63,7 @@ const getConfig = async () => {
 getConfig()
   .then(async config => {
     mongoose.Promise = global.Promise;
-    mongoose.connect(config.mongoUrl, {useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true});
+    mongoose.connect(config.mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true });
 
     await gtfsToHtml(config);
 

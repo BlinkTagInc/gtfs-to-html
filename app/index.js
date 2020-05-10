@@ -22,7 +22,7 @@ const configPath = path.join(process.cwd(), argv.configPath);
 const config = require(configPath);
 
 mongoose.Promise = global.Promise;
-mongoose.connect(config.mongoUrl, {useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true});
+mongoose.connect(config.mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true });
 
 const app = express();
 

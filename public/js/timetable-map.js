@@ -165,7 +165,7 @@ function createMap(id, geojson, routeColor) {
     map.on('click', function (event) {
       // Set bbox as 5px reactangle area around clicked point
       var bbox = [[event.point.x - 5, event.point.y - 5], [event.point.x + 5, event.point.y + 5]];
-      var features = map.queryRenderedFeatures(bbox, {layers: ['stops']});
+      var features = map.queryRenderedFeatures(bbox, { layers: ['stops'] });
 
       if (!features || features.length === 0) {
         return;
@@ -299,7 +299,7 @@ function createSystemMap(id, geojson) {
     map.on('click', function (event) {
       // Set bbox as 5px reactangle area around clicked point
       var bbox = [[event.point.x - 5, event.point.y - 5], [event.point.x + 5, event.point.y + 5]];
-      var features = map.queryRenderedFeatures(bbox, {layers: routeLayerIds});
+      var features = map.queryRenderedFeatures(bbox, { layers: routeLayerIds });
 
       if (!features || features.length === 0) {
         return;
@@ -329,8 +329,8 @@ function createSystemMap(id, geojson) {
 
         return memo;
       }, []);
-      var zoomBounds = getBounds({features: highlightedFeatures});
-      map.fitBounds(zoomBounds, {padding: 20});
+      var zoomBounds = getBounds({ features: highlightedFeatures });
+      map.fitBounds(zoomBounds, { padding: 20 });
     }
 
     function unHighlightRoutes() {

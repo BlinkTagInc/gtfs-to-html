@@ -40,7 +40,7 @@ Many transit agencies use `gtfs-to-html` to generate the schedule pages used on 
 * [County Connection (Contra Costa County, California)](https://countyconnection.com)
 * [El Dorado County](http://eldoradotransit.com/)
 * [Humboldt Transit Authority](http://hta.org/)
-* [Kings Area Rural Transit (KART)](http://mykartbus.com/)
+* [Kings Area Rural Transit (KART)](https://www.kartbus.org/)
 * [Madera County Connection](http://mcctransit.com/)
 * [Marin Transit](https://marintransit.org/)
 * [Mountain Transit](http://mountaintransit.org/)

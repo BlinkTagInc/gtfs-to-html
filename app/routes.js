@@ -24,7 +24,7 @@ router.get('/', async (request, response, next) => {
   try {
     const agencies = await gtfs.getAgencies();
     const sortedAgencies = _.sortBy(agencies, 'agency_name');
-    return response.render('agencies', {agencies: sortedAgencies});
+    return response.render('agencies', { agencies: sortedAgencies });
   } catch (error) {
     next(error);
   }
@@ -34,7 +34,7 @@ router.get('/', async (request, response, next) => {
  * Show all timetable pages for an agency
  */
 router.get('/timetable/:agencyKey', async (request, response, next) => {
-  const {agencyKey} = request.params;
+  const { agencyKey } = request.params;
 
   if (!agencyKey) {
     return next(new Error('No agencyKey provided'));
@@ -80,7 +80,7 @@ router.get('/timetable/:agencyKey', async (request, response, next) => {
  * Show a specific timetable page
  */
 router.get('/timetable/:agencyKey/:timetablePageId', async (request, response, next) => {
-  const {agencyKey, timetablePageId} = request.params;
+  const { agencyKey, timetablePageId } = request.params;
 
   if (!agencyKey) {
     return next(new Error('No agencyKey provided'));
