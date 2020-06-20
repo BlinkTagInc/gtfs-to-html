@@ -604,7 +604,7 @@ An example of this file is located in [examples/timetables.txt](examples/timetab
 
 ### Multi-route Timetables
 
-To allow creating a single timetable for multiple routes that overlap, you can have multiple entries in `timetables.txt` for the same `timetable_id`. These multi-route entries should have the same values `timetable_id`, `start_date`, `end_date`, calendar date, `service_notes` and `orientation` fields and should have different values for the `route_id` and `timetable_label` fields.
+To allow creating a single timetable for multiple routes that overlap, you can have multiple entries in `timetables.txt` for the same `timetable_id`. All fields should be the same for each row in `timetables.txt` for a combined route timetable except `route_id`.
 
 ### Build `timetable_stop_order.txt`
 

@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.20.0] - 2020-06-20
+### Added
+- Added support for timetables that include more than one route.
+
+## [0.19.1] - 2020-06-04
+### Changed
+- Use turf.js for geojson simplification.
+
 ## [0.19.0] - 2020-05-01
 ### Added
 - Added support for `useParentStation` config variable.
