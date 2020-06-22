@@ -44,6 +44,7 @@
     "moment": "^2.27.0",
     "mongoose": "^5.9.19",
     "morgan": "^1.10.0",
+    "pretty-error": "^2.1.1",
     "progress": "^2.0.3",
     "pug": "^3.0.0",
     "puppeteer": "^4.0.0",
