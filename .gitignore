@@ -1,6 +1,6 @@
 node_modules
 html
-config*
+/config*
 !config-sample.json
 views/custom
 
