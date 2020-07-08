@@ -76,3 +76,19 @@ By default, `gtfs-to-html` will look for a `config.json` file in the project roo
     node app --configPath /path/to/your/custom-config.json
 
 Once running, you can view the HTML in your browser at [localhost:3000](http://localhost:3000)
+
+
+## Usage as a hosted web app
+
+A [hosted version of GTFS-to-HTML as a service](https://run.gtfstohtml.com) allows you to use it entirely within your browser - no downloads or command line necessary.
+
+It provides:
+
+* a web-based interface for finding GTFS feeds or ability to enter your own URL
+* support for adding [custom configuration](/docs/configuration) as JSON
+* creation of HTML timetables as a downloadable .zip file
+* a preview of all timetables generated directly in your browser
+
+[run.gtfstohtml.com](https://run.gtfstohtml.com)
+
+Currently, it is limited to relatively small GTFS files and doesn't offer support for [Custom Templates](/docs/custom-templates).

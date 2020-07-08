@@ -1,2 +1,3 @@
 timetable_page_id,timetable_page_label,filename
-1,"Cloverdale, Healdsburg, Windsor, Santa Rosa","cloverdale.html"
+1,"Cloverdale, Healdsburg, Windsor, Santa Rosa","60.html"
+2,"Sebastopol, Rohnert Park, Cotati","26.html"

@@ -97,8 +97,20 @@ function Home() {
           </section>
         )}
 
+        <div className={clsx(styles.buttons, 'margin-top--md')}>
+          <a
+            className={clsx(
+              'button button--outline button--secondary button--lg',
+              styles.getStarted,
+            )}
+            href="https://www.npmjs.com/package/gtfs-to-html"
+          >
+            npm install -g gtfs-to-html
+          </a>
+        </div>
+
         <section>
-          <div className='container margin-top--lg margin-bottom--lg'>
+          <div className='container margin-top--xl margin-bottom--lg'>
             <div className='row'>
               <div className="col col--8 col--offset-2">
                 <h2>Example Usage</h2>

@@ -1,12 +1,11 @@
 ---
 id: additional-files
-title: Additional GTFS Files
+title: Why Additional Files?
 ---
 
+By default, GTFS-to-HTML attempts to generate a timetable for each  route and direction present in a GTFS file. However, much greater control over which routes, directions and days of the week should be built into timetables is possible by adding some additional, non-standard .txt files to an agencies GTFS.
 
-GTFS-to-HTML project supports additional non-standard files which can be included in an agency's GTFS to help specify which routes, directions and days of the week should be built into a timetable.
-
-* [timetables.txt](timetables) - Specifies which HTML timetables should be built
-* [timetable_stop_order.txt](timetable-stop-order) - Specifies stop order for a particular timetable.
-* [timetable_pages.txt](timetable-pages) - Specifies which HTML timetable to group together into a single HTML page.
-* [stop_attributes.txt](stop-attributes) - Specifies additional information about a stop.
+* [timetables.txt](/docs/timetables) - Specifies which HTML timetables should be built based on route_id, direction_id, days of the week and a date range.
+* [timetable_stop_order.txt](/docs/timetable-stop-order) - Specifies the stop order that should be used for timetables.
+* [timetable_pages.txt](/docs/timetable-pages) - Specifies which HTML timetables should be grouped together into a single HTML page.
+* [stop_attributes.txt](/docs/stop-attributes) - Specifies additional information about a stop.

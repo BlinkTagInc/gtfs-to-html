@@ -6,7 +6,7 @@ title: timetables.txt
 
 This is an optional, non-standard file called `timetables.txt` which can be included in an agency's GTFS. This file specifies to GTFS-to-HTML which HTML timetables should be built.
 
-An example of this file is located in [examples/timetables.txt](https://github.com/BlinkTagInc/gtfs-to-html/blob/master/examples/timetables.txt). The format of this file is:
+### Column Definitions
 
 | column name | description |
 | ----------- | ----------- |
@@ -30,6 +30,21 @@ An example of this file is located in [examples/timetables.txt](https://github.c
 | `timetable_sequence` | The order that this timetable should appear on the timetable page |
 | `direction_name` | The human readable name of the direction of the timetable, such as "Southbound" |
 | `show_trip_continuation` | A binary value that indicates whether this timetable should show an additional column(s) or row(s) indicating which trips continue from a different route or continue on as a different route. This is calculated by trips that share the same `block_id` in `trips.txt`. Valid options are `0` and `1`.  Optional, defaults to `0`. |
+
+### Example
+
+```csv
+timetable_id,route_id,direction_id,start_date,end_date,monday,tuesday,wednesday,thursday,friday,saturday,sunday,include_exceptions,timetable_label,service_notes,orientation,timetable_page_id,timetable_sequence,direction_name,show_trip_continuation
+0,2034,0,20150101,20151122,1,1,1,1,1,1,0,0,101 Northbound,Mon-Sat,horizontal,1,0,Northbound,0
+1,2035,1,20150819,20151122,1,1,0,1,1,0,0,0,101T Northbound,"Mon,Tue,Thur,Fri",horizontal,1,0,Northbound,0
+2,2035,0,20150819,20151122,0,0,1,0,0,0,0,0,101T Southbound,Wednesday,horizontal,1,0,Southbound,0
+3,2036,1,20150101,20151122,0,0,0,0,0,0,1,0,102 Eastbound,Sunday,horizontal,1,0,Eastbound,0
+4,2036,0,20150101,20151122,1,1,1,1,1,0,0,0,102 Westbound,Mon-Fri,horizontal,1,0,Westbound,0
+5,2036,1,20150101,20151122,0,0,0,0,0,1,0,0,102 Eastbound,Saturday,horizontal,1,0,Eastbound,0
+6,2037,0,20150101,20151122,1,1,1,1,1,0,0,0,103,Westbound,Mon-Fri,horizontal,1,0,Westbound,0
+```
+
+An example of this file is located in [examples/timetables.txt](https://github.com/BlinkTagInc/gtfs-to-html/blob/master/examples/timetables.txt). 
 
 
 ## Multi-route Timetables
