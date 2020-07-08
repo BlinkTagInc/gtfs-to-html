@@ -1,28 +1,33 @@
 module.exports = {
-  title: 'My Site',
-  tagline: 'The tagline of my site',
-  url: 'https://your-docusaurus-test-site.com',
+  title: 'GTFS-to-HTML',
+  tagline: 'Generate human-readable HTML timetables from GTFS',
+  url: 'https://gtfstohtml.com',
   baseUrl: '/',
   favicon: 'img/favicon.ico',
-  organizationName: 'facebook', // Usually your GitHub org/user name.
-  projectName: 'docusaurus', // Usually your repo name.
+  organizationName: 'blinktaginc', // Usually your GitHub org/user name.
+  projectName: 'gtfs-to-html', // Usually your repo name.
   themeConfig: {
     navbar: {
-      title: 'My Site',
+      title: 'GTFS-to-HTML',
       logo: {
-        alt: 'My Site Logo',
-        src: 'img/logo.svg',
+        alt: 'GTFS-to-HTML Logo',
+        src: 'img/gtfs-to-html-logo.svg',
       },
       links: [
         {
           to: 'docs/',
           activeBasePath: 'docs',
-          label: 'Docs',
+          label: 'Documentation',
           position: 'left',
         },
         {to: 'blog', label: 'Blog', position: 'left'},
         {
-          href: 'https://github.com/facebook/docusaurus',
+          href: 'https://www.npmjs.com/package/gtfs-to-html',
+          label: 'NPM',
+          position: 'right'
+        },
+        {
+          href: 'https://github.com/blinktaginc/gtfs-to-html',
           label: 'GitHub',
           position: 'right',
         },
@@ -32,50 +37,46 @@ module.exports = {
       style: 'dark',
       links: [
         {
-          title: 'Docs',
+          title: 'Info',
           items: [
             {
-              label: 'Style Guide',
+              label: 'Documentation',
               to: 'docs/',
             },
-            {
-              label: 'Second Doc',
-              to: 'docs/doc2/',
-            },
-          ],
-        },
-        {
-          title: 'Community',
-          items: [
-            {
-              label: 'Stack Overflow',
-              href: 'https://stackoverflow.com/questions/tagged/docusaurus',
-            },
-            {
-              label: 'Discord',
-              href: 'https://discordapp.com/invite/docusaurus',
-            },
-            {
-              label: 'Twitter',
-              href: 'https://twitter.com/docusaurus',
-            },
-          ],
-        },
-        {
-          title: 'More',
-          items: [
             {
               label: 'Blog',
               to: 'blog',
             },
+          ],
+        },
+        {
+          title: 'Download',
+          items: [
             {
               label: 'GitHub',
-              href: 'https://github.com/facebook/docusaurus',
+              href: 'https://github.com/blinktaginc/gtfs-to-html',
+            },
+            {
+              label: 'NPM',
+              href: 'https://www.npmjs.com/package/gtfs-to-html',
+            },
+          ],
+        },
+        {
+          title: 'Acknowledgements',
+          items: [
+            {
+              label: 'Docusaurus',
+              href: 'https://docusaurus.io',
+            },
+            {
+              label: 'Contributors',
+              href: 'https://github.com/BlinkTagInc/gtfs-to-html/blob/master/package.json#L13',
             },
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} BlinkTag, Inc. Built with Docusaurus.`,
     },
   },
   presets: [
@@ -84,17 +85,17 @@ module.exports = {
       {
         docs: {
           // It is recommended to set document id as docs home page (`docs/` path).
-          homePageId: 'doc1',
+          homePageId: 'introduction',
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
           editUrl:
-            'https://github.com/facebook/docusaurus/edit/master/website/',
+            'https://github.com/blinktaginc/gtfs-to-html/edit/master/www/',
         },
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
           editUrl:
-            'https://github.com/facebook/docusaurus/edit/master/website/blog/',
+            'https://github.com/blinktaginc/gtfs-to-html/edit/master/www/blog/',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
