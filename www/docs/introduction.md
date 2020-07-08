@@ -25,6 +25,6 @@ By generating future timetables and including dates in table metadata, your time
 
 ## GTFS-to-HTML on the web
 
-You can now use `gtfs-to-html` without actually downloading any code or doing any configuration. [gtfstohtml.com](https://gtfstohtml.com) provides a web based interface for finding GTFS feeds for agenices, setting configuration and then generates a previewable and downloadable set of timetables.
+If you'd like to try out GTFS-to-HTML, you can do so entirely in your browser. [run.gtfstohtml.com](https://run.gtfstohtml.com) provides a web based interface for finding GTFS feeds, setting configuration and then generating downloadable sets of timetables. Use `gtfs-to-html` without actually downloading any code or doing any configuration!
 
 

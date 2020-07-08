@@ -3,6 +3,8 @@ id: current-usage
 title: Current Usage
 ---
 
+## Transit agencies using GTFS-to-HTML
+
 Many transit agencies use `gtfs-to-html` to generate the schedule pages used on their websites, including:
 
 | Agency | Location |
@@ -30,4 +32,6 @@ Are you using `gtfs-to-html`? Let us know via email (brendan@blinktag.com) or vi
 
 ## Projects using GTFS-to-HTML
 
-* `gtfs-to-html` is used as an integral part of [`transit-custom-posts`](https://trilliumtransit.github.io/transit-custom-posts/) - a GTFS-optimized Wordpress plugin for transit websites.
+* [`transit-custom-posts`](https://trilliumtransit.github.io/transit-custom-posts/) - a GTFS-optimized Wordpress plugin for transit websites. `gtfs-to-html` is used for generating the schedule pages.
+
+*  [run.gtfstohtml.com](https://run.gtfstohtml.com) provides a web based interface using GTFS-to-HTML. Find GTFS feeds for agenices, set configuration and generate a previewable and downloadable set of timetables all using your browser. Use `gtfs-to-html` without actually downloading any code or doing any configuration!
