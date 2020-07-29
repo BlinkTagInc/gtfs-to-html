@@ -23,12 +23,12 @@ This is an optional, non-standard file called `timetables.txt` which can be incl
 | `saturday` | A binary value that indicates whether this timetable should include service on Saturdays. Valid options are `0` and `1`. |
 | `sunday` | A binary value that indicates whether this timetable should include service on Sundays. Valid options are `0` and `1`. |
 | `include_exceptions` | A binary value that indicates whether or not to include exceptions of type `1` from `calendar_dates.txt`, such as holiday service on a weekday. Valid options are `0` and `1`. Optional, defaults to `0` (exceptions are not included by default). |
-| `timetable_label` | A short text label describing the timetable, for instance "Route 4 Northbound Mon-Fri". Optional, defaults to route name and first and last stops. |
+| `timetable_label` | A short text label describing the timetable, for instance "Route 4 Northbound Mon-Fri". Optional, defaults to route name and first and last stops. Optional. |
 | `service_notes` | Text shown on the timetable about the service represented. Optional. |
-| `orientation` | Determines if the top row should be a list of trips or stops. Valid options are `vertical`, `horizontal` or `hourly`. `vertical` shows stops across the top row with each row being a list of stop times for each trip. `horizontal` shows trips across the top row with each row being stop times for a specific stop. `hourly` is for routes that run the same time each hour and will print a simplified schedule showing minutes after the hour for each stop. `horizontal` orientation is best for routes with lots of stops and fewer trips while `vertical` orientation is best for routes with lots of trips and a smaller number of stops. Default is `vertical` |
-| `timetable_page_id` | The timetable page to include this timetable on |
-| `timetable_sequence` | The order that this timetable should appear on the timetable page |
-| `direction_name` | The human readable name of the direction of the timetable, such as "Southbound" |
+| `orientation` | Determines if the top row should be a list of trips or stops. Valid options are `vertical`, `horizontal` or `hourly`. `vertical` shows stops across the top row with each row being a list of stop times for each trip. `horizontal` shows trips across the top row with each row being stop times for a specific stop. `hourly` is for routes that run the same time each hour and will print a simplified schedule showing minutes after the hour for each stop. `horizontal` orientation is best for routes with lots of stops and fewer trips while `vertical` orientation is best for routes with lots of trips and a smaller number of stops. Optional, default is `vertical`. |
+| `timetable_page_id` | The timetable page that should include this timetable. Optional. |
+| `timetable_sequence` | The order that this timetable should appear on the timetable page. Optional. |
+| `direction_name` | The human readable name of the direction of the timetable, such as "Southbound". Optional. |
 | `show_trip_continuation` | A binary value that indicates whether this timetable should show an additional column(s) or row(s) indicating which trips continue from a different route or continue on as a different route. This is calculated by trips that share the same `block_id` in `trips.txt`. Valid options are `0` and `1`.  Optional, defaults to `0`. |
 
 ### Example
