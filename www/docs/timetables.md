@@ -22,6 +22,8 @@ This is an optional, non-standard file called `timetables.txt` which can be incl
 | `friday` | A binary value that indicates whether this timetable should include service on Fridays. Valid options are `0` and `1`. |
 | `saturday` | A binary value that indicates whether this timetable should include service on Saturdays. Valid options are `0` and `1`. |
 | `sunday` | A binary value that indicates whether this timetable should include service on Sundays. Valid options are `0` and `1`. |
+| `start_time` | A time in HH:MM:SS format used exclude all trips that start before this time. Optional, default is to use all trips throughout the day. |
+| `end_time` | A time in HH:MM:SS format used exclude all trips that start on or after this time. Optional, default is to use all trips throughout the day.  |
 | `include_exceptions` | A binary value that indicates whether or not to include exceptions of type `1` from `calendar_dates.txt`, such as holiday service on a weekday. Valid options are `0` and `1`. Optional, defaults to `0` (exceptions are not included by default). |
 | `timetable_label` | A short text label describing the timetable, for instance "Route 4 Northbound Mon-Fri". Optional, defaults to route name and first and last stops. Optional. |
 | `service_notes` | Text shown on the timetable about the service represented. Optional. |
@@ -34,14 +36,15 @@ This is an optional, non-standard file called `timetables.txt` which can be incl
 ### Example
 
 ```csv
-timetable_id,route_id,direction_id,start_date,end_date,monday,tuesday,wednesday,thursday,friday,saturday,sunday,include_exceptions,timetable_label,service_notes,orientation,timetable_page_id,timetable_sequence,direction_name,show_trip_continuation
-0,2034,0,20150101,20151122,1,1,1,1,1,1,0,0,101 Northbound,Mon-Sat,horizontal,1,0,Northbound,0
-1,2035,1,20150819,20151122,1,1,0,1,1,0,0,0,101T Northbound,"Mon,Tue,Thur,Fri",horizontal,1,0,Northbound,0
-2,2035,0,20150819,20151122,0,0,1,0,0,0,0,0,101T Southbound,Wednesday,horizontal,1,0,Southbound,0
-3,2036,1,20150101,20151122,0,0,0,0,0,0,1,0,102 Eastbound,Sunday,horizontal,1,0,Eastbound,0
-4,2036,0,20150101,20151122,1,1,1,1,1,0,0,0,102 Westbound,Mon-Fri,horizontal,1,0,Westbound,0
-5,2036,1,20150101,20151122,0,0,0,0,0,1,0,0,102 Eastbound,Saturday,horizontal,1,0,Eastbound,0
-6,2037,0,20150101,20151122,1,1,1,1,1,0,0,0,103,Westbound,Mon-Fri,horizontal,1,0,Westbound,0
+timetable_id,route_id,direction_id,start_date,end_date,monday,tuesday,wednesday,thursday,friday,saturday,sunday,start_time,end_time,include_exceptions,timetable_label,service_notes,orientation,timetable_page_id,timetable_sequence,direction_name,show_trip_continuation
+0,2034,0,20150101,20151122,1,1,1,1,1,1,0,00:00:00,13:00:00,0,101 Northbound,Mon-Sat AM,horizontal,1,0,Northbound,0
+1,2034,0,20150101,20151122,1,1,1,1,1,1,0,13:00:00,24:00:00,0,101 Northbound,Mon-Sat PM,horizontal,1,1,Northbound,0
+2,2035,1,20150819,20151122,1,1,0,1,1,0,0,,,0,101T Northbound,"Mon,Tue,Thur,Fri",horizontal,1,0,Northbound,0
+3,2035,0,20150819,20151122,0,0,1,0,0,0,0,,,0,101T Southbound,Wednesday,horizontal,1,0,Southbound,0
+4,2036,1,20150101,20151122,0,0,0,0,0,0,1,,,0,102 Eastbound,Sunday,horizontal,1,0,Eastbound,0
+5,2036,0,20150101,20151122,1,1,1,1,1,0,0,,,0,102 Westbound,Mon-Fri,horizontal,1,0,Westbound,0
+6,2036,1,20150101,20151122,0,0,0,0,0,1,0,,,0,102 Eastbound,Saturday,horizontal,1,0,Eastbound,0
+7,2037,0,20150101,20151122,1,1,1,1,1,0,0,,,0,103 Westbound,Mon-Fri,horizontal,1,0,Westbound,0
 ```
 
 An example of this file is located in [examples/timetables.txt](https://github.com/BlinkTagInc/gtfs-to-html/blob/master/examples/timetables.txt). 
