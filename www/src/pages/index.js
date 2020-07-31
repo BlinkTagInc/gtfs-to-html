@@ -1,9 +1,10 @@
+/* eslint-disable no-unused-vars */
 import React from 'react';
 import clsx from 'clsx';
 import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
-import CodeBlock from '@theme/CodeBlock'
+import CodeBlock from '@theme/CodeBlock';
 import useBaseUrl from '@docusaurus/useBaseUrl';
 import styles from './styles.module.css';
 
@@ -15,7 +16,7 @@ const features = [
       <>
         Most transit agencies have schedule data in GTFS format but need to show each route's schedule to users on a website.
       </>
-    ),
+    )
   },
   {
     title: <>What?</>,
@@ -24,7 +25,7 @@ const features = [
       <>
         This tool automates the process of creating nicely formatted HTML timetables for inclusion on a transit agency website.
       </>
-    ),
+    )
   },
   {
     title: <>Automate schedule changes</>,
@@ -33,11 +34,11 @@ const features = [
       <>
         Automating timetable creation means that timetables can be kept up to date and accurate when schedule changes happen and the likelihood of errors is reduced.
       </>
-    ),
-  },
+    )
+  }
 ];
 
-function Feature({imageUrl, title, description}) {
+function Feature({ imageUrl, title, description }) {
   const imgUrl = useBaseUrl(imageUrl);
   return (
     <div className={clsx('col col--4', styles.feature)}>
@@ -54,7 +55,7 @@ function Feature({imageUrl, title, description}) {
 
 function Home() {
   const context = useDocusaurusContext();
-  const {siteConfig = {}} = context;
+  const { siteConfig = {} } = context;
   return (
     <Layout
       title="GTFS-to-HTML"
@@ -63,9 +64,9 @@ function Home() {
         <div className="container">
           <div className="row">
             <div className="col col--4">
-              <img src="/img/gtfs-to-html-logo.svg" style={{ maxWidth: '150px'}} alt="" />
+              <img src="/img/gtfs-to-html-logo.svg" style={{ maxWidth: '150px' }} alt="" />
             </div>
-            
+
             <div className="col col--8">
               <h1 className="hero__title">{siteConfig.title}</h1>
               <p className="hero__subtitle">{siteConfig.tagline}</p>
@@ -74,7 +75,7 @@ function Home() {
                 <Link
                   className={clsx(
                     'button button--outline button--secondary button--lg',
-                    styles.getStarted,
+                    styles.getStarted
                   )}
                   to={useBaseUrl('docs/')}>
                   Get Started
@@ -101,7 +102,7 @@ function Home() {
           <a
             className={clsx(
               'button button--outline button--secondary button--lg',
-              styles.getStarted,
+              styles.getStarted
             )}
             href="https://www.npmjs.com/package/gtfs-to-html"
           >
@@ -110,8 +111,8 @@ function Home() {
         </div>
 
         <section>
-          <div className='container margin-top--xl margin-bottom--lg'>
-            <div className='row'>
+          <div className="container margin-top--xl margin-bottom--lg">
+            <div className="row">
               <div className="col col--8 col--offset-2">
                 <h2>Example Usage</h2>
                 <CodeBlock language="bash">{gtfsToHtmlCodeBlock}</CodeBlock>
@@ -121,13 +122,13 @@ function Home() {
         </section>
 
         <section>
-          <div className='container margin-top--lg margin-bottom--lg'>
-            <div className='row'>
+          <div className="container margin-top--lg margin-bottom--lg">
+            <div className="row">
               <div className="col col--12">
                 <h2>Example Output</h2>
               </div>
             </div>
-            <div className='row'>
+            <div className="row">
               <div className="col col--6">
                 <img src="/img/timetable-example.jpg" alt="Timetable Example" />
               </div>
@@ -182,6 +183,6 @@ caltrain: HTML timetables created at html/caltrain
 │ 🛑 Stops                               │ 308                │
 └────────────────────────────────────────┴────────────────────┘
 caltrain: HTML timetable generation required 12 seconds
-`
+`;
 
 export default Home;
