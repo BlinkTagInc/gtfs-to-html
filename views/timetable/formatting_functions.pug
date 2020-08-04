@@ -23,8 +23,21 @@
     return `${stop.stop_name}${stop.type === 'arrival' ? ' (Arrival)' : stop.type === 'departure' ? ' (Departure)' : ''}`;
   }
 
-  function formatTripName(trip, idx, showDayList) {
-    return `${trip.trip_short_name || `Run #${idx + 1}`}${showDayList ? ` ${trip.dayList}` : ''}`;
+  function formatTripName(trip, idx, timetable) {
+    let tripName = '';
+    if (timetable.routes.length > 1) {
+      tripName = trip.route_short_name;
+    } else if (trip.trip_short_name) {
+      tripName += trip.trip_short_name;
+    } else {
+      tripName += `Run #${idx + 1}`;
+    }
+  
+    if (timetable.showDayList) {
+      tripName += ` ${trip.dayList}`;
+    }
+  
+    return tripName;
   }
 
   function formatFrequencyWarning(frequencies) {
