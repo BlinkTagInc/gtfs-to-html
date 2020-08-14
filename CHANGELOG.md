@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.21.1] - 2020-08-14
+### Changed
+- Show route short name for multiroute timetables
+- Menu padding in default template
+- Always show stop times for stops with pickup_type or drop_off_type greater than zero
+
 ## [0.21.0] - 2020-07-28
 ### Added
 - Support for `start_time` and `end_time` fields in `timetables.txt`
