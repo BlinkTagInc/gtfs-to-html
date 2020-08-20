@@ -13,7 +13,7 @@ module.exports = {
         alt: 'GTFS-to-HTML Logo',
         src: 'img/gtfs-to-html-logo.svg'
       },
-      links: [
+      items: [
         {
           to: 'docs/',
           activeBasePath: 'docs',
