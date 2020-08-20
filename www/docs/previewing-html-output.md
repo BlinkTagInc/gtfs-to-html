@@ -7,7 +7,7 @@ title: Previewing HTML output
 
 It can be useful to run the example Express application included in the `app` folder as a way to quickly preview all routes or see changes you are making to custom template.
 
-After an initial run of `gtfs-to-html`, the GTFS data will be downloaded and loaded into MongoDB.
+After an initial run of `gtfs-to-html`, the GTFS data will be downloaded and loaded into SQLite.
 
 You can view an individual route HTML on demand by running the included Express app:
 

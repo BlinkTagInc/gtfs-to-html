@@ -3,7 +3,6 @@
 const { resolve } = require('path');
 
 const fs = require('fs-extra');
-const mongoose = require('mongoose');
 
 // eslint-disable-next-line prefer-destructuring
 const argv = require('yargs').usage('Usage: $0 --config ./config.json')
@@ -28,8 +27,12 @@ const argv = require('yargs').usage('Usage: $0 --config ./config.json')
   .default('showOnlyTimepoint', undefined)
   .argv;
 
-const logUtils = require('../lib/log-utils');
 const gtfsToHtml = require('..');
+
+function handleError(err) {
+  console.error(err || 'Unknown Error');
+  process.exit(1);
+}
 
 const getConfig = async () => {
   const data = await fs.readFile(resolve(argv.configPath), 'utf8').catch(() => {
@@ -56,13 +59,11 @@ const getConfig = async () => {
 
 getConfig()
   .then(async config => {
-    mongoose.connect(config.mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true });
-
     await gtfsToHtml(config);
 
     process.exit();
   })
-  .catch((error) => {
+  .catch(error => {
     process.stdout.write('\n');
     console.error(error);
     process.exit();

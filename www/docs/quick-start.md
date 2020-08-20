@@ -3,10 +3,6 @@ id: quick-start
 title: Quick Start
 ---
 
-Ensure than MongoDB is running locally.
-
-    mongod
-
 ## Command Line Usage
 
 The `gtfs-to-html` command-line utility will download the GTFS file specified in `config.js` and then build the HTML timetables and save them in `html/:agency_key`.
@@ -29,7 +25,7 @@ Allows specifying a path to a configuration json file. By default, `gtfs-to-html
 
 `skipImport`
 
-Skips importing GTFS into MongoDB. Useful if you are rerunning with an unchanged GTFS file. If you use this option and the GTFS file hasn't been imported, you'll get an error.
+Skips importing GTFS into SQLite. Useful if you are rerunning with an unchanged GTFS file. If you use this option and the GTFS file hasn't been imported, you'll get an error.
 
     gtfs-to-html --skipImport
 
@@ -48,10 +44,7 @@ If you are using this as a node module as part of an application, you can includ
 
 ```javascript
     const gtfsToHTML = require('gtfs-to-html');
-    const mongoose = require('mongoose');
     const config = require('config.json');
-
-    mongoose.connect(config.mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true });
 
     gtfsToHTML(config)
     .then(() => {
@@ -65,7 +58,7 @@ If you are using this as a node module as part of an application, you can includ
 ```
 
 ### Example Application
-An example Express application that uses `gtfs-to-html` is included in the `app` folder. After an initial run of `gtfs-to-html`, the GTFS data will be downloaded and loaded into MongoDB.
+An example Express application that uses `gtfs-to-html` is included in the `app` folder. After an initial run of `gtfs-to-html`, the GTFS data will be downloaded and loaded into SQLite.
 
 You can view an individual route HTML on demand by running the included Express app:
 

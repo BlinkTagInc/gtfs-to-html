@@ -1,64 +1,79 @@
 /* global window, document, $, mapboxgl */
 /* eslint no-var: "off", prefer-arrow-callback: "off", no-unused-vars: "off" */
 
-var maps = {};
+const maps = {};
 
-function formatStopPopup(feature) {
-  var html = '';
-  html += '<h4>' + feature.properties.stop_name + '</h4><div>';
-  if (feature.properties.stop_code !== undefined) {
-    html += '<label>Stop Code:</label> ' + feature.properties.stop_code + '</div>';
+function formatRoute(route) {
+  let html;
+
+  if (route.route_url) {
+    html = $('<a>')
+      .attr('href', route.route_url)
+      .addClass('route-item');
+  } else {
+    html = $('<div>')
+      .addClass('route-item');
   }
 
-  var routes = JSON.parse(feature.properties.routes);
-  html += '<div><label>Routes Served:</label></div>';
-  routes.forEach(function (route) {
-    if (route.route_url) {
-      html += '<div><a href="' + route.route_url + '">' + route.route_short_name + ' ' + route.route_long_name + '</a></div>';
-    } else {
-      html += '<div>' + route.route_short_name + ' ' + route.route_long_name + '</div>';
-    }
-  });
-  return html;
+  if (route.route_color) {
+    $('<div>')
+      .addClass('route-color-swatch')
+      .css('backgroundColor', route.route_color)
+      .appendTo(html);
+  }
+
+  $('<span>')
+    .text(`${route.route_short_name} ${route.route_long_name}`)
+    .appendTo(html);
+
+  return html.prop('outerHTML');
 }
 
-function formatRoutePopup(feature) {
-  var html = '';
-  html += '<h4>';
-  if (feature.properties.route_url) {
-    html += '<a href="' + feature.properties.route_url + '">';
+function formatStopPopup(feature) {
+  const routes = JSON.parse(feature.properties.routes);
+  const html = $('<div>');
+
+  $('<div>')
+    .addClass('popup-title')
+    .text(feature.properties.stop_name)
+    .appendTo(html);
+
+  if (feature.properties.stop_code !== undefined) {
+    $('<label>')
+      .text('Stop Code:')
+      .appendTo(html);
+
+    $('<span>')
+      .text(feature.properties.stop_code)
+      .appendTo(html);
   }
 
-  if (feature.properties.route_color) {
-    html += '<div class="route-color-swatch" style="background-color: #' + feature.properties.route_color + '"></div>';
-  }
+  $('<div>')
+    .text('Routes Served:')
+    .appendTo(html);
 
-  html += feature.properties.route_short_name + ' ' + feature.properties.route_long_name;
+  $(html).append(routes.map(route => formatRoute(route)));
 
-  if (feature.properties.route_url) {
-    html += '</a>';
-  }
-
-  html += '</h4>';
-  return html;
+  return html.prop('outerHTML');
 }
 
 function getBounds(geojson) {
-  var bounds = new mapboxgl.LngLatBounds();
-  geojson.features.forEach(function (feature) {
+  const bounds = new mapboxgl.LngLatBounds();
+  geojson.features.forEach(feature => {
     if (feature.geometry.type === 'Point') {
       bounds.extend(feature.geometry.coordinates);
     } else if (feature.geometry.type === 'LineString') {
-      feature.geometry.coordinates.forEach(function (coordinate) {
+      feature.geometry.coordinates.forEach(coordinate => {
         bounds.extend(coordinate);
       });
     }
   });
+
   return bounds;
 }
 
 function createMap(id, geojson, routeColor) {
-  var defaultRouteColor = 'FF4728';
+  const defaultRouteColor = '#FF4728';
 
   if (!geojson || geojson.features.length === 0) {
     $('#map_' + id).hide();
@@ -69,10 +84,10 @@ function createMap(id, geojson, routeColor) {
     routeColor = defaultRouteColor;
   }
 
-  var bounds = getBounds(geojson);
-  var map = new mapboxgl.Map({
+  const bounds = getBounds(geojson);
+  const map = new mapboxgl.Map({
     container: 'map_' + id,
-    style: 'mapbox://styles/mapbox/light-v9',
+    style: 'mapbox://styles/mapbox/light-v10',
     center: bounds.getCenter(),
     zoom: 12,
     preserveDrawingBuffer: true
@@ -80,12 +95,6 @@ function createMap(id, geojson, routeColor) {
 
   map.scrollZoom.disable();
   map.addControl(new mapboxgl.NavigationControl());
-
-  function createMarker() {
-    var element = document.createElement('div');
-    element.className = 'marker';
-    return element;
-  }
 
   map.on('load', function () {
     map.fitBounds(bounds, {
@@ -105,7 +114,7 @@ function createMap(id, geojson, routeColor) {
         data: geojson
       },
       paint: {
-        'line-color': '#' + routeColor,
+        'line-color': routeColor,
         'line-opacity': 0.7,
         'line-width': {
           stops: [[9, 3], [13, 6]]
@@ -131,7 +140,7 @@ function createMap(id, geojson, routeColor) {
         },
         'circle-stroke-width': 1,
         'circle-stroke-color': '#363636',
-        'circle-color': '#' + routeColor
+        'circle-color': routeColor
       },
       filter: ['has', 'stop_id']
     });
@@ -149,7 +158,7 @@ function createMap(id, geojson, routeColor) {
         },
         'circle-stroke-width': 2,
         'circle-stroke-color': '#111111',
-        'circle-color': '#' + routeColor
+        'circle-color': routeColor
       },
       filter: ['==', 'stop_id', '']
     });
@@ -164,15 +173,15 @@ function createMap(id, geojson, routeColor) {
 
     map.on('click', function (event) {
       // Set bbox as 5px reactangle area around clicked point
-      var bbox = [[event.point.x - 5, event.point.y - 5], [event.point.x + 5, event.point.y + 5]];
-      var features = map.queryRenderedFeatures(bbox, { layers: ['stops'] });
+      const bbox = [[event.point.x - 5, event.point.y - 5], [event.point.x + 5, event.point.y + 5]];
+      const features = map.queryRenderedFeatures(bbox, { layers: ['stops'] });
 
       if (!features || features.length === 0) {
         return;
       }
 
       // Get the first feature and show popup
-      var feature = features[0];
+      const feature = features[0];
 
       new mapboxgl.Popup()
         .setLngLat(feature.geometry.coordinates)
@@ -192,8 +201,8 @@ function createMap(id, geojson, routeColor) {
 
     // On table hover, highlight stop on map
     $('th, td', $('#' + id + ' table')).hover(function () {
-      var stopId;
-      var table = $(this).parents('table');
+      let stopId;
+      const table = $(this).parents('table');
       if (table.data('orientation') === 'vertical') {
         var index = $(this).index();
         stopId = $('colgroup col', table).eq(index).data('stop-id');
@@ -207,147 +216,6 @@ function createMap(id, geojson, routeColor) {
 
       highlightStop(stopId.toString());
     }, unHighlightStop);
-  });
-
-  maps[id] = map;
-}
-
-function createSystemMap(id, geojson) {
-  var defaultRouteColor = 'FF4728';
-  var routeLayerIds = [];
-
-  if (!geojson || geojson.features.length === 0) {
-    $('#' + id).hide();
-    return false;
-  }
-
-  var headerHeight = 65;
-  $('#' + id).height($(window).height() - headerHeight);
-  $('.overview-list').height($(window).height() - headerHeight);
-
-  var bounds = getBounds(geojson);
-  var map = new mapboxgl.Map({
-    container: id,
-    style: 'mapbox://styles/mapbox/light-v9',
-    center: bounds.getCenter(),
-    zoom: 12
-  });
-  var routes = geojson.features.reduce(function (memo, feature) {
-    memo[feature.properties.route_id] = feature.properties;
-    return memo;
-  }, {});
-
-  map.scrollZoom.disable();
-  map.addControl(new mapboxgl.NavigationControl());
-
-  map.on('load', function () {
-    map.fitBounds(bounds, {
-      padding: 20
-    });
-
-    Object.keys(routes).forEach(function (routeId) {
-      routeLayerIds.push(routeId);
-      var routeColor = routes[routeId].route_color || defaultRouteColor;
-      map.addLayer({
-        id: routeId,
-        type: 'line',
-        source: {
-          type: 'geojson',
-          data: geojson
-        },
-        paint: {
-          'line-color': '#' + routeColor,
-          'line-opacity': 0.7,
-          'line-width': {
-            stops: [[9, 3], [13, 6]]
-          }
-        },
-        layout: {
-          'line-join': 'round',
-          'line-cap': 'round'
-        },
-        filter: ['==', 'route_id', routeId]
-      });
-
-      map.on('mouseenter', routeId, function () {
-        map.getCanvas().style.cursor = 'pointer';
-      });
-
-      map.on('mouseleave', routeId, function () {
-        map.getCanvas().style.cursor = '';
-      });
-    });
-
-    map.addLayer({
-      id: 'routes-label',
-      type: 'symbol',
-      source: {
-        type: 'geojson',
-        data: geojson
-      },
-      layout: {
-        'text-field': '{route_short_name}',
-        'text-font': [
-          'DIN Offc Pro Medium',
-          'Arial Unicode MS Bold'
-        ],
-        'text-size': 14
-      },
-      filter: ['==', 'route_id', '']
-    });
-
-    map.on('click', function (event) {
-      // Set bbox as 5px reactangle area around clicked point
-      var bbox = [[event.point.x - 5, event.point.y - 5], [event.point.x + 5, event.point.y + 5]];
-      var features = map.queryRenderedFeatures(bbox, { layers: routeLayerIds });
-
-      if (!features || features.length === 0) {
-        return;
-      }
-
-      // Get the first feature and show popup
-      var feature = features[0];
-
-      new mapboxgl.Popup()
-        .setLngLat(event.lngLat)
-        .setHTML(formatRoutePopup(feature))
-        .addTo(map);
-    });
-
-    function highlightRoutes(routeIds) {
-      routeLayerIds.forEach(function (layerId) {
-        var lineOpacity = (routeIds.includes(layerId)) ? 0.1 : 1;
-        map.setPaintProperty(layerId, 'line-opacity', lineOpacity);
-      });
-
-      map.setFilter('routes-label', ['in', 'route_id'].concat(routeIds));
-
-      var highlightedFeatures = geojson.features.reduce(function (memo, feature) {
-        if (routeIds.includes(feature.properties.route_id)) {
-          memo.push(feature);
-        }
-
-        return memo;
-      }, []);
-      var zoomBounds = getBounds({ features: highlightedFeatures });
-      map.fitBounds(zoomBounds, { padding: 20 });
-    }
-
-    function unHighlightRoutes() {
-      routeLayerIds.forEach(function (layerId) {
-        map.setPaintProperty(layerId, 'line-opacity', 0.7);
-      });
-      map.setFilter('routes-label', ['==', 'route_id', '']);
-      map.fitBounds(bounds);
-    }
-
-    // On table hover, highlight route on map
-    $(function () {
-      $('.list-group-item').hover(function () {
-        var routeIds = $(this).data('route-ids').toString().split(',');
-        highlightRoutes(routeIds);
-      }, unHighlightRoutes);
-    });
   });
 
   maps[id] = map;

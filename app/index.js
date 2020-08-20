@@ -2,27 +2,8 @@ const path = require('path');
 
 const express = require('express');
 const logger = require('morgan');
-const mongoose = require('mongoose');
-
-// eslint-disable-next-line prefer-destructuring
-const argv = require('yargs')
-  .usage('Usage: $0 --config ./config.json')
-  .help()
-  .option('c', {
-    alias: 'configPath',
-    describe: 'Path to config file',
-    default: './config.json',
-    type: 'string'
-  })
-  .argv;
 
 const routes = require('./routes');
-
-const configPath = path.join(process.cwd(), argv.configPath);
-const config = require(configPath);
-
-mongoose.Promise = global.Promise;
-mongoose.connect(config.mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true });
 
 const app = express();
 

@@ -68,6 +68,16 @@ Are you using `gtfs-to-html`? Let us know via email (brendan@blinktag.com) or vi
 
 [See GTFS-to-HTML Documentation](https://gtfstohtml.com)
 
+## Changes in 1.0.0
+
+GTFS-to-HTML 1.0.0 has some breaking changes.
+
+* MongoDB is no longer used, instead SQLite is used.
+* `config.json` accepts a `sqlitePath` instead of a `mongoUrl`.
+* `route_color` and `route_text_color` in exported geoJSON now have a `#` prepended to the hex color. So `#45AA00` instead of `45AA00`.
+* The `dataExpireAfterSeconds` config option has been removed.
+* The default view `pug` template in `views/timetable` has some small improvements.
+
 ## Contributing
 
 Pull requests are welcome, as is feedback and [reporting issues](https://github.com/blinktaginc/gtfs-to-html/issues).

@@ -12,8 +12,8 @@ div(class=config.showMap ? 'container-fluid' : 'container')
       div(class= config.showMap ? 'col-md-3' : 'col')
         .list-group.overview-list
           each timetablePage in timetablePages
-            a.list-group-item(href=`${timetablePage.relativePath}` data-route-ids=`${timetablePage.routeIds ? timetablePage.routeIds.join(',') : ''}`)
-              h4.list-group-item-heading
+            a.list-group-item(href=`${timetablePage.relativePath}` data-route-ids=`${timetablePage.route_ids ? timetablePage.route_ids.join(',') : ''}`)
+              h3.list-group-item-heading
                 if timetablePage.routeColors && timetablePage.routeColors.length === 1
                   .route-color-swatch(style=`background-color: #${timetablePage.routeColors[0]}`)
                 span= getTimetablePageLabel(timetablePage)

@@ -18,7 +18,6 @@ All files starting with `config*.json` are .gitignored - so you can create multi
 | [`agencies`](#agencies) | array | An array of GTFS files to be imported. |
 | [`beautify`](#beautify) | boolean | Whether or not to beautify the HTML output. |
 | [`coordinatePrecision`](#coordinateprecision) | integer | Number of decimal places to include in geoJSON map output. |
-| [`dataExpireAfterSeconds`](#dataExpireAfterSeconds) | integer | The number of seconds after which the data will be deleted from mongodb using a TTL index. |
 | [`dateFormat`](#dateFormat) | string | A string defining date format in moment.js style. |
 | [`dayShortStrings`](#dayShortStrings) | array of strings | An array defining contractions of weekdays names from Monday to Sunday. |
 | [`dayStrings`](#dayStrings) | array of strings | An array defining weekdays names from Monday to Sunday. |
@@ -30,7 +29,6 @@ All files starting with `config*.json` are .gitignored - so you can create multi
 | [`logFunction`](#logFunction) | function | A custom logging function for handling output of logs. |
 | [`mapboxAccessToken`](#mapboxaccesstoken) | string | The Mapbox access token for generating a map of the route. |
 | [`menuType`](#menuType) | string | The type of menu to use for selecting timetables on a timetable page. |
-| [`mongoUrl`](#mongoUrl) | string | The URL of the MongoDB database to import to. |
 | [`noDropoffSymbol`](#noDropoffSymbol) | string | The symbol used to indicate ta stop where no drop off is available. |
 | [`noDropoffText`](#noDropoffText) | string | The text used to describe a stop where no drop off is available. |
 | [`noHead`](#noHead) | boolean | Whether or not to skip the header and footer of the HTML document. |
@@ -51,8 +49,9 @@ All files starting with `config*.json` are .gitignored - so you can create multi
 | [`showRouteTitle`](#showroutetitle) | boolean | Whether or not to show the route title at the top of the timetable page. |
 | [`showStopCity`](#showstopcity) | boolean | Whether or not to show each stop's city. |
 | [`showStopDescription`](#showstopdescription) | boolean | Whether or not to show a stop description. |
-| [`skipImport`](#skipImport) | boolean | Whether or not to skip importing GTFS data into mongoDB. |
+| [`skipImport`](#skipImport) | boolean | Whether or not to skip importing GTFS data into SQLite. |
 | [`sortingAlgorithm`](#sortingAlgorithm) | string | Defines the trip-sorting algorithm. |
+| [`sqlitePath`](#sqlitePath) | string | A path to an SQLite database. Optional, defaults to using an in-memory database. |
 | [`templatePath`](#templatepath) | string | Path to custom pug template for rendering timetable. |
 | [`timeFormat`](#timeFormat) | string | A string defining time format in moment.js style. |
 | [`useParentStation`](#useParentStation) | boolean | Whether or not to use a stop's `parent_station`. |
@@ -151,14 +150,6 @@ API along with your API token.
     "coordinatePrecision": 5
 ```
 
-### dataExpireAfterSeconds
-
-{Integer} The number of seconds after which the data will be deleted from mongodb using a [TTL index](https://docs.mongodb.com/manual/core/index-ttl/). Optional, if not specified then data will not be automatically deleted.
-
-```
-    "dataExpireAfterSeconds": 3600
-```
-
 ### dateFormat
 
 {String} A string defining date format in moment.js manner. Change it, when you want to customize date format shown in timetables
@@ -230,10 +221,8 @@ API along with your API token.
 
 ```javascript
     const gtfsToHTML = require('gtfs-to-html');
-    const mongoose = require('mongoose');
-    
+
     const config = {
-      mongoUrl: 'mongodb://localhost:27017/gtfs',
       agencies: [
         {
           agency_key: 'county-connection',
@@ -248,8 +237,6 @@ API along with your API token.
         console.log(text);
       }
     };
-
-    mongoose.connect(config.mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true });
 
     gtfsToHTML(config);
 ```
@@ -268,22 +255,6 @@ API along with your API token.
 
 ```
     "menuType": "jump"
-```
-
-### mongoUrl
-
-{String} The MongoDB URI use. When running locally, you may want to use `mongodb://localhost:27017/gtfs`.
-
-```
-{
-  "mongoUrl": "mongodb://localhost:27017/gtfs",
-  "agencies": [
-    {
-      "agency_key": "myAgency",
-      "path": "/path/to/the/unzipped/gtfs/"
-    }
-  ]
-}
 ```
 
 ### noDropoffSymbol
@@ -450,7 +421,7 @@ If you'd rather just get all stops and route info as geoJSON, see [gtfs-to-geojs
 
 ### skipImport
 
-{Boolean} Whether or not to skip importing from GTFS into mongoDB. Useful for re-running the script if the GTFS data has not changed. Defaults to `false`.
+{Boolean} Whether or not to skip importing from GTFS into SQLite. Useful for re-running the script if the GTFS data has not changed. Defaults to `false`.
 
 ```
     "skipImport": false
@@ -476,12 +447,12 @@ The default trip-sorting algorithm is `common`.
     "sortingAlgorithm": "common"
 ```
 
-### dateFormat
+### sqlitePath
 
-{String} A string defining time format in moment.js manner. Change it, when you want to customize time format shown in timetables.
+{String} A path to an SQLite database. Optional, defaults to using an in-memory database with a value of `:memory:`.
 
 ```
-    "timeFormat": "h:mma"
+    "sqlitePath": "/dev/sqlite/gtfs"
 ```
 
 ### templatePath

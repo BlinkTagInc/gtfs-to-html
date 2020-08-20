@@ -293,18 +293,17 @@ h3 {
   height: 300px;
 }
 
-.map .marker {
-  width: 15px;
-  height: 15px;
-  border: 1px solid #111;
-  border-radius: 16px;
-  background: #4171ff;
-  cursor: pointer;
-  opacity: 0.9;
+.map .mapboxgl-popup-content .popup-title {
+  margin: 0 20px 5px 0;
+  font-size: 16px;
+  font-weight: bold;
 }
 
-.map .mapboxgl-popup-content h4 {
-  margin: 0 20px 0 0;
+.map .mapboxgl-popup-content .route-item {
+  display: flex;
+  align-items: center;
+  line-height: 1;
+  padding-bottom: 5px;
 }
 
 @media screen and (max-width: 767px) {

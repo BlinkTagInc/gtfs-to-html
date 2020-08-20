@@ -31,7 +31,7 @@ include formatting_functions.pug
             (function() {
               var id = 'timetable_id_#{timetable.timetable_id}';
               var geojson = !{JSON.stringify(timetable.geojson)};
-              var routeColor = '#{timetable.routes[0].route_color}';
+              var routeColor = '#' + '#{timetable.routes[0].route_color}';
               createMap(id, geojson, routeColor);
             })();
 

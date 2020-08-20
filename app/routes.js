@@ -1,4 +1,4 @@
-const _ = require('lodash');
+const { map, sortBy } = require('lodash');
 const gtfs = require('gtfs');
 const express = require('express');
 
@@ -17,42 +17,25 @@ config.logError = console.error;
 
 const router = new express.Router();
 
+gtfs.openDb(config);
+
 /*
- * Show all agencies
+ * Show all timetable pages
  */
 router.get('/', async (request, response, next) => {
   try {
-    const agencies = await gtfs.getAgencies();
-    const sortedAgencies = _.sortBy(agencies, 'agency_name');
-    return response.render('agencies', { agencies: sortedAgencies });
-  } catch (error) {
-    next(error);
-  }
-});
-
-/*
- * Show all timetable pages for an agency
- */
-router.get('/timetable/:agencyKey', async (request, response, next) => {
-  const { agencyKey } = request.params;
-
-  if (!agencyKey) {
-    return next(new Error('No agencyKey provided'));
-  }
-
-  try {
     const timetablePages = [];
-    const timetablePageIds = _.map(await utils.getTimetablePages(agencyKey, config), 'timetable_page_id');
+    const timetablePageIds = map(await utils.getTimetablePages(config), 'timetable_page_id');
 
     for (const timetablePageId of timetablePageIds) {
       // eslint-disable-next-line no-await-in-loop
-      const timetablePage = await utils.getFormattedTimetablePage(agencyKey, timetablePageId, config);
+      const timetablePage = await utils.getFormattedTimetablePage(timetablePageId, config);
 
       if (!timetablePage.consolidatedTimetables || timetablePage.consolidatedTimetables.length === 0) {
         console.error(`No timetables found for timetable_page_id=${timetablePage.timetable_page_id}`);
       }
 
-      timetablePage.relativePath = `/timetable/${agencyKey}/${timetablePage.timetable_page_id}`;
+      timetablePage.relativePath = `/timetables/${timetablePage.timetable_page_id}`;
       for (const timetable of timetablePage.consolidatedTimetables) {
         timetable.timetable_label = formatters.formatTimetableLabel(timetable);
       }
@@ -60,7 +43,7 @@ router.get('/timetable/:agencyKey', async (request, response, next) => {
       timetablePages.push(timetablePage);
     }
 
-    const sortedTimetablePages = _.sortBy(timetablePages, timetablePage => {
+    const sortedTimetablePages = sortBy(timetablePages, timetablePage => {
       if (timetablePage.timetable_page_label !== '' && timetablePage.timetable_page_label !== undefined) {
         return timetablePage.timetable_page_label;
       }
@@ -69,7 +52,7 @@ router.get('/timetable/:agencyKey', async (request, response, next) => {
       return timetablePage.consolidatedTimetables[0].timetable_label;
     });
 
-    const html = await utils.generateOverviewHTML(agencyKey, sortedTimetablePages, config);
+    const html = await utils.generateOverviewHTML(sortedTimetablePages, config);
     response.send(html);
   } catch (error) {
     next(error);
@@ -79,19 +62,15 @@ router.get('/timetable/:agencyKey', async (request, response, next) => {
 /*
  * Show a specific timetable page
  */
-router.get('/timetable/:agencyKey/:timetablePageId', async (request, response, next) => {
-  const { agencyKey, timetablePageId } = request.params;
-
-  if (!agencyKey) {
-    return next(new Error('No agencyKey provided'));
-  }
+router.get('/timetables/:timetablePageId', async (request, response, next) => {
+  const { timetablePageId } = request.params;
 
   if (!timetablePageId) {
     return next(new Error('No timetablePageId provided'));
   }
 
   try {
-    const timetablePage = await utils.getFormattedTimetablePage(agencyKey, timetablePageId, config);
+    const timetablePage = await utils.getFormattedTimetablePage(timetablePageId, config);
 
     const results = await utils.generateHTML(timetablePage, config);
     response.send(results.html);

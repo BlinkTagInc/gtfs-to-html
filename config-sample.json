@@ -1,11 +1,11 @@
 {
-  "mongoUrl": "mongodb://localhost:27017/gtfs",
   "agencies": [
     {
       "agency_key": "bart",
       "url": "https://transitfeeds.com/p/bart/58/latest/download"
     }
   ],
+  "sqlitePath": "/dev/sqlite/gtfs",
   "beautify": false,
   "coordinatePrecision": 5,
   "dateFormat": "MMM D, YYYY",
