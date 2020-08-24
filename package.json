@@ -1,7 +1,7 @@
 {
   "name": "gtfs-to-html",
   "description": "Build human readable transit timetables as HTML or PDF from GTFS",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "keywords": [
     "transit",
     "gtfs",
@@ -33,13 +33,14 @@
   },
   "main": "index",
   "dependencies": {
+    "@turf/helpers": "^6.1.4",
     "@turf/simplify": "^5.1.5",
     "archiver": "^5.0.0",
     "chalk": "^4.1.0",
     "cli-table": "^0.3.1",
     "express": "^4.17.1",
     "fs-extra": "^9.0.1",
-    "gtfs": "^2.0.0",
+    "gtfs": "^2.0.1",
     "js-beautify": "^1.13.0",
     "lodash": "^4.17.20",
     "moment": "^2.27.0",
