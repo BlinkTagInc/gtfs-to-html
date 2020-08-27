@@ -5,7 +5,7 @@
       "url": "https://transitfeeds.com/p/bart/58/latest/download"
     }
   ],
-  "sqlitePath": "/dev/sqlite/gtfs",
+  "sqlitePath": "/tmp/gtfs",
   "beautify": false,
   "coordinatePrecision": 5,
   "dateFormat": "MMM D, YYYY",
