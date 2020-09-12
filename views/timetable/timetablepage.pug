@@ -16,7 +16,7 @@ include formatting_functions.pug
     include timetable_menu.pug
 
     each timetable in timetablePage.consolidatedTimetables
-      .timetable(id=`timetable_id_${timetable.timetable_id}` data-day-list=timetable.dayList data-direction-name=timetable.direction_name data-timetable-id=timetable.timetable_id data-direction-id=timetable.direction_id data-route-id=timetable.route_ids.join('_'))
+      .timetable(id=`timetable_id_${formatHtmlId(timetable.timetable_id)}` data-day-list=timetable.dayList data-direction-name=timetable.direction_name data-timetable-id=timetable.timetable_id data-direction-id=timetable.direction_id data-route-id=timetable.route_ids.join('_'))
         .row
           .col-md-12
             h2.description= `${timetable.timetable_label} | ${timetable.dayListLong}`
@@ -25,11 +25,12 @@ include formatting_functions.pug
         if config.showMap
           .row
             .col-md-12
-              .map(id=`map_timetable_id_${timetable.timetable_id}`)
-
+              .map(id=`map_timetable_id_${formatHtmlId(timetable.timetable_id)}`)
+          
+          //- Use #{variable} format to inject values from pug to client side js
           script.
             (function() {
-              var id = 'timetable_id_#{timetable.timetable_id}';
+              var id = 'timetable_id_#{formatHtmlId(timetable.timetable_id)}';
               var geojson = !{JSON.stringify(timetable.geojson)};
               var routeColor = '#' + '#{timetable.routes[0].route_color}';
               createMap(id, geojson, routeColor);

@@ -19,6 +19,10 @@
     return summary;
   }
 
+  function formatHtmlId(id) {
+    return id.replace(/([^A-Za-z0-9[\]{}_.:-])\s?/g, '');
+  }
+
   function formatStopName(stop) {
     return `${stop.stop_name}${stop.type === 'arrival' ? ' (Arrival)' : stop.type === 'departure' ? ' (Departure)' : ''}`;
   }

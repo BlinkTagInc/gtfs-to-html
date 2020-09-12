@@ -12,7 +12,7 @@
     caption.sr-only= `${timetable.timetable_label} | ${timetable.dayList}`
     colgroup
       each stop, idx in timetable.stops
-        col(id=`stop_id_${stop.stop_id}` class=`stop-${idx}` data-stop-id=`${stop.stop_id}`)
+        col(id=`stop_id_${formatHtmlId(stop.stop_id)}` class=`stop-${idx}` data-stop-id=`${stop.stop_id}`)
     thead
       tr
         if timetable.has_continues_from_route
@@ -41,7 +41,7 @@
           if timetable.has_continues_as_route
             td
       each trip, idx in timetable.orderedTrips
-        tr.trip-row(id=`trip_id_${trip.trip_id}`)
+        tr.trip-row(id=`trip_id_${formatHtmlId(trip.trip_id)}`)
           if timetable.has_continues_from_route
             include timetable_continuation_from.pug
 

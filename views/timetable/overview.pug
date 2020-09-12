@@ -22,6 +22,7 @@ div(class=config.showMap ? 'container-fluid' : 'container')
         .col-md-9
           .map(id="system_map")
 
+        //- Use #{variable} format to inject values from pug to client side js
         script.
           (function() {
             var geojson = !{JSON.stringify(agency.geojson) || '\'\''};
