@@ -59,15 +59,15 @@ function formatStopPopup(feature) {
 
 function getBounds(geojson) {
   const bounds = new mapboxgl.LngLatBounds();
-  geojson.features.forEach(feature => {
+  for (const feature of geojson.features) {
     if (feature.geometry.type === 'Point') {
       bounds.extend(feature.geometry.coordinates);
     } else if (feature.geometry.type === 'LineString') {
-      feature.geometry.coordinates.forEach(coordinate => {
+      for (const coordinate of feature.geometry.coordinates) {
         bounds.extend(coordinate);
-      });
+      }
     }
-  });
+  }
 
   return bounds;
 }
@@ -96,7 +96,7 @@ function createMap(id, geojson, routeColor) {
   map.scrollZoom.disable();
   map.addControl(new mapboxgl.NavigationControl());
 
-  map.on('load', function () {
+  map.on('load', () => {
     map.fitBounds(bounds, {
       padding: {
         top: 40,
@@ -117,7 +117,10 @@ function createMap(id, geojson, routeColor) {
         'line-color': routeColor,
         'line-opacity': 0.7,
         'line-width': {
-          stops: [[9, 3], [13, 6]]
+          stops: [
+            [9, 3],
+            [13, 6]
+          ]
         }
       },
       layout: {
@@ -136,7 +139,11 @@ function createMap(id, geojson, routeColor) {
       },
       paint: {
         'circle-radius': {
-          stops: [[9, 3], [13, 6], [15, 8]]
+          stops: [
+            [9, 3],
+            [13, 6],
+            [15, 8]
+          ]
         },
         'circle-stroke-width': 1,
         'circle-stroke-color': '#363636',
@@ -154,7 +161,11 @@ function createMap(id, geojson, routeColor) {
       },
       paint: {
         'circle-radius': {
-          stops: [[9, 6], [13, 9], [15, 10]]
+          stops: [
+            [9, 6],
+            [13, 9],
+            [15, 10]
+          ]
         },
         'circle-stroke-width': 2,
         'circle-stroke-color': '#111111',
@@ -163,18 +174,23 @@ function createMap(id, geojson, routeColor) {
       filter: ['==', 'stop_id', '']
     });
 
-    map.on('mouseenter', 'stops', function () {
+    map.on('mouseenter', 'stops', () => {
       map.getCanvas().style.cursor = 'pointer';
     });
 
-    map.on('mouseleave', 'stops', function () {
+    map.on('mouseleave', 'stops', () => {
       map.getCanvas().style.cursor = '';
     });
 
-    map.on('click', function (event) {
+    map.on('click', event => {
       // Set bbox as 5px reactangle area around clicked point
-      const bbox = [[event.point.x - 5, event.point.y - 5], [event.point.x + 5, event.point.y + 5]];
-      const features = map.queryRenderedFeatures(bbox, { layers: ['stops'] });
+      const bbox = [
+        [event.point.x - 5, event.point.y - 5],
+        [event.point.x + 5, event.point.y + 5]
+      ];
+      const features = map.queryRenderedFeatures(bbox, {
+        layers: ['stops']
+      });
 
       if (!features || features.length === 0) {
         return;
@@ -200,14 +216,14 @@ function createMap(id, geojson, routeColor) {
     }
 
     // On table hover, highlight stop on map
-    $('th, td', $('#' + id + ' table')).hover(function () {
+    $('th, td', $('#' + id + ' table')).hover(event => {
       let stopId;
-      const table = $(this).parents('table');
+      const table = $(event.target).parents('table');
       if (table.data('orientation') === 'vertical') {
-        var index = $(this).index();
+        var index = $(event.target).index();
         stopId = $('colgroup col', table).eq(index).data('stop-id');
       } else {
-        stopId = $(this).parents('tr').data('stop-id');
+        stopId = $(event.target).parents('tr').data('stop-id');
       }
 
       if (stopId === undefined) {
