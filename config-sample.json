@@ -34,7 +34,7 @@
   "serviceProvidedOnText": "Service provided on",
   "showArrivalOnDifference": 0.2,
   "showMap": true,
-  "showOnlyTimepoint": true,
+  "showOnlyTimepoint": false,
   "showRouteTitle": true,
   "showStopCity": false,
   "showStopDescription": false,
