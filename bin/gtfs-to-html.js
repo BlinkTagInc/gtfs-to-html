@@ -1,9 +1,5 @@
 #!/usr/bin/env node
 
-const { resolve } = require('path');
-
-const fs = require('fs-extra');
-
 // eslint-disable-next-line prefer-destructuring
 const argv = require('yargs').usage('Usage: $0 --config ./config.json')
   .help()
@@ -27,44 +23,22 @@ const argv = require('yargs').usage('Usage: $0 --config ./config.json')
   .default('showOnlyTimepoint', undefined)
   .argv;
 
+const fileUtils = require('../lib/file-utils');
+const logUtils = require('../lib/log-utils');
 const gtfsToHtml = require('..');
 
-function handleError(err) {
-  console.error(err || 'Unknown Error');
+const handleError = err => {
+  const text = err || 'Unknown Error';
+  process.stdout.write(`\n${logUtils.formatError(text)}\n`);
+  console.error(err);
   process.exit(1);
-}
-
-const getConfig = async () => {
-  const data = await fs.readFile(resolve(argv.configPath), 'utf8').catch(() => {
-    throw new Error(`Cannot find configuration file at \`${argv.configPath}\`. Use config-sample.json as a starting point, pass --configPath option`);
-  });
-
-  try {
-    const config = JSON.parse(data);
-
-    if (argv.skipImport === true) {
-      config.skipImport = argv.skipImport;
-    }
-
-    if (argv.showOnlyTimepoint === true) {
-      config.showOnlyTimepoint = argv.showOnlyTimepoint;
-    }
-
-    return config;
-  } catch (error) {
-    console.error(`Problem parsing configuration file at \`${argv.configPath}\``);
-    handleError(error);
-  }
 };
 
-getConfig()
-  .then(async config => {
-    await gtfsToHtml(config);
+const setupImport = async () => {
+  const config = await fileUtils.getConfig(argv);
+  await gtfsToHtml(config);
+  process.exit();
+};
 
-    process.exit();
-  })
-  .catch(error => {
-    process.stdout.write('\n');
-    console.error(error);
-    process.exit();
-  });
+setupImport()
+  .catch(handleError);
