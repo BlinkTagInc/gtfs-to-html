@@ -44,7 +44,7 @@ router.get('/', async (request, response, next) => {
     }
 
     const sortedTimetablePages = sortBy(timetablePages, timetablePage => {
-      if (timetablePage.timetable_page_label !== '' && timetablePage.timetable_page_label !== undefined) {
+      if (timetablePage.timetable_page_label !== '' && timetablePage.timetable_page_label !== null) {
         return timetablePage.timetable_page_label;
       }
 

@@ -38,7 +38,7 @@ function formatStopPopup(feature) {
     .text(feature.properties.stop_name)
     .appendTo(html);
 
-  if (feature.properties.stop_code !== undefined) {
+  if (feature.properties.stop_code !== null) {
     $('<label>')
       .text('Stop Code:')
       .appendTo(html);
