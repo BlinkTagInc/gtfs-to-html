@@ -13,10 +13,11 @@ div(class=config.showMap ? 'container-fluid' : 'container')
         .list-group.overview-list
           each timetablePage in timetablePages
             a.list-group-item(href=`${timetablePage.relativePath}` data-route-ids=`${timetablePage.route_ids ? timetablePage.route_ids.join(',') : ''}`)
-              h3.list-group-item-heading
-                if timetablePage.routeColors && timetablePage.routeColors.length === 1
-                  .route-color-swatch(style=`background-color: #${timetablePage.routeColors[0]}`)
-                span= getTimetablePageLabel(timetablePage)
+              h3.list-group-item-heading= getTimetablePageLabel(timetablePage)
+              each route in getRoutesForTimetablePage(timetablePage)
+                .d-flex
+                  .route-color-swatch(style=`background-color: #${route.route_color}; color: #${route.route_text_color};`)
+                  .ml-1= formatRouteName(route)
               .list-group-item-text= timetablePage.dayList
       if config.showMap
         .col-md-9

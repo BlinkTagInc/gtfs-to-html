@@ -44,6 +44,35 @@
     return tripName;
   }
 
+  function getRoutesForTimetablePage(timetablePage) {
+    const routeMap = {};
+    for (const timetable of timetablePage.timetables) {
+      for (const route of timetable.routes) {
+        routeMap[route.route_id] = route;
+      }
+    }
+    return Object.values(routeMap);
+  }
+
+  function formatRouteName(route) {
+    let routeName = ''
+    const hasShortName = route.route_short_name !== '' && route.route_short_name !== null;
+    const hasLongName = route.route_long_name !== '' && route.route_long_name !== null;
+    if (hasShortName) {
+      routeName += route.route_short_name;
+    }
+
+    if (hasShortName && hasLongName) {
+      routeName += ' - ';
+    }
+
+    if (hasLongName) {
+      routeName += route.route_long_name;
+    }
+
+    return routeName;
+  }
+
   function formatFrequencyWarning(frequencies) {
     var warning = 'Trip times shown below are an example only. ';
     frequencies.forEach((frequency, idx) => {
