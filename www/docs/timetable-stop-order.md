@@ -5,9 +5,9 @@ title: timetable_stop_order.txt
 
 This is an optional, non-standard file called `timetable_stop_order.txt` which can be included in an agency's GTFS. It is used to specify stop order for a particular timetable. It is useful when generating combined timetables for multiple overlapping routes, or exerting fine-grained control on stop order.
 
-This file is usually only needed if a route gas trips with different stop order.
+This file is often not needed. If all  trips for a route serve the same set of stops, there is no need to add rows to `timetable_stop_order.txt` for that route. `timetable_stop_order.txt` is only needed for routes where some trips serve completely different stops than other trips.
 
-### Column Definitions
+
 
 | column name | description |
 | ----------- | ----------- |
@@ -17,23 +17,43 @@ This file is usually only needed if a route gas trips with different stop order.
 
 ### Example
 
+Route 1, trip 1 stops:
+
+    _____/‾‾‾\___
+    A B C D E H I
+
+Route 2, trip 2 stops:
+
+    ‾‾‾‾‾\___/‾‾‾
+    A B C F G H I
+
+The `timetable_stop_order.txt` for this route would be:
+
 ```csv
 timetable_id,stop_id,stop_sequence
-81,757717,0
-81,757722,1
-81,757728,2
-81,757668,3
-81,757751,4
-81,757683,5
-81,757689,6
-81,757691,7
-81,757692,8
-81,757700,9
-81,757703,10
-81,757068,11
-81,757074,12
-81,757080,13
-81,757277,14
+1,A,0
+1,B,1
+1,C,2
+1,D,3
+1,E,4
+1,F,5
+1,G,6
+1,H,7
+1,I,8
+```
+
+Or, if you'd like to show stops `F` and `G` before stops `D` and `E` on the timetable:
+```csv
+timetable_id,stop_id,stop_sequence
+1,A,0
+1,B,1
+1,C,2
+1,F,3
+1,G,4
+1,D,5
+1,E,6
+1,H,7
+1,I,8
 ```
 
 An example of this file is located in [examples/timetable_stop_order.txt](https://github.com/BlinkTagInc/gtfs-to-html/blob/master/examples/timetable_stop_order.txt).
