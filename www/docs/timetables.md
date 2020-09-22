@@ -4,7 +4,7 @@ title: timetables.txt
 ---
 
 
-This is an optional, non-standard file called `timetables.txt` which can be included in an agency's GTFS. This file specifies to GTFS-to-HTML which HTML timetables should be built.
+This is an optional, non-standard file called `timetables.txt` which can be included in an agency's GTFS. This file specifies to GTFS-to-HTML which HTML timetables should be built. Often, this is the only additional file you need to create to use GTFS-to-HTML.
 
 ### Column Definitions
 
