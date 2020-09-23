@@ -38,9 +38,11 @@ You can now use `gtfs-to-html` without actually downloading any code or doing an
 Many transit agencies use `gtfs-to-html` to generate the schedule pages used on their websites, including:
 
 * [Advance Transit](https://advancetransit.com/)
-* [Capital Transit (Juneau)](https://juneaucapitaltransit.org/)
+* [Brockton Area Transit Authority](https://ridebat.com/)
+* [Capital Transit (Helena, Montana)](http://www.ridethecapitalt.org/)
+* [Capital Transit (Juneau, Alaska)](https://juneaucapitaltransit.org/)
 * [County Connection (Contra Costa County, California)](https://countyconnection.com)
-* [El Dorado County](http://eldoradotransit.com/)
+* [El Dorado Transit](http://eldoradotransit.com/)
 * [Humboldt Transit Authority](http://hta.org/)
 * [Kings Area Rural Transit (KART)](https://www.kartbus.org/)
 * [Madera County Connection](http://mcctransit.com/)
@@ -51,9 +53,12 @@ Many transit agencies use `gtfs-to-html` to generate the schedule pages used on 
 * [NW Connector (Oregon)](http://www.nworegontransit.org/)
 * [Palo Verde Valley Transit Agency](http://pvvta.com/)
 * [Petaluma Transit](http://transit.cityofpetaluma.net/)
+* [RTC Washoe (Reno, NV)](https://www.rtcwashoe.com/)
 * [Santa Barbara Metropolitan Transit District](https://sbmtd.gov)
 * [Sonoma County Transit](http://sctransit.com/)
+* [Tahoe Truckee Area Regional Transit](https://tahoetruckeetransit.com/)
 * [Tulare County Area Transit](https://ridetcat.org/)
+* [Victor Valley Transit](https://vvta.org/)
 * [Worcester Regional Transit Authority](https://therta.com/)
 
 Are you using `gtfs-to-html`? Let us know via email (brendan@blinktag.com) or via opening a github issue or pull request if your agency is using this library.
