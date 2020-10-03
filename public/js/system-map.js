@@ -177,7 +177,7 @@ function createSystemMap(id, geojson) {
 
     function highlightRoutes(routeIds) {
       for (const layerId of routeLayerIds) {
-        const lineOpacity = (routeIds.includes(layerId)) ? 0.1 : 1;
+        const lineOpacity = routeIds.includes(layerId) ? 1 : 0.1;
         map.setPaintProperty(layerId, 'line-opacity', lineOpacity);
       }
 
