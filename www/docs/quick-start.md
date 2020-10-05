@@ -85,3 +85,14 @@ It provides:
 [run.gtfstohtml.com](https://run.gtfstohtml.com)
 
 Currently, it is limited to relatively small GTFS files and doesn't offer support for [Custom Templates](/docs/custom-templates).
+
+## Troubleshooting
+
+### SQLite3 unable to be installed with `Failed to exec install script`
+
+For an error like:
+```lifecycle sqlite3@5.0.0~install: Failed to exec install script```
+
+Try installing `gtfs-to-html` using the following flags:
+
+```npm install --unsafe-perm --allow-root -g```
