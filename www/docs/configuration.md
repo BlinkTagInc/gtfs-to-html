@@ -421,7 +421,7 @@ If you'd rather just get all stops and route info as geoJSON, see [gtfs-to-geojs
 
 ### skipImport
 
-{Boolean} Whether or not to skip importing from GTFS into SQLite. Useful for re-running the script if the GTFS data has not changed. Defaults to `false`.
+{Boolean} Whether or not to skip importing from GTFS into SQLite. Useful for re-running the script if the GTFS data has not changed. If you use this option and the GTFS file hasn't been imported or you don't have an `sqlitePath` to a non-in-memory database specified, you'll get an error. Defaults to `false`.
 
 ```
     "skipImport": false
