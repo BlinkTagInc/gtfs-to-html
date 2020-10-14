@@ -32,7 +32,7 @@ include formatting_functions.pug
             (function() {
               var id = 'timetable_id_#{formatHtmlId(timetable.timetable_id)}';
               var geojson = !{JSON.stringify(timetable.geojson)};
-              var routeColor = '#' + '#{timetable.routes[0].route_color}';
+              var routeColor = `##{timetable.routes[0].route_color || '416CB5'}`;
               createMap(id, geojson, routeColor);
             })();
 
