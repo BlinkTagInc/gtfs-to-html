@@ -452,7 +452,7 @@ The default trip-sorting algorithm is `common`.
 {String} A path to an SQLite database. Optional, defaults to using an in-memory database with a value of `:memory:`.
 
 ```
-    "sqlitePath": "/temp/gtfs"
+    "sqlitePath": "/tmp/gtfs"
 ```
 
 ### templatePath
