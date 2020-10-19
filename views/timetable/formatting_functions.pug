@@ -1,12 +1,4 @@
 -
-  function getTimetablePageLabel(timetablePage) {
-    if (timetablePage.timetable_page_label !== '' && timetablePage.timetable_page_label !== null) {
-      return timetablePage.timetable_page_label;
-    }
-    // Get route info from first timetable
-    return timetablePage.consolidatedTimetables[0].timetable_label;
-  }
-
   function getTimetableSummary(timetable) {
     var summary = `This table shows schedules for a selection of key stops on the route for ${timetable.timetable_label} ${timetable.dayList}.`;
     if (timetable.orientation = 'vertical') {
@@ -19,14 +11,6 @@
     return summary;
   }
 
-  function formatHtmlId(id) {
-    return id.replace(/([^A-Za-z0-9[\]{}_.:-])\s?/g, '');
-  }
-
-  function formatStopName(stop) {
-    return `${stop.stop_name}${stop.type === 'arrival' ? ' (Arrival)' : stop.type === 'departure' ? ' (Departure)' : ''}`;
-  }
-
   function formatTripName(trip, idx, timetable) {
     let tripName = '';
     if (timetable.routes.length > 1) {
@@ -37,21 +21,11 @@
       tripName += `Run #${idx + 1}`;
     }
   
-    if (timetable.showDayList) {
+    if (timetableHasDifferentDays(timetable)) {
       tripName += ` ${trip.dayList}`;
     }
   
     return tripName;
-  }
-
-  function getRoutesForTimetablePage(timetablePage) {
-    const routeMap = {};
-    for (const timetable of timetablePage.timetables) {
-      for (const route of timetable.routes) {
-        routeMap[route.route_id] = route;
-      }
-    }
-    return Object.values(routeMap);
   }
 
   function formatRouteName(route) {

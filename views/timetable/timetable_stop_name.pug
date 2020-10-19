@@ -1,7 +1,9 @@
+- var stopName = `${stop.stop_name}${stop.type === 'arrival' ? ' (Arrival)' : stop.type === 'departure' ? ' (Departure)' : ''}`;
+
 if config.linkStopUrls && stop.stop_url
-  a.stop-name(href=`${stop.stop_url}`)= formatStopName(stop)
+  a.stop-name(href=`${stop.stop_url}`)= stopName
 else
-  .stop-name= formatStopName(stop)
+  .stop-name= stopName
 .stop-code= stop.stop_code
 if config.showStopDescription
   .stop-description= stop.stop_desc

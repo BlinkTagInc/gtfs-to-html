@@ -3,22 +3,8 @@ if timetablePage.consolidatedTimetables.length > 1
     .row.row-menu
       .col-md-12
         ul.timetable-menu
-          -
-            var showTimetableLabel = timetablePage.consolidatedTimetables.reduce((memo, timetable, idx) => {
-              if (idx === 0 || memo === true) {
-                return memo;
-              }
-              memo = timetable.timetable_label !== timetablePage.consolidatedTimetables[idx - 1].timetable_label;
-              return memo;
-            }, false);
-            
-            var showDayList = timetablePage.consolidatedTimetables.reduce((memo, timetable, idx) => {
-              if (idx === 0 || memo === true) {
-                return memo;
-              }
-              memo = timetable.dayListLong !== timetablePage.consolidatedTimetables[idx - 1].dayListLong;
-              return memo;
-            }, false);
+          - var showTimetableLabel = timetablePageHasDifferentLabels(timetablePage);
+          - var showDayList = timetablePageHasDifferentDays(timetablePage);
           each timetable in timetablePage.consolidatedTimetables
             li
               a(href=`#timetable_id_${timetable.timetable_id}`)

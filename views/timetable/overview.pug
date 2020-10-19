@@ -13,8 +13,8 @@ div(class=config.showMap ? 'container-fluid' : 'container')
         .list-group.overview-list
           each timetablePage in timetablePages
             a.list-group-item(href=`${timetablePage.relativePath}` data-route-ids=`${timetablePage.route_ids ? timetablePage.route_ids.join(',') : ''}`)
-              h3.list-group-item-heading= getTimetablePageLabel(timetablePage)
-              each route in getRoutesForTimetablePage(timetablePage)
+              h3.list-group-item-heading= timetablePage.timetable_page_label
+              each route in _.uniqBy(_.flatMap(timetablePage.timetables, timetable => timetable.routes), 'route_id')
                 .d-flex
                   .route-color-swatch(style=`background-color: #${route.route_color}; color: #${route.route_text_color};`)
                   .ml-1= formatRouteName(route)
