@@ -16,46 +16,46 @@ All files starting with `config*.json` are .gitignored - so you can create multi
 | option | type | description |
 | ------ | ---- | ----------- |
 | [`agencies`](#agencies) | array | An array of GTFS files to be imported. |
-| [`allowEmptyTimetables`](#allowEmptyTimetables) | boolean | Whether or not to generate timetables that have no trips. |
+| [`allowEmptyTimetables`](#allowemptytimetables) | boolean | Whether or not to generate timetables that have no trips. |
 | [`beautify`](#beautify) | boolean | Whether or not to beautify the HTML output. |
 | [`coordinatePrecision`](#coordinateprecision) | integer | Number of decimal places to include in geoJSON map output. |
-| [`dateFormat`](#dateFormat) | string | A string defining date format in moment.js style. |
-| [`dayShortStrings`](#dayShortStrings) | array of strings | An array defining contractions of weekdays names from Monday to Sunday. |
-| [`dayStrings`](#dayStrings) | array of strings | An array defining weekdays names from Monday to Sunday. |
-| [`defaultOrientation`](#defaultOrientation) | string | Specifies timetable orientation, when not mentioned in `timetables.txt` |
+| [`dateFormat`](#dateformat) | string | A string defining date format in moment.js style. |
+| [`dayShortStrings`](#dayshortstrings) | array of strings | An array defining contractions of weekdays names from Monday to Sunday. |
+| [`dayStrings`](#daystrings) | array of strings | An array defining weekdays names from Monday to Sunday. |
+| [`defaultOrientation`](#defaultorientation) | string | Specifies timetable orientation, when not mentioned in `timetables.txt` |
 | [`effectiveDate`](#effectivedate) | string | A date to print at the top of the timetable |
-| [`interpolatedStopSymbol`](#interpolatedStopSymbol) | string | The symbol used to indicate that a timepoint isn't fixed, but just interpolated. |
-| [`interpolatedStopText`](#interpolatedStopText) | string | The text used to describe a timepoint isn't fixed, but just interpolated. |
-| [`linkStopUrls`](#linkStopUrls) | boolean | Whether or not to hyperlink timetable stop names to the `stop_url` defined in `stops.txt`. |
-| [`logFunction`](#logFunction) | function | A custom logging function for handling output of logs. |
+| [`interpolatedStopSymbol`](#interpolatedstopsymbol) | string | The symbol used to indicate that a timepoint isn't fixed, but just interpolated. |
+| [`interpolatedStopText`](#interpolatedstoptext) | string | The text used to describe a timepoint isn't fixed, but just interpolated. |
+| [`linkStopUrls`](#linkStopurls) | boolean | Whether or not to hyperlink timetable stop names to the `stop_url` defined in `stops.txt`. |
+| [`logFunction`](#logfunction) | function | A custom logging function for handling output of logs. |
 | [`mapboxAccessToken`](#mapboxaccesstoken) | string | The Mapbox access token for generating a map of the route. |
-| [`menuType`](#menuType) | string | The type of menu to use for selecting timetables on a timetable page. |
-| [`noDropoffSymbol`](#noDropoffSymbol) | string | The symbol used to indicate ta stop where no drop off is available. |
-| [`noDropoffText`](#noDropoffText) | string | The text used to describe a stop where no drop off is available. |
-| [`noHead`](#noHead) | boolean | Whether or not to skip the header and footer of the HTML document. |
-| [`noServiceSymbol`](#noServiceSymbol) | string | The symbol used when a specific trip does not serve a specified stop. |
-| [`noServiceText`](#noServiceText) | string | The text used to describe a stop which is not served by a specific trip. |
-| [`outputFormat`](#outputFormat) | string | The file format of the timetables generated. Either `html` or `pdf`. |
-| [`noPickupSymbol`](#noPickupSymbol) | string | The symbol used to indicate a stop where no pickup is available. |
-| [`noPickupText`](#noPickupText) | string | The text used to describe a stop where no pickup is available. |
-| [`requestDropoffSymbol`](#requestDropoffSymbol) | string | The symbol used to indicate a stop where riders must request a drop off. |
-| [`requestDropoffText`](#requestDropoffText) | string | The text used to describe a stop where riders must request a drop off. |
-| [`requestPickupSymbol`](#requestPickupSymbol) | string | The symbol used to indicate a stop where riders must request a pickup. |
-| [`requestPickupText`](#requestPickupText) | string | The text used to describe a stop where riders must request a pickup. |
-| [`serviceNotProvidedOnText`](#serviceNotProvidedOnText) | string | The text used to label days where service is not provided. |
-| [`serviceProvidedOnText`](#serviceProvidedOnText) | string | The text used to label days where service is provided. |
-| [`showArrivalOnDifference`](#showArrivalOnDifference) | float | Defines a difference between departure and arrival, on which arrival column/row will be shown. |
+| [`menuType`](#menutype) | string | The type of menu to use for selecting timetables on a timetable page. |
+| [`noDropoffSymbol`](#nodropoffsymbol) | string | The symbol used to indicate ta stop where no drop off is available. |
+| [`noDropoffText`](#nodropofftext) | string | The text used to describe a stop where no drop off is available. |
+| [`noHead`](#nohead) | boolean | Whether or not to skip the header and footer of the HTML document. |
+| [`noServiceSymbol`](#noservicesymbol) | string | The symbol used when a specific trip does not serve a specified stop. |
+| [`noServiceText`](#noservicetext) | string | The text used to describe a stop which is not served by a specific trip. |
+| [`outputFormat`](#outputformat) | string | The file format of the timetables generated. Either `html` or `pdf`. |
+| [`noPickupSymbol`](#nopickupsymbol) | string | The symbol used to indicate a stop where no pickup is available. |
+| [`noPickupText`](#nopickuptext) | string | The text used to describe a stop where no pickup is available. |
+| [`requestDropoffSymbol`](#requestdropoffsymbol) | string | The symbol used to indicate a stop where riders must request a drop off. |
+| [`requestDropoffText`](#requestdropofftext) | string | The text used to describe a stop where riders must request a drop off. |
+| [`requestPickupSymbol`](#requestpickupsymbol) | string | The symbol used to indicate a stop where riders must request a pickup. |
+| [`requestPickupText`](#requestpickuptext) | string | The text used to describe a stop where riders must request a pickup. |
+| [`serviceNotProvidedOnText`](#servicenotprovidedontext) | string | The text used to label days where service is not provided. |
+| [`serviceProvidedOnText`](#serviceprovidedontext) | string | The text used to label days where service is provided. |
+| [`showArrivalOnDifference`](#showarrivalondifference) | float | Defines a difference between departure and arrival, on which arrival column/row will be shown. |
 | [`showMap`](#showmap) | boolean | Whether or not to show a map of the route on the timetable. |
 | [`showOnlyTimepoint`](#showonlytimepoint) | boolean | Whether or not all stops should be shown, or only stops with a `timepoint` value in `stops.txt`. |
 | [`showRouteTitle`](#showroutetitle) | boolean | Whether or not to show the route title at the top of the timetable page. |
 | [`showStopCity`](#showstopcity) | boolean | Whether or not to show each stop's city. |
 | [`showStopDescription`](#showstopdescription) | boolean | Whether or not to show a stop description. |
-| [`skipImport`](#skipImport) | boolean | Whether or not to skip importing GTFS data into SQLite. |
-| [`sortingAlgorithm`](#sortingAlgorithm) | string | Defines the trip-sorting algorithm. |
-| [`sqlitePath`](#sqlitePath) | string | A path to an SQLite database. Optional, defaults to using an in-memory database. |
+| [`skipImport`](#skipimport) | boolean | Whether or not to skip importing GTFS data into SQLite. |
+| [`sortingAlgorithm`](#sortingalgorithm) | string | Defines the trip-sorting algorithm. |
+| [`sqlitePath`](#sqlitepath) | string | A path to an SQLite database. Optional, defaults to using an in-memory database. |
 | [`templatePath`](#templatepath) | string | Path to custom pug template for rendering timetable. |
-| [`timeFormat`](#timeFormat) | string | A string defining time format in moment.js style. |
-| [`useParentStation`](#useParentStation) | boolean | Whether or not to use a stop's `parent_station`. |
+| [`timeFormat`](#timeformat) | string | A string defining time format in moment.js style. |
+| [`useParentStation`](#useparentstation) | boolean | Whether or not to use a stop's `parent_station`. |
 | [`verbose`](#verbose) | boolean | Whether or not to print output to the console. |
 | [`zipOutput`](#zipoutput) | boolean | Whether or not to zip the output into one zip file. |
 
