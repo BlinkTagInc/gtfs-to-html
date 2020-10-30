@@ -12,13 +12,14 @@ div(class=config.showMap ? 'container-fluid' : 'container')
       div(class= config.showMap ? 'col-md-3' : 'col')
         .list-group.overview-list
           each timetablePage in timetablePages
-            a.list-group-item(href=`${timetablePage.relativePath}` data-route-ids=`${timetablePage.route_ids ? timetablePage.route_ids.join(',') : ''}`)
-              h3.list-group-item-heading= timetablePage.timetable_page_label
-              each route in _.uniqBy(_.flatMap(timetablePage.timetables, timetable => timetable.routes), 'route_id')
-                .d-flex
-                  .route-color-swatch(style=`background-color: #${route.route_color}; color: #${route.route_text_color};`)
-                  .ml-1= formatRouteName(route)
-              .list-group-item-text= timetablePage.dayList
+            if config.allowEmptyTimetables || timetablePage.consolidatedTimetables.length > 0
+              a.list-group-item(href=`${timetablePage.relativePath}` data-route-ids=`${timetablePage.route_ids ? timetablePage.route_ids.join(',') : ''}`)
+                h3.list-group-item-heading= timetablePage.timetable_page_label
+                each route in _.uniqBy(_.flatMap(timetablePage.consolidatedTimetables, timetable => timetable.routes), 'route_id')
+                  .d-flex
+                    .route-color-swatch(style=`background-color: #${route.route_color}; color: #${route.route_text_color};`)
+                    .ml-1= formatRouteName(route)
+                .list-group-item-text= timetablePage.dayList
       if config.showMap
         .col-md-9
           .map(id="system_map")

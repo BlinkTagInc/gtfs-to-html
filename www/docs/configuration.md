@@ -16,6 +16,7 @@ All files starting with `config*.json` are .gitignored - so you can create multi
 | option | type | description |
 | ------ | ---- | ----------- |
 | [`agencies`](#agencies) | array | An array of GTFS files to be imported. |
+| [`allowEmptyTimetables`](#allowEmptyTimetables) | boolean | Whether or not to generate timetables that have no trips. |
 | [`beautify`](#beautify) | boolean | Whether or not to beautify the HTML output. |
 | [`coordinatePrecision`](#coordinateprecision) | integer | Number of decimal places to include in geoJSON map output. |
 | [`dateFormat`](#dateFormat) | string | A string defining date format in moment.js style. |
@@ -132,6 +133,14 @@ API along with your API token.
     }
   ]
 }
+```
+
+### allowEmptyTimetables
+
+{Boolean} Whether or not to generate empty timetables that have no trips. Defaults to `false`.
+
+```
+    "allowEmptyTimetables": false
 ```
 
 ### beautify

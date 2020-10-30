@@ -6,6 +6,7 @@
     }
   ],
   "sqlitePath": "/tmp/gtfs",
+  "allowEmptyTimetables": false,
   "beautify": false,
   "coordinatePrecision": 5,
   "dateFormat": "MMM D, YYYY",
