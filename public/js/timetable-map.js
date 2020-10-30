@@ -4,16 +4,9 @@
 const maps = {};
 
 function formatRoute(route) {
-  let html;
+  const html = route.route_url ? $('<a>').attr('href', route.route_url) : $('<div>');
 
-  if (route.route_url) {
-    html = $('<a>')
-      .attr('href', route.route_url)
-      .addClass('route-item');
-  } else {
-    html = $('<div>')
-      .addClass('route-item');
-  }
+  html.addClass('route-item');
 
   if (route.route_color) {
     $('<div>')
