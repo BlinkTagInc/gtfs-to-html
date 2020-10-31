@@ -1,14 +1,14 @@
 td.stop-time(class=`${stoptime.classes.join(' ')}`)
   span.stop-time-text!= stoptime.formatted_time
   if stoptime.skipped && timetable.noServiceSymbol !== null
-    span.symbol= timetable.noServiceSymbol
+    a(href=`#note-${timetable.timetable_id}-no-service`).symbol= timetable.noServiceSymbol
   if stoptime.interpolated && timetable.interpolatedStopSymbol !== null
-    span.symbol= timetable.interpolatedStopSymbol
+    a(href=`#note-${timetable.timetable_id}-interpolated-stop`).symbol= timetable.interpolatedStopSymbol
   if stoptime.requestPickup && timetable.requestPickupSymbol !== null
-    span.symbol= timetable.requestPickupSymbol
+    a(href=`#note-${timetable.timetable_id}-request-pickup`).symbol= timetable.requestPickupSymbol
   if stoptime.noPickup && timetable.noPickupSymbol !== null
-    span.symbol= timetable.noPickupSymbol
+    a(href=`#note-${timetable.timetable_id}-no-pickup`).symbol= timetable.noPickupSymbol
   if stoptime.requestDropoff && timetable.requestDropoffSymbol !== null
-    span.symbol= timetable.requestDropoffSymbol
+    a(href=`#note-${timetable.timetable_id}-request-dropoff`).symbol= timetable.requestDropoffSymbol
   if stoptime.noDropoff && timetable.noDropoffSymbol !== null
-    span.symbol= timetable.noDropoffSymbol
+    a(href=`#note-${timetable.timetable_id}-no-dropoff`).symbol= timetable.noDropoffSymbol

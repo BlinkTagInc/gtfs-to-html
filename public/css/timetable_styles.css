@@ -104,8 +104,10 @@ h3 {
   font-weight: bold;
 }
 
-.timetable .symbol {
+.timetable a.symbol {
   padding-left: 4px;
+  color: #212529;
+  text-decoration: none;
 }
 
 .timetable .trip-frequency {

@@ -49,17 +49,17 @@ include formatting_functions.pug
           if timetable.requestPickupSymbolUsed || timetable.noPickupSymbolUsed || timetable.requestDropoffSymbolUsed || timetable.noDropoffSymbolUsed || timetable.noServiceSymbolUsed || timetable.interpolatedStopSymbolUsed
             .col-md-4.notes
               if timetable.requestPickupSymbolUsed
-                .note= `${config.requestPickupSymbol} = ${config.requestPickupText}`
+                .note(id=`note-${timetable.timetable_id}-request-pickup`)= `${config.requestPickupSymbol} = ${config.requestPickupText}`
               if timetable.noPickupSymbolUsed
-                .note= `${config.noPickupSymbol} = ${config.noPickupText}`
+                .note(id=`note-${timetable.timetable_id}-no-pickup`)= `${config.noPickupSymbol} = ${config.noPickupText}`
               if timetable.requestDropoffSymbolUsed
-                .note= `${config.requestDropoffSymbol} = ${config.requestDropoffText}`
+                .note(id=`note-${timetable.timetable_id}-request-dropoff`)= `${config.requestDropoffSymbol} = ${config.requestDropoffText}`
               if timetable.noDropoffSymbolUsed
-                .note= `${config.noDropoffSymbol} = ${config.noDropoffText}`
+                .note(id=`note-${timetable.timetable_id}-no-dropoff`)= `${config.noDropoffSymbol} = ${config.noDropoffText}`
               if timetable.noServiceSymbolUsed
-                .note= `${config.noServiceSymbol} = ${config.noServiceText}`
+                .note(id=`note-${timetable.timetable_id}-no-service`)= `${config.noServiceSymbol} = ${config.noServiceText}`
               if timetable.interpolatedStopSymbolUsed
-                .note= `${config.interpolatedStopSymbol} = ${config.interpolatedStopText}`
+                .note(id=`note-${timetable.timetable_id}-interpolated-stop`)= `${config.interpolatedStopSymbol} = ${config.interpolatedStopText}`
 
           if timetable.calendarDates.includedDates.length
             .col-md-4
