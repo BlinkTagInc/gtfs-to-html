@@ -43,6 +43,7 @@ Many transit agencies use `gtfs-to-html` to generate the schedule pages used on 
 * [Capital Transit (Juneau, Alaska)](https://juneaucapitaltransit.org/)
 * [County Connection (Contra Costa County, California)](https://countyconnection.com)
 * [El Dorado Transit](http://eldoradotransit.com/)
+* [Greater Attleboro-Taunton Regional Transit Authority](https://www.gatra.org/)
 * [Humboldt Transit Authority](http://hta.org/)
 * [Kings Area Rural Transit (KART)](https://www.kartbus.org/)
 * [Madera County Connection](http://mcctransit.com/)

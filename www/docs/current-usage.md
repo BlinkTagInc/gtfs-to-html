@@ -15,6 +15,7 @@ Many transit agencies use `gtfs-to-html` to generate the schedule pages used on 
 | [Capital Transit](https://juneaucapitaltransit.org/) | Juneau, Alaska |
 | [County Connection](https://countyconnection.com) | Contra Costa County, California |
 | [El Dorado Transit](http://eldoradotransit.com/) | El Dorado County, California |
+| [Greater Attleboro-Taunton Regional Transit Authority](https://www.gatra.org/) | Attleboro-Taunton, Massachusetts |
 | [Humboldt Transit Authority](http://hta.org/) | Humboldt County, California |
 | [Kings Area Rural Transit (KART)](https://www.kartbus.org/) | Kings County, California |
 | [Madera County Connection](http://mcctransit.com/) | Madera County, California |
@@ -25,7 +26,7 @@ Many transit agencies use `gtfs-to-html` to generate the schedule pages used on 
 | [NW Connector](http://www.nworegontransit.org/) | Northwest Oregon |
 | [Palo Verde Valley Transit Agency](http://pvvta.com/) | Palo Verde Valley, California |
 | [Petaluma Transit](http://transit.cityofpetaluma.net/) | Petaluma, California |
-| [RTC Washoe (Reno, NV)](https://www.rtcwashoe.com/) | Reno, Nevada |
+| [RTC Washoe](https://www.rtcwashoe.com/) | Reno, Nevada |
 | [Santa Barbara Metropolitan Transit District](https://sbmtd.gov) | Santa Barbara, California |
 | [Sonoma County Transit](http://sctransit.com/) | Sonoma County, California |
 | [Tahoe Truckee Area Regional Transit](https://tahoetruckeetransit.com/) | Truckee, California |
