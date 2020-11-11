@@ -2,8 +2,12 @@
 
 if config.linkStopUrls && stop.stop_url
   a.stop-name(href=`${stop.stop_url}`)= stopName
+    each note in getNotesForStop(timetable.notes, stop)
+      include timetable_note_symbol.pug
 else
   .stop-name= stopName
+    each note in getNotesForStop(timetable.notes, stop)
+      include timetable_note_symbol.pug
 .stop-code= stop.stop_code
 if config.showStopDescription
   .stop-description= stop.stop_desc

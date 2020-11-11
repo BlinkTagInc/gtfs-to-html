@@ -20,6 +20,8 @@ include formatting_functions.pug
         .row
           .col-md-12
             h2.description= `${timetable.timetable_label} | ${timetable.dayListLong}`
+              each note in getNotesForTimetableLabel(timetable.notes)
+                include timetable_note_symbol.pug
             .service-notes= timetable.service_notes
 
         if config.showMap
@@ -46,7 +48,7 @@ include formatting_functions.pug
               include timetable_vertical.pug
 
         .row.timetable-bottom
-          if timetable.requestPickupSymbolUsed || timetable.noPickupSymbolUsed || timetable.requestDropoffSymbolUsed || timetable.noDropoffSymbolUsed || timetable.noServiceSymbolUsed || timetable.interpolatedStopSymbolUsed
+          if hasNotesOrNotices(timetable)
             .col-md-4.notes
               if timetable.requestPickupSymbolUsed
                 .note(id=`note-${timetable.timetable_id}-request-pickup`)= `${config.requestPickupSymbol} = ${config.requestPickupText}`
@@ -60,6 +62,8 @@ include formatting_functions.pug
                 .note(id=`note-${timetable.timetable_id}-no-service`)= `${config.noServiceSymbol} = ${config.noServiceText}`
               if timetable.interpolatedStopSymbolUsed
                 .note(id=`note-${timetable.timetable_id}-interpolated-stop`)= `${config.interpolatedStopSymbol} = ${config.interpolatedStopText}`
+              each note in _.uniqBy(timetable.notes, 'note_id')
+                .note(id=`note-${timetable.timetable_id}-${note.note_id}`)= `${note.symbol} = ${note.note}`
 
           if timetable.calendarDates.includedDates.length
             .col-md-4

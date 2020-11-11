@@ -10,6 +10,8 @@
         th.stop-header(scope="col") Stop
         each trip, idx in timetable.orderedTrips
           th.run-header(scope="col")= formatTripName(trip, idx, timetable)
+            each note in getNotesForTrip(timetable.notes, trip)
+              include timetable_note_symbol.pug
       if timetable.frequencies && !timetable.frequencyExactTimes
         tr.trip-row
           td.trip-frequency(colspan=`${timetable.orderedTrips.length + 1}`)!= formatFrequencyWarning(timetable.frequencies)

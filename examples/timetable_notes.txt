@@ -1,0 +1,7 @@
+note_id,symbol,note
+1,,"No service during baseball games"
+2,,"No express service during a full moon"
+3,,"Trip is cancelled if drawbridge is up"
+4,,"This stop is sometimes underwater"
+5,,"Driver will only stop if prearranged by fax"
+6,§,"Vehicle can arrive early if leap second is added during trip"

@@ -12,3 +12,5 @@ td.stop-time(class=`${stoptime.classes.join(' ')}`)
     a(href=`#note-${timetable.timetable_id}-request-dropoff`).symbol= timetable.requestDropoffSymbol
   if stoptime.noDropoff && timetable.noDropoffSymbol !== null
     a(href=`#note-${timetable.timetable_id}-no-dropoff`).symbol= timetable.noDropoffSymbol
+  each note in getNotesForStoptime(timetable.notes, stoptime)
+    include timetable_note_symbol.pug

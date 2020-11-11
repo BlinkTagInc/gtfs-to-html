@@ -1,0 +1,7 @@
+note_id,timetable_id,route_id,trip_id,stop_id,stop_sequence,show_on_stoptime
+1,131,,,,,
+2,,17,,,,
+3,,,17010,,,1
+4,,,,254514,,
+5,,,,254514,11,
+6,,,17010,235269,,

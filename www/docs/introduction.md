@@ -18,6 +18,9 @@ Built-in styling makes `gtfs-to-html` timetables ready to size and scroll easily
 ## Schedule changes? A cinch.
 By generating future timetables and including dates in table metadata, your timetables can appear in advance of a schedule change, and you can validate that your new timetables and GTFS are correct.
 
+## Notes
+Custom notes, like "No express service during a full moon" can be programatically attached to stops, trips, timepoints or routes can be added using [additional files](/docs/additional-files).
+
 ## Auto-generated maps
 `gtfs-to-html` can also generate a map for each route that can be included with the schedule page. The map shows all stops for the route and lists all routes that serve each stop. See the `showMap` configuration option below. If you'd rather just get all stops and route info as geoJSON, check out the  [gtfs-to-geojson](https://github.com/blinktaginc/gtfs-to-geojson) package.
 
