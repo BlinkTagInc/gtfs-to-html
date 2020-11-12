@@ -20,3 +20,9 @@ title: Related Libraries
 [`gtfs-to-chart`](https://github.com/blinktaginc/gtfs-to-chart) generates a stringline chart in D3 using data from an agency's GTFS. This chart shows all trips for a specific route as they travel through space over a single day.
 
 [`https://github.com/blinktaginc/gtfs-to-chart`](https://github.com/blinktaginc/gtfs-to-chart)
+
+## `Transit Arrivals Widget `
+
+[`gtfs-to-chart`](https://github.com/BlinkTagInc/transit-arrivals-widget) generates a user-friendly transit realtime arrival widget in HTML format directly from GTFS and GTFS-RT transit data. Most transit agencies have schedule data in GTFS format and many publish realtime arrivals using GTFS-RT. This project generates HTML, JS and CSS for use on a transit agency website to allow users to see when the next vehicle is arriving at a specific stop and includes features like caching, auto-refresh, url parameters and custom templates.
+
+[`https://github.com/BlinkTagInc/transit-arrivals-widget`](https://github.com/BlinkTagInc/transit-arrivals-widget)
