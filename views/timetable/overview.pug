@@ -1,32 +1,27 @@
 include formatting_functions.pug
 
-div(class=config.showMap ? 'container-fluid' : 'container')
-  .row.mt-4.mb-2
-    .col-md-12
-      h1.overview-label= `${agency.agency_name} Routes`
-  .row
-    if !timetablePages || !timetablePages.length
-      .col-md-6.col-md-offset-3
-        .well No timetables found
-    else
-      div(class= config.showMap ? 'col-md-3' : 'col')
-        .list-group.overview-list
-          each timetablePage in timetablePages
-            if config.allowEmptyTimetables || timetablePage.consolidatedTimetables.length > 0
-              a.list-group-item(href=`${timetablePage.relativePath}` data-route-ids=`${timetablePage.route_ids ? timetablePage.route_ids.join(',') : ''}`)
-                h3.list-group-item-heading= timetablePage.timetable_page_label
-                each route in _.uniqBy(_.flatMap(timetablePage.consolidatedTimetables, timetable => timetable.routes), 'route_id')
-                  .d-flex
-                    .route-color-swatch(style=`background-color: #${route.route_color}; color: #${route.route_text_color};`)
-                    .ml-1= formatRouteName(route)
-                .list-group-item-text= timetablePage.dayList
-      if config.showMap
-        .col-md-9
-          .map(id="system_map")
+.container.mx-4.h-screen.items-stretch(class="md:mx-auto md:flex")
+  if !timetablePages || !timetablePages.length
+    .flex.justify-center
+      .bg-blue-700.text-white.font-bold.rounded-lg.border.shadow-lg.text-lg.p-8(class="w-1/2") No timetables found
+  else
+    .overview-list.flex-none(class="md:overflow-y-scroll")
+      h1.text-2xl.pt-4.pb-2= `${agency.agency_name} Routes`
+      each timetablePage in timetablePages
+        if config.allowEmptyTimetables || timetablePage.consolidatedTimetables.length > 0
+          a.block.mb-3(href=`${timetablePage.relativePath}` data-route-ids=`${timetablePage.route_ids ? timetablePage.route_ids.join(',') : ''}`)
+            .text-lg.leading-none= timetablePage.timetable_page_label
+            each route in _.uniqBy(_.flatMap(timetablePage.consolidatedTimetables, timetable => timetable.routes), 'route_id')
+              .flex.my-1
+                .route-color-swatch.flex-none(style=`background-color: #${route.route_color}; color: #${route.route_text_color};`)
+                .ml-1.text-gray-600.leading-none= formatRouteName(route)
+            .text-gray-600= timetablePage.dayList
+    if config.showMap
+      .map.ml-4.h-full.w-full(id="system_map")
 
-        //- Use #{variable} format to inject values from pug to client side js
-        script.
-          (function() {
-            var geojson = !{JSON.stringify(agency.geojson) || '\'\''};
-            createSystemMap('system_map', geojson);
-          })();
+      //- Use #{variable} format to inject values from pug to client side js
+      script.
+        (function() {
+          var geojson = !{JSON.stringify(agency.geojson) || '\'\''};
+          createSystemMap('system_map', geojson);
+        })();

@@ -61,10 +61,6 @@ function createSystemMap(id, geojson) {
     return false;
   }
 
-  const headerHeight = 65;
-  $('#' + id).height($(window).height() - headerHeight);
-  $('.overview-list').height($(window).height() - headerHeight);
-
   const bounds = getBounds(geojson);
   const map = new mapboxgl.Map({
     container: id,
@@ -154,7 +150,7 @@ function createSystemMap(id, geojson) {
         return;
       }
 
-      var routeFeatures = _.orderBy(
+      const routeFeatures = _.orderBy(
         _.uniqBy(
           features,
           feature => feature.properties.route_short_name
@@ -200,11 +196,17 @@ function createSystemMap(id, geojson) {
     }
 
     // On table hover, highlight route on map
-    $(() => {
-      $('.list-group-item').hover(event => {
-        var routeIds = $(event.target).data('route-ids').toString().split(',');
-        highlightRoutes(routeIds);
-      }, unHighlightRoutes);
+    jQuery(($) => {
+      $('.overview-list a').hover(event => {
+        const routeIdString = $(event.target).parents('a').data('route-ids')
+        if (routeIdString) {
+          const routeIds = routeIdString.toString().split(',');
+          highlightRoutes(routeIds);
+        }
+
+      });
+
+      $('.overview-list').hover(() => {}, unHighlightRoutes);
     });
   });
 
