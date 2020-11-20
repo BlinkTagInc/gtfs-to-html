@@ -196,14 +196,13 @@ function createSystemMap(id, geojson) {
     }
 
     // On table hover, highlight route on map
-    jQuery(($) => {
+    $(() => {
       $('.overview-list a').hover(event => {
-        const routeIdString = $(event.target).parents('a').data('route-ids')
+        const routeIdString = $(event.target).parents('a').data('route-ids');
         if (routeIdString) {
           const routeIds = routeIdString.toString().split(',');
           highlightRoutes(routeIds);
         }
-
       });
 
       $('.overview-list').hover(() => {}, unHighlightRoutes);

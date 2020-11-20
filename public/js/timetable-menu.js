@@ -1,14 +1,14 @@
 /* global window, document, $, maps */
 /* eslint no-unused-vars: "off" */
 
-jQuery(($) => {
+$(() => {
   showSelectedTimetable();
 
-  $('#day_list_selector input[name="dayList"]').change(function () {
+  $('#day_list_selector input[name="dayList"]').change(() => {
     showSelectedTimetable();
   });
 
-  $('#direction_name_selector input[name="directionName"]').change(function () {
+  $('#direction_name_selector input[name="directionName"]').change(() => {
     showSelectedTimetable();
   });
 
@@ -18,19 +18,19 @@ jQuery(($) => {
       return false;
     }
 
-    $('#day_list_selector input[name="dayList"]').each((index, el) => {
-      $(el).parents('label').toggleClass('text-white bg-blue-600', $(el).is(':checked'));
-      $(el).parents('label').toggleClass('text-gray-600 bg-gray-300', $(el).is(':not(:checked)'));
+    $('#day_list_selector input[name="dayList"]').each((index, element) => {
+      $(element).parents('label').toggleClass('text-white bg-blue-600', $(element).is(':checked'));
+      $(element).parents('label').toggleClass('text-gray-600 bg-gray-300', $(element).is(':not(:checked)'));
     });
 
-    $('#direction_name_selector input[name="directionName"]').each((index, el) => {
-      $(el).parents('label').toggleClass('text-white bg-blue-600', $(el).is(':checked'));
-      $(el).parents('label').toggleClass('text-gray-600 bg-gray-300', $(el).is(':not(:checked)'));
+    $('#direction_name_selector input[name="directionName"]').each((index, element) => {
+      $(element).parents('label').toggleClass('text-white bg-blue-600', $(element).is(':checked'));
+      $(element).parents('label').toggleClass('text-gray-600 bg-gray-300', $(element).is(':not(:checked)'));
     });
 
     const dayList = $('#day_list_selector input[name="dayList"]:checked').val();
     const directionName = $('#direction_name_selector input[name="directionName"]:checked').val();
-    
+
     $('.timetable').hide();
     const id = $('.timetable[data-day-list="' + dayList + '"][data-direction-name="' + directionName + '"]').attr('id');
     showTimetable(id);
