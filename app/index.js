@@ -1,4 +1,4 @@
-const { map, sortBy } = require('lodash');
+const { map } = require('lodash');
 const path = require('path');
 const gtfs = require('gtfs');
 
@@ -46,16 +46,7 @@ router.get('/', async (request, response, next) => {
       timetablePages.push(timetablePage);
     }
 
-    const sortedTimetablePages = sortBy(timetablePages, timetablePage => {
-      if (timetablePage.timetable_page_label !== '' && timetablePage.timetable_page_label !== null) {
-        return timetablePage.timetable_page_label;
-      }
-
-      // Get route info from first timetable
-      return timetablePage.consolidatedTimetables[0].timetable_label;
-    });
-
-    const html = await utils.generateOverviewHTML(sortedTimetablePages, config);
+    const html = await utils.generateOverviewHTML(timetablePages, config);
     response.send(html);
   } catch (error) {
     next(error);
