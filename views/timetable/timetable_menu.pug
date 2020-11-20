@@ -1,53 +1,48 @@
 if timetablePage.consolidatedTimetables.length > 1
-  if config.menuType === 'simple'
-    .row.row-menu
-      .col-md-12
-        ul.timetable-menu
-          - var showTimetableLabel = timetablePageHasDifferentLabels(timetablePage);
-          - var showDayList = timetablePageHasDifferentDays(timetablePage);
-          each timetable in timetablePage.consolidatedTimetables
-            li
-              a(href=`#timetable_id_${timetable.timetable_id}`)
-                if showTimetableLabel
-                  span= timetable.timetable_label
-                if showTimetableLabel && showDayList
-                  span &nbsp;|&nbsp;
-                if showDayList
-                  span= timetable.dayListLong
-            
-  if config.menuType === 'jump'
-    -
-      var groupedTimetables = timetablePage.consolidatedTimetables.reduce((memo, timetable) => {
-        if (!memo.hasOwnProperty(timetable.dayList)) {
-          memo[timetable.dayList] = []
-        }
-        memo[timetable.dayList].push(timetable);
-        return memo;
-      }, {});
-    .row.row-menu
-      each group, dayList in groupedTimetables
-        .col-md-4
-          h3= dayList
-          each timetable in group
-            a.btn.btn-primary.btn-jump-menu(href=`#timetable_id_${timetable.timetable_id}`)= timetable.timetable_label
+  .my-3
+    if config.menuType === 'simple'
+      ul.timetable-menu
+        - var showTimetableLabel = timetablePageHasDifferentLabels(timetablePage);
+        - var showDayList = timetablePageHasDifferentDays(timetablePage);
+        each timetable in timetablePage.consolidatedTimetables
+          li
+            a(href=`#timetable_id_${timetable.timetable_id}`)
+              if showTimetableLabel
+                span= timetable.timetable_label
+              if showTimetableLabel && showDayList
+                span &nbsp;|&nbsp;
+              if showDayList
+                span= timetable.dayListLong
+              
+    if config.menuType === 'jump'
+      -
+        var groupedTimetables = timetablePage.consolidatedTimetables.reduce((memo, timetable) => {
+          if (!memo.hasOwnProperty(timetable.dayList)) {
+            memo[timetable.dayList] = []
+          }
+          memo[timetable.dayList].push(timetable);
+          return memo;
+        }, {});
+      .grid.grid-cols-1.gap-4(class="md:grid-cols-3")
+        each group, dayList in groupedTimetables
+          div
+            h3.font-bold= dayList
+            each timetable in group
+              a.mb-2.w-full.flex.items-center.justify-center.px-8.py-3.border.border-transparent.text-base.rounded-md.text-white.bg-blue-600(class="hover:bg-blue-700 md:py-4 md:text-lg md:px-10" href=`#timetable_id_${timetable.timetable_id}`)= timetable.timetable_label
 
-  if config.menuType === 'radio'
-    .row.row-menu
-      .col-md-4(hidden=timetablePage.directionNames.length <= 1)
-        #direction_name_selector.radio-menu
-          .menu-title
-            label Service Direction
-          .btn-group.btn-group-toggle(data-toggle="buttons")
+    if config.menuType === 'radio'
+      .grid.grid-cols-1.gap-4(class="md:grid-cols-3")
+        div(hidden=timetablePage.directionNames.length <= 1)
+          #direction_name_selector
+            h3.font-bold Service Direction
             each directionName, idx in timetablePage.directionNames
-              label.btn.btn-primary(class=idx === 0 ? 'active': '')
-                input(type="radio" name="directionName" autocomplete="off" value=directionName checked=(idx === 0))
+              label.cursor-pointer.mb-2.w-full.flex.items-center.justify-center.px-8.py-3.border.border-transparent.text-base.rounded-md(class=idx === 0 ? 'text-white bg-blue-600': 'text-gray-600 bg-gray-300')
+                input.hidden(type="radio" name="directionName" autocomplete="off" value=directionName checked=(idx === 0))
                 span= directionName
-      .col-md-4(hidden=timetablePage.dayLists.length <= 1)
-        #day_list_selector.radio-menu
-          .menu-title
-            label Days of Week
-          .btn-group.btn-group-toggle(data-toggle="buttons")
+        div(hidden=timetablePage.dayLists.length <= 1)
+          #day_list_selector
+            h3.font-bold Days of Week
             each dayList, idx in timetablePage.dayLists
-              label.btn.btn-primary(class=idx === 0 ? 'active': '')
-                input(type="radio" name="dayList" autocomplete="off" value=dayList checked=(idx === 0))
+              label.cursor-pointer.mb-2.w-full.flex.items-center.justify-center.px-8.py-3.border.border-transparent.text-base.rounded-md(class=idx === 0 ? 'text-white bg-blue-600': 'text-gray-600 bg-gray-300')
+                input.hidden(type="radio" name="dayList" autocomplete="off" value=dayList checked=(idx === 0))
                 span= dayList

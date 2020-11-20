@@ -29,22 +29,13 @@
   }
 
   function formatRouteName(route) {
-    let routeName = ''
-    const hasShortName = route.route_short_name !== '' && route.route_short_name !== null;
     const hasLongName = route.route_long_name !== '' && route.route_long_name !== null;
-    if (hasShortName) {
-      routeName += route.route_short_name;
-    }
-
-    if (hasShortName && hasLongName) {
-      routeName += ' - ';
-    }
 
     if (hasLongName) {
-      routeName += route.route_long_name;
+      return route.route_long_name;
     }
 
-    return routeName;
+    return route.route_short_name;
   }
 
   function formatFrequencyWarning(frequencies) {

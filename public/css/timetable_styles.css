@@ -1,41 +1,6 @@
 /* Timetable Styles */
-
-.timetable-page-label {
-  margin-bottom: 0;
-}
-
-.effective-date {
-  margin-bottom: 10px;
-}
-
-.row-menu {
-  padding-bottom: 15px;
-  padding-top: 15px;
-}
-
-.btn-jump-menu {
-  margin-top: 5px;
-  white-space: normal;
-  margin-left: 8px;
-}
-
-.timetable {
-  margin-bottom: 35px;
-}
-
 .menu-type-radio .timetable {
   display: none;
-}
-
-.notes .note {
-  margin-right: 15px;
-}
-
-.route-name {
-  width: 350px;
-  display: inline-block;
-  font-weight: bold;
-  line-height: 28px;
 }
 
 .timetable .stop-header {
@@ -180,17 +145,22 @@
 }
 
 .route-color-swatch {
-  width: 16px;
-  height: 16px;
-  border-radius: 8px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 26px;
+  font-size: 14px;
 }
 
 .route-color-swatch-large {
-  width: 24px;
-  height: 24px;
-  border-radius: 12px;
-  margin-right: 8px;
-  display: inline-block;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 40px;
+  font-size: 22px;
+  font-weight: bold;
 }
 
 @media screen and (max-width: 767px) {

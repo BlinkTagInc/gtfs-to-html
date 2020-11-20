@@ -1,7 +1,7 @@
 /* global window, document, $, maps */
-/* eslint no-var: "off", prefer-arrow-callback: "off", no-unused-vars: "off" */
+/* eslint no-unused-vars: "off" */
 
-$(function () {
+jQuery(($) => {
   showSelectedTimetable();
 
   $('#day_list_selector input[name="dayList"]').change(function () {
@@ -18,17 +18,28 @@ $(function () {
       return false;
     }
 
-    var dayList = $('#day_list_selector input[name="dayList"]:checked').val();
-    var directionName = $('#direction_name_selector input[name="directionName"]:checked').val();
+    $('#day_list_selector input[name="dayList"]').each((index, el) => {
+      $(el).parents('label').toggleClass('text-white bg-blue-600', $(el).is(':checked'));
+      $(el).parents('label').toggleClass('text-gray-600 bg-gray-300', $(el).is(':not(:checked)'));
+    });
+
+    $('#direction_name_selector input[name="directionName"]').each((index, el) => {
+      $(el).parents('label').toggleClass('text-white bg-blue-600', $(el).is(':checked'));
+      $(el).parents('label').toggleClass('text-gray-600 bg-gray-300', $(el).is(':not(:checked)'));
+    });
+
+    const dayList = $('#day_list_selector input[name="dayList"]:checked').val();
+    const directionName = $('#direction_name_selector input[name="directionName"]:checked').val();
+    
     $('.timetable').hide();
-    var id = $('.timetable[data-day-list="' + dayList + '"][data-direction-name="' + directionName + '"]').attr('id');
+    const id = $('.timetable[data-day-list="' + dayList + '"][data-direction-name="' + directionName + '"]').attr('id');
     showTimetable(id);
   }
-});
 
-function showTimetable(id) {
-  $('#' + id).show();
-  if (typeof maps !== 'undefined' && maps[id]) {
-    maps[id].resize();
+  function showTimetable(id) {
+    $('#' + id).show();
+    if (typeof maps !== 'undefined' && maps[id]) {
+      maps[id].resize();
+    }
   }
-}
+});

@@ -2,32 +2,26 @@ include formatting_functions.pug
 
 <!-- Timetable generated on #{Date()} using GTFS-to-HTML version #{config.gtfsToHtmlVersion} -->
 .timetable-page(class=`menu-type-${config.menuType}`)
-  .container-fluid
+  .container.mx-4(class="md:mx-auto")
     if config.showRouteTitle
-      .row.mt-4.mb-4
-        .col-md-12
-          h1.timetable-page-label
-            if timetablePage.routeColors && timetablePage.routeColors.length === 1
-              .route-color-swatch-large(style=`background-color: #${timetablePage.routeColors[0]}`)
-            span= timetablePage.timetable_page_label
-          if config.effectiveDate
-            .effective-date= `Effective ${config.effectiveDate}`
+      h1.timetable-page-label.text-2xl.pt-4.flex.items-center
+        each route in _.uniqBy(_.flatMap(timetablePage.consolidatedTimetables, timetable => timetable.routes), 'route_id')
+          .route-color-swatch-large.mr-2.flex-none(style=`background-color: #${route.route_color}; color: #${route.route_text_color}`)= route.route_short_name || ''
+        div= timetablePage.timetable_page_label
+      if config.effectiveDate
+        .effective-date.text-gray-600.mb-2= `Effective ${config.effectiveDate}`
 
     include timetable_menu.pug
 
     each timetable in timetablePage.consolidatedTimetables
-      .timetable(id=`timetable_id_${formatHtmlId(timetable.timetable_id)}` data-day-list=timetable.dayList data-direction-name=timetable.direction_name data-timetable-id=timetable.timetable_id data-direction-id=timetable.direction_id data-route-id=timetable.route_ids.join('_'))
-        .row
-          .col-md-12
-            h2.description= `${timetable.timetable_label} | ${timetable.dayListLong}`
-              each note in getNotesForTimetableLabel(timetable.notes)
-                include timetable_note_symbol.pug
-            .service-notes= timetable.service_notes
+      .timetable.mb-5(id=`timetable_id_${formatHtmlId(timetable.timetable_id)}` data-day-list=timetable.dayList data-direction-name=timetable.direction_name data-timetable-id=timetable.timetable_id data-direction-id=timetable.direction_id data-route-id=timetable.route_ids.join('_'))
+        h2.text-xl= `${timetable.timetable_label} | ${timetable.dayListLong}`
+          each note in getNotesForTimetableLabel(timetable.notes)
+            include timetable_note_symbol.pug
+        .service-notes= timetable.service_notes
 
         if config.showMap
-          .row
-            .col-md-12
-              .map(id=`map_timetable_id_${formatHtmlId(timetable.timetable_id)}`)
+          .map(id=`map_timetable_id_${formatHtmlId(timetable.timetable_id)}`)
           
           //- Use #{variable} format to inject values from pug to client side js
           script.
@@ -38,18 +32,16 @@ include formatting_functions.pug
               createMap(id, geojson, routeColor);
             })();
 
-        .row
-          .col-md-12
-            if timetable.orientation === 'horizontal'
-              include timetable_horizontal.pug
-            else if timetable.orientation === 'hourly'
-              include timetable_hourly.pug
-            else if timetable.orientation === 'vertical'
-              include timetable_vertical.pug
+        if timetable.orientation === 'horizontal'
+          include timetable_horizontal.pug
+        else if timetable.orientation === 'hourly'
+          include timetable_hourly.pug
+        else if timetable.orientation === 'vertical'
+          include timetable_vertical.pug
 
-        .row.timetable-bottom
+        .grid.grid-cols-1.gap-4(class="md:grid-cols-3")
           if hasNotesOrNotices(timetable)
-            .col-md-4.notes
+            .notes
               if timetable.requestPickupSymbolUsed
                 .note(id=`note-${timetable.timetable_id}-request-pickup`)= `${config.requestPickupSymbol} = ${config.requestPickupText}`
               if timetable.noPickupSymbolUsed
@@ -66,9 +58,7 @@ include formatting_functions.pug
                 .note(id=`note-${timetable.timetable_id}-${note.note_id}`)= `${note.symbol} = ${note.note}`
 
           if timetable.calendarDates.includedDates.length
-            .col-md-4
-              .included-dates= `${config.serviceProvidedOnText}: ${timetable.calendarDates.includedDates.join(', ')}`
+            .included-dates= `${config.serviceProvidedOnText}: ${timetable.calendarDates.includedDates.join(', ')}`
 
           if timetable.calendarDates.excludedDates.length
-            .col-md-4
-              .excluded-dates= `${config.serviceNotProvidedOnText}: ${timetable.calendarDates.excludedDates.join(', ')}`
+            .excluded-dates= `${config.serviceNotProvidedOnText}: ${timetable.calendarDates.excludedDates.join(', ')}`

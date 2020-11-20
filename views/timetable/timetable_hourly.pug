@@ -1,5 +1,5 @@
 .table-container
-  table.table.table-striped.table-hourly(summary= getTimetableSummary(timetable) data-orientation="hourly")
+  table.table-hourly(summary= getTimetableSummary(timetable) data-orientation="hourly")
     caption.sr-only= `${timetable.timetable_label} | ${timetable.dayList}`
     thead
       tr
