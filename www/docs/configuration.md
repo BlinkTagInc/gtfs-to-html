@@ -135,6 +135,23 @@ API along with your API token.
 }
 ```
 
+* Specify multiple agencies to be imported. Note that it is often better to have one configuration file per agency and call gtfs-to-html multiple times rather than have two different agencies in the same config file. If agencies have conflicting ids for routes, stops, calendars or more, GTFS-to-HTML will fail.
+
+```
+{
+  "agencies": [
+    {
+      "agency_key": "myAgency",
+      "path": "/path/to/the/gtfs.zip"
+    },
+    {
+      "agency_key": "otherAgency",
+      "path": "/path/to/the/othergtfs.zip"
+    }
+  ]
+}
+```
+
 ### allowEmptyTimetables
 
 {Boolean} Whether or not to generate empty timetables that have no trips. Defaults to `false`.
