@@ -75,7 +75,7 @@ function Home() {
                 <Link
                   className={clsx(
                     'button button--outline button--secondary button--lg',
-                    styles.getStarted
+                    styles.heroButton
                   )}
                   to={useBaseUrl('docs/')}>
                   Get Started
@@ -100,10 +100,7 @@ function Home() {
 
         <div className={clsx(styles.buttons, 'margin-top--md')}>
           <a
-            className={clsx(
-              'button button--outline button--secondary button--lg',
-              styles.getStarted
-            )}
+            className="button button--outline button--secondary button--lg"
             href="https://www.npmjs.com/package/gtfs-to-html"
           >
             npm install -g gtfs-to-html

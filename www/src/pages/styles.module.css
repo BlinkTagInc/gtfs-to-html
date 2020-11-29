@@ -24,6 +24,14 @@
   justify-content: center;
 }
 
+.heroButton {
+  color: #FFFFFF!important;
+}
+
+.heroButton:hover {
+  color: #333!important;
+}
+
 .features {
   display: flex;
   align-items: center;
