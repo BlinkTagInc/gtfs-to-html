@@ -1,5 +1,5 @@
 ---
-id: new_documentation
+slug: new_documentation
 title: New Documentation
 author: Brendan Nee
 author_url: https://github.com/brendannee

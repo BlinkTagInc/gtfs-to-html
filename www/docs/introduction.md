@@ -1,6 +1,7 @@
 ---
 id: introduction
 title: Introduction
+slug: /
 ---
 
 `GTFS-to-HTML` creates human-readable, user-friendly transit timetables in HTML and PDF format directly from [GTFS transit data](https://developers.google.com/transit/gtfs/). Most transit agencies have schedule data in GTFS format but need to show each route's schedule to users on a website. This project automates the process of creating nicely formatted HTML timetables for inclusion on a transit agency website. This makes it easy to keep timetables up to date and accurate when schedule changes happen and reduces the likelihood of errors.
