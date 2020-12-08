@@ -1,4 +1,6 @@
-const { map } = require('lodash');
+const {
+  map
+} = require('lodash');
 const path = require('path');
 const gtfs = require('gtfs');
 
@@ -57,7 +59,9 @@ router.get('/', async (request, response, next) => {
  * Show a specific timetable page
  */
 router.get('/timetables/:timetablePageId', async (request, response, next) => {
-  const { timetablePageId } = request.params;
+  const {
+    timetablePageId
+  } = request.params;
 
   if (!timetablePageId) {
     return next(new Error('No timetablePageId provided'));

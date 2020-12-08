@@ -130,8 +130,10 @@ function createSystemMap(id, geojson) {
       });
     }
 
-    map.on('mousemove', (event) => {
-      const features = map.queryRenderedFeatures(event.point, { layers: [...routeLayerIds, ...routeBackgroundLayerIds] });
+    map.on('mousemove', event => {
+      const features = map.queryRenderedFeatures(event.point, {
+        layers: [...routeLayerIds, ...routeBackgroundLayerIds]
+      });
       if (features.length > 0) {
         map.getCanvas().style.cursor = 'pointer';
         highlightRoutes(_.uniq(features.map(feature => feature.properties.route_id)));

@@ -190,8 +190,10 @@ function createMap(id, geojson, routeColor) {
       map.getCanvas().style.cursor = '';
     });
 
-    map.on('mousemove', (event) => {
-      const features = map.queryRenderedFeatures(event.point, { layers: ['stops'] });
+    map.on('mousemove', event => {
+      const features = map.queryRenderedFeatures(event.point, {
+        layers: ['stops']
+      });
       if (features.length > 0) {
         map.getCanvas().style.cursor = 'pointer';
         highlightStop(features[0].properties.stop_id);
