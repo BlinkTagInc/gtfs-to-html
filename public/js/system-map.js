@@ -6,11 +6,11 @@ const maps = {};
 function formatRoute(route) {
   const html = route.route_url ? $('<a>').attr('href', route.route_url) : $('<div>');
 
-  html.addClass('route-item');
+  html.addClass('route-item text-sm pb-2');
 
   if (route.route_color) {
     $('<div>')
-      .addClass('route-color-swatch')
+      .addClass('route-color-swatch mr-2 flex-shrink-0')
       .css('backgroundColor', route.route_color)
       .appendTo(html);
   }
@@ -55,6 +55,7 @@ function getBounds(geojson) {
 function createSystemMap(id, geojson) {
   const defaultRouteColor = '#FF4728';
   const routeLayerIds = [];
+  const routeBackgroundLayerIds = [];
 
   if (!geojson || geojson.features.length === 0) {
     $('#' + id).hide();
@@ -82,6 +83,30 @@ function createSystemMap(id, geojson) {
       padding: 20
     });
 
+    // Add white outlines to routes first
+    for (const routeId of Object.keys(routes)) {
+      routeBackgroundLayerIds.push(`${routeId}outline`);
+      map.addLayer({
+        id: `${routeId}outline`,
+        type: 'line',
+        source: {
+          type: 'geojson',
+          data: geojson
+        },
+        paint: {
+          'line-color': '#FFFFFF',
+          'line-opacity': 1,
+          'line-width': 6
+        },
+        layout: {
+          'line-join': 'round',
+          'line-cap': 'round'
+        },
+        filter: ['==', 'route_id', routeId]
+      });
+    }
+
+    // Add route lines next
     for (const routeId of Object.keys(routes)) {
       routeLayerIds.push(routeId);
       const routeColor = routes[routeId].route_color || defaultRouteColor;
@@ -94,13 +119,8 @@ function createSystemMap(id, geojson) {
         },
         paint: {
           'line-color': routeColor,
-          'line-opacity': 0.7,
-          'line-width': {
-            stops: [
-              [9, 3],
-              [13, 6]
-            ]
-          }
+          'line-opacity': 1,
+          'line-width': 2
         },
         layout: {
           'line-join': 'round',
@@ -108,32 +128,17 @@ function createSystemMap(id, geojson) {
         },
         filter: ['==', 'route_id', routeId]
       });
-
-      map.on('mouseenter', routeId, () => {
-        map.getCanvas().style.cursor = 'pointer';
-      });
-
-      map.on('mouseleave', routeId, () => {
-        map.getCanvas().style.cursor = '';
-      });
     }
 
-    map.addLayer({
-      id: 'routes-label',
-      type: 'symbol',
-      source: {
-        type: 'geojson',
-        data: geojson
-      },
-      layout: {
-        'text-field': '{route_short_name}',
-        'text-font': [
-          'DIN Offc Pro Medium',
-          'Arial Unicode MS Bold'
-        ],
-        'text-size': 14
-      },
-      filter: ['==', 'route_id', '']
+    map.on('mousemove', (event) => {
+      const features = map.queryRenderedFeatures(event.point, { layers: [...routeLayerIds, ...routeBackgroundLayerIds] });
+      if (features.length > 0) {
+        map.getCanvas().style.cursor = 'pointer';
+        highlightRoutes(_.uniq(features.map(feature => feature.properties.route_id)));
+      } else {
+        map.getCanvas().style.cursor = '';
+        unHighlightRoutes();
+      }
     });
 
     map.on('click', event => {
@@ -164,13 +169,13 @@ function createSystemMap(id, geojson) {
         .addTo(map);
     });
 
-    function highlightRoutes(routeIds) {
-      for (const layerId of routeLayerIds) {
-        const lineOpacity = routeIds.includes(layerId) ? 1 : 0.1;
-        map.setPaintProperty(layerId, 'line-opacity', lineOpacity);
+    function highlightRoutes(routeIds, zoom) {
+      for (const layerId of routeBackgroundLayerIds) {
+        const color = routeIds.includes(layerId.replace(/outline/, '')) ? '#FFFD7E' : '#FFFFFF';
+        const width = routeIds.includes(layerId.replace(/outline/, '')) ? 12 : 6;
+        map.setPaintProperty(layerId, 'line-color', color);
+        map.setPaintProperty(layerId, 'line-width', width);
       }
-
-      map.setFilter('routes-label', ['in', 'route_id'].concat(routeIds));
 
       const highlightedFeatures = geojson.features.filter(feature => routeIds.includes(feature.properties.route_id));
 
@@ -178,21 +183,25 @@ function createSystemMap(id, geojson) {
         return;
       }
 
-      const zoomBounds = getBounds({
-        features: highlightedFeatures
-      });
-      map.fitBounds(zoomBounds, {
-        padding: 20
-      });
+      if (zoom) {
+        const zoomBounds = getBounds({
+          features: highlightedFeatures
+        });
+        map.fitBounds(zoomBounds, {
+          padding: 20
+        });
+      }
     }
 
-    function unHighlightRoutes() {
-      for (const layerId of routeLayerIds) {
-        map.setPaintProperty(layerId, 'line-opacity', 0.7);
+    function unHighlightRoutes(zoom) {
+      for (const layerId of routeBackgroundLayerIds) {
+        map.setPaintProperty(layerId, 'line-color', '#FFFFFF');
+        map.setPaintProperty(layerId, 'line-width', 6);
       }
 
-      map.setFilter('routes-label', ['==', 'route_id', '']);
-      map.fitBounds(bounds);
+      if (zoom) {
+        map.fitBounds(bounds);
+      }
     }
 
     // On table hover, highlight route on map
@@ -201,11 +210,11 @@ function createSystemMap(id, geojson) {
         const routeIdString = $(event.target).parents('a').data('route-ids');
         if (routeIdString) {
           const routeIds = routeIdString.toString().split(',');
-          highlightRoutes(routeIds);
+          highlightRoutes(routeIds, true);
         }
       });
 
-      $('.overview-list').hover(() => {}, unHighlightRoutes);
+      $('.overview-list').hover(() => {}, () => unHighlightRoutes(true));
     });
   });
 

@@ -14,8 +14,8 @@ include formatting_functions.pug
               .text-lg.leading-none= timetablePage.timetable_page_label
               each route in _.uniqBy(_.flatMap(timetablePage.consolidatedTimetables, timetable => timetable.routes), 'route_id')
                 .flex.my-1
-                  .route-color-swatch.flex-none(style=`background-color: #${route.route_color}; color: #${route.route_text_color};`)= route.route_short_name || ''
-                  .ml-1.text-gray-600.leading-none= formatRouteName(route)
+                  .route-color-swatch.flex-none.mr-2(style=`background-color: #${route.route_color}; color: #${route.route_text_color};`)= route.route_short_name || ''
+                  .mt-1.text-gray-600.leading-none= formatRouteName(route)
               .text-gray-600= timetablePage.dayList
     if config.showMap
       .map.ml-4.h-full.w-full(id="system_map")
