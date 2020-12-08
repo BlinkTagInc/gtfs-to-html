@@ -6,11 +6,11 @@ const maps = {};
 function formatRoute(route) {
   const html = route.route_url ? $('<a>').attr('href', route.route_url) : $('<div>');
 
-  html.addClass('route-item');
+  html.addClass('route-item text-sm pb-2');
 
   if (route.route_color) {
     $('<div>')
-      .addClass('route-color-swatch')
+      .addClass('route-color-swatch mr-2 flex-shrink-0')
       .css('backgroundColor', route.route_color)
       .appendTo(html);
   }
@@ -99,6 +99,26 @@ function createMap(id, geojson, routeColor) {
       }
     });
 
+    // Add route line outline first
+    map.addLayer({
+      id: 'route-line-outline',
+      type: 'line',
+      source: {
+        type: 'geojson',
+        data: geojson
+      },
+      paint: {
+        'line-color': '#FFFFFF',
+        'line-opacity': 1,
+        'line-width': 6
+      },
+      layout: {
+        'line-join': 'round',
+        'line-cap': 'round'
+      },
+      filter: ['!has', 'stop_id']
+    });
+
     map.addLayer({
       id: 'route-line',
       type: 'line',
@@ -108,13 +128,8 @@ function createMap(id, geojson, routeColor) {
       },
       paint: {
         'line-color': routeColor,
-        'line-opacity': 0.7,
-        'line-width': {
-          stops: [
-            [9, 3],
-            [13, 6]
-          ]
-        }
+        'line-opacity': 1,
+        'line-width': 2
       },
       layout: {
         'line-join': 'round',
@@ -175,6 +190,17 @@ function createMap(id, geojson, routeColor) {
       map.getCanvas().style.cursor = '';
     });
 
+    map.on('mousemove', (event) => {
+      const features = map.queryRenderedFeatures(event.point, { layers: ['stops'] });
+      if (features.length > 0) {
+        map.getCanvas().style.cursor = 'pointer';
+        highlightStop(features[0].properties.stop_id);
+      } else {
+        map.getCanvas().style.cursor = '';
+        unHighlightStop();
+      }
+    });
+
     map.on('click', event => {
       // Set bbox as 5px reactangle area around clicked point
       const bbox = [
@@ -201,11 +227,13 @@ function createMap(id, geojson, routeColor) {
     function highlightStop(stopId) {
       map.setFilter('stops-highlighted', ['==', 'stop_id', stopId]);
       map.setPaintProperty('stops', 'circle-opacity', 0.5);
+      map.setPaintProperty('stops', 'circle-stroke-opacity', 0.5);
     }
 
     function unHighlightStop() {
       map.setFilter('stops-highlighted', ['==', 'stop_id', '']);
       map.setPaintProperty('stops', 'circle-opacity', 1);
+      map.setPaintProperty('stops', 'circle-stroke-opacity', 1);
     }
 
     // On table hover, highlight stop on map
