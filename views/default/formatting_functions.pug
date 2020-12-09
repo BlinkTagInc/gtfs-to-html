@@ -52,19 +52,27 @@
     return warning;
   }
 
+  function formatAgencyName(agency) {
+    if (!agency || !agency.agency_name) {
+      return '';
+    }  
+
+    return agency.agency_name;
+  }
+
   function getAgencyTimetableGroups(timetablePages, agencies) {
     const agencyIds = [];
     for (const timetablePage of timetablePages) {
       agencyIds.push(...timetablePage.agency_ids);
     }
 
-    const uniqueAgencyIds = _.uniq(agencyIds);
+    const uniqueAgencyIds = _.uniq(_.compact(agencyIds));
 
     if (uniqueAgencyIds.length === 0) {
-      return {
+      return [{
         agency: _.first(agencies),
         timetablePages
-      };
+      }];
     }
 
     return _.orderBy(uniqueAgencyIds.map(agencyId => {

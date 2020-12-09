@@ -7,7 +7,7 @@ include formatting_functions.pug
   else
     .overview-list.flex-none(class="md:overflow-y-scroll")
       each timetablePageGroup in getAgencyTimetableGroups(timetablePages, agencies)
-        h1.text-2xl.pt-4.pb-2= `${timetablePageGroup.agency.agency_name} Routes`
+        h1.text-2xl.pt-4.pb-2= `${formatAgencyName(timetablePageGroup.agency)} Routes`
         each timetablePage in timetablePageGroup.timetablePages
           if config.allowEmptyTimetables || timetablePage.consolidatedTimetables.length > 0
             a.overview-menu-item.mb-3(href=`${timetablePage.relativePath}` data-route-ids=`${timetablePage.route_ids ? timetablePage.route_ids.join(',') : ''}`)
