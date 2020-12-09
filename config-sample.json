@@ -41,7 +41,7 @@
   "showStopDescription": false,
   "skipImport": false,
   "sortingAlgorithm": "common",
-  "templatePath": "views/timetable",
+  "templatePath": "views/default",
   "timeFormat": "h:mma",
   "useParentStation": true,
   "verbose": true,

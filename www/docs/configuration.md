@@ -483,7 +483,7 @@ The default trip-sorting algorithm is `common`.
 
 ### templatePath
 
-{String} Path to a folder containing (pug)[https://pugjs.org/] template for rendering timetables. This is optional. Defaults to using the templates provided in `views/timetable`. All files within the `/views/custom` folder will be .gitignored, so you can copy the `views/timetable` folder to `views/custom/myagency` and make any modifications needed. Any custom views folder should contain pug templates called `timetablepage.pug`, `timetablepage_full.pug`,  `overview.pug`, and `overview_full.pug`.
+{String} Path to a folder containing (pug)[https://pugjs.org/] template for rendering timetables. This is optional. Defaults to using the templates provided in `views/default`. All files within the `/views/custom` folder will be .gitignored, so you can copy the `views/default` folder to `views/custom/myagency` and make any modifications needed. Any custom views folder should contain pug templates called `timetablepage.pug`, `timetablepage_full.pug`,  `overview.pug`, and `overview_full.pug`.
 
 ```
     "templatePath": "views/custom/my-agency/"

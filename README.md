@@ -82,7 +82,7 @@ GTFS-to-HTML 1.0.0 has some breaking changes.
 * `config.json` accepts a `sqlitePath` instead of a `mongoUrl`.
 * `route_color` and `route_text_color` in exported geoJSON now have a `#` prepended to the hex color. So `#45AA00` instead of `45AA00`.
 * The `dataExpireAfterSeconds` config option has been removed.
-* The default view `pug` template in `views/timetable` has some small improvements.
+* The default view `pug` template in `views/default` has some small improvements.
 
 ## Contributing
 
