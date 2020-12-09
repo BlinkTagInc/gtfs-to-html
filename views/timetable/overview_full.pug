@@ -6,9 +6,9 @@ block extraHeader
   if config.showMap
     script(src="https://unpkg.com/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous")
     script(src="https://unpkg.com/lodash@4.17.20/lodash.min.js" integrity="sha384-EnW5v27oxpPV45dNJxtnA2OWfHpDTXuO/EzFl+c1vzZcB1aWeANNH0pFZLJ6Gsbr" crossorigin="anonymous")
-    script(src="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.js")
+    script(src="https://api.mapbox.com/mapbox-gl-js/v2.0.0/mapbox-gl.js")
     script.
       mapboxgl.accessToken = '#{config.mapboxAccessToken}';
     script(src=`${config.assetPath}js/system-map.js`)
 
-    link(href="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css" rel="stylesheet")
+    link(href="https://api.mapbox.com/mapbox-gl-js/v2.0.0/mapbox-gl.css" rel="stylesheet")
