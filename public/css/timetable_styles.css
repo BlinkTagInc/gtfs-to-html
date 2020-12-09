@@ -1,4 +1,16 @@
 /* Timetable Styles */
+body {
+  color: #666;
+}
+
+h1, h2, h3, h4, h5 {
+  color: #333;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
 .menu-type-radio .timetable {
   display: none;
 }
@@ -236,4 +248,17 @@
   display: flex;
   align-items: center;
   line-height: 1;
+}
+
+/* Overview  page */
+
+.overview-menu-item {
+  display: block;
+  text-decoration: none;
+  padding: 5px;
+}
+
+.overview-menu-item:hover {
+  text-decoration: none;
+  background: #bdd5fa;
 }

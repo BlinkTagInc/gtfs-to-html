@@ -6,7 +6,7 @@ const maps = {};
 function formatRoute(route) {
   const html = route.route_url ? $('<a>').attr('href', route.route_url) : $('<div>');
 
-  html.addClass('route-item text-sm pb-2');
+  html.addClass('route-item text-sm mb-2');
 
   if (route.route_color) {
     $('<div>')
