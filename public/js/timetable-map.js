@@ -33,10 +33,11 @@ function formatStopPopup(feature) {
 
   if (feature.properties.stop_code !== null) {
     $('<label>')
+      .addClass('mr-1')
       .text('Stop Code:')
       .appendTo(html);
 
-    $('<span>')
+    $('<strong>')
       .text(feature.properties.stop_code)
       .appendTo(html);
   }
