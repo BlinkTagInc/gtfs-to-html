@@ -2,7 +2,7 @@
   "agencies": [
     {
       "agency_key": "bart",
-      "url": "https://transitfeeds.com/p/bart/58/latest/download"
+      "url": "http://www.bart.gov/dev/schedules/google_transit.zip"
     }
   ],
   "sqlitePath": "/tmp/gtfs",
