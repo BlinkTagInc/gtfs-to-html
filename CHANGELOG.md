@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.6] - 2020-12-13
+### Updated
+- Better default GTFS in sample
+- Improvements to timetable map popups
+### Fixed
+- Hide progress bar when verbose = false
+- Detect TTY and use \n if not
+
 ## [1.4.5] - 2020-12-09
 ### Updated
 - Mapbox GL 2.0
