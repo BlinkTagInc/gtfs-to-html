@@ -150,14 +150,14 @@ function createMap(id, geojson, routeColor) {
       paint: {
         'circle-radius': {
           stops: [
-            [9, 3],
-            [13, 6],
-            [15, 8]
+            [9, 2],
+            [13, 4],
+            [15, 6]
           ]
         },
         'circle-stroke-width': 1,
         'circle-stroke-color': '#363636',
-        'circle-color': routeColor
+        'circle-color': '#363636'
       },
       filter: ['has', 'stop_id']
     });
@@ -172,24 +172,16 @@ function createMap(id, geojson, routeColor) {
       paint: {
         'circle-radius': {
           stops: [
-            [9, 6],
-            [13, 9],
-            [15, 10]
+            [9, 3],
+            [13, 4],
+            [15, 7]
           ]
         },
         'circle-stroke-width': 2,
-        'circle-stroke-color': '#111111',
-        'circle-color': routeColor
+        'circle-stroke-color': '#666666',
+        'circle-color': '#888888'
       },
       filter: ['==', 'stop_id', '']
-    });
-
-    map.on('mouseenter', 'stops', () => {
-      map.getCanvas().style.cursor = 'pointer';
-    });
-
-    map.on('mouseleave', 'stops', () => {
-      map.getCanvas().style.cursor = '';
     });
 
     map.on('mousemove', event => {
@@ -206,7 +198,7 @@ function createMap(id, geojson, routeColor) {
     });
 
     map.on('click', event => {
-      // Set bbox as 5px reactangle area around clicked point
+      // Set bbox as 5px rectangle area around clicked point
       const bbox = [
         [event.point.x - 5, event.point.y - 5],
         [event.point.x + 5, event.point.y + 5]
