@@ -97,7 +97,8 @@ function createMap(id, geojson, routeColor) {
         bottom: 40,
         left: 20,
         right: 40
-      }
+      },
+      duration: 0
     });
 
     // Add route line outline first

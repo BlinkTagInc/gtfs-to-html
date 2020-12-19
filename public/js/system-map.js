@@ -80,7 +80,8 @@ function createSystemMap(id, geojson) {
 
   map.on('load', () => {
     map.fitBounds(bounds, {
-      padding: 20
+      padding: 20,
+      duration: 0
     });
 
     // Add white outlines to routes first
