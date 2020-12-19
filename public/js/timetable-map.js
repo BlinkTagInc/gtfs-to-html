@@ -31,7 +31,7 @@ function formatStopPopup(feature) {
     .text(feature.properties.stop_name)
     .appendTo(html);
 
-  if (feature.properties.stop_code !== null) {
+  if (feature.properties.stop_code ?? false) {
     $('<label>')
       .addClass('mr-1')
       .text('Stop Code:')
@@ -66,16 +66,12 @@ function getBounds(geojson) {
   return bounds;
 }
 
-function createMap(id, geojson, routeColor) {
+function createMap(id, geojson) {
   const defaultRouteColor = '#FF4728';
 
   if (!geojson || geojson.features.length === 0) {
     $('#map_' + id).hide();
     return false;
-  }
-
-  if (!routeColor) {
-    routeColor = defaultRouteColor;
   }
 
   const bounds = getBounds(geojson);
@@ -129,7 +125,7 @@ function createMap(id, geojson, routeColor) {
         data: geojson
       },
       paint: {
-        'line-color': routeColor,
+        'line-color': ['to-color', ['get', 'route_color'], defaultRouteColor],
         'line-opacity': 1,
         'line-width': 2
       },

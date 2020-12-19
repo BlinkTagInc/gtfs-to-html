@@ -26,10 +26,9 @@ include formatting_functions.pug
           //- Use #{variable} format to inject values from pug to client side js
           script.
             (function() {
-              var id = 'timetable_id_#{formatHtmlId(timetable.timetable_id)}';
-              var geojson = !{JSON.stringify(timetable.geojson)};
-              var routeColor = `##{timetable.routes[0].route_color || '416CB5'}`;
-              createMap(id, geojson, routeColor);
+              const id = 'timetable_id_#{formatHtmlId(timetable.timetable_id)}';
+              const geojson = !{JSON.stringify(timetable.geojson)};
+              createMap(id, geojson);
             })();
 
         if timetable.orientation === 'horizontal'
