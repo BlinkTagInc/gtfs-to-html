@@ -235,7 +235,7 @@ a:hover {
 /* Map Styles */
 
 .map {
-  min-height: 300px;
+  min-height: 350px;
 }
 
 .map .mapboxgl-popup-content .popup-title {
