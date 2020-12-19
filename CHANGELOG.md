@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.7] - 2020-12-18
+### Updated
+- Better map stop styles
+- Better route short name circles
+### Fixed
+- Use correct color on map for multi-route timetables
+
 ## [1.4.6] - 2020-12-13
 ### Updated
 - Better default GTFS in sample
