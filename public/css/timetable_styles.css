@@ -164,6 +164,7 @@ a:hover {
   text-align: center;
   line-height: 26px;
   font-size: 14px;
+  letter-spacing: -1px;
 }
 
 .route-color-swatch-large {
@@ -172,8 +173,9 @@ a:hover {
   border-radius: 50%;
   text-align: center;
   line-height: 40px;
-  font-size: 22px;
+  font-size: 20px;
   font-weight: bold;
+  letter-spacing: -1px;
 }
 
 @media screen and (max-width: 767px) {
