@@ -22,7 +22,13 @@ config.log = console.log;
 config.logWarning = console.warn;
 config.logError = console.error;
 
-gtfs.openDb(config);
+gtfs.openDb(config).catch(error => {
+  if (error instanceof Error && error.code === 'SQLITE_CANTOPEN') {
+    config.logError(`Unable to open sqlite database "${config.sqlitePath}" defined as \`sqlitePath\` config.json. Ensure the parent directory exists or remove \`sqlitePath\` from config.json.`);
+  }
+
+  throw error;
+});
 
 /*
  * Show all timetable pages
