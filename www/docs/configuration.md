@@ -22,8 +22,9 @@ All files starting with `config*.json` are .gitignored - so you can create multi
 | [`dateFormat`](#dateformat) | string | A string defining date format in moment.js style. |
 | [`dayShortStrings`](#dayshortstrings) | array of strings | An array defining contractions of weekdays names from Monday to Sunday. |
 | [`dayStrings`](#daystrings) | array of strings | An array defining weekdays names from Monday to Sunday. |
-| [`defaultOrientation`](#defaultorientation) | string | Specifies timetable orientation, when not mentioned in `timetables.txt` |
-| [`effectiveDate`](#effectivedate) | string | A date to print at the top of the timetable |
+| [`debug`](#debug) | boolean | Enable logging of SQL queries and other info. |
+| [`defaultOrientation`](#defaultorientation) | string | Specifies timetable orientation, when not mentioned in `timetables.txt`. |
+| [`effectiveDate`](#effectivedate) | string | A date to print at the top of the timetable. |
 | [`interpolatedStopSymbol`](#interpolatedstopsymbol) | string | The symbol used to indicate that a timepoint isn't fixed, but just interpolated. |
 | [`interpolatedStopText`](#interpolatedstoptext) | string | The text used to describe a timepoint isn't fixed, but just interpolated. |
 | [`linkStopUrls`](#linkStopurls) | boolean | Whether or not to hyperlink timetable stop names to the `stop_url` defined in `stops.txt`. |
@@ -192,13 +193,20 @@ API along with your API token.
     "daysShortStrings": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 ```
 
-
 ### daysStrings
 
 {Array \[String\]} An array of strings defining contractions of weekday names. Specify from Monday to Sunday. 
 
 ```
     "daysStrings": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+```
+
+### debug
+
+{Boolean} Whether or not to enable loggin of SQL queries and other info. Defaults to false.
+
+```
+    "debug": false
 ```
 
 ### defaultOrientation
