@@ -32,7 +32,7 @@ By generating future timetables and including dates in table metadata, your time
 
 ## GTFS-to-HTML on the web
 
-You can now use `gtfs-to-html` without actually downloading any code or doing any configuration. [run.gtfstohtml.com](https://run.gtfstohtml.com) provides a web based interface for finding GTFS feeds for agenices, setting configuration and then generates a previewable and downloadable set of timetables.
+You can now use `gtfs-to-html` without actually downloading any code or doing any configuration. [run.gtfstohtml.com](https://run.gtfstohtml.com) provides a web based interface for finding GTFS feeds for agencies, setting configuration and then generates a previewable and downloadable set of timetables.
 
 ## Current Usage
 Many transit agencies use `gtfs-to-html` to generate the schedule pages used on their websites, including:
