@@ -179,7 +179,7 @@ API along with your API token.
 
 ### dateFormat
 
-{String} A string defining date format in moment.js manner. Change it, when you want to customize date format shown in timetables
+{String} A string defining date format using moment.js tokens. [See full list of formatting options](https://momentjs.com/docs/#/displaying/format/). Defaults to `MMM D. YYYY` which yields "Apr 5, 2022".
 
 ```
     "dateFormat": "MMM D, YYYY"
@@ -495,6 +495,14 @@ The default trip-sorting algorithm is `common`.
 
 ```
     "templatePath": "views/custom/my-agency/"
+```
+
+### timeFormat
+
+{String} A string defining time format using moment.js tokens. [See full list of formatting options](https://momentjs.com/docs/#/displaying/format/). Defaults to `h:mma` which yields "8:36pm".
+
+```
+    "timeFormat": "h:mma"
 ```
 
 ### useParentStation
