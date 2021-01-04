@@ -23,7 +23,7 @@ All files starting with `config*.json` are .gitignored - so you can create multi
 | [`dayShortStrings`](#dayshortstrings) | array of strings | An array defining contractions of weekdays names from Monday to Sunday. |
 | [`dayStrings`](#daystrings) | array of strings | An array defining weekdays names from Monday to Sunday. |
 | [`debug`](#debug) | boolean | Enable logging of SQL queries and other info. |
-| [`defaultOrientation`](#defaultorientation) | string | Specifies timetable orientation, when not mentioned in `timetables.txt`. |
+| [`defaultOrientation`](#defaultorientation) | string | Specify timetable orientation, when not specified in `timetables.txt`. |
 | [`effectiveDate`](#effectivedate) | string | A date to print at the top of the timetable. |
 | [`interpolatedStopSymbol`](#interpolatedstopsymbol) | string | The symbol used to indicate that a timepoint isn't fixed, but just interpolated. |
 | [`interpolatedStopText`](#interpolatedstoptext) | string | The text used to describe a timepoint isn't fixed, but just interpolated. |
@@ -211,7 +211,7 @@ API along with your API token.
 
 ### defaultOrientation
 
-{String} Specifies timetable orientation, when not mentioned in `timetables.txt`. For options see `timetables.txt` specification
+{String} Specifies timetable orientation, when not mentioned in `timetables.txt`. Valid options are `vertical`, `horizontal` or `hourly`. For details, see [`timetables.txt` `orientation` specification](https://gtfstohtml.com/docs/timetables).
 
 ```
     "defaultOrientation": "vertical"
