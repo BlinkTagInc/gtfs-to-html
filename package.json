@@ -1,14 +1,20 @@
 {
   "name": "gtfs-to-html",
-  "description": "Build human readable transit timetables as HTML or PDF from GTFS",
   "version": "1.4.9",
+  "private": false,
+  "description": "Build human readable transit timetables as HTML or PDF from GTFS",
   "keywords": [
     "transit",
     "gtfs",
     "transportation",
     "timetables"
   ],
-  "private": false,
+  "homepage": "https://gtfstohtml.com",
+  "bugs": {
+    "url": "https://github.com/blinktaginc/gtfs-to-html/issues"
+  },
+  "repository": "git://github.com/blinktaginc/gtfs-to-html",
+  "license": "MIT",
   "author": "Brendan Nee <brendan@blinktag.com>",
   "contributors": [
     "Evan Siroky <evan.siroky@yahoo.com>",
@@ -18,20 +24,30 @@
     "Holly Kvalheim",
     "Pawajoro"
   ],
-  "homepage": "https://gtfstohtml.com",
-  "repository": "git://github.com/blinktaginc/gtfs-to-html",
-  "bugs": {
-    "url": "https://github.com/blinktaginc/gtfs-to-html/issues"
+  "main": "index",
+  "bin": {
+    "gtfs-to-html": "bin/gtfs-to-html.js"
   },
-  "license": "MIT",
   "scripts": {
     "start": "node ./app",
     "test": "xo"
   },
-  "bin": {
-    "gtfs-to-html": "bin/gtfs-to-html.js"
+  "xo": {
+    "esnext": true,
+    "rules": {
+      "camelcase": [
+        "error",
+        {
+          "properties": "never"
+        }
+      ],
+      "object-curly-spacing": [
+        "error",
+        "always"
+      ]
+    },
+    "space": true
   },
-  "main": "index",
   "dependencies": {
     "@turf/helpers": "^6.1.4",
     "@turf/simplify": "^5.1.5",
@@ -61,21 +77,5 @@
   },
   "engines": {
     "node": ">= 12.14.0"
-  },
-  "xo": {
-    "esnext": true,
-    "space": true,
-    "rules": {
-      "camelcase": [
-        "error",
-        {
-          "properties": "never"
-        }
-      ],
-      "object-curly-spacing": [
-        "error",
-        "always"
-      ]
-    }
   }
 }
