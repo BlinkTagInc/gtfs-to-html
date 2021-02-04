@@ -107,6 +107,19 @@ function Home() {
           </a>
         </div>
 
+        <div className={clsx(styles.buttons, 'margin-top--md')}>
+          <strong>OR</strong>
+        </div>
+
+        <div className={clsx(styles.buttons, 'margin-top--md')}>
+          <a
+            className="button button--outline button--secondary button--lg"
+            href="https://run.gtfstohtml.com"
+          >
+            Try the web-based version
+          </a>
+        </div>
+
         <section>
           <div className="container margin-top--xl margin-bottom--lg">
             <div className="row">
