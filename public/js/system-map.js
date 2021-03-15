@@ -84,6 +84,15 @@ function createSystemMap(id, geojson) {
       duration: 0
     });
 
+    // Find the index of the first symbol layer in the map style
+    let firstSymbolId;
+    for (const layer of map.getStyle().layers) {
+      if (layer.type === 'symbol') {
+        firstSymbolId = layer.id;
+        break;
+      }
+    }
+
     // Add white outlines to routes first
     for (const routeId of Object.keys(routes)) {
       routeBackgroundLayerIds.push(`${routeId}outline`);
@@ -104,7 +113,7 @@ function createSystemMap(id, geojson) {
           'line-cap': 'round'
         },
         filter: ['==', 'route_id', routeId]
-      });
+      }, firstSymbolId);
     }
 
     // Add route lines next
@@ -128,7 +137,7 @@ function createSystemMap(id, geojson) {
           'line-cap': 'round'
         },
         filter: ['==', 'route_id', routeId]
-      });
+      }, firstSymbolId);
     }
 
     map.on('mousemove', event => {

@@ -97,6 +97,15 @@ function createMap(id, geojson) {
       duration: 0
     });
 
+    // Find the index of the first symbol layer in the map style
+    let firstSymbolId;
+    for (const layer of map.getStyle().layers) {
+      if (layer.type === 'symbol') {
+        firstSymbolId = layer.id;
+        break;
+      }
+    }
+
     // Add route line outline first
     map.addLayer({
       id: 'route-line-outline',
@@ -115,7 +124,7 @@ function createMap(id, geojson) {
         'line-cap': 'round'
       },
       filter: ['!has', 'stop_id']
-    });
+    }, firstSymbolId);
 
     map.addLayer({
       id: 'route-line',
@@ -134,7 +143,7 @@ function createMap(id, geojson) {
         'line-cap': 'round'
       },
       filter: ['!has', 'stop_id']
-    });
+    }, firstSymbolId);
 
     map.addLayer({
       id: 'stops',
@@ -156,7 +165,7 @@ function createMap(id, geojson) {
         'circle-color': '#363636'
       },
       filter: ['has', 'stop_id']
-    });
+    }, firstSymbolId);
 
     map.addLayer({
       id: 'stops-highlighted',
@@ -178,7 +187,7 @@ function createMap(id, geojson) {
         'circle-color': '#888888'
       },
       filter: ['==', 'stop_id', '']
-    });
+    }, firstSymbolId);
 
     map.on('mousemove', event => {
       const features = map.queryRenderedFeatures(event.point, {
