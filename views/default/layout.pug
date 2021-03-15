@@ -3,7 +3,7 @@ html
   head
     title= title
     meta(charset="utf-8")
-    link(rel="stylesheet" href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" integrity="sha384-DoAj5Uf/2fkaJeZQi1AVQWJs8Rh2ivQL8UkrMZm84FzqdC+6seY4C99CWABJIRCv" crossorigin="anonymous")
+    link(rel="stylesheet" href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" crossorigin="anonymous")
     link(rel="stylesheet" href=`${config.assetPath}css/timetable_styles.css`)
     if config.outputFormat === 'pdf'
       link(rel="stylesheet" href=`${config.assetPath}css/timetable_pdf_styles.css`)
