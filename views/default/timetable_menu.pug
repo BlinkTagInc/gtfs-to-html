@@ -32,10 +32,11 @@ if timetablePage.consolidatedTimetables.length > 1
 
     if config.menuType === 'radio'
       .grid.grid-cols-1.gap-4(class="md:grid-cols-3")
-        div(hidden=timetablePage.directionNames.length <= 1)
+        -var directionNames = _.uniq(timetablePage.consolidatedTimetables.map(timetable => timetable.direction_name));
+        div(hidden=directionNames.length <= 1)
           #direction_name_selector
             h3.font-bold Service Direction
-            each directionName, idx in timetablePage.directionNames
+            each directionName, idx in directionNames
               label.cursor-pointer.mb-2.w-full.flex.items-center.justify-center.px-8.py-3.border.border-transparent.text-base.rounded-md(class=idx === 0 ? 'text-white bg-blue-600': 'text-gray-600 bg-gray-300')
                 input.hidden(type="radio" name="directionName" autocomplete="off" value=directionName checked=(idx === 0))
                 span= directionName
