@@ -254,7 +254,7 @@ API along with your API token.
 {Function} If you want to route logs to a custom function, you can pass a function that takes a single `text` argument as `logFunction`. This can't be used when running GTFS-to-HTML as a command-line utility, only when included as part of a node.js app and passed in a config object to `gtfsToHtml()`.  For example:
 
 ```javascript
-    const gtfsToHTML = require('gtfs-to-html');
+    import gtfsToHtml from 'gtfs-to-html';
 
     const config = {
       agencies: [
@@ -272,7 +272,7 @@ API along with your API token.
       }
     };
 
-    gtfsToHTML(config);
+    gtfsToHtml(config);
 ```
 
 ### mapboxAccessToken
