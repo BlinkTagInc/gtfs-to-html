@@ -1,1 +1,1 @@
-module.exports = require('./lib/gtfs-to-html');
+export { default } from './lib/gtfs-to-html.js';

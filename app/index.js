@@ -1,20 +1,21 @@
-const {
-  map
-} = require('lodash');
-const path = require('path');
-const gtfs = require('gtfs');
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { readFileSync } from 'node:fs';
+import { map } from 'lodash-es';
+import { openDb } from 'gtfs';
 
-const express = require('express');
-const logger = require('morgan');
+import express from 'express';
+import logger from 'morgan';
 
-const formatters = require('../lib/formatters');
-const utils = require('../lib/utils');
-const selectedConfig = require('../config');
+import { formatTimetableLabel } from '../lib/formatters.js';
+import { setDefaultConfig, getTimetablePagesForAgency, getFormattedTimetablePage, generateOverviewHTML, generateHTML } from '../lib/utils.js';
 
 const app = express();
 const router = new express.Router();
 
-const config = utils.setDefaultConfig(selectedConfig);
+const selectedConfig = JSON.parse(readFileSync(new URL('../config.json', import.meta.url)));
+
+const config = setDefaultConfig(selectedConfig);
 // Override noHead config option so full HTML pages are generated
 config.noHead = false;
 config.assetPath = '/';
@@ -22,7 +23,7 @@ config.log = console.log;
 config.logWarning = console.warn;
 config.logError = console.error;
 
-gtfs.openDb(config).catch(error => {
+openDb(config).catch(error => {
   if (error instanceof Error && error.code === 'SQLITE_CANTOPEN') {
     config.logError(`Unable to open sqlite database "${config.sqlitePath}" defined as \`sqlitePath\` config.json. Ensure the parent directory exists or remove \`sqlitePath\` from config.json.`);
   }
@@ -36,11 +37,11 @@ gtfs.openDb(config).catch(error => {
 router.get('/', async (request, response, next) => {
   try {
     const timetablePages = [];
-    const timetablePageIds = map(await utils.getTimetablePages(config), 'timetable_page_id');
+    const timetablePageIds = map(await getTimetablePagesForAgency(config), 'timetable_page_id');
 
     for (const timetablePageId of timetablePageIds) {
       // eslint-disable-next-line no-await-in-loop
-      const timetablePage = await utils.getFormattedTimetablePage(timetablePageId, config);
+      const timetablePage = await getFormattedTimetablePage(timetablePageId, config);
 
       if (!timetablePage.consolidatedTimetables || timetablePage.consolidatedTimetables.length === 0) {
         console.error(`No timetables found for timetable_page_id=${timetablePage.timetable_page_id}`);
@@ -48,13 +49,13 @@ router.get('/', async (request, response, next) => {
 
       timetablePage.relativePath = `/timetables/${timetablePage.timetable_page_id}`;
       for (const timetable of timetablePage.consolidatedTimetables) {
-        timetable.timetable_label = formatters.formatTimetableLabel(timetable);
+        timetable.timetable_label = formatTimetableLabel(timetable);
       }
 
       timetablePages.push(timetablePage);
     }
 
-    const html = await utils.generateOverviewHTML(timetablePages, config);
+    const html = await generateOverviewHTML(timetablePages, config);
     response.send(html);
   } catch (error) {
     next(error);
@@ -74,20 +75,20 @@ router.get('/timetables/:timetablePageId', async (request, response, next) => {
   }
 
   try {
-    const timetablePage = await utils.getFormattedTimetablePage(timetablePageId, config);
+    const timetablePage = await getFormattedTimetablePage(timetablePageId, config);
 
-    const results = await utils.generateHTML(timetablePage, config);
+    const results = await generateHTML(timetablePage, config);
     response.send(results.html);
   } catch (error) {
     next(error);
   }
 });
 
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(fileURLToPath(import.meta.url), '../../views'));
 app.set('view engine', 'pug');
 
 app.use(logger('dev'));
-app.use(express.static(path.join(__dirname, '../public')));
+app.use(express.static(path.join(fileURLToPath(import.meta.url), '../../public')));
 
 app.use('/', router);
 app.set('port', process.env.PORT || 3000);
