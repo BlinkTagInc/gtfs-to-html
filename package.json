@@ -31,23 +31,7 @@
   },
   "scripts": {
     "start": "node ./app",
-    "test": "xo"
-  },
-  "xo": {
-    "esnext": true,
-    "rules": {
-      "camelcase": [
-        "error",
-        {
-          "properties": "never"
-        }
-      ],
-      "object-curly-spacing": [
-        "error",
-        "always"
-      ]
-    },
-    "space": true
+    "lint": "eslint app/**/*.js lib/**/*.js public/**/*.js --fix"
   },
   "dependencies": {
     "@turf/helpers": "^6.3.0",
@@ -74,7 +58,8 @@
     "yargs": "^17.0.1"
   },
   "devDependencies": {
-    "xo": "^0.40.1"
+    "eslint": "^7.28.0",
+    "eslint-config-xo": "^0.37.0"
   },
   "engines": {
     "node": ">= 12.14.0"
