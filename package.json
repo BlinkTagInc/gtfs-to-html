@@ -1,6 +1,6 @@
 {
   "name": "gtfs-to-html",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "private": false,
   "description": "Build human readable transit timetables as HTML or PDF from GTFS",
   "keywords": [
@@ -34,8 +34,8 @@
     "lint": "eslint app/**/*.js lib/**/*.js public/**/*.js --fix"
   },
   "dependencies": {
-    "@turf/helpers": "^6.3.0",
-    "@turf/simplify": "^6.3.0",
+    "@turf/helpers": "^6.4.0",
+    "@turf/simplify": "^6.4.0",
     "archiver": "^5.3.0",
     "chalk": "^4.1.1",
     "cli-table": "^0.3.6",
