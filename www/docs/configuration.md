@@ -463,17 +463,13 @@ If you'd rather just get all stops and route info as geoJSON, see [gtfs-to-geojs
 
 ### sortingAlgorithm
 
-{String} Defines trip-sorting algorithm. There are two main groups of algorithms: simplified and full. 
+{String} Defines trip-sorting algorithm used to determine the order that trips are shown in timetables.
 
-Simplified algorithms sort trips by using one specific stop.
-
-* `common` finds a coommon stop (used by all trips) (if not found `first` is used).
-* `first` uses the first stop stop on the longest trip
-* `last` uses the last stop on the longest trip
-
-Full algorithms sorting usinig every stop on the route. If there is no time specified, the trip will remain in its previous place.
-* `beginning` sorts from beginning to end
-* `end` sorts from end to beginning
+* `common` finds a common stop used by all trips and sorts by stoptimes at that stop. If there is no common stop for all trips, then `first` algorithm is used.
+* `first` uses the first stop of the longest trip and sorts by stoptimes at that stop.
+* `last` uses the last stop of the longest trip and sorts by stoptimes at that stop.
+* `beginning` uses the first stoptime of each trip, which can be from different stops if not all trips have the same first stop. If a multiple trips have identical first stoptimes, the trip with the earlier last stoptimes comes first.
+* `end` uses the last stoptime of each trip, which can be from different stops if not all trips have the same last stop. If a multiple trips have identical last stoptimes, the trip with the earlier first stoptimes comes first.
 
 The default trip-sorting algorithm is `common`.
 
