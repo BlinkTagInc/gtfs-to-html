@@ -431,7 +431,7 @@ If you'd rather just get all stops and route info as geoJSON, see [gtfs-to-geojs
 
 ### showRouteTitle
 
-{Boolean} Whether or not to show the route title at the top of the timetable page. Defaults to `true`, showing the route title.
+{Boolean} Whether or not to show the route title and effective date at the top of the timetable page and the timetable label and notes before each timetable. Defaults to `true`, showing the route title and timetable labels and notes.
 
 ```
     "showRouteTitle": true
