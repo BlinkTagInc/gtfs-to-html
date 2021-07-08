@@ -19,7 +19,8 @@ include formatting_functions.pug
           h2.text-xl= `${timetable.timetable_label} | ${timetable.dayListLong}`
             each note in getNotesForTimetableLabel(timetable.notes)
               include timetable_note_symbol.pug
-          .service-notes= timetable.service_notes
+          if timetable.service_notes !== null
+            .service-notes= timetable.service_notes
 
         if config.showMap
           .map(id=`map_timetable_id_${formatHtmlId(timetable.timetable_id)}`)
