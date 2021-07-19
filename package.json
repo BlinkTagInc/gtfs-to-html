@@ -1,6 +1,6 @@
 {
   "name": "gtfs-to-html",
-  "version": "2.1.3",
+  "version": "2.1.4",
   "private": false,
   "description": "Build human readable transit timetables as HTML or PDF from GTFS",
   "keywords": [
@@ -58,7 +58,7 @@
     "yargs": "^17.0.1"
   },
   "devDependencies": {
-    "eslint": "^7.30.0",
+    "eslint": "^7.31.0",
     "eslint-config-xo": "^0.37.0"
   },
   "engines": {
