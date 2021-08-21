@@ -36,6 +36,31 @@ By default, node has a memory limit of 512 MB or 1 GB. If you have a very large 
 
     NODE_OPTIONS=--max_old_space_size=4096 gtfs-to-html
 
+## Docker Usage
+
+A `Dockerfile` is available in the `docker` directory. You can use [docker](https://docker.com) to run GTFS-to-HTML.
+
+* Create a config.json file and save in the same directory as your `Dockerfile`. You can use `config-sample.json` from the project root as a starting point.
+
+* Build the docker image:
+
+        docker build -t gtfs-to-html .
+
+* Run the docker image:
+
+        docker run gtfs-to-html
+
+* Copy the generated HTML out of the docker container
+
+        // Figure out what your container ID is
+        docker container ls -a
+
+        // Then copy the html folder from that container
+        docker cp <YOUR IMAGE CONTAINER ID>:/html .
+
+        // For example:
+        docker cp ca45a38963d9:/html .
+
 ## Usage as a node module
 
 If you are using this as a node module as part of an application, you can include it in your project's `package.json` file.

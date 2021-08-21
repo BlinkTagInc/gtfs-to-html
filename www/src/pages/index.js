@@ -116,7 +116,24 @@ function Home() {
             className="button button--primary button--lg"
             href="https://run.gtfstohtml.com"
           >
-            Try the web-based version
+            Use the web-based version
+          </a>
+        </div>
+
+        <div className={clsx(styles.buttons)}>
+          <div>(For smaller GTFS files only)</div>
+        </div>
+
+        <div className={clsx(styles.buttons, 'margin-top--md')}>
+          <strong>OR</strong>
+        </div>
+
+        <div className={clsx(styles.buttons, 'margin-top--md')}>
+          <a
+            className="button button--primary button--lg"
+            href="/docs/quick-start#docker-usage"
+          >
+            Use Docker
           </a>
         </div>
 
