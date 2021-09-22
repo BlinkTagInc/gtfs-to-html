@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM node:16
+FROM node:14
 
 RUN apt update
 RUN apt install -y chromium
