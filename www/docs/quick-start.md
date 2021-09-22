@@ -38,9 +38,13 @@ By default, node has a memory limit of 512 MB or 1 GB. If you have a very large 
 
 ## Docker Usage
 
-A `Dockerfile` is available in the `docker` directory. You can use [docker](https://docker.com) to run GTFS-to-HTML.
+You can use both [`docker`](https://docker.com) and [`docker-compose`](https://docs.docker.com/compose/) to run GTFS-to-HTML.
 
-* Create a config.json file and save in the same directory as your `Dockerfile`. You can use `config-sample.json` from the project root as a starting point.
+### Dockerfile
+
+A `Dockerfile` is available in the `docker` directory.
+
+* Create a `config.json` file and save in the same directory as your `Dockerfile`. You can use `config-sample.json` from the project root as a starting point.
 
 * Build the docker image:
 
@@ -60,6 +64,21 @@ A `Dockerfile` is available in the `docker` directory. You can use [docker](http
 
         // For example:
         docker cp ca45a38963d9:/html .
+
+### Docker Compose
+
+Docker compose is used for multi-container Docker applications. In this context, it is just a convenient way to manage volumes. This allows (_i_) to get the generated HTML out of the docker container without explicitly copying with `docker cp`, and (_ii_) to tweak and run a new configuration without rebuilding the container from scratch.
+
+* Create a `config.json` file and save in the same directory as your `Dockerfile` and `docker-compose.yml`;
+
+* build and run the container:
+
+        docker-compose up
+
+* the generated HTML will be available in the folder `html` next to docker files.
+
+Do you want to change something? Just delete the old HTML, change your `config.json`, and finally run `docker-compose up` again.
+
 
 ## Usage as a node module
 
