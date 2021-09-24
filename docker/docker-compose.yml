@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  gtfs-to-html:
+    image: gtfs-to-html
+    build:
+      context: .
+    volumes:
+      - ./html:/html
+      - ./config.json:/config.json
