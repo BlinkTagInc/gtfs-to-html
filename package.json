@@ -22,7 +22,8 @@
     "Aaron Antrim <aaron@trilliumtransit.com>",
     "Thomas Craig <thomas@trilliumtransit.com>",
     "Holly Kvalheim",
-    "Pawajoro"
+    "Pawajoro",
+    "Andrea Mignone"
   ],
   "type": "module",
   "main": "index.js",
