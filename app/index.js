@@ -2,6 +2,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { readFileSync } from 'node:fs';
 import { map } from 'lodash-es';
+import yargs from 'yargs';
 import { openDb } from 'gtfs';
 
 import express from 'express';
@@ -10,10 +11,19 @@ import logger from 'morgan';
 import { formatTimetableLabel } from '../lib/formatters.js';
 import { setDefaultConfig, getTimetablePagesForAgency, getFormattedTimetablePage, generateOverviewHTML, generateHTML } from '../lib/utils.js';
 
+const { argv } = yargs(process.argv)
+  .option('c', {
+    alias: 'configPath',
+    describe: 'Path to config file',
+    default: './config.json',
+    type: 'string'
+  });
+
 const app = express();
 const router = new express.Router();
 
-const selectedConfig = JSON.parse(readFileSync(new URL('../config.json', import.meta.url)));
+const configPath = argv.configPath || new URL('../config.json', import.meta.url);
+const selectedConfig = JSON.parse(readFileSync(configPath));
 
 const config = setDefaultConfig(selectedConfig);
 // Override noHead config option so full HTML pages are generated
