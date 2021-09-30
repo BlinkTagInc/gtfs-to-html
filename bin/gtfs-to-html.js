@@ -9,7 +9,7 @@ import { formatError } from '../lib/log-utils.js';
 import gtfsToHtml from '../index.js';
 
 const { argv } = yargs(hideBin(process.argv))
-  .usage('Usage: $0 --config ./config.json')
+  .usage('Usage: $0 --configPath ./config.json')
   .help()
   .option('c', {
     alias: 'configPath',
