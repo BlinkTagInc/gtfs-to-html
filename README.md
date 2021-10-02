@@ -64,6 +64,7 @@ Many transit agencies use `gtfs-to-html` to generate the schedule pages used on 
 * [Santa Barbara Metropolitan Transit District](https://sbmtd.gov)
 * [Sonoma County Transit](http://sctransit.com)
 * [Tahoe Truckee Area Regional Transit](https://tahoetruckeetransit.com)
+* [Transcollines](https://transcollines.ca)
 * [Tulare County Area Transit](https://ridetcat.org)
 * [Victor Valley Transit](https://vvta.org)
 * [Worcester Regional Transit Authority](https://therta.com)
