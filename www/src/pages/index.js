@@ -7,6 +7,7 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import CodeBlock from '@theme/CodeBlock';
 import useBaseUrl from '@docusaurus/useBaseUrl';
 import styles from './styles.module.css';
+import { hsl } from 'chalk';
 
 const features = [
   {
@@ -98,7 +99,26 @@ function Home() {
           </section>
         )}
 
-        <div className={clsx(styles.buttons, 'margin-top--md')}>
+        <section style={{backgroundColor: 'hsl(0, 0%, 85%)'}} className="padding--lg">
+          <div className="container">
+            <div className="row">
+              <div className="col"></div>
+              <div className="col">
+                <div className="avatar avatar--vertical margin-bottom--sm">
+                  <div className="avatar__photo avatar__photo--xl">
+                    <img src="https://avatars.githubusercontent.com/u/46612183?v=4" alt="Brody" width="200" height="200" style={{width: '100%', height: 'auto', maxWidth: '100%', marginBottom: '-4px'}} /></div>
+                  <div className="avatar__intro padding-top--sm"><div className="avatar__name">Brody</div>
+                    <small className="avatar__subtitle"><a href="https://github.com/transcollines">Transcollines</a></small>
+                  </div>
+                </div>
+                <p className="text--center text--italic padding-horiz--md">It's been a huge success. Not only do the timetables look fantastic, but I've had customer service agents tell me the interactive timetables are a total game changer and they make their jobs way easier.</p>
+              </div>
+              <div className="col"></div>
+            </div>
+          </div>
+        </section>
+
+        <div className={clsx(styles.buttons, 'margin-top--lg')}>
           <a
             className="button button--primary button--lg"
             href="https://www.npmjs.com/package/gtfs-to-html"
