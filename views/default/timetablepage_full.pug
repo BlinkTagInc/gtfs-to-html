@@ -3,16 +3,16 @@ block content
   include timetablepage.pug
 
 block extraHeader
-  script(src="https://unpkg.com/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous")
+  script(src="https://unpkg.com/jquery@3.6.0/dist/jquery.min.js" crossorigin="anonymous")
 
   if config.menuType === 'radio'
     script(src=`${config.assetPath}js/timetable-menu.js`)
 
   if config.showMap
-    script(src="https://api.mapbox.com/mapbox-gl-js/v2.0.0/mapbox-gl.js")
+    script(src="https://api.mapbox.com/mapbox-gl-js/v2.5.0/mapbox-gl.js")
     script.
       mapboxgl.accessToken = '#{config.mapboxAccessToken}';
     script(src=`${config.assetPath}js/timetable-map.js`)
 
-    link(href="https://api.mapbox.com/mapbox-gl-js/v2.0.0/mapbox-gl.css" rel="stylesheet")
+    link(href="https://api.mapbox.com/mapbox-gl-js/v2.5.0/mapbox-gl.css" rel="stylesheet")
 
