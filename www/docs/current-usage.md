@@ -5,7 +5,7 @@ title: Current Usage
 
 ## Transit agencies using GTFS-to-HTML
 
-Many transit agencies use `gtfs-to-html` to generate the schedule pages used on their websites, including:
+Many transit agencies use GTFS-to-HTML to generate the schedule pages used on their websites, including:
 
 | Agency | Location |
 | -------- | --------- |
@@ -36,10 +36,10 @@ Many transit agencies use `gtfs-to-html` to generate the schedule pages used on 
 | [Victor Valley Transit](https://vvta.org) | Victory Valley, California |
 | [Worcester Regional Transit Authority](https://therta.com) | Worcester, Massachusetts |
 
-Are you using `gtfs-to-html`? Let us know via email (brendan@blinktag.com) or via opening a github issue or pull request if your agency is using this library.
+Are you using GTFS-to-HTML? Let us know via email (brendan@blinktag.com) and we'll add you to this list.
 
 ## Projects using GTFS-to-HTML
 
-* [`transit-custom-posts`](https://trilliumtransit.github.io/transit-custom-posts/) - a GTFS-optimized Wordpress plugin for transit websites. `gtfs-to-html` is used for generating the schedule pages.
+* [`transit-custom-posts`](https://trilliumtransit.github.io/transit-custom-posts/) - a GTFS-optimized Wordpress plugin for transit websites. GTFS-to-HTML is used for generating the schedule pages.
 
-*  [run.gtfstohtml.com](https://run.gtfstohtml.com) provides a web based interface using GTFS-to-HTML. Find GTFS feeds for agenices, set configuration and generate a previewable and downloadable set of timetables all using your browser. Use `gtfs-to-html` without actually downloading any code or doing any configuration!
+*  [run.gtfstohtml.com](https://run.gtfstohtml.com) provides a web based interface using GTFS-to-HTML. Find GTFS feeds for agenices, set configuration and generate a previewable and downloadable set of timetables all using your browser. Use GTFS-to-HTML without actually downloading any code or doing any configuration!

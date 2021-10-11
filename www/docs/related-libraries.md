@@ -21,8 +21,15 @@ title: Related Libraries
 
 [`https://github.com/blinktaginc/gtfs-to-chart`](https://github.com/blinktaginc/gtfs-to-chart)
 
-## `Transit Arrivals Widget `
+## Transit Arrivals Widget
 
-[`gtfs-to-chart`](https://github.com/BlinkTagInc/transit-arrivals-widget) generates a user-friendly transit realtime arrival widget in HTML format directly from GTFS and GTFS-RT transit data. Most transit agencies have schedule data in GTFS format and many publish realtime arrivals using GTFS-RT. This project generates HTML, JS and CSS for use on a transit agency website to allow users to see when the next vehicle is arriving at a specific stop and includes features like caching, auto-refresh, url parameters and custom templates.
+The [Transit Arrivals Widget](https://github.com/BlinkTagInc/transit-arrivals-widget) generates a user-friendly transit realtime arrival widget in HTML format directly from GTFS and GTFS-RT transit data. Most transit agencies have schedule data in GTFS format and many publish realtime arrivals using GTFS-RT. This project generates HTML, JS and CSS for use on a transit agency website to allow users to see when the next vehicle is arriving at a specific stop and includes features like caching, auto-refresh, url parameters and custom templates.
 
 [`https://github.com/BlinkTagInc/transit-arrivals-widget`](https://github.com/BlinkTagInc/transit-arrivals-widget)
+
+## GTFS Text-to-Speech Tester
+
+The [GTFS Text-to-Speech Tester](https://github.com/BlinkTagInc/node-gtfs-tts) is a command-line tool that will read all GTFS stop names using Text-to-Speech and allow flagging which names need Text-to-Speech values for tts_stop_name in stops.txt. Using this tool is the quickest way to determine which stops need phoenetic spellings, abbreviations written out, large digits written as words, ordinals written out or other changes so that they can be read.
+
+[`https://github.com/BlinkTagInc/node-gtfs-tts`](https://github.com/BlinkTagInc/node-gtfs-tts)
+
