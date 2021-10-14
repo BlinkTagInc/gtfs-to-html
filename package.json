@@ -63,5 +63,15 @@
   },
   "engines": {
     "node": ">= 12.14.0"
+  },
+  "release-it": {
+    "github": {
+      "release": true
+    },
+    "plugins": {
+      "@release-it/keep-a-changelog": {
+        "filename": "CHANGELOG.md"
+      }
+    }
   }
 }

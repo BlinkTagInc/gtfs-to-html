@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- Added release-it info to package.json
+
+## [2.2.0] - 2021-10-14
+- Dependency updates (9adae81)
+- Support for showStoptimesForRequestStops config variable (5790d9d)
+- Documentation updates (6ba6b13)
+
 ## [2.1.9] - 2021-10-11
 ### Fixed
 - Better warning if directory is not writable
