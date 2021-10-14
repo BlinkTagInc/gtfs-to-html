@@ -39,6 +39,7 @@
   "showRouteTitle": true,
   "showStopCity": false,
   "showStopDescription": false,
+  "showStoptimesForRequestStops": true,
   "skipImport": false,
   "sortingAlgorithm": "common",
   "templatePath": "views/default",

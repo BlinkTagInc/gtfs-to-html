@@ -1,5 +1,6 @@
 td.stop-time(class=`${stoptime.classes.join(' ')}`)
-  span.stop-time-text!= stoptime.formatted_time
+  if config.showStoptimesForRequestStops || (!stoptime.requestDropoff && !stoptime.requestPickup)
+    span.stop-time-text!= stoptime.formatted_time
   if stoptime.skipped && timetable.noServiceSymbol !== null
     a(href=`#note-${timetable.timetable_id}-no-service`).symbol= timetable.noServiceSymbol
   if stoptime.interpolated && timetable.interpolatedStopSymbol !== null

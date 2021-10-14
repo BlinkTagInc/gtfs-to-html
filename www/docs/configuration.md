@@ -51,6 +51,7 @@ All files starting with `config*.json` are .gitignored - so you can create multi
 | [`showRouteTitle`](#showroutetitle) | boolean | Whether or not to show the route title at the top of the timetable page. |
 | [`showStopCity`](#showstopcity) | boolean | Whether or not to show each stop's city. |
 | [`showStopDescription`](#showstopdescription) | boolean | Whether or not to show a stop description. |
+| [`showStoptimesForRequestStops`](#showstoptimesforrequeststops) | boolean | Whether or not to show times for stops that require a request for pickup or dropoff. |
 | [`skipImport`](#skipimport) | boolean | Whether or not to skip importing GTFS data into SQLite. |
 | [`sortingAlgorithm`](#sortingalgorithm) | string | Defines the trip-sorting algorithm. |
 | [`sqlitePath`](#sqlitepath) | string | A path to an SQLite database. Optional, defaults to using an in-memory database. |
@@ -451,6 +452,14 @@ If you'd rather just get all stops and route info as geoJSON, see [gtfs-to-geojs
 
 ```
     "showStopDescription": false
+```
+
+### showStoptimesForRequestStops
+
+{Boolean} Whether or not to show times for stops that require a request for pickup or dropoff. Some agencies prefer to hide the actual stoptimes from stops that require a quest and instead just show the request pickup or dropoff symbols. See [`requestDropoffSymbol`](#requestdropoffsymbol) and [`requestPickupSymbol`](#requestpickupsymbol) for how to customize appearance. Defaults to `true`.
+
+```
+    "showStoptimesForRequestStops": true
 ```
 
 ### skipImport
