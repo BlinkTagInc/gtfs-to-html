@@ -58,7 +58,7 @@
     "yargs": "^17.2.1"
   },
   "devDependencies": {
-    "eslint": "^8.0.0",
+    "eslint": "^8.0.1",
     "eslint-config-xo": "^0.39.0"
   },
   "engines": {
