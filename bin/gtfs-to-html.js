@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 import yargs from 'yargs';
-/* eslint-disable-next-line node/file-extension-in-import */
 import { hideBin } from 'yargs/helpers';
 
 import { getConfig } from '../lib/file-utils.js';
@@ -15,22 +14,22 @@ const { argv } = yargs(hideBin(process.argv))
     alias: 'configPath',
     describe: 'Path to config file',
     default: './config.json',
-    type: 'string'
+    type: 'string',
   })
   .option('s', {
     alias: 'skipImport',
     describe: 'Don’t import GTFS file.',
-    type: 'boolean'
+    type: 'boolean',
   })
   .default('skipImport', undefined)
   .option('t', {
     alias: 'showOnlyTimepoint',
     describe: 'Show only stops with a `timepoint` value in `stops.txt`',
-    type: 'boolean'
+    type: 'boolean',
   })
   .default('showOnlyTimepoint', undefined);
 
-const handleError = error => {
+const handleError = (error) => {
   const text = error || 'Unknown Error';
   process.stdout.write(`\n${formatError(text)}\n`);
   console.error(error);
@@ -43,5 +42,4 @@ const setupImport = async () => {
   process.exit();
 };
 
-setupImport()
-  .catch(handleError);
+setupImport().catch(handleError);

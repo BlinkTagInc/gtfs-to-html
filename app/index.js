@@ -9,20 +9,26 @@ import express from 'express';
 import logger from 'morgan';
 
 import { formatTimetableLabel } from '../lib/formatters.js';
-import { setDefaultConfig, getTimetablePagesForAgency, getFormattedTimetablePage, generateOverviewHTML, generateHTML } from '../lib/utils.js';
+import {
+  setDefaultConfig,
+  getTimetablePagesForAgency,
+  getFormattedTimetablePage,
+  generateOverviewHTML,
+  generateHTML,
+} from '../lib/utils.js';
 
-const { argv } = yargs(process.argv)
-  .option('c', {
-    alias: 'configPath',
-    describe: 'Path to config file',
-    default: './config.json',
-    type: 'string'
-  });
+const { argv } = yargs(process.argv).option('c', {
+  alias: 'configPath',
+  describe: 'Path to config file',
+  default: './config.json',
+  type: 'string',
+});
 
 const app = express();
 const router = new express.Router();
 
-const configPath = argv.configPath || new URL('../config.json', import.meta.url);
+const configPath =
+  argv.configPath || new URL('../config.json', import.meta.url);
 const selectedConfig = JSON.parse(readFileSync(configPath));
 
 const config = setDefaultConfig(selectedConfig);
@@ -33,9 +39,11 @@ config.log = console.log;
 config.logWarning = console.warn;
 config.logError = console.error;
 
-openDb(config).catch(error => {
+openDb(config).catch((error) => {
   if (error instanceof Error && error.code === 'SQLITE_CANTOPEN') {
-    config.logError(`Unable to open sqlite database "${config.sqlitePath}" defined as \`sqlitePath\` config.json. Ensure the parent directory exists or remove \`sqlitePath\` from config.json.`);
+    config.logError(
+      `Unable to open sqlite database "${config.sqlitePath}" defined as \`sqlitePath\` config.json. Ensure the parent directory exists or remove \`sqlitePath\` from config.json.`
+    );
   }
 
   throw error;
@@ -47,14 +55,25 @@ openDb(config).catch(error => {
 router.get('/', async (request, response, next) => {
   try {
     const timetablePages = [];
-    const timetablePageIds = map(await getTimetablePagesForAgency(config), 'timetable_page_id');
+    const timetablePageIds = map(
+      await getTimetablePagesForAgency(config),
+      'timetable_page_id'
+    );
 
     for (const timetablePageId of timetablePageIds) {
       // eslint-disable-next-line no-await-in-loop
-      const timetablePage = await getFormattedTimetablePage(timetablePageId, config);
+      const timetablePage = await getFormattedTimetablePage(
+        timetablePageId,
+        config
+      );
 
-      if (!timetablePage.consolidatedTimetables || timetablePage.consolidatedTimetables.length === 0) {
-        console.error(`No timetables found for timetable_page_id=${timetablePage.timetable_page_id}`);
+      if (
+        !timetablePage.consolidatedTimetables ||
+        timetablePage.consolidatedTimetables.length === 0
+      ) {
+        console.error(
+          `No timetables found for timetable_page_id=${timetablePage.timetable_page_id}`
+        );
       }
 
       timetablePage.relativePath = `/timetables/${timetablePage.timetable_page_id}`;
@@ -76,16 +95,17 @@ router.get('/', async (request, response, next) => {
  * Show a specific timetable page
  */
 router.get('/timetables/:timetablePageId', async (request, response, next) => {
-  const {
-    timetablePageId
-  } = request.params;
+  const { timetablePageId } = request.params;
 
   if (!timetablePageId) {
     return next(new Error('No timetablePageId provided'));
   }
 
   try {
-    const timetablePage = await getFormattedTimetablePage(timetablePageId, config);
+    const timetablePage = await getFormattedTimetablePage(
+      timetablePageId,
+      config
+    );
 
     const results = await generateHTML(timetablePage, config);
     response.send(results.html);
@@ -98,7 +118,9 @@ app.set('views', path.join(fileURLToPath(import.meta.url), '../../views'));
 app.set('view engine', 'pug');
 
 app.use(logger('dev'));
-app.use(express.static(path.join(fileURLToPath(import.meta.url), '../../public')));
+app.use(
+  express.static(path.join(fileURLToPath(import.meta.url), '../../public'))
+);
 
 app.use('/', router);
 app.set('port', process.env.PORT || 3000);

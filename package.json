@@ -59,7 +59,11 @@
   },
   "devDependencies": {
     "eslint": "^8.0.1",
-    "eslint-config-xo": "^0.39.0"
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-config-xo": "^0.39.0",
+    "husky": "^7.0.2",
+    "prettier": "^2.4.1",
+    "pretty-quick": "^3.1.1"
   },
   "engines": {
     "node": ">= 12.14.0"
@@ -73,5 +77,8 @@
         "filename": "CHANGELOG.md"
       }
     }
+  },
+  "prettier": {
+    "singleQuote": true
   }
 }
