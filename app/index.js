@@ -107,8 +107,8 @@ router.get('/timetables/:timetablePageId', async (request, response, next) => {
       config
     );
 
-    const results = await generateHTML(timetablePage, config);
-    response.send(results.html);
+    const html = await generateHTML(timetablePage, config);
+    response.send(html);
   } catch (error) {
     next(error);
   }
