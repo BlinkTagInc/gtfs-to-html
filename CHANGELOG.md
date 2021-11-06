@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Updated
 
 - Update route color swatch styles to support longer names
+- Dependency updates
 
 ## [2.2.1] - 2021-10-17
 

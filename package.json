@@ -48,9 +48,9 @@
     "lodash-es": "^4.17.21",
     "moment": "^2.29.1",
     "morgan": "^1.10.0",
-    "pretty-error": "^3.0.4",
+    "pretty-error": "^4.0.0",
     "pug": "^3.0.2",
-    "puppeteer": "^10.4.0",
+    "puppeteer": "^11.0.0",
     "sanitize-filename": "^1.6.3",
     "sqlstring": "^2.3.2",
     "timer-machine": "^1.1.0",
@@ -59,10 +59,10 @@
     "yargs": "^17.2.1"
   },
   "devDependencies": {
-    "eslint": "^8.0.1",
+    "eslint": "^8.2.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-config-xo": "^0.39.0",
-    "husky": "^7.0.2",
+    "husky": "^7.0.4",
     "prettier": "^2.4.1",
     "pretty-quick": "^3.1.1"
   },
