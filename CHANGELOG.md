@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Support for exporting timetables in CSV format
+
 ### Updated
 
 - Update route color swatch styles to support longer names

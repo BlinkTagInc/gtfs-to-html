@@ -14,7 +14,7 @@ import {
   getTimetablePagesForAgency,
   getFormattedTimetablePage,
   generateOverviewHTML,
-  generateHTML,
+  generateTimetableHTML,
 } from '../lib/utils.js';
 
 const { argv } = yargs(process.argv).option('c', {
@@ -107,7 +107,7 @@ router.get('/timetables/:timetablePageId', async (request, response, next) => {
       config
     );
 
-    const html = await generateHTML(timetablePage, config);
+    const html = await generateTimetableHTML(timetablePage, config);
     response.send(html);
   } catch (error) {
     next(error);

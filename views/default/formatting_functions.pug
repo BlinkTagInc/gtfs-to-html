@@ -11,23 +11,6 @@
     return summary;
   }
 
-  function formatTripName(trip, idx, timetable) {
-    let tripName = '';
-    if (timetable.routes.length > 1) {
-      tripName = trip.route_short_name;
-    } else if (trip.trip_short_name) {
-      tripName += trip.trip_short_name;
-    } else {
-      tripName += `Run #${idx + 1}`;
-    }
-  
-    if (timetableHasDifferentDays(timetable)) {
-      tripName += ` ${trip.dayList}`;
-    }
-  
-    return tripName;
-  }
-
   function formatRouteName(route) {
     const hasLongName = route.route_long_name !== '' && route.route_long_name !== null;
 

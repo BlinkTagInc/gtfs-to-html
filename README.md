@@ -9,7 +9,7 @@
 
 See [gtfstohtml.com](https://gtfstohtml.com) for full documentation.
 
-`gtfs-to-html` creates human-readable, user-friendly transit timetables in HTML and PDF format directly from [GTFS transit data](https://developers.google.com/transit/gtfs/). Most transit agencies have schedule data in GTFS format but need to show each route's schedule to users on a website. This project automates the process of creating nicely formatted HTML timetables for inclusion on a transit agency website. This makes it easy to keep timetables up to date and accurate when schedule changes happen and reduces the likelihood of errors.
+`gtfs-to-html` creates human-readable, user-friendly transit timetables in HTML or PDF format directly from [GTFS transit data](https://developers.google.com/transit/gtfs/). Most transit agencies have schedule data in GTFS format but need to show each route's schedule to users on a website. This project automates the process of creating nicely formatted HTML timetables for inclusion on a transit agency website. This makes it easy to keep timetables up to date and accurate when schedule changes happen and reduces the likelihood of errors.
 
 <img width="1265" src="https://user-images.githubusercontent.com/96217/28296063-aed45568-6b1a-11e7-9794-94b3d915d668.png">
 
@@ -17,7 +17,7 @@ See [gtfstohtml.com](https://gtfstohtml.com) for full documentation.
 
 ### Configurable and customizable
 
-`gtfs-to-html` has many options that configure how timetables are presented. It also allows using a completely custom template which makes it easy to build chunks of HTML that will fit perfectly into any website using any HTML structure and classes that you'd like. Or, create printable PDF versions of timetables using the `outputFormat` config option.
+`gtfs-to-html` has many options that configure how timetables are presented. It also allows using a completely custom template which makes it easy to build chunks of HTML that will fit perfectly into any website using any HTML structure and classes that you'd like. Or, create printable PDF versions or CSV exports of timetables using the `outputFormat` config option.
 
 ### Accessibility for all
 

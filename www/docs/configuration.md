@@ -3,7 +3,7 @@ id: configuration
 title: Configuration Options
 ---
 
-GTFS-to-HTML reads its configuration from a JSON file. To get started, copy `config-sample.json` to `config.json` and then add your project's configuration to `config.json`. 
+GTFS-to-HTML reads its configuration from a JSON file. To get started, copy `config-sample.json` to `config.json` and then add your project's configuration to `config.json`.
 
     cp config-sample.json config.json
 
@@ -13,53 +13,53 @@ Ensure that your config.json is [valid JSON](https://jsonformatter.curiousconcep
 All files starting with `config*.json` are .gitignored - so you can create multiple configuration files such as `config-caltrain.json`.
 :::
 
-| option | type | description |
-| ------ | ---- | ----------- |
-| [`agencies`](#agencies) | array | An array of GTFS files to be imported. |
-| [`allowEmptyTimetables`](#allowemptytimetables) | boolean | Whether or not to generate timetables that have no trips. |
-| [`beautify`](#beautify) | boolean | Whether or not to beautify the HTML output. |
-| [`coordinatePrecision`](#coordinateprecision) | integer | Number of decimal places to include in geoJSON map output. |
-| [`dateFormat`](#dateformat) | string | A string defining date format in moment.js style. |
-| [`dayShortStrings`](#dayshortstrings) | array of strings | An array defining contractions of weekdays names from Monday to Sunday. |
-| [`dayStrings`](#daystrings) | array of strings | An array defining weekdays names from Monday to Sunday. |
-| [`debug`](#debug) | boolean | Enable logging of SQL queries and other info. |
-| [`defaultOrientation`](#defaultorientation) | string | Specify timetable orientation, when not specified in `timetables.txt`. |
-| [`effectiveDate`](#effectivedate) | string | A date to print at the top of the timetable. |
-| [`interpolatedStopSymbol`](#interpolatedstopsymbol) | string | The symbol used to indicate that a timepoint isn't fixed, but just interpolated. |
-| [`interpolatedStopText`](#interpolatedstoptext) | string | The text used to describe a timepoint isn't fixed, but just interpolated. |
-| [`linkStopUrls`](#linkStopurls) | boolean | Whether or not to hyperlink timetable stop names to the `stop_url` defined in `stops.txt`. |
-| [`logFunction`](#logfunction) | function | A custom logging function for handling output of logs. |
-| [`mapboxAccessToken`](#mapboxaccesstoken) | string | The Mapbox access token for generating a map of the route. |
-| [`menuType`](#menutype) | string | The type of menu to use for selecting timetables on a timetable page. |
-| [`noDropoffSymbol`](#nodropoffsymbol) | string | The symbol used to indicate ta stop where no drop off is available. |
-| [`noDropoffText`](#nodropofftext) | string | The text used to describe a stop where no drop off is available. |
-| [`noHead`](#nohead) | boolean | Whether or not to skip the header and footer of the HTML document. |
-| [`noServiceSymbol`](#noservicesymbol) | string | The symbol used when a specific trip does not serve a specified stop. |
-| [`noServiceText`](#noservicetext) | string | The text used to describe a stop which is not served by a specific trip. |
-| [`outputFormat`](#outputformat) | string | The file format of the timetables generated. Either `html` or `pdf`. |
-| [`noPickupSymbol`](#nopickupsymbol) | string | The symbol used to indicate a stop where no pickup is available. |
-| [`noPickupText`](#nopickuptext) | string | The text used to describe a stop where no pickup is available. |
-| [`requestDropoffSymbol`](#requestdropoffsymbol) | string | The symbol used to indicate a stop where riders must request a drop off. |
-| [`requestDropoffText`](#requestdropofftext) | string | The text used to describe a stop where riders must request a drop off. |
-| [`requestPickupSymbol`](#requestpickupsymbol) | string | The symbol used to indicate a stop where riders must request a pickup. |
-| [`requestPickupText`](#requestpickuptext) | string | The text used to describe a stop where riders must request a pickup. |
-| [`serviceNotProvidedOnText`](#servicenotprovidedontext) | string | The text used to label days where service is not provided. |
-| [`serviceProvidedOnText`](#serviceprovidedontext) | string | The text used to label days where service is provided. |
-| [`showArrivalOnDifference`](#showarrivalondifference) | float | Defines a difference between departure and arrival, on which arrival column/row will be shown. |
-| [`showMap`](#showmap) | boolean | Whether or not to show a map of the route on the timetable. |
-| [`showOnlyTimepoint`](#showonlytimepoint) | boolean | Whether or not all stops should be shown, or only stops with a `timepoint` value in `stops.txt`. |
-| [`showRouteTitle`](#showroutetitle) | boolean | Whether or not to show the route title at the top of the timetable page. |
-| [`showStopCity`](#showstopcity) | boolean | Whether or not to show each stop's city. |
-| [`showStopDescription`](#showstopdescription) | boolean | Whether or not to show a stop description. |
-| [`showStoptimesForRequestStops`](#showstoptimesforrequeststops) | boolean | Whether or not to show times for stops that require a request for pickup or dropoff. |
-| [`skipImport`](#skipimport) | boolean | Whether or not to skip importing GTFS data into SQLite. |
-| [`sortingAlgorithm`](#sortingalgorithm) | string | Defines the trip-sorting algorithm. |
-| [`sqlitePath`](#sqlitepath) | string | A path to an SQLite database. Optional, defaults to using an in-memory database. |
-| [`templatePath`](#templatepath) | string | Path to custom pug template for rendering timetable. |
-| [`timeFormat`](#timeformat) | string | A string defining time format in moment.js style. |
-| [`useParentStation`](#useparentstation) | boolean | Whether or not to use a stop's `parent_station`. |
-| [`verbose`](#verbose) | boolean | Whether or not to print output to the console. |
-| [`zipOutput`](#zipoutput) | boolean | Whether or not to zip the output into one zip file. |
+| option                                                          | type             | description                                                                                      |
+| --------------------------------------------------------------- | ---------------- | ------------------------------------------------------------------------------------------------ |
+| [`agencies`](#agencies)                                         | array            | An array of GTFS files to be imported.                                                           |
+| [`allowEmptyTimetables`](#allowemptytimetables)                 | boolean          | Whether or not to generate timetables that have no trips.                                        |
+| [`beautify`](#beautify)                                         | boolean          | Whether or not to beautify the HTML output.                                                      |
+| [`coordinatePrecision`](#coordinateprecision)                   | integer          | Number of decimal places to include in geoJSON map output.                                       |
+| [`dateFormat`](#dateformat)                                     | string           | A string defining date format in moment.js style.                                                |
+| [`dayShortStrings`](#dayshortstrings)                           | array of strings | An array defining contractions of weekdays names from Monday to Sunday.                          |
+| [`dayStrings`](#daystrings)                                     | array of strings | An array defining weekdays names from Monday to Sunday.                                          |
+| [`debug`](#debug)                                               | boolean          | Enable logging of SQL queries and other info.                                                    |
+| [`defaultOrientation`](#defaultorientation)                     | string           | Specify timetable orientation, when not specified in `timetables.txt`.                           |
+| [`effectiveDate`](#effectivedate)                               | string           | A date to print at the top of the timetable.                                                     |
+| [`interpolatedStopSymbol`](#interpolatedstopsymbol)             | string           | The symbol used to indicate that a timepoint isn't fixed, but just interpolated.                 |
+| [`interpolatedStopText`](#interpolatedstoptext)                 | string           | The text used to describe a timepoint isn't fixed, but just interpolated.                        |
+| [`linkStopUrls`](#linkStopurls)                                 | boolean          | Whether or not to hyperlink timetable stop names to the `stop_url` defined in `stops.txt`.       |
+| [`logFunction`](#logfunction)                                   | function         | A custom logging function for handling output of logs.                                           |
+| [`mapboxAccessToken`](#mapboxaccesstoken)                       | string           | The Mapbox access token for generating a map of the route.                                       |
+| [`menuType`](#menutype)                                         | string           | The type of menu to use for selecting timetables on a timetable page.                            |
+| [`noDropoffSymbol`](#nodropoffsymbol)                           | string           | The symbol used to indicate ta stop where no drop off is available.                              |
+| [`noDropoffText`](#nodropofftext)                               | string           | The text used to describe a stop where no drop off is available.                                 |
+| [`noHead`](#nohead)                                             | boolean          | Whether or not to skip the header and footer of the HTML document.                               |
+| [`noServiceSymbol`](#noservicesymbol)                           | string           | The symbol used when a specific trip does not serve a specified stop.                            |
+| [`noServiceText`](#noservicetext)                               | string           | The text used to describe a stop which is not served by a specific trip.                         |
+| [`outputFormat`](#outputformat)                                 | string           | The file format of the timetables generated. Either `html`, `pdf` or `csv`.                      |
+| [`noPickupSymbol`](#nopickupsymbol)                             | string           | The symbol used to indicate a stop where no pickup is available.                                 |
+| [`noPickupText`](#nopickuptext)                                 | string           | The text used to describe a stop where no pickup is available.                                   |
+| [`requestDropoffSymbol`](#requestdropoffsymbol)                 | string           | The symbol used to indicate a stop where riders must request a drop off.                         |
+| [`requestDropoffText`](#requestdropofftext)                     | string           | The text used to describe a stop where riders must request a drop off.                           |
+| [`requestPickupSymbol`](#requestpickupsymbol)                   | string           | The symbol used to indicate a stop where riders must request a pickup.                           |
+| [`requestPickupText`](#requestpickuptext)                       | string           | The text used to describe a stop where riders must request a pickup.                             |
+| [`serviceNotProvidedOnText`](#servicenotprovidedontext)         | string           | The text used to label days where service is not provided.                                       |
+| [`serviceProvidedOnText`](#serviceprovidedontext)               | string           | The text used to label days where service is provided.                                           |
+| [`showArrivalOnDifference`](#showarrivalondifference)           | float            | Defines a difference between departure and arrival, on which arrival column/row will be shown.   |
+| [`showMap`](#showmap)                                           | boolean          | Whether or not to show a map of the route on the timetable.                                      |
+| [`showOnlyTimepoint`](#showonlytimepoint)                       | boolean          | Whether or not all stops should be shown, or only stops with a `timepoint` value in `stops.txt`. |
+| [`showRouteTitle`](#showroutetitle)                             | boolean          | Whether or not to show the route title at the top of the timetable page.                         |
+| [`showStopCity`](#showstopcity)                                 | boolean          | Whether or not to show each stop's city.                                                         |
+| [`showStopDescription`](#showstopdescription)                   | boolean          | Whether or not to show a stop description.                                                       |
+| [`showStoptimesForRequestStops`](#showstoptimesforrequeststops) | boolean          | Whether or not to show times for stops that require a request for pickup or dropoff.             |
+| [`skipImport`](#skipimport)                                     | boolean          | Whether or not to skip importing GTFS data into SQLite.                                          |
+| [`sortingAlgorithm`](#sortingalgorithm)                         | string           | Defines the trip-sorting algorithm.                                                              |
+| [`sqlitePath`](#sqlitepath)                                     | string           | A path to an SQLite database. Optional, defaults to using an in-memory database.                 |
+| [`templatePath`](#templatepath)                                 | string           | Path to custom pug template for rendering timetable.                                             |
+| [`timeFormat`](#timeformat)                                     | string           | A string defining time format in moment.js style.                                                |
+| [`useParentStation`](#useparentstation)                         | boolean          | Whether or not to use a stop's `parent_station`.                                                 |
+| [`verbose`](#verbose)                                           | boolean          | Whether or not to print output to the console.                                                   |
+| [`zipOutput`](#zipoutput)                                       | boolean          | Whether or not to zip the output into one zip file.                                              |
 
 ### agencies
 
@@ -71,7 +71,8 @@ To find an agency's GTFS file, visit [transitfeeds.com](http://transitfeeds.com)
 URL from the agency's website or you can use a URL generated from the transitfeeds.com
 API along with your API token.
 
-* Specify a download URL:
+- Specify a download URL:
+
 ```
 {
   "agencies": [
@@ -83,7 +84,8 @@ API along with your API token.
 }
 ```
 
-* Specify a path to a zipped GTFS file:
+- Specify a path to a zipped GTFS file:
+
 ```
 {
   "agencies": [
@@ -94,7 +96,9 @@ API along with your API token.
   ]
 }
 ```
-* Specify a path to an unzipped GTFS file:
+
+- Specify a path to an unzipped GTFS file:
+
 ```
 {
   "agencies": [
@@ -106,7 +110,7 @@ API along with your API token.
 }
 ```
 
-* Exclude files - if you don't want all GTFS files to be imported, you can specify an array of files to exclude.
+- Exclude files - if you don't want all GTFS files to be imported, you can specify an array of files to exclude.
 
 ```
 {
@@ -123,7 +127,7 @@ API along with your API token.
 }
 ```
 
-* Optionally specify a proj4 projection string to correct poorly formed coordinates in the GTFS file
+- Optionally specify a proj4 projection string to correct poorly formed coordinates in the GTFS file
 
 ```
 {
@@ -137,7 +141,7 @@ API along with your API token.
 }
 ```
 
-* Specify multiple agencies to be imported. Note that it is often better to have one configuration file per agency and call gtfs-to-html multiple times rather than have two different agencies in the same config file. If agencies have conflicting ids for routes, stops, calendars or more, GTFS-to-HTML will fail.
+- Specify multiple agencies to be imported. Note that it is often better to have one configuration file per agency and call gtfs-to-html multiple times rather than have two different agencies in the same config file. If agencies have conflicting ids for routes, stops, calendars or more, GTFS-to-HTML will fail.
 
 ```
 {
@@ -188,7 +192,7 @@ API along with your API token.
 
 ### daysShortStrings
 
-{Array \[String\]} An array of strings defining contractions of weekday names. Specify from Monday to Sunday. 
+{Array \[String\]} An array of strings defining contractions of weekday names. Specify from Monday to Sunday.
 
 ```
     "daysShortStrings": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
@@ -196,7 +200,7 @@ API along with your API token.
 
 ### daysStrings
 
-{Array \[String\]} An array of strings defining contractions of weekday names. Specify from Monday to Sunday. 
+{Array \[String\]} An array of strings defining contractions of weekday names. Specify from Monday to Sunday.
 
 ```
     "daysStrings": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
@@ -252,28 +256,26 @@ API along with your API token.
 
 ### logFunction
 
-{Function} If you want to route logs to a custom function, you can pass a function that takes a single `text` argument as `logFunction`. This can't be used when running GTFS-to-HTML as a command-line utility, only when included as part of a node.js app and passed in a config object to `gtfsToHtml()`.  For example:
+{Function} If you want to route logs to a custom function, you can pass a function that takes a single `text` argument as `logFunction`. This can't be used when running GTFS-to-HTML as a command-line utility, only when included as part of a node.js app and passed in a config object to `gtfsToHtml()`. For example:
 
 ```javascript
-    import gtfsToHtml from 'gtfs-to-html';
+import gtfsToHtml from 'gtfs-to-html';
 
-    const config = {
-      agencies: [
-        {
-          agency_key: 'county-connection',
-          url: 'http://countyconnection.com/GTFS/google_transit.zip',
-          exclude: [
-            'shapes'
-          ]
-        }
-      ],
-      logFunction: function(text) {
-        // Do something with the logs here, like save it or send it somewhere
-        console.log(text);
-      }
-    };
+const config = {
+  agencies: [
+    {
+      agency_key: 'county-connection',
+      url: 'http://countyconnection.com/GTFS/google_transit.zip',
+      exclude: ['shapes'],
+    },
+  ],
+  logFunction: function (text) {
+    // Do something with the logs here, like save it or send it somewhere
+    console.log(text);
+  },
+};
 
-    gtfsToHtml(config);
+gtfsToHtml(config);
 ```
 
 ### mapboxAccessToken
@@ -310,7 +312,7 @@ API along with your API token.
 
 ### noHead
 
-{Boolean} Whether or not to skip the HTML head and footer when generating the HTML. This is useful for creating embeddable HTML without `<html>`, `<head>` or `<body>` tags. Defaults to `false`. Ignored if `outputFormat` is set to `pdf`.
+{Boolean} Whether or not to skip the HTML head and footer when generating the HTML. This is useful for creating embeddable HTML without `<html>`, `<head>` or `<body>` tags. Defaults to `false`. Ignored if `outputFormat` is set to `pdf` or `csv`.
 
 ```
     "noHead": false
@@ -350,7 +352,7 @@ API along with your API token.
 
 ### outputFormat
 
-{String} The file format of the timetables generated. Either `html` or `pdf`. Defaults to `html`.
+{String} The file format of the timetables generated. Either `html`, `pdf` or `csv`. Defaults to `html`.
 
 ```
     "outputFormat": "html"
@@ -474,11 +476,11 @@ If you'd rather just get all stops and route info as geoJSON, see [gtfs-to-geojs
 
 {String} Defines trip-sorting algorithm used to determine the order that trips are shown in timetables.
 
-* `common` finds a common stop used by all trips and sorts by stoptimes at that stop. If there is no common stop for all trips, then `beginning` algorithm is used.
-* `beginning` uses the first stoptime of each trip, which can be from different stops if not all trips have the same first stop. If a multiple trips have identical first stoptimes, the trip with the earlier last stoptimes comes first.
-* `end` uses the last stoptime of each trip, which can be from different stops if not all trips have the same last stop. If a multiple trips have identical last stoptimes, the trip with the earlier first stoptimes comes first.
-* `first` uses the first stop of the longest trip and sorts by stoptimes at that stop.
-* `last` uses the last stop of the longest trip and sorts by stoptimes at that stop.
+- `common` finds a common stop used by all trips and sorts by stoptimes at that stop. If there is no common stop for all trips, then `beginning` algorithm is used.
+- `beginning` uses the first stoptime of each trip, which can be from different stops if not all trips have the same first stop. If a multiple trips have identical first stoptimes, the trip with the earlier last stoptimes comes first.
+- `end` uses the last stoptime of each trip, which can be from different stops if not all trips have the same last stop. If a multiple trips have identical last stoptimes, the trip with the earlier first stoptimes comes first.
+- `first` uses the first stop of the longest trip and sorts by stoptimes at that stop.
+- `last` uses the last stop of the longest trip and sorts by stoptimes at that stop.
 
 The default trip-sorting algorithm is `common`.
 
@@ -488,7 +490,7 @@ The default trip-sorting algorithm is `common`.
 
 ### sqlitePath
 
-{String} A path to an SQLite database. Optional, defaults to using an in-memory database with a value of `:memory:`. If you want the data imported to  persist, you need to specify a value for `sqlitePath`
+{String} A path to an SQLite database. Optional, defaults to using an in-memory database with a value of `:memory:`. If you want the data imported to persist, you need to specify a value for `sqlitePath`
 
 ```
     "sqlitePath": "/tmp/gtfs"
@@ -496,7 +498,7 @@ The default trip-sorting algorithm is `common`.
 
 ### templatePath
 
-{String} Path to a folder containing (pug)[https://pugjs.org/] template for rendering timetables. This is optional. Defaults to using the templates provided in `views/default`. All files within the `/views/custom` folder will be .gitignored, so you can copy the `views/default` folder to `views/custom/myagency` and make any modifications needed. Any custom views folder should contain pug templates called `timetablepage.pug`, `timetablepage_full.pug`,  `overview.pug`, and `overview_full.pug`.
+{String} Path to a folder containing (pug)[https://pugjs.org/] template for rendering timetables. This is optional. Defaults to using the templates provided in `views/default`. All files within the `/views/custom` folder will be .gitignored, so you can copy the `views/default` folder to `views/custom/myagency` and make any modifications needed. Any custom views folder should contain pug templates called `timetablepage.pug`, `timetablepage_full.pug`, `overview.pug`, and `overview_full.pug`.
 
 ```
     "templatePath": "views/custom/my-agency/"
