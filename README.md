@@ -1,15 +1,27 @@
-# GTFS to HTML
+<p align="center">
+  ➡️
+  <a href="https://gtfstohtml.com/docs/">Documentation</a> |
+  <a href="https://gtfstohtml.com/docs/quick-start">Quick Start</a> |
+  <a href="https://gtfstohtml.com/docs/configuration">Configuration</a> |
+  <a href="https://gtfstohtml.com/docs/contact">Questions and Support</a>
+  ⬅️
+  <br /><br />
+  <img src="www/static/img/gtfs-to-html-logo.svg" alt="GTFS-to-HTML" />
+  <br /><br />
+  <a href="https://www.npmjs.com/package/gtfs-to-html" rel="nofollow"><img src="https://img.shields.io/npm/v/gtfs-to-html.svg?style=flat" style="max-width: 100%;"></a>
+  <a href="https://www.npmjs.com/package/gtfs-to-html" rel="nofollow"><img src="https://img.shields.io/npm/dm/gtfs-to-html.svg?style=flat" style="max-width: 100%;"></a>
+  <img src="https://img.shields.io/badge/License-MIT-yellow.svg">
+  <br /><br />
+  Create human-readable, user-friendly transit timetables in HTML, PDF or CSV format directly from GTFS.
+  <br /><br />
+  <a href="https://nodei.co/npm/gtfs-to-html/" rel="nofollow"><img src="https://nodei.co/npm/gtfs-to-html.png?downloads=true" alt="NPM" style="max-width: 100%;"></a>
+</p>
 
-[![NPM version](https://img.shields.io/npm/v/gtfs-to-html.svg?style=flat)](https://www.npmjs.com/package/gtfs-to-html)
-[![David](https://img.shields.io/david/blinktaginc/gtfs-to-html.svg)]()
-[![npm](https://img.shields.io/npm/dm/gtfs-to-html.svg?style=flat)]()
-[![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/sindresorhus/xo)
-
-[![NPM](https://nodei.co/npm/gtfs-to-html.png?downloads=true)](https://nodei.co/npm/gtfs-to-html/)
+<hr>
 
 See [gtfstohtml.com](https://gtfstohtml.com) for full documentation.
 
-`gtfs-to-html` creates human-readable, user-friendly transit timetables in HTML, PDF or CSV format directly from [GTFS transit data](https://developers.google.com/transit/gtfs/). Most transit agencies have schedule data in GTFS format but need to show each route's schedule to users on a website. This project automates the process of creating nicely formatted HTML timetables for inclusion on a transit agency website. This makes it easy to keep timetables up to date and accurate when schedule changes happen and reduces the likelihood of errors.
+Most transit agencies have schedule data in [GTFS ](https://developers.google.com/transit/gtfs/) format but need to show each route's schedule to users on a website. GTFS-to-HTML automates the process of creating nicely formatted HTML timetables for inclusion on a transit agency website. This makes it easy to keep timetables up to date and accurate when schedule changes happen and reduces the likelihood of errors.
 
 <img width="1265" src="https://user-images.githubusercontent.com/96217/28296063-aed45568-6b1a-11e7-9794-94b3d915d668.png">
 
