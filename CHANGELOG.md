@@ -120,7 +120,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix for showRouteTitle config
 
-## [Unreleased]
+## [2.3.1] - 2021-11-26
 
 ### Added
 
