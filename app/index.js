@@ -87,6 +87,7 @@ router.get('/', async (request, response, next) => {
     const html = await generateOverviewHTML(timetablePages, config);
     response.send(html);
   } catch (error) {
+    console.error(error);
     next(error);
   }
 });

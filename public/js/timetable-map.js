@@ -24,8 +24,8 @@ function formatRoute(route) {
   return html.prop('outerHTML');
 }
 
-function formatStopPopup(feature) {
-  const routes = JSON.parse(feature.properties.routes);
+function formatStopPopup(feature, routes) {
+  const routeIds = JSON.parse(feature.properties.routes);
   const html = $('<div>');
 
   $('<div>')
@@ -41,7 +41,7 @@ function formatStopPopup(feature) {
 
   $('<div>').text('Routes Served:').appendTo(html);
 
-  $(html).append(routes.map((route) => formatRoute(route)));
+  $(html).append(routeIds.map((routeId) => formatRoute(routes[routeId])));
 
   return html.prop('outerHTML');
 }
@@ -61,7 +61,7 @@ function getBounds(geojson) {
   return bounds;
 }
 
-function createMap(id, geojson) {
+function createMap(id, geojson, routes) {
   const defaultRouteColor = '#FF4728';
 
   if (!geojson || geojson.features.length === 0) {
@@ -228,7 +228,7 @@ function createMap(id, geojson) {
 
       new mapboxgl.Popup()
         .setLngLat(feature.geometry.coordinates)
-        .setHTML(formatStopPopup(feature))
+        .setHTML(formatStopPopup(feature, routes))
         .addTo(map);
     });
 

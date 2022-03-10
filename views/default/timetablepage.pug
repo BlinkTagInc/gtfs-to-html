@@ -24,13 +24,10 @@ include formatting_functions.pug
 
         if config.showMap
           .map(id=`map_timetable_id_${formatHtmlId(timetable.timetable_id)}`)
-          
-          //- Use #{variable} format to inject values from pug to client side js
           script.
             (function() {
-              const id = 'timetable_id_#{formatHtmlId(timetable.timetable_id)}';
-              const geojson = !{JSON.stringify(timetable.geojson)};
-              createMap(id, geojson);
+              const { id, geojson, routes } = !{JSON.stringify(prepareMapData(timetable))};
+              createMap(id, geojson, routes);
             })();
 
         if timetable.orientation === 'horizontal'
