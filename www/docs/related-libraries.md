@@ -33,3 +33,8 @@ The [GTFS Text-to-Speech Tester](https://github.com/BlinkTagInc/node-gtfs-tts) i
 
 [`https://github.com/BlinkTagInc/node-gtfs-tts`](https://github.com/BlinkTagInc/node-gtfs-tts)
 
+## `node-gtfs-realtime`
+
+[GTFS-realtime](https://developers.google.com/transit/gtfs-realtime) transit data is in [protobuf format](https://developers.google.com/protocol-buffers) which means its not human-readable by default. `node-GTFS-Realtime` aims to make it fast and easy to inspect GTFS-realtime data by providing a one-line command for downloading [GTFS-realtime format](https://developers.google.com/transit/gtfs-realtime) data and converting to JSON. Try it by running `npx gtfs-realtime http://api.bart.gov/gtfsrt/tripupdate.aspx` in your terminal.
+
+[`https://github.com/BlinkTagInc/node-gtfs-realtime`](https://github.com/BlinkTagInc/node-gtfs-realtime)
