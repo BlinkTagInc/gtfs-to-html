@@ -92,6 +92,9 @@ function createMap(id, geojson, routes) {
       duration: 0,
     });
 
+    // Turn of Points of Interest labels
+    map.setLayoutProperty('poi-label', 'visibility', 'none');
+
     // Find the index of the first symbol layer in the map style
     let firstSymbolId;
     for (const layer of map.getStyle().layers) {
