@@ -145,6 +145,27 @@ function createSystemMap(id, geojson) {
       );
     }
 
+    // Add labels
+    map.addLayer({
+      id: 'route-labels',
+      type: 'symbol',
+      source: {
+        type: 'geojson',
+        data: geojson,
+      },
+      layout: {
+        'symbol-placement': 'line',
+        'text-field': ['get', 'route_short_name'],
+        'text-size': 14,
+      },
+      paint: {
+        'text-color': '#000000',
+        'text-halo-width': 2,
+        'text-halo-color': '#ffffff',
+      },
+      filter: ['has', 'route_short_name'],
+    });
+
     map.on('mousemove', (event) => {
       const features = map.queryRenderedFeatures(event.point, {
         layers: [...routeLayerIds, ...routeBackgroundLayerIds],
