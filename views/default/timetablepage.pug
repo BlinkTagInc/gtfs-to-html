@@ -14,7 +14,7 @@ include formatting_functions.pug
     include timetable_menu.pug
 
     each timetable in timetablePage.consolidatedTimetables
-      .timetable.mb-5(id=`timetable_id_${formatHtmlId(timetable.timetable_id)}` data-day-list=timetable.dayList data-direction-name=timetable.direction_name data-timetable-id=timetable.timetable_id data-direction-id=timetable.direction_id data-route-id=timetable.route_ids.join('_'))
+      .timetable.mb-10(id=`timetable_id_${formatHtmlId(timetable.timetable_id)}` data-day-list=timetable.dayList data-direction-name=timetable.direction_name data-timetable-id=timetable.timetable_id data-direction-id=timetable.direction_id data-route-id=timetable.route_ids.join('_'))
         if config.showRouteTitle
           h2.text-xl= `${timetable.timetable_label} | ${timetable.dayListLong}`
             each note in getNotesForTimetableLabel(timetable.notes)

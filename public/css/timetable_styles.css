@@ -70,7 +70,7 @@ a:hover {
 
 .timetable .table-container {
   overflow-x: scroll;
-  margin-bottom: 1rem;
+  margin: 20px 0;
 }
 
 .timetable .table-container .table {
