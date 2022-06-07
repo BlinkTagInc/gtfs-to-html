@@ -63,6 +63,10 @@ function getBounds(geojson) {
 
 function createMap(id, geojson, routes) {
   const defaultRouteColor = '#FF4728';
+  const lineLayout = {
+    'line-join': 'round',
+    'line-cap': 'round',
+  };
 
   if (!geojson || geojson.features.length === 0) {
     $('#map_' + id).hide();
@@ -104,7 +108,34 @@ function createMap(id, geojson, routes) {
       }
     }
 
-    // Add route line outline first
+    // Add route drop shadow outline first
+    map.addLayer(
+      {
+        id: 'route-line-shadow',
+        type: 'line',
+        source: {
+          type: 'geojson',
+          data: geojson,
+        },
+        paint: {
+          'line-color': '#000000',
+          'line-opacity': 0.3,
+          'line-width': {
+            base: 16,
+            stops: [
+              [14, 24],
+              [18, 40],
+            ],
+          },
+          'line-blur': 16,
+        },
+        layout: lineLayout,
+        filter: ['!has', 'stop_id'],
+      },
+      firstSymbolId
+    );
+
+    // Add route line outline
     map.addLayer(
       {
         id: 'route-line-outline',
@@ -116,17 +147,21 @@ function createMap(id, geojson, routes) {
         paint: {
           'line-color': '#FFFFFF',
           'line-opacity': 1,
-          'line-width': 6,
+          'line-width': {
+            base: 8,
+            stops: [
+              [14, 12],
+              [18, 32],
+            ],
+          },
         },
-        layout: {
-          'line-join': 'round',
-          'line-cap': 'round',
-        },
+        layout: lineLayout,
         filter: ['!has', 'stop_id'],
       },
       firstSymbolId
     );
 
+    // Add route line
     map.addLayer(
       {
         id: 'route-line',
@@ -138,17 +173,21 @@ function createMap(id, geojson, routes) {
         paint: {
           'line-color': ['to-color', ['get', 'route_color'], defaultRouteColor],
           'line-opacity': 1,
-          'line-width': 2,
+          'line-width': {
+            base: 4,
+            stops: [
+              [14, 6],
+              [18, 16],
+            ],
+          },
         },
-        layout: {
-          'line-join': 'round',
-          'line-cap': 'round',
-        },
+        layout: lineLayout,
         filter: ['!has', 'stop_id'],
       },
       firstSymbolId
     );
 
+    // Add stops
     map.addLayer(
       {
         id: 'stops',
@@ -158,22 +197,23 @@ function createMap(id, geojson, routes) {
           data: geojson,
         },
         paint: {
+          'circle-color': '#fff',
           'circle-radius': {
+            base: 1.75,
             stops: [
-              [9, 2],
-              [13, 4],
-              [15, 6],
+              [12, 4],
+              [22, 100],
             ],
           },
-          'circle-stroke-width': 1,
-          'circle-stroke-color': '#363636',
-          'circle-color': '#363636',
+          'circle-stroke-color': '#3f4a5c',
+          'circle-stroke-width': 2,
         },
         filter: ['has', 'stop_id'],
       },
       firstSymbolId
     );
 
+    // Layer for highlighted stops
     map.addLayer(
       {
         id: 'stops-highlighted',
@@ -183,16 +223,16 @@ function createMap(id, geojson, routes) {
           data: geojson,
         },
         paint: {
+          'circle-color': '#fff',
           'circle-radius': {
+            base: 1.75,
             stops: [
-              [9, 3],
-              [13, 4],
-              [15, 7],
+              [12, 5],
+              [22, 125],
             ],
           },
           'circle-stroke-width': 2,
-          'circle-stroke-color': '#666666',
-          'circle-color': '#888888',
+          'circle-stroke-color': '#3f4a5c',
         },
         filter: ['==', 'stop_id', ''],
       },
@@ -219,7 +259,7 @@ function createMap(id, geojson, routes) {
         [event.point.x + 5, event.point.y + 5],
       ];
       const features = map.queryRenderedFeatures(bbox, {
-        layers: ['stops'],
+        layers: ['stops-highlighted', 'stops'],
       });
 
       if (!features || features.length === 0) {
@@ -237,14 +277,10 @@ function createMap(id, geojson, routes) {
 
     function highlightStop(stopId) {
       map.setFilter('stops-highlighted', ['==', 'stop_id', stopId]);
-      map.setPaintProperty('stops', 'circle-opacity', 0.5);
-      map.setPaintProperty('stops', 'circle-stroke-opacity', 0.5);
     }
 
     function unHighlightStop() {
       map.setFilter('stops-highlighted', ['==', 'stop_id', '']);
-      map.setPaintProperty('stops', 'circle-opacity', 1);
-      map.setPaintProperty('stops', 'circle-stroke-opacity', 1);
     }
 
     // On table hover, highlight stop on map

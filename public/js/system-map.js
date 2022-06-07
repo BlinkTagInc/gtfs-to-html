@@ -75,8 +75,10 @@ function getBounds(geojson) {
 
 function createSystemMap(id, geojson) {
   const defaultRouteColor = '#FF4728';
-  const routeLayerIds = [];
-  const routeBackgroundLayerIds = [];
+  const lineLayout = {
+    'line-join': 'round',
+    'line-cap': 'round',
+  };
 
   if (!geojson || geojson.features.length === 0) {
     $('#' + id).hide();
@@ -117,58 +119,110 @@ function createSystemMap(id, geojson) {
       }
     }
 
-    // Add white outlines to routes first
-    for (const routeId of Object.keys(routes)) {
-      routeBackgroundLayerIds.push(`${routeId}outline`);
-      map.addLayer(
-        {
-          id: `${routeId}outline`,
-          type: 'line',
-          source: {
-            type: 'geojson',
-            data: geojson,
-          },
-          paint: {
-            'line-color': '#FFFFFF',
-            'line-opacity': 1,
-            'line-width': 16,
-          },
-          layout: {
-            'line-join': 'round',
-            'line-cap': 'round',
-          },
-          filter: ['==', 'route_id', routeId],
+    // Add route drop shadow outline first
+    map.addLayer(
+      {
+        id: 'route-line-shadows',
+        type: 'line',
+        source: {
+          type: 'geojson',
+          data: geojson,
         },
-        firstSymbolId
-      );
-    }
+        paint: {
+          'line-color': '#000000',
+          'line-opacity': 0.3,
+          'line-width': {
+            base: 16,
+            stops: [
+              [14, 24],
+              [18, 40],
+            ],
+          },
+          'line-blur': 16,
+        },
+        layout: lineLayout,
+        filter: ['!has', 'stop_id'],
+      },
+      firstSymbolId
+    );
+
+    // Add white outlines to routes next
+    map.addLayer(
+      {
+        id: `route-outlines`,
+        type: 'line',
+        source: {
+          type: 'geojson',
+          data: geojson,
+        },
+        paint: {
+          'line-color': '#FFFFFF',
+          'line-opacity': 1,
+          'line-width': {
+            base: 8,
+            stops: [
+              [14, 12],
+              [18, 32],
+            ],
+          },
+        },
+        layout: lineLayout,
+        filter: ['has', 'route_id'],
+      },
+      firstSymbolId
+    );
 
     // Add route lines next
-    for (const routeId of Object.keys(routes)) {
-      routeLayerIds.push(routeId);
-      const routeColor = routes[routeId].route_color || defaultRouteColor;
-      map.addLayer(
-        {
-          id: routeId,
-          type: 'line',
-          source: {
-            type: 'geojson',
-            data: geojson,
-          },
-          paint: {
-            'line-color': routeColor,
-            'line-opacity': 1,
-            'line-width': 6,
-          },
-          layout: {
-            'line-join': 'round',
-            'line-cap': 'round',
-          },
-          filter: ['==', 'route_id', routeId],
+    map.addLayer(
+      {
+        id: 'routes',
+        type: 'line',
+        source: {
+          type: 'geojson',
+          data: geojson,
         },
-        firstSymbolId
-      );
-    }
+        paint: {
+          'line-color': ['coalesce', ['get', 'route_color'], defaultRouteColor],
+          'line-opacity': 1,
+          'line-width': {
+            base: 4,
+            stops: [
+              [14, 6],
+              [18, 16],
+            ],
+          },
+        },
+        layout: lineLayout,
+        filter: ['has', 'route_id'],
+      },
+      firstSymbolId
+    );
+
+    // Add highlighted route lines next
+    map.addLayer(
+      {
+        id: 'highlighted-routes',
+        type: 'line',
+        source: {
+          type: 'geojson',
+          data: geojson,
+        },
+        paint: {
+          'line-color': ['coalesce', ['get', 'route_color'], defaultRouteColor],
+          'line-opacity': 1,
+          'line-width': {
+            base: 6,
+            stops: [
+              [14, 8],
+              [18, 20],
+            ],
+          },
+        },
+        layout: lineLayout,
+        filter: ['==', ['get', 'route_id'], 'none'],
+      },
+      firstSymbolId
+    );
 
     // Add stops when zoomed in
     map.addLayer(
@@ -281,17 +335,14 @@ function createSystemMap(id, geojson) {
 
     map.on('mousemove', (event) => {
       const features = map.queryRenderedFeatures(event.point, {
-        layers: [
-          ...routeLayerIds,
-          ...routeBackgroundLayerIds,
-          'stops-highlighted',
-          'stops',
-        ],
+        layers: ['routes', 'route-outlines', 'stops-highlighted', 'stops'],
       });
       if (features.length > 0) {
         map.getCanvas().style.cursor = 'pointer';
         highlightRoutes(
-          _.uniq(features.map((feature) => feature.properties.route_id))
+          _.compact(
+            _.uniq(features.map((feature) => feature.properties.route_id))
+          )
         );
 
         if (features.some((feature) => feature.layer.id === 'stops')) {
@@ -328,7 +379,7 @@ function createSystemMap(id, geojson) {
           .addTo(map);
       } else {
         const routeFeatures = map.queryRenderedFeatures(bbox, {
-          layers: routeLayerIds,
+          layers: ['routes', 'route-outlines'],
         });
 
         if (routeFeatures && routeFeatures.length > 0) {
@@ -358,26 +409,17 @@ function createSystemMap(id, geojson) {
     }
 
     function highlightRoutes(routeIds, zoom) {
-      for (const layerId of routeBackgroundLayerIds) {
-        const color = routeIds.includes(layerId.replace(/outline/, ''))
-          ? '#FFFD7E'
-          : '#FFFFFF';
-        const width = routeIds.includes(layerId.replace(/outline/, ''))
-          ? 12
-          : 6;
-        map.setPaintProperty(layerId, 'line-color', color);
-        map.setPaintProperty(layerId, 'line-width', width);
-      }
+      map.setFilter('highlighted-routes', [
+        'in',
+        ['get', 'route_id'],
+        ['literal', routeIds],
+      ]);
 
       const highlightedFeatures = geojson.features.filter((feature) =>
         routeIds.includes(feature.properties.route_id)
       );
 
-      if (highlightedFeatures.length === 0) {
-        return;
-      }
-
-      if (zoom) {
+      if (highlightedFeatures.length > 0 && zoom) {
         const zoomBounds = getBounds({
           features: highlightedFeatures,
         });
@@ -388,10 +430,7 @@ function createSystemMap(id, geojson) {
     }
 
     function unHighlightRoutes(zoom) {
-      for (const layerId of routeBackgroundLayerIds) {
-        map.setPaintProperty(layerId, 'line-color', '#FFFFFF');
-        map.setPaintProperty(layerId, 'line-width', 6);
-      }
+      map.setFilter('highlighted-routes', ['==', ['get', 'route_id'], 'none']);
 
       if (zoom) {
         map.fitBounds(bounds);
