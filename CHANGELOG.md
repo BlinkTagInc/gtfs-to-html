@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Updated
 
 - Dependency updates
+- Add route labels and stops to system map
+- Turn off points of interest labels on all maps
+- Better map data styles
+- Improved system map route and stop highlighting
+- Updated to tailwindcss 3
 
 ## [2.3.5] - 2022-04-26
 

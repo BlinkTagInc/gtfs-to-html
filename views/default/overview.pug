@@ -10,13 +10,13 @@ include formatting_functions.pug
         h1.text-2xl.pt-4.pb-2= `${formatAgencyName(timetablePageGroup.agency)} Routes`
         each timetablePage in timetablePageGroup.timetablePages
           if config.allowEmptyTimetables || timetablePage.consolidatedTimetables.length > 0
-            a.overview-menu-item.mb-3(href=`${timetablePage.relativePath}` data-route-ids=`${timetablePage.route_ids ? timetablePage.route_ids.join(',') : ''}`)
+            a.block.p-2.border-b.border-slate-200(class="hover:bg-slate-200 hover:no-underline" href=`${timetablePage.relativePath}` data-route-ids=`${timetablePage.route_ids ? timetablePage.route_ids.join(',') : ''}`)
               .text-lg.text-gray-800.leading-none= timetablePage.timetable_page_label
               each route in _.uniqBy(_.flatMap(timetablePage.consolidatedTimetables, timetable => timetable.routes), 'route_id')
                 .flex.my-1
                   .route-color-swatch.flex-none.mr-2(style=`background-color: #${route.route_color}; color: #${route.route_text_color};`)= route.route_short_name || ''
                   .mt-1.text-gray-600.leading-none= formatRouteName(route)
-              .text-gray-600= timetablePage.dayList
+              .inline-flex.items-center.justify-center.px-2.py-1.text-xs.font-bold.leading-none.text-slate-800.bg-slate-200.rounded-full= timetablePage.dayList
     if config.showMap
       .map.ml-4.h-full.w-full(id="system_map")
 

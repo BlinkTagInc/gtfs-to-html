@@ -257,16 +257,3 @@ a:hover {
   align-items: center;
   line-height: 1;
 }
-
-/* Overview  page */
-
-.overview-menu-item {
-  display: block;
-  text-decoration: none;
-  padding: 5px;
-}
-
-.overview-menu-item:hover {
-  text-decoration: none;
-  background: #bdd5fa;
-}
