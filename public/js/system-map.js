@@ -36,6 +36,28 @@ function formatRoutePopup(features) {
   return html.prop('outerHTML');
 }
 
+function formatStopPopup(feature) {
+  const routes = JSON.parse(feature.properties.routes);
+  const html = $('<div>');
+
+  $('<div>')
+    .addClass('popup-title')
+    .text(feature.properties.stop_name)
+    .appendTo(html);
+
+  if (feature.properties.stop_code ?? false) {
+    $('<label>').addClass('mr-1').text('Stop Code:').appendTo(html);
+
+    $('<strong>').text(feature.properties.stop_code).appendTo(html);
+  }
+
+  $('<div>').text('Routes Served:').appendTo(html);
+
+  $(html).append(routes.map((route) => formatRoute(route)));
+
+  return html.prop('outerHTML');
+}
+
 function getBounds(geojson) {
   const bounds = new mapboxgl.LngLatBounds();
   for (const feature of geojson.features) {
@@ -109,7 +131,7 @@ function createSystemMap(id, geojson) {
           paint: {
             'line-color': '#FFFFFF',
             'line-opacity': 1,
-            'line-width': 6,
+            'line-width': 16,
           },
           layout: {
             'line-join': 'round',
@@ -136,7 +158,7 @@ function createSystemMap(id, geojson) {
           paint: {
             'line-color': routeColor,
             'line-opacity': 1,
-            'line-width': 2,
+            'line-width': 6,
           },
           layout: {
             'line-join': 'round',
@@ -147,6 +169,94 @@ function createSystemMap(id, geojson) {
         firstSymbolId
       );
     }
+
+    // Add stops when zoomed in
+    map.addLayer(
+      {
+        id: 'stops',
+        type: 'circle',
+        source: {
+          type: 'geojson',
+          data: geojson,
+        },
+        paint: {
+          'circle-color': '#fff',
+          'circle-radius': {
+            base: 1.75,
+            stops: [
+              [12, 4],
+              [22, 100],
+            ],
+          },
+          'circle-stroke-color': '#3F4A5C',
+          'circle-stroke-width': 2,
+          'circle-opacity': [
+            'interpolate',
+            ['linear'],
+            ['zoom'],
+            13,
+            0,
+            13.5,
+            1,
+          ],
+          'circle-stroke-opacity': [
+            'interpolate',
+            ['linear'],
+            ['zoom'],
+            13,
+            0,
+            13.5,
+            1,
+          ],
+        },
+        filter: ['has', 'stop_id'],
+      },
+      firstSymbolId
+    );
+
+    // Layer for highlighted stops
+    map.addLayer(
+      {
+        id: 'stops-highlighted',
+        type: 'circle',
+        source: {
+          type: 'geojson',
+          data: geojson,
+        },
+        paint: {
+          'circle-color': '#fff',
+          'circle-radius': {
+            base: 1.75,
+            stops: [
+              [12, 5],
+              [22, 125],
+            ],
+          },
+          'circle-stroke-width': 2,
+          'circle-stroke-color': '#3f4a5c',
+          'circle-opacity': [
+            'interpolate',
+            ['linear'],
+            ['zoom'],
+            13,
+            0,
+            13.5,
+            1,
+          ],
+          'circle-stroke-opacity': [
+            'interpolate',
+            ['linear'],
+            ['zoom'],
+            13,
+            0,
+            13.5,
+            1,
+          ],
+        },
+        filter: ['==', 'stop_id', ''],
+      },
+      firstSymbolId
+    );
 
     // Add labels
     map.addLayer({
@@ -171,43 +281,81 @@ function createSystemMap(id, geojson) {
 
     map.on('mousemove', (event) => {
       const features = map.queryRenderedFeatures(event.point, {
-        layers: [...routeLayerIds, ...routeBackgroundLayerIds],
+        layers: [
+          ...routeLayerIds,
+          ...routeBackgroundLayerIds,
+          'stops-highlighted',
+          'stops',
+        ],
       });
       if (features.length > 0) {
         map.getCanvas().style.cursor = 'pointer';
         highlightRoutes(
           _.uniq(features.map((feature) => feature.properties.route_id))
         );
+
+        if (features.some((feature) => feature.layer.id === 'stops')) {
+          highlightStop(
+            features.find((feature) => feature.layer.id === 'stops').properties
+              .stop_id
+          );
+        }
       } else {
         map.getCanvas().style.cursor = '';
         unHighlightRoutes();
+        unHighlightStop();
       }
     });
 
     map.on('click', (event) => {
-      // Set bbox as 5px reactangle area around clicked point
+      // Set bbox as 5px rectangle area around clicked point
       const bbox = [
         [event.point.x - 5, event.point.y - 5],
         [event.point.x + 5, event.point.y + 5],
       ];
-      const features = map.queryRenderedFeatures(bbox, {
-        layers: routeLayerIds,
+
+      const stopFeatures = map.queryRenderedFeatures(bbox, {
+        layers: ['stops-highlighted', 'stops'],
       });
 
-      if (!features || features.length === 0) {
-        return;
+      if (stopFeatures && stopFeatures.length > 0) {
+        // Get the stop feature and show popup
+        const stopFeature = stopFeatures[0];
+
+        new mapboxgl.Popup()
+          .setLngLat(stopFeature.geometry.coordinates)
+          .setHTML(formatStopPopup(stopFeature))
+          .addTo(map);
+      } else {
+        const routeFeatures = map.queryRenderedFeatures(bbox, {
+          layers: routeLayerIds,
+        });
+
+        if (routeFeatures && routeFeatures.length > 0) {
+          const routes = _.orderBy(
+            _.uniqBy(
+              routeFeatures,
+              (feature) => feature.properties.route_short_name
+            ),
+            (feature) =>
+              Number.parseInt(feature.properties.route_short_name, 10)
+          );
+
+          new mapboxgl.Popup()
+            .setLngLat(event.lngLat)
+            .setHTML(formatRoutePopup(routes))
+            .addTo(map);
+        }
       }
-
-      const routeFeatures = _.orderBy(
-        _.uniqBy(features, (feature) => feature.properties.route_short_name),
-        (feature) => Number.parseInt(feature.properties.route_short_name, 10)
-      );
-
-      new mapboxgl.Popup()
-        .setLngLat(event.lngLat)
-        .setHTML(formatRoutePopup(routeFeatures))
-        .addTo(map);
     });
+
+    function highlightStop(stopId) {
+      map.setFilter('stops-highlighted', ['==', 'stop_id', stopId]);
+    }
+
+    function unHighlightStop() {
+      map.setFilter('stops-highlighted', ['==', 'stop_id', '']);
+    }
 
     function highlightRoutes(routeIds, zoom) {
       for (const layerId of routeBackgroundLayerIds) {
