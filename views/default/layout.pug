@@ -3,7 +3,6 @@ html
   head
     title= title
     meta(charset="utf-8")
-    link(rel="stylesheet" href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" crossorigin="anonymous")
     link(rel="stylesheet" href=`${config.assetPath}css/timetable_styles.css`)
     if config.outputFormat === 'pdf'
       link(rel="stylesheet" href=`${config.assetPath}css/timetable_pdf_styles.css`)
@@ -13,3 +12,5 @@ html
 
   body
     block content
+
+    script(src="https://cdn.tailwindcss.com")
