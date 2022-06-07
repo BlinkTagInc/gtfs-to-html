@@ -121,13 +121,19 @@ function createMap(id, geojson, routes) {
           'line-color': '#000000',
           'line-opacity': 0.3,
           'line-width': {
-            base: 16,
+            base: 12,
             stops: [
-              [14, 24],
-              [18, 40],
+              [14, 20],
+              [18, 42],
             ],
           },
-          'line-blur': 16,
+          'line-blur': {
+            base: 12,
+            stops: [
+              [14, 20],
+              [18, 42],
+            ],
+          },
         },
         layout: lineLayout,
         filter: ['!has', 'stop_id'],

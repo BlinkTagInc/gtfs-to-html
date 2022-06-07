@@ -132,16 +132,55 @@ function createSystemMap(id, geojson) {
           'line-color': '#000000',
           'line-opacity': 0.3,
           'line-width': {
-            base: 16,
+            base: 12,
             stops: [
-              [14, 24],
-              [18, 40],
+              [14, 20],
+              [18, 42],
             ],
           },
-          'line-blur': 16,
+          'line-blur': {
+            base: 12,
+            stops: [
+              [14, 20],
+              [18, 42],
+            ],
+          },
         },
         layout: lineLayout,
         filter: ['!has', 'stop_id'],
+      },
+      firstSymbolId
+    );
+
+    // Add highlighted route drop shadow outlines next
+    map.addLayer(
+      {
+        id: 'highlighted-route-line-shadows',
+        type: 'line',
+        source: {
+          type: 'geojson',
+          data: geojson,
+        },
+        paint: {
+          'line-color': '#000000',
+          'line-opacity': 0.3,
+          'line-width': {
+            base: 16,
+            stops: [
+              [14, 24],
+              [18, 50],
+            ],
+          },
+          'line-blur': {
+            base: 16,
+            stops: [
+              [14, 24],
+              [18, 50],
+            ],
+          },
+        },
+        layout: lineLayout,
+        filter: ['==', ['get', 'route_id'], 'none'],
       },
       firstSymbolId
     );
@@ -168,6 +207,32 @@ function createSystemMap(id, geojson) {
         },
         layout: lineLayout,
         filter: ['has', 'route_id'],
+      },
+      firstSymbolId
+    );
+
+    // Add highlighted route white outlines next
+    map.addLayer(
+      {
+        id: `highlighted-route-outlines`,
+        type: 'line',
+        source: {
+          type: 'geojson',
+          data: geojson,
+        },
+        paint: {
+          'line-color': '#FFFFFF',
+          'line-opacity': 1,
+          'line-width': {
+            base: 10,
+            stops: [
+              [14, 16],
+              [18, 40],
+            ],
+          },
+        },
+        layout: lineLayout,
+        filter: ['==', ['get', 'route_id'], 'none'],
       },
       firstSymbolId
     );
@@ -410,10 +475,38 @@ function createSystemMap(id, geojson) {
 
     function highlightRoutes(routeIds, zoom) {
       map.setFilter('highlighted-routes', [
+        'all',
+        ['has', 'route_short_name'],
+        ['in', ['get', 'route_id'], ['literal', routeIds]],
+      ]);
+      map.setFilter('highlighted-route-outlines', [
+        'all',
+        ['has', 'route_short_name'],
+        ['in', ['get', 'route_id'], ['literal', routeIds]],
+      ]);
+      map.setFilter('highlighted-route-line-shadows', [
+        'all',
+        ['has', 'route_short_name'],
+        ['in', ['get', 'route_id'], ['literal', routeIds]],
+      ]);
+
+      // Show labels only for highlighted route
+      map.setFilter('route-labels', [
         'in',
         ['get', 'route_id'],
         ['literal', routeIds],
       ]);
+
+      const routeLineOpacity = 0.4;
+
+      // De-emphasize other routes
+      map.setPaintProperty('routes', 'line-opacity', routeLineOpacity);
+      map.setPaintProperty('route-outlines', 'line-opacity', routeLineOpacity);
+      map.setPaintProperty(
+        'route-line-shadows',
+        'line-opacity',
+        routeLineOpacity
+      );
 
       const highlightedFeatures = geojson.features.filter((feature) =>
         routeIds.includes(feature.properties.route_id)
@@ -431,6 +524,30 @@ function createSystemMap(id, geojson) {
 
     function unHighlightRoutes(zoom) {
       map.setFilter('highlighted-routes', ['==', ['get', 'route_id'], 'none']);
+      map.setFilter('highlighted-route-outlines', [
+        '==',
+        ['get', 'route_id'],
+        'none',
+      ]);
+      map.setFilter('highlighted-route-line-shadows', [
+        '==',
+        ['get', 'route_id'],
+        'none',
+      ]);
+
+      // Show labels for all routes
+      map.setFilter('route-labels', ['has', 'route_short_name']);
+
+      const routeLineOpacity = 1;
+
+      // Re-emphasize other routes
+      map.setPaintProperty('routes', 'line-opacity', routeLineOpacity);
+      map.setPaintProperty('route-outlines', 'line-opacity', routeLineOpacity);
+      map.setPaintProperty(
+        'route-line-shadows',
+        'line-opacity',
+        routeLineOpacity
+      );
 
       if (zoom) {
         map.fitBounds(bounds);
@@ -440,7 +557,7 @@ function createSystemMap(id, geojson) {
     // On table hover, highlight route on map
     $(() => {
       $('.overview-list a').hover((event) => {
-        const routeIdString = $(event.target).parents('a').data('route-ids');
+        const routeIdString = $(event.target).data('route-ids');
         if (routeIdString) {
           const routeIds = routeIdString.toString().split(',');
           highlightRoutes(routeIds, true);
