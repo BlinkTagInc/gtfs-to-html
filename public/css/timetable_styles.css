@@ -93,11 +93,12 @@ a:hover {
 }
 
 .timetable thead tr {
-  background: #72b1e6;
+  background: #aed9fb;
 }
 
+.timetable thead tr,
 .timetable thead tr a {
-  color: #333333;
+  color: #222222;
 }
 
 .timetable th {
