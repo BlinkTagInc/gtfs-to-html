@@ -29,7 +29,6 @@ Skips importing GTFS into SQLite. Useful if you are rerunning with an unchanged 
 
     gtfs-to-html --skipImport
 
-
 ### Processing very large GTFS files.
 
 By default, node has a memory limit of 512 MB or 1 GB. If you have a very large GTFS file and want to use the option `showOnlyTimepoint` = `false` you may need to allocate more memory. Use the `max-old-space-size` option. For example to allocate 4 GB:
@@ -44,17 +43,17 @@ You can use both [`docker`](https://docker.com) and [`docker-compose`](https://d
 
 A `Dockerfile` is available in the `docker` directory.
 
-* Create a `config.json` file and save in the same directory as your `Dockerfile`. You can use `config-sample.json` from the project root as a starting point.
+- Create a `config.json` file and save in the same directory as your `Dockerfile`. You can use `config-sample.json` from the project root as a starting point. For Docker usage, remove any `sqlitePath` and `templatePath` values from the config.json.
 
-* Build the docker image:
+- Build the docker image:
 
         docker build -t gtfs-to-html .
 
-* Run the docker image:
+- Run the docker image:
 
         docker run gtfs-to-html
 
-* Copy the generated HTML out of the docker container
+- Copy the generated HTML out of the docker container
 
         // Figure out what your container ID is
         docker container ls -a
@@ -69,16 +68,15 @@ A `Dockerfile` is available in the `docker` directory.
 
 Docker compose is used for multi-container Docker applications. In this context, it is just a convenient way to manage volumes. This allows (_i_) to get the generated HTML out of the docker container without explicitly copying with `docker cp`, and (_ii_) to tweak and run a new configuration without rebuilding the container from scratch.
 
-* Create a `config.json` file and save in the same directory as your `Dockerfile` and `docker-compose.yml`;
+- Create a `config.json` file and save in the same directory as your `Dockerfile` and `docker-compose.yml`;
 
-* build and run the container:
+- build and run the container:
 
         docker-compose up
 
-* the generated HTML will be available in the folder `html` next to docker files.
+- the generated HTML will be available in the folder `html` next to docker files.
 
 Do you want to change something? Just delete the old HTML, change your `config.json`, and finally run `docker-compose up` again.
-
 
 ## Usage as a node module
 
@@ -87,22 +85,25 @@ If you are using this as a node module as part of an application, you can includ
 ### Code example
 
 ```javascript
-    import gtfsToHtml from 'gtfs-to-html';
-    import { readFile } from 'fs/promises';
-    const config = JSON.parse(await readFile(new URL('./config.json', import.meta.url)));
+import gtfsToHtml from 'gtfs-to-html';
+import { readFile } from 'fs/promises';
+const config = JSON.parse(
+  await readFile(new URL('./config.json', import.meta.url))
+);
 
-    gtfsToHtml(config)
-    .then(() => {
-      console.log('HTML Generation Successful');
-      process.exit();
-    })
-    .catch(err => {
-      console.error(err);
-      process.exit(1);
-    });
+gtfsToHtml(config)
+  .then(() => {
+    console.log('HTML Generation Successful');
+    process.exit();
+  })
+  .catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });
 ```
 
 ### Example Application
+
 An example Express application that uses `gtfs-to-html` is included in the `app` folder. After an initial run of `gtfs-to-html`, the GTFS data will be downloaded and loaded into SQLite.
 
 You can view an individual route HTML on demand by running the included Express app:
@@ -115,17 +116,16 @@ By default, `gtfs-to-html` will look for a `config.json` file in the project roo
 
 Once running, you can view the HTML in your browser at [localhost:3000](http://localhost:3000)
 
-
 ## Usage as a hosted web app
 
 A [hosted version of GTFS-to-HTML as a service](https://run.gtfstohtml.com) allows you to use it entirely within your browser - no downloads or command line necessary.
 
 It provides:
 
-* a web-based interface for finding GTFS feeds or ability to enter your own URL
-* support for adding [custom configuration](/docs/configuration) as JSON
-* creation of HTML timetables as a downloadable .zip file
-* a preview of all timetables generated directly in your browser
+- a web-based interface for finding GTFS feeds or ability to enter your own URL
+- support for adding [custom configuration](/docs/configuration) as JSON
+- creation of HTML timetables as a downloadable .zip file
+- a preview of all timetables generated directly in your browser
 
 [run.gtfstohtml.com](https://run.gtfstohtml.com)
 
@@ -136,8 +136,8 @@ Currently, it is limited to relatively small GTFS files and doesn't offer suppor
 ### SQLite3 unable to be installed with `Failed to exec install script`
 
 For an error like:
-```lifecycle sqlite3@5.0.0~install: Failed to exec install script```
+`lifecycle sqlite3@5.0.0~install: Failed to exec install script`
 
 Try installing `gtfs-to-html` using the following flags:
 
-```npm install --unsafe-perm --allow-root -g```
+`npm install --unsafe-perm --allow-root -g`
