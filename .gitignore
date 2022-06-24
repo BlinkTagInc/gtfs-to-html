@@ -2,6 +2,7 @@ node_modules
 html
 /config*
 !config-sample.json
+docker/config*
 views/custom
 
 .git
