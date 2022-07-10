@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Updated
 
 - Update Dockerfile to node 16
+- Dependency updates
+- Use yoctocolors instead of chalk
 
 ## [2.4.0] - 2022-06-07
 

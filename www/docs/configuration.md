@@ -490,7 +490,7 @@ The default trip-sorting algorithm is `common`.
 
 ### sqlitePath
 
-{String} A path to an SQLite database. Optional, defaults to using an in-memory database with a value of `:memory:`. If you want the data imported to persist, you need to specify a value for `sqlitePath`
+{String} A path to an SQLite database. Optional, defaults to using an in-memory database with a value of `:memory:`. If you want the data imported to persist, you need to specify a value for `sqlitePath`. Supports tilde as part of the path, like `~/Documents/gtfs`.
 
 ```
     "sqlitePath": "/tmp/gtfs"
