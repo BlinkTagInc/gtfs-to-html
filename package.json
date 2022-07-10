@@ -38,7 +38,6 @@
     "@turf/helpers": "^6.5.0",
     "@turf/simplify": "^6.5.0",
     "archiver": "^5.3.1",
-    "chalk": "^5.0.1",
     "cli-table": "^0.3.11",
     "copy-dir": "^1.3.0",
     "csv-stringify": "^6.1.0",
@@ -56,7 +55,8 @@
     "timer-machine": "^1.1.0",
     "toposort": "^2.0.2",
     "untildify": "^4.0.0",
-    "yargs": "^17.5.1"
+    "yargs": "^17.5.1",
+    "yoctocolors": "^1.0.0"
   },
   "devDependencies": {
     "eslint": "^8.17.0",

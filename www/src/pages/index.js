@@ -7,7 +7,6 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import CodeBlock from '@theme/CodeBlock';
 import useBaseUrl from '@docusaurus/useBaseUrl';
 import styles from './styles.module.css';
-import { hsl } from 'chalk';
 
 const features = [
   {
@@ -15,28 +14,32 @@ const features = [
     imageUrl: 'img/undraw_proud_coder.svg',
     description: (
       <>
-        Most transit agencies have schedule data in GTFS format but need to show each route's schedule to users on a website.
+        Most transit agencies have schedule data in GTFS format but need to show
+        each route's schedule to users on a website.
       </>
-    )
+    ),
   },
   {
     title: <>What?</>,
     imageUrl: 'img/undraw_spreadsheets.svg',
     description: (
       <>
-        This tool automates the process of creating nicely formatted HTML timetables for inclusion on a transit agency website.
+        This tool automates the process of creating nicely formatted HTML
+        timetables for inclusion on a transit agency website.
       </>
-    )
+    ),
   },
   {
     title: <>Automate schedule changes</>,
     imageUrl: 'img/undraw_happy_music.svg',
     description: (
       <>
-        Automating timetable creation means that timetables can be kept up to date and accurate when schedule changes happen and the likelihood of errors is reduced.
+        Automating timetable creation means that timetables can be kept up to
+        date and accurate when schedule changes happen and the likelihood of
+        errors is reduced.
       </>
-    )
-  }
+    ),
+  },
 ];
 
 function Feature({ imageUrl, title, description }) {
@@ -60,25 +63,35 @@ function Home() {
   return (
     <Layout
       title="GTFS-to-HTML"
-      description="GTFS-to-HTML creates human-readable, user-friendly transit timetables in HTML format directly from GTFS transit data.">
+      description="GTFS-to-HTML creates human-readable, user-friendly transit timetables in HTML format directly from GTFS transit data."
+    >
       <header className={clsx('hero hero--dark', styles.heroBanner)}>
         <div className="container">
           <div className="row">
             <div className="col col--4">
-              <img src="/img/gtfs-to-html-logo.svg" style={{ maxWidth: '150px' }} alt="" />
+              <img
+                src="/img/gtfs-to-html-logo.svg"
+                style={{ maxWidth: '150px' }}
+                alt=""
+              />
             </div>
 
             <div className="col col--8">
               <h1 className="hero__title">{siteConfig.title}</h1>
               <p className="hero__subtitle">{siteConfig.tagline}</p>
-              <img alt="npm" src="https://img.shields.io/npm/v/gtfs-to-html?color=%2325c2a0&amp;label=stable&amp;style=for-the-badge" className="margin-bottom--sm" />
+              <img
+                alt="npm"
+                src="https://img.shields.io/npm/v/gtfs-to-html?color=%2325c2a0&amp;label=stable&amp;style=for-the-badge"
+                className="margin-bottom--sm"
+              />
               <div className={styles.buttons}>
                 <Link
                   className={clsx(
                     'button button--outline button--secondary button--lg',
                     styles.heroButton
                   )}
-                  to={useBaseUrl('docs/')}>
+                  to={useBaseUrl('docs/')}
+                >
                   Get Started
                 </Link>
               </div>
@@ -99,19 +112,44 @@ function Home() {
           </section>
         )}
 
-        <section style={{backgroundColor: 'hsl(0, 0%, 85%)'}} className="padding--lg">
+        <section
+          style={{ backgroundColor: 'hsl(0, 0%, 85%)' }}
+          className="padding--lg"
+        >
           <div className="container">
             <div className="row">
               <div className="col"></div>
               <div className="col">
                 <div className="avatar avatar--vertical margin-bottom--sm">
                   <div className="avatar__photo avatar__photo--xl">
-                    <img src="https://avatars.githubusercontent.com/u/46612183?v=4" alt="Brody" width="200" height="200" style={{width: '100%', height: 'auto', maxWidth: '100%', marginBottom: '-4px'}} /></div>
-                  <div className="avatar__intro padding-top--sm"><div className="avatar__name">Brody</div>
-                    <small className="avatar__subtitle"><a href="https://github.com/transcollines">Transcollines</a></small>
+                    <img
+                      src="https://avatars.githubusercontent.com/u/46612183?v=4"
+                      alt="Brody"
+                      width="200"
+                      height="200"
+                      style={{
+                        width: '100%',
+                        height: 'auto',
+                        maxWidth: '100%',
+                        marginBottom: '-4px',
+                      }}
+                    />
+                  </div>
+                  <div className="avatar__intro padding-top--sm">
+                    <div className="avatar__name">Brody</div>
+                    <small className="avatar__subtitle">
+                      <a href="https://github.com/transcollines">
+                        Transcollines
+                      </a>
+                    </small>
                   </div>
                 </div>
-                <p className="text--center text--italic padding-horiz--md">It's been a huge success. Not only do the timetables look fantastic, but I've had customer service agents tell me the interactive timetables are a total game changer and they make their jobs way easier.</p>
+                <p className="text--center text--italic padding-horiz--md">
+                  It's been a huge success. Not only do the timetables look
+                  fantastic, but I've had customer service agents tell me the
+                  interactive timetables are a total game changer and they make
+                  their jobs way easier.
+                </p>
               </div>
               <div className="col"></div>
             </div>
