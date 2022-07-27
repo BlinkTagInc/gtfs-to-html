@@ -86,7 +86,7 @@
 
         feature.properties.routes = feature.properties.routes.map(route => route.route_id)
 
-        minifiedGeojson.features.push(feature)
+        minifiedGeojson.features.push(_.omit(feature, ['location_type', 'tts_stop_name']))
       }
     }
     
