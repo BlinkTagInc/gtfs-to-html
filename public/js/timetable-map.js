@@ -82,6 +82,17 @@ function createMap(id, geojson, routes) {
     preserveDrawingBuffer: true,
   });
 
+  map.initialize = () =>
+    map.fitBounds(bounds, {
+      padding: {
+        top: 40,
+        bottom: 40,
+        left: 20,
+        right: 40,
+      },
+      duration: 0,
+    });
+
   map.scrollZoom.disable();
   map.addControl(new mapboxgl.NavigationControl());
 
