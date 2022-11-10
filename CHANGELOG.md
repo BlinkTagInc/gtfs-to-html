@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Updated
 
 - Initialize Map with bounds padding
+- Omit unneeded fields from geojson
+- Remove adjacent stoptimes with the same stop_id
 
 ## [2.4.2] - 2022-07-26
 
