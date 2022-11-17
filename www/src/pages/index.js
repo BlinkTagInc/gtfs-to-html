@@ -48,7 +48,7 @@ function Feature({ imageUrl, title, description }) {
     <div className={clsx('col col--4', styles.feature)}>
       {imgUrl && (
         <div className="text--center">
-          <img className={styles.featureImage} src={imgUrl} alt="" />
+          <img className={styles['feature-image']} src={imgUrl} alt="" />
         </div>
       )}
       <h3>{title}</h3>
@@ -65,7 +65,7 @@ function Home() {
       title="GTFS-to-HTML"
       description="GTFS-to-HTML creates human-readable, user-friendly transit timetables in HTML format directly from GTFS transit data."
     >
-      <header className={clsx('hero hero--dark', styles.heroBanner)}>
+      <header className={clsx('hero hero--dark', styles['hero-banner'])}>
         <div className="container">
           <div className="row">
             <div className="col col--4">
@@ -88,7 +88,7 @@ function Home() {
                 <Link
                   className={clsx(
                     'button button--outline button--secondary button--lg',
-                    styles.heroButton
+                    styles['hero-button']
                   )}
                   to={useBaseUrl('docs/')}
                 >
@@ -112,10 +112,7 @@ function Home() {
           </section>
         )}
 
-        <section
-          style={{ backgroundColor: 'hsl(0, 0%, 85%)' }}
-          className="padding--lg"
-        >
+        <section className={clsx('padding--lg', styles['gray-section'])}>
           <div className="container">
             <div className="row">
               <div className="col"></div>

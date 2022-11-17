@@ -5,7 +5,7 @@
  * and scoped locally.
  */
 
-.heroBanner {
+.hero-banner {
   padding: 4rem 0;
   text-align: center;
   position: relative;
@@ -13,7 +13,7 @@
 }
 
 @media screen and (max-width: 966px) {
-  .heroBanner {
+  .hero-banner {
     padding: 2rem;
   }
 }
@@ -24,12 +24,20 @@
   justify-content: center;
 }
 
-.heroButton {
-  color: #FFFFFF!important;
+.hero-button {
+  color: #ffffff !important;
 }
 
-.heroButton:hover {
-  color: #333!important;
+.hero-button:hover {
+  color: #333 !important;
+}
+
+.gray-section {
+  background-color: hsl(0, 0%, 85%);
+}
+
+[data-theme='dark'] .gray-section {
+  background-color: rgb(94, 94, 94);
 }
 
 .features {
@@ -39,7 +47,7 @@
   width: 100%;
 }
 
-.featureImage {
+.feature-image {
   height: 200px;
   width: 200px;
 }
