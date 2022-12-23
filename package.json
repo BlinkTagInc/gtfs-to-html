@@ -40,16 +40,16 @@
     "archiver": "^5.3.1",
     "cli-table": "^0.3.11",
     "copy-dir": "^1.3.0",
-    "csv-stringify": "^6.2.1",
+    "csv-stringify": "^6.2.3",
     "express": "^4.18.2",
-    "gtfs": "^3.6.1",
+    "gtfs": "^3.8.0",
     "js-beautify": "^1.14.7",
     "lodash-es": "^4.17.21",
     "moment": "^2.29.4",
     "morgan": "^1.10.0",
     "pretty-error": "^4.0.0",
     "pug": "^3.0.2",
-    "puppeteer": "^19.2.2",
+    "puppeteer": "^19.4.1",
     "sanitize-filename": "^1.6.3",
     "sqlstring": "^2.3.3",
     "timer-machine": "^1.1.0",
@@ -59,11 +59,11 @@
     "yoctocolors": "^1.0.0"
   },
   "devDependencies": {
-    "eslint": "^8.27.0",
+    "eslint": "^8.30.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-config-xo": "^0.43.1",
     "husky": "^8.0.2",
-    "prettier": "^2.7.1",
+    "prettier": "^2.8.1",
     "pretty-quick": "^3.1.3"
   },
   "engines": {

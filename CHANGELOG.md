@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Updated
 
 - Use adjacent duplicate stoptimes as arrival/depart if different times
+- Updates to gtfstohtml.com documentation website dependencies
+- Dependency updates
 
 ## [2.4.3] - 2022-11-10
 
