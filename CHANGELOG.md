@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Updated
 
 - Dependency updates
+- Optimize duplicateStopsForDifferentArrivalDeparture
 
 ## [2.5.0] - 2022-12-31
 

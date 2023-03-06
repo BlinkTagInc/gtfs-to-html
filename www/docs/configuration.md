@@ -408,7 +408,7 @@ gtfsToHtml(config);
 
 ### showArrivalOnDifference
 
-{Float} Whether or not to show an arrival column/row in the timetable. It means, that if on at least one stop difference (stay on that stop) is **equal or greater** than specified here, the arrival time will be shown. Use `0` to show on each stop or `null` to supress for showing arrival at all.
+{Float} Whether or not to show an arrival column/row in the timetable. It means, that if on at least one stop difference (stay on that stop) is **equal or greater** than specified here, the arrival time will be shown. Use `0` to show on each stop or `null` to skip showing an additional column for arrival.
 
 ```
     "showArrivalOnDifference": 0.2
