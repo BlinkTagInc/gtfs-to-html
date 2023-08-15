@@ -21,11 +21,11 @@ title: Related Libraries
 
 [`https://github.com/blinktaginc/gtfs-to-chart`](https://github.com/blinktaginc/gtfs-to-chart)
 
-## Transit Arrivals Widget
+## Transit Departures Widget
 
-The [Transit Arrivals Widget](https://github.com/BlinkTagInc/transit-arrivals-widget) generates a user-friendly transit realtime arrival widget in HTML format directly from GTFS and GTFS-RT transit data. Most transit agencies have schedule data in GTFS format and many publish realtime arrivals using GTFS-RT. This project generates HTML, JS and CSS for use on a transit agency website to allow users to see when the next vehicle is arriving at a specific stop and includes features like caching, auto-refresh, url parameters and custom templates.
+The [Transit Departures Widget](https://github.com/BlinkTagInc/transit-departures-widget) generates a user-friendly transit realtime departures widget in HTML format directly from GTFS and GTFS-RT transit data. Most transit agencies have schedule data in GTFS format and many publish realtime departure information using GTFS-RT. This project generates HTML, JS and CSS for use on a transit agency website to allow users to see when the next vehicle is departing from a specific stop and includes features like caching, auto-refresh, url parameters and custom templates.
 
-[`https://github.com/BlinkTagInc/transit-arrivals-widget`](https://github.com/BlinkTagInc/transit-arrivals-widget)
+[`https://github.com/BlinkTagInc/transit-departures-widget`](https://github.com/BlinkTagInc/transit-departures-widget)
 
 ## GTFS Text-to-Speech Tester
 
