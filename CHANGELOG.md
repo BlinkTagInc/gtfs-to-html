@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Updated
 
+- Dependency updates
 - Use most common headsign for timetable name
 
 ## [2.5.5] - 2023-07-18
