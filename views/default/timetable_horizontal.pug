@@ -28,7 +28,7 @@
             th(scope="row" colspan=`${stop.trips.length + 1}`)= stop.stop_city
           - previousCity = stop.stop_city
 
-        tr.stop-row(id=`stop_id_${formatHtmlId(stop.stop_id)}` data-stop-id=`${stop.stop_id}`)
+        tr.stop-row(id=`stop_id_${formatHtmlId(stop.stop_id)}` data-stop-id=`${stop.stop_id}` data-is-timepoint=`${stop.is_timepoint}`)
           th.stop-name-container(scope="row")
             include timetable_stop_name.pug
 

@@ -12,7 +12,7 @@
     caption.sr-only= `${timetable.timetable_label} | ${timetable.dayList}`
     colgroup
       each stop, idx in timetable.stops
-        col(id=`stop_id_${formatHtmlId(stop.stop_id)}` class=`stop-${idx}` data-stop-id=`${stop.stop_id}`)
+        col(id=`stop_id_${formatHtmlId(stop.stop_id)}` class=`stop-${idx}` data-stop-id=`${stop.stop_id}` data-is-timepoint=`${stop.is_timepoint}`)
     thead
       tr
         if timetable.has_continues_from_route
