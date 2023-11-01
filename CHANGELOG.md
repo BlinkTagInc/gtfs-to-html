@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+### Updated
+
+- Dependency updates
+- Docusaurus 3.0 for documentation site
+
 ### Added
 
 - Add is_timepoint value to each stop

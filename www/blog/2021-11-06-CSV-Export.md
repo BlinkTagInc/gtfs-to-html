@@ -11,7 +11,7 @@ GTFS-to-HTML Version 2.3.0 adds support for exporting timetables as CSV. Setting
 
 An example of a CSV timetable:
 
-```
+```csv
 ,San Francisco Ferry Building,Vallejo Ferry Terminal,Mare Island Ferry Terminal
 Run #1,10:30am,11:30am,
 Run #2,11:30am,12:30pm,
