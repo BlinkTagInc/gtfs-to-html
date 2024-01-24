@@ -107,10 +107,10 @@ function createSystemMap(id, geojson) {
       duration: 0,
     });
 
-    // Turn of Points of Interest labels
+    // Turn off Points of Interest labels
     map.setLayoutProperty('poi-label', 'visibility', 'none');
 
-    // Find the index of the first symbol layer in the map style
+    // Find the index of the first symbol layer in the map style to put the route lines underneath
     let firstSymbolId;
     for (const layer of map.getStyle().layers) {
       if (layer.type === 'symbol') {
@@ -149,7 +149,7 @@ function createSystemMap(id, geojson) {
         layout: lineLayout,
         filter: ['!has', 'stop_id'],
       },
-      firstSymbolId
+      firstSymbolId,
     );
 
     // Add highlighted route drop shadow outlines next
@@ -182,7 +182,7 @@ function createSystemMap(id, geojson) {
         layout: lineLayout,
         filter: ['==', ['get', 'route_id'], 'none'],
       },
-      firstSymbolId
+      firstSymbolId,
     );
 
     // Add white outlines to routes next
@@ -208,7 +208,7 @@ function createSystemMap(id, geojson) {
         layout: lineLayout,
         filter: ['has', 'route_id'],
       },
-      firstSymbolId
+      firstSymbolId,
     );
 
     // Add highlighted route white outlines next
@@ -234,7 +234,7 @@ function createSystemMap(id, geojson) {
         layout: lineLayout,
         filter: ['==', ['get', 'route_id'], 'none'],
       },
-      firstSymbolId
+      firstSymbolId,
     );
 
     // Add route lines next
@@ -260,7 +260,7 @@ function createSystemMap(id, geojson) {
         layout: lineLayout,
         filter: ['has', 'route_id'],
       },
-      firstSymbolId
+      firstSymbolId,
     );
 
     // Add highlighted route lines next
@@ -286,96 +286,74 @@ function createSystemMap(id, geojson) {
         layout: lineLayout,
         filter: ['==', ['get', 'route_id'], 'none'],
       },
-      firstSymbolId
+      firstSymbolId,
     );
 
     // Add stops when zoomed in
-    map.addLayer(
-      {
-        id: 'stops',
-        type: 'circle',
-        source: {
-          type: 'geojson',
-          data: geojson,
-        },
-        paint: {
-          'circle-color': '#fff',
-          'circle-radius': {
-            base: 1.75,
-            stops: [
-              [12, 4],
-              [22, 100],
-            ],
-          },
-          'circle-stroke-color': '#3F4A5C',
-          'circle-stroke-width': 2,
-          'circle-opacity': [
-            'interpolate',
-            ['linear'],
-            ['zoom'],
-            13,
-            0,
-            13.5,
-            1,
-          ],
-          'circle-stroke-opacity': [
-            'interpolate',
-            ['linear'],
-            ['zoom'],
-            13,
-            0,
-            13.5,
-            1,
-          ],
-        },
-        filter: ['has', 'stop_id'],
+    map.addLayer({
+      id: 'stops',
+      type: 'circle',
+      source: {
+        type: 'geojson',
+        data: geojson,
       },
-      firstSymbolId
-    );
+      paint: {
+        'circle-color': '#fff',
+        'circle-radius': {
+          base: 1.75,
+          stops: [
+            [12, 4],
+            [22, 100],
+          ],
+        },
+        'circle-stroke-color': '#3F4A5C',
+        'circle-stroke-width': 2,
+        'circle-opacity': ['interpolate', ['linear'], ['zoom'], 13, 0, 13.5, 1],
+        'circle-stroke-opacity': [
+          'interpolate',
+          ['linear'],
+          ['zoom'],
+          13,
+          0,
+          13.5,
+          1,
+        ],
+      },
+      filter: ['has', 'stop_id'],
+    });
 
     // Layer for highlighted stops
-    map.addLayer(
-      {
-        id: 'stops-highlighted',
-        type: 'circle',
-        source: {
-          type: 'geojson',
-          data: geojson,
-        },
-        paint: {
-          'circle-color': '#fff',
-          'circle-radius': {
-            base: 1.75,
-            stops: [
-              [12, 5],
-              [22, 125],
-            ],
-          },
-          'circle-stroke-width': 2,
-          'circle-stroke-color': '#3f4a5c',
-          'circle-opacity': [
-            'interpolate',
-            ['linear'],
-            ['zoom'],
-            13,
-            0,
-            13.5,
-            1,
-          ],
-          'circle-stroke-opacity': [
-            'interpolate',
-            ['linear'],
-            ['zoom'],
-            13,
-            0,
-            13.5,
-            1,
-          ],
-        },
-        filter: ['==', 'stop_id', ''],
+    map.addLayer({
+      id: 'stops-highlighted',
+      type: 'circle',
+      source: {
+        type: 'geojson',
+        data: geojson,
       },
-      firstSymbolId
-    );
+      paint: {
+        'circle-color': '#fff',
+        'circle-radius': {
+          base: 1.75,
+          stops: [
+            [12, 5],
+            [22, 125],
+          ],
+        },
+        'circle-stroke-width': 2,
+        'circle-stroke-color': '#3f4a5c',
+        'circle-opacity': ['interpolate', ['linear'], ['zoom'], 13, 0, 13.5, 1],
+        'circle-stroke-opacity': [
+          'interpolate',
+          ['linear'],
+          ['zoom'],
+          13,
+          0,
+          13.5,
+          1,
+        ],
+      },
+      filter: ['==', 'stop_id', ''],
+    });
 
     // Add labels
     map.addLayer({
@@ -406,14 +384,14 @@ function createSystemMap(id, geojson) {
         map.getCanvas().style.cursor = 'pointer';
         highlightRoutes(
           _.compact(
-            _.uniq(features.map((feature) => feature.properties.route_id))
-          )
+            _.uniq(features.map((feature) => feature.properties.route_id)),
+          ),
         );
 
         if (features.some((feature) => feature.layer.id === 'stops')) {
           highlightStop(
             features.find((feature) => feature.layer.id === 'stops').properties
-              .stop_id
+              .stop_id,
           );
         }
       } else {
@@ -451,10 +429,10 @@ function createSystemMap(id, geojson) {
           const routes = _.orderBy(
             _.uniqBy(
               routeFeatures,
-              (feature) => feature.properties.route_short_name
+              (feature) => feature.properties.route_short_name,
             ),
             (feature) =>
-              Number.parseInt(feature.properties.route_short_name, 10)
+              Number.parseInt(feature.properties.route_short_name, 10),
           );
 
           new mapboxgl.Popup()
@@ -505,11 +483,11 @@ function createSystemMap(id, geojson) {
       map.setPaintProperty(
         'route-line-shadows',
         'line-opacity',
-        routeLineOpacity
+        routeLineOpacity,
       );
 
       const highlightedFeatures = geojson.features.filter((feature) =>
-        routeIds.includes(feature.properties.route_id)
+        routeIds.includes(feature.properties.route_id),
       );
 
       if (highlightedFeatures.length > 0 && zoom) {
@@ -546,7 +524,7 @@ function createSystemMap(id, geojson) {
       map.setPaintProperty(
         'route-line-shadows',
         'line-opacity',
-        routeLineOpacity
+        routeLineOpacity,
       );
 
       if (zoom) {
@@ -566,7 +544,7 @@ function createSystemMap(id, geojson) {
 
       $('.overview-list').hover(
         () => {},
-        () => unHighlightRoutes(true)
+        () => unHighlightRoutes(true),
       );
     });
   });

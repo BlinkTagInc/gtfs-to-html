@@ -107,10 +107,10 @@ function createMap(id, geojson, routes) {
       duration: 0,
     });
 
-    // Turn of Points of Interest labels
+    // Turn off Points of Interest labels
     map.setLayoutProperty('poi-label', 'visibility', 'none');
 
-    // Find the index of the first symbol layer in the map style
+    // Find the index of the first symbol layer in the map style to put the route lines underneath
     let firstSymbolId;
     for (const layer of map.getStyle().layers) {
       if (layer.type === 'symbol') {
@@ -149,7 +149,7 @@ function createMap(id, geojson, routes) {
         layout: lineLayout,
         filter: ['!has', 'stop_id'],
       },
-      firstSymbolId
+      firstSymbolId,
     );
 
     // Add route line outline
@@ -175,7 +175,7 @@ function createMap(id, geojson, routes) {
         layout: lineLayout,
         filter: ['!has', 'stop_id'],
       },
-      firstSymbolId
+      firstSymbolId,
     );
 
     // Add route line
@@ -201,60 +201,54 @@ function createMap(id, geojson, routes) {
         layout: lineLayout,
         filter: ['!has', 'stop_id'],
       },
-      firstSymbolId
+      firstSymbolId,
     );
 
     // Add stops
-    map.addLayer(
-      {
-        id: 'stops',
-        type: 'circle',
-        source: {
-          type: 'geojson',
-          data: geojson,
-        },
-        paint: {
-          'circle-color': '#fff',
-          'circle-radius': {
-            base: 1.75,
-            stops: [
-              [12, 4],
-              [22, 100],
-            ],
-          },
-          'circle-stroke-color': '#3f4a5c',
-          'circle-stroke-width': 2,
-        },
-        filter: ['has', 'stop_id'],
+    map.addLayer({
+      id: 'stops',
+      type: 'circle',
+      source: {
+        type: 'geojson',
+        data: geojson,
       },
-      firstSymbolId
-    );
+      paint: {
+        'circle-color': '#fff',
+        'circle-radius': {
+          base: 1.75,
+          stops: [
+            [12, 4],
+            [22, 100],
+          ],
+        },
+        'circle-stroke-color': '#3f4a5c',
+        'circle-stroke-width': 2,
+      },
+      filter: ['has', 'stop_id'],
+    });
 
     // Layer for highlighted stops
-    map.addLayer(
-      {
-        id: 'stops-highlighted',
-        type: 'circle',
-        source: {
-          type: 'geojson',
-          data: geojson,
-        },
-        paint: {
-          'circle-color': '#fff',
-          'circle-radius': {
-            base: 1.75,
-            stops: [
-              [12, 5],
-              [22, 125],
-            ],
-          },
-          'circle-stroke-width': 2,
-          'circle-stroke-color': '#3f4a5c',
-        },
-        filter: ['==', 'stop_id', ''],
+    map.addLayer({
+      id: 'stops-highlighted',
+      type: 'circle',
+      source: {
+        type: 'geojson',
+        data: geojson,
       },
-      firstSymbolId
-    );
+      paint: {
+        'circle-color': '#fff',
+        'circle-radius': {
+          base: 1.75,
+          stops: [
+            [12, 5],
+            [22, 125],
+          ],
+        },
+        'circle-stroke-width': 2,
+        'circle-stroke-color': '#3f4a5c',
+      },
+      filter: ['==', 'stop_id', ''],
+    });
 
     map.on('mousemove', (event) => {
       const features = map.queryRenderedFeatures(event.point, {
