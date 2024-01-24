@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Updated
 
 - Move stop markers above map labels
+- Update to Mapbox GL JS v3
 
 ### Fixed
 
