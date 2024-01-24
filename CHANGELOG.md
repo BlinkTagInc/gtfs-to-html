@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Move stop markers above map labels
 
+### Fixed
+
+- Handle routes with no route_short_name in map marker popups
+
 ## [2.5.8] - 2024-01-02
 
 ### Fixed

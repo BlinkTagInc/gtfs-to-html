@@ -3,6 +3,17 @@
 
 const maps = {};
 
+function formatRouteName(route) {
+  let routeName = '';
+  if (route.route_short_name !== undefined) {
+    routeName += route.route_short_name;
+  } else if (route.route_long_name !== undefined) {
+    routeName += route.route_long_name;
+  }
+
+  return routeName;
+}
+
 function formatRoute(route) {
   const html = route.route_url
     ? $('<a>').attr('href', route.route_url)
@@ -17,9 +28,7 @@ function formatRoute(route) {
       .appendTo(html);
   }
 
-  $('<span>')
-    .text(`${route.route_short_name} ${route.route_long_name}`)
-    .appendTo(html);
+  $('<span>').text(formatRouteName(route)).appendTo(html);
 
   return html.prop('outerHTML');
 }
