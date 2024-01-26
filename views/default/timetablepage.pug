@@ -55,8 +55,8 @@ include formatting_functions.pug
               each note in _.uniqBy(timetable.notes, 'note_id')
                 .note(id=`note-${timetable.timetable_id}-${note.note_id}`)= `${note.symbol} = ${note.note}`
 
-          if timetable.calendarDates.includedDates.length
+          if config.showCalendarExceptions && timetable.calendarDates.includedDates.length
             .included-dates= `${config.serviceProvidedOnText}: ${timetable.calendarDates.includedDates.join(', ')}`
 
-          if timetable.calendarDates.excludedDates.length
+          if config.showCalendarExceptions && timetable.calendarDates.excludedDates.length
             .excluded-dates= `${config.serviceNotProvidedOnText}: ${timetable.calendarDates.excludedDates.join(', ')}`
