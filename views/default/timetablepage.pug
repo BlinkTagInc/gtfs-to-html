@@ -4,7 +4,7 @@ include formatting_functions.pug
 .timetable-page(class=`menu-type-${config.menuType}`)
   .container.mx-4(class="md:mx-auto")
     if config.showRouteTitle
-      h1.timetable-page-label.text-2xl.pt-4.flex.items-center
+      h1.timetable-page-label.text-2xl.pt-4.flex.items-center.gap-2
         each route in _.uniqBy(_.flatMap(timetablePage.consolidatedTimetables, timetable => timetable.routes), 'route_id')
           .route-color-swatch-large.mr-2.flex-none(style=`background-color: #${route.route_color}; color: #${route.route_text_color}`)= route.route_short_name || ''
         div= timetablePage.timetable_page_label
@@ -16,11 +16,12 @@ include formatting_functions.pug
     each timetable in timetablePage.consolidatedTimetables
       .timetable.mb-10(id=`timetable_id_${formatHtmlId(timetable.timetable_id)}` data-day-list=timetable.dayList data-direction-name=timetable.direction_name data-timetable-id=timetable.timetable_id data-direction-id=timetable.direction_id data-route-id=timetable.route_ids.join('_'))
         if config.showRouteTitle
-          h2.text-xl= `${timetable.timetable_label} | ${timetable.dayListLong}`
-            each note in getNotesForTimetableLabel(timetable.notes)
-              include timetable_note_symbol.pug
-          if timetable.service_notes !== null
-            .service-notes= timetable.service_notes
+          .mb-2
+            h2.text-xl= `${timetable.timetable_label} | ${timetable.dayListLong}`
+              each note in getNotesForTimetableLabel(timetable.notes)
+                include timetable_note_symbol.pug
+            if timetable.service_notes !== null
+              .service-notes= timetable.service_notes
 
         if config.showMap
           .map(id=`map_timetable_id_${formatHtmlId(timetable.timetable_id)}`)
