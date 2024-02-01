@@ -6,7 +6,7 @@ include formatting_functions.pug
     if config.showRouteTitle
       h1.timetable-page-label.text-2xl.pt-4.flex.items-center.gap-2
         each route in _.uniqBy(_.flatMap(timetablePage.consolidatedTimetables, timetable => timetable.routes), 'route_id')
-          .route-color-swatch-large.mr-2.flex-none(style=`background-color: #${route.route_color}; color: #${route.route_text_color}`)= route.route_short_name || ''
+          .route-color-swatch-large.flex-none(style=`background-color: ${formatRouteColor(route)}; color: ${formatRouteTextColor(route)};`)= route.route_short_name || ''
         div= timetablePage.timetable_page_label
       if config.effectiveDate
         .effective-date.text-gray-600.mb-2= `Effective ${config.effectiveDate}`

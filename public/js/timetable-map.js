@@ -3,6 +3,10 @@
 
 const maps = {};
 
+function formatRouteColor(route) {
+  return route.route_color ? `#${route.route_color}` : '#000000';
+}
+
 function formatRouteName(route) {
   let routeName = '';
   if (route.route_short_name !== undefined) {
@@ -22,9 +26,10 @@ function formatRoute(route) {
   html.addClass('route-item text-sm mb-2');
 
   if (route.route_color) {
+    // Only add color swatch if route has a color
     $('<div>')
       .addClass('route-color-swatch mr-2 flex-shrink-0')
-      .css('backgroundColor', route.route_color)
+      .css('backgroundColor', formatRouteColor(route))
       .appendTo(html);
   }
 
@@ -71,7 +76,7 @@ function getBounds(geojson) {
 }
 
 function createMap(id, geojson, routes) {
-  const defaultRouteColor = '#FF4728';
+  const defaultRouteColor = '#000000';
   const lineLayout = {
     'line-join': 'round',
     'line-cap': 'round',

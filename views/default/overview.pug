@@ -13,9 +13,9 @@ include formatting_functions.pug
             a.block.p-2.border-b.border-slate-200(class="hover:bg-slate-100 hover:no-underline" href=`${timetablePage.relativePath}` data-route-ids=`${timetablePage.route_ids ? timetablePage.route_ids.join(',') : ''}`)
               .text-lg.text-gray-800.leading-none= timetablePage.timetable_page_label
               each route in _.uniqBy(_.flatMap(timetablePage.consolidatedTimetables, timetable => timetable.routes), 'route_id')
-                .flex.my-1
-                  .route-color-swatch.flex-none.mr-2(style=`background-color: #${route.route_color}; color: #${route.route_text_color};`)= route.route_short_name || ''
-                  .mt-1.text-gray-600.leading-none= formatRouteName(route)
+                .flex.my-1.items-center.gap-1
+                  .route-color-swatch.flex-none(style=`background-color: ${formatRouteColor(route)}; color: ${formatRouteTextColor(route)};`)= route.route_short_name || ''
+                  .text-gray-600.leading-none= formatRouteName(route)
               .inline-flex.items-center.justify-center.px-2.py-1.text-xs.font-bold.leading-none.text-slate-800.bg-slate-200.rounded-full= timetablePage.dayList
     if config.showMap
       .map.ml-4.h-full.w-full(id="system_map")
