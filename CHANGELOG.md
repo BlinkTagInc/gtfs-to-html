@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Updated
+
+- Improved timetable_page_label for pages with a single timetable
+
 ### Added
 
 - `showCalendarExceptions` configuration option
