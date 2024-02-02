@@ -4,36 +4,31 @@
 const maps = {};
 
 function formatRouteColor(route) {
-  return route.route_color ? `#${route.route_color}` : '#000000';
-}
-
-function formatRouteName(route) {
-  let routeName = '';
-  if (route.route_short_name !== undefined) {
-    routeName += route.route_short_name;
-  } else if (route.route_long_name !== undefined) {
-    routeName += route.route_long_name;
-  }
-
-  return routeName;
+  return route.route_color || '#000000';
 }
 
 function formatRoute(route) {
   const html = route.route_url
-    ? $('<a>').attr('href', route.route_url)
+    ? $('<a>').attr('href', route.route_url).addClass('hover:no-underline')
     : $('<div>');
 
-  html.addClass('route-item text-sm mb-2');
+  html.addClass('route-item text-xs mb-2');
 
   if (route.route_color) {
     // Only add color swatch if route has a color
     $('<div>')
-      .addClass('route-color-swatch mr-2 flex-shrink-0')
-      .css('backgroundColor', formatRouteColor(route))
+      .addClass('flex items-center gap-2')
+      .html([
+        $('<div>')
+          .addClass('route-color-swatch flex-shrink-0 text-white')
+          .css('backgroundColor', formatRouteColor(route))
+          .text(route.route_short_name || ''),
+        $('<div>')
+          .addClass('hover:underline')
+          .text(route.route_long_name || ''),
+      ])
       .appendTo(html);
   }
-
-  $('<span>').text(formatRouteName(route)).appendTo(html);
 
   return html.prop('outerHTML');
 }
@@ -53,7 +48,7 @@ function formatStopPopup(feature, routes) {
     $('<strong>').text(feature.properties.stop_code).appendTo(html);
   }
 
-  $('<div>').text('Routes Served:').appendTo(html);
+  $('<div>').addClass('text-sm').text('Routes Served:').appendTo(html);
 
   $(html).append(routeIds.map((routeId) => formatRoute(routes[routeId])));
 
