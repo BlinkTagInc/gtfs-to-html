@@ -225,32 +225,6 @@ function createSystemMap(id, geojson) {
       firstSymbolId,
     );
 
-    // Add highlighted route white outlines next
-    map.addLayer(
-      {
-        id: `highlighted-route-outlines`,
-        type: 'line',
-        source: {
-          type: 'geojson',
-          data: geojson,
-        },
-        paint: {
-          'line-color': '#FFFFFF',
-          'line-opacity': 1,
-          'line-width': {
-            base: 10,
-            stops: [
-              [14, 16],
-              [18, 40],
-            ],
-          },
-        },
-        layout: lineLayout,
-        filter: ['==', ['get', 'route_id'], 'none'],
-      },
-      firstSymbolId,
-    );
-
     // Add route lines next
     map.addLayer(
       {
@@ -273,6 +247,32 @@ function createSystemMap(id, geojson) {
         },
         layout: lineLayout,
         filter: ['has', 'route_id'],
+      },
+      firstSymbolId,
+    );
+
+    // Add highlighted route white outlines next
+    map.addLayer(
+      {
+        id: `highlighted-route-outlines`,
+        type: 'line',
+        source: {
+          type: 'geojson',
+          data: geojson,
+        },
+        paint: {
+          'line-color': '#FFFFFF',
+          'line-opacity': 1,
+          'line-width': {
+            base: 10,
+            stops: [
+              [14, 16],
+              [18, 40],
+            ],
+          },
+        },
+        layout: lineLayout,
+        filter: ['==', ['get', 'route_id'], 'none'],
       },
       firstSymbolId,
     );
