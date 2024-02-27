@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Better default timetable styles
 - Default route_color and route_text_color values
 - Better system map layer ordering
+- Dependency updates
 
 ### Added
 
