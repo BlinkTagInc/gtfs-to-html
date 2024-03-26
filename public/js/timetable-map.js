@@ -28,6 +28,11 @@ function formatRoute(route) {
           .text(route.route_long_name || ''),
       ])
       .appendTo(html);
+  } else {
+    $('<div>')
+      .addClass('hover:underline')
+      .text(route.route_long_name || '')
+      .appendTo(html);
   }
 
   return html.prop('outerHTML');
@@ -48,7 +53,7 @@ function formatStopPopup(feature, routes) {
     $('<strong>').text(feature.properties.stop_code).appendTo(html);
   }
 
-  $('<div>').addClass('text-sm').text('Routes Served:').appendTo(html);
+  $('<div>').addClass('text-sm mb-2').text('Routes Served:').appendTo(html);
 
   $(html).append(routeIds.map((routeId) => formatRoute(routes[routeId])));
 
