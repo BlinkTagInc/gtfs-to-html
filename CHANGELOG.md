@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix for missing stops
 
+### Updated
+- Dependency updates
+- Day List selector label wording
+- Updates to timetable map
+- Filename format for CSV export files
+
 ## [2.6.0] - 2024-02-27
 
 ### Updated
