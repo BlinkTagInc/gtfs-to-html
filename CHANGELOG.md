@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependency updates
 - Update to timetable page sorting
 
+### Added
+
+- Markdown support in timetable notes
+
 ## [2.6.1] - 2024-03-26
 
 ### Fixed

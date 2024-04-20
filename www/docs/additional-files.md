@@ -13,7 +13,7 @@ By default, GTFS-to-HTML attempts to generate a timetable for each route and dir
 * [timetable_pages.txt](/docs/timetable-pages) - Specifies which HTML timetables should be grouped together into a single HTML page.
 
 ## Adding notes to timetables
-Notes about a specific trip, stop, stoptime, route or timetable can be added to timetables by using `timetable_notes.txt` and `timetable_notes_references.txt` in your GTFS.
+Notes about a specific trip, stop, stoptime, route or timetable can be added to timetables by using `timetable_notes.txt` and `timetable_notes_references.txt` in your GTFS. These notes can include links and other formatting using Markdown syntax.
 
 * [timetable_notes.txt](/docs/timetable-notes) - Specifies notes to be used in timetables.
 * [timetable_notes_references.txt](/docs/timetable-notes-references) - Specifies where notes should be placed in timetables.

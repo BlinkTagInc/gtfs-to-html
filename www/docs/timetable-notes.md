@@ -15,7 +15,7 @@ Notes can have a `symbol` specified or can be left blank and GTFS-to-HTML will a
 | ----------- | ----------- |
 | `note_id` | A unique ID for the timetable note |
 | `symbol` | The symbol used to indicate the note, such as `§`. Optional, if omitted a letter of the alphabet starting with `a` will be used. |
-| `note` | The text of the note, such as "This stop is sometimes underwater". |
+| `note` | The text of the note, such as "This stop is sometimes underwater". [Markdown syntax](https://daringfireball.net/projects/markdown/syntax) is supported which allows including links and formatting. |
 
 ### Example
 
@@ -26,7 +26,8 @@ note_id,symbol,note
 3,,"Trip is cancelled if drawbridge is up"
 4,,"This stop is sometimes underwater"
 5,,"Driver will only stop if prearranged by fax"
-6,§,"Vehicle can arrive early if leap second is added during trip"
+6,§,"Vehicle can arrive early if leap second is added during trip and *will not wait*"
+7,,"[See list of holidays](http://transitagency.org/holidays)"
 ```
 
 An example of this file is located in [examples/timetable_notes.txt](https://github.com/BlinkTagInc/gtfs-to-html/blob/master/examples/timetable_notes.txt).

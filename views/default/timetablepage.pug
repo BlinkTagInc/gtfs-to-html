@@ -54,7 +54,10 @@ include formatting_functions.pug
               if timetable.interpolatedStopSymbolUsed
                 .note(id=`note-${timetable.timetable_id}-interpolated-stop`)= `${config.interpolatedStopSymbol} = ${config.interpolatedStopText}`
               each note in _.uniqBy(timetable.notes, 'note_id')
-                .note(id=`note-${timetable.timetable_id}-${note.note_id}`)= `${note.symbol} = ${note.note}`
+                .note(id=`note-${timetable.timetable_id}-${note.note_id}`)
+                  span= note.symbol 
+                  span &nbsp;=&nbsp;
+                  span!= md(note.note)
 
           if config.showCalendarExceptions && timetable.calendarDates.includedDates.length
             .included-dates= `${config.serviceProvidedOnText}: ${timetable.calendarDates.includedDates.join(', ')}`

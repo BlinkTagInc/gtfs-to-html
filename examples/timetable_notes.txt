@@ -4,4 +4,5 @@ note_id,symbol,note
 3,,"Trip is cancelled if drawbridge is up"
 4,,"This stop is sometimes underwater"
 5,,"Driver will only stop if prearranged by fax"
-6,§,"Vehicle can arrive early if leap second is added during trip"
+6,§,"Vehicle can arrive early if leap second is added during trip and *will not wait*"
+7,,"[See list of holidays](http://transitagency.org/holidays)"
