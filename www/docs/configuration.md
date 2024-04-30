@@ -25,6 +25,7 @@ All files starting with `config*.json` are .gitignored - so you can create multi
 | [`debug`](#debug)                                               | boolean          | Enable logging of SQL queries and other info.                                                    |
 | [`defaultOrientation`](#defaultorientation)                     | string           | Specify timetable orientation, when not specified in `timetables.txt`.                           |
 | [`effectiveDate`](#effectivedate)                               | string           | A date to print at the top of the timetable.                                                     |
+| [`endDate`](#enddate)                                        | string           | A date in ISO 8601 format to use to control which calendars are used for the timetables.                |
 | [`interpolatedStopSymbol`](#interpolatedstopsymbol)             | string           | The symbol used to indicate that a timepoint isn't fixed, but just interpolated.                 |
 | [`interpolatedStopText`](#interpolatedstoptext)                 | string           | The text used to describe a timepoint isn't fixed, but just interpolated.                        |
 | [`linkStopUrls`](#linkStopurls)                                 | boolean          | Whether or not to hyperlink timetable stop names to the `stop_url` defined in `stops.txt`.       |
@@ -56,6 +57,7 @@ All files starting with `config*.json` are .gitignored - so you can create multi
 | [`skipImport`](#skipimport)                                     | boolean          | Whether or not to skip importing GTFS data into SQLite.                                          |
 | [`sortingAlgorithm`](#sortingalgorithm)                         | string           | Defines the trip-sorting algorithm.                                                              |
 | [`sqlitePath`](#sqlitepath)                                     | string           | A path to an SQLite database. Optional, defaults to using an in-memory database.                 |
+| [`startDate`](#startdate)                                     | string           | A date in ISO 8601 format to use to control which calendars are used for the timetables.                |
 | [`templatePath`](#templatepath)                                 | string           | Path to custom pug template for rendering timetable.                                             |
 | [`timeFormat`](#timeformat)                                     | string           | A string defining time format in moment.js style.                                                |
 | [`useParentStation`](#useparentstation)                         | boolean          | Whether or not to use a stop's `parent_station`.                                                 |
@@ -229,6 +231,16 @@ API along with your API token.
 
 ```json
 "effectiveDate": "July 8, 2015"
+```
+
+### endDate
+
+\{String\} A date in ISO 8601 format to use to control which calendars are used for the timetables. Can be used with [startDate](#startdate) configuration options. Can be formatted as `YYYY-MM-DD` or `YYYYMMDD`.
+
+Optional, defaults to using all available calendars if not defined. Overridden by `start_date` and `end_date` defined in `timetables.txt`.
+
+```json
+"endDate": "2024-04-01"
 ```
 
 ### interpolatedStopSymbol
@@ -503,6 +515,16 @@ The default trip-sorting algorithm is `common`.
 
 ```json
 "sqlitePath": "/tmp/gtfs"
+```
+
+### startDate
+
+\{String\} A date in ISO 8601 format to use to control which calendars are used for the timetables. Can be used with [endDate](#enddate) configuration options. Can be formatted as `YYYY-MM-DD` or `YYYYMMDD`.
+
+Optional, defaults to using all available calendars if not defined. Overridden by `start_date` and `end_date` defined in `timetables.txt`.
+
+```json
+"startDate": "2024-03-01"
 ```
 
 ### templatePath
