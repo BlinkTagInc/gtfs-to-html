@@ -51,7 +51,7 @@
     "morgan": "^1.10.0",
     "pretty-error": "^4.0.0",
     "pug": "^3.0.2",
-    "puppeteer": "^22.6.5",
+    "puppeteer": "^22.8.0",
     "sanitize-filename": "^1.6.3",
     "sqlstring": "^2.3.3",
     "timer-machine": "^1.1.0",
