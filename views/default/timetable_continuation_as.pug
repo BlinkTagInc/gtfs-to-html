@@ -1,6 +1,6 @@
 if trip.continues_as_route && trip.continues_as_route.route.route_color
   - var tdStyle = `background: #${trip.continues_as_route.route.route_color};`
-  - var aStyle = 'color: #ffffff;'
+  - var aStyle = `color: #${trip.continues_as_route.route.route_text_color || 'ffffff'};`
 else 
   - var tdStyle = ''
   - var aStyle = ''
