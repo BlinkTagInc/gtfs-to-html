@@ -7,6 +7,7 @@
 -     return memo;
 -   }, 0);
 - }
+- var timetableHasTripNotes = timetable.orderedTrips.flatMap(trip => getNotesForTrip(timetable.notes, trip)).length > 0;
 .table-container
   table(summary= getTimetableSummary(timetable) data-orientation="vertical")
     caption.sr-only= `${timetable.timetable_label} | ${timetable.dayList}`
@@ -15,6 +16,8 @@
         col(id=`stop_id_${formatHtmlId(stop.stop_id)}` class=`stop-${idx}` data-stop-id=`${stop.stop_id}` data-is-timepoint=`${stop.is_timepoint}`)
     thead
       tr
+        if timetableHasTripNotes
+          th
         if timetable.has_continues_from_route
           th.stop-header.continues-from Continues from route
 
@@ -33,6 +36,8 @@
     tbody
       if timetable.frequencies && !timetable.frequencyExactTimes
         tr.trip-row
+          if timetableHasTripNotes
+            td
           if timetable.has_continues_from_route
             td
 
@@ -42,6 +47,10 @@
             td
       each trip, idx in timetable.orderedTrips
         tr.trip-row(id=`trip_id_${formatHtmlId(trip.trip_id)}`)
+          if timetableHasTripNotes
+            td.trip-notes
+              each note in getNotesForTrip(timetable.notes, trip)
+                include timetable_note_symbol.pug
           if timetable.has_continues_from_route
             include timetable_continuation_from.pug
 
