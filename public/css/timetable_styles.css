@@ -162,6 +162,10 @@ a:hover {
   width: auto;
 }
 
+.timetable .table-vertical .trip-row .trip-notes {
+  text-wrap: nowrap;
+}
+
 .route-color-swatch {
   min-width: 34px;
   height: 34px;

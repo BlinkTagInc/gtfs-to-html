@@ -9,7 +9,7 @@
 - }
 - var timetableHasTripNotes = timetable.orderedTrips.flatMap(trip => getNotesForTrip(timetable.notes, trip)).length > 0;
 .table-container
-  table(summary= getTimetableSummary(timetable) data-orientation="vertical")
+  table.table-vertical(summary= getTimetableSummary(timetable) data-orientation="vertical")
     caption.sr-only= `${timetable.timetable_label} | ${timetable.dayList}`
     colgroup
       each stop, idx in timetable.stops
