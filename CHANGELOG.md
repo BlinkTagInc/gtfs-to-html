@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Updated
 - Improved error formatting
 - Text-wrap for timetable notes for trips
+- Dependency updates
 
 ## [2.6.5] - 2024-05-11
 
