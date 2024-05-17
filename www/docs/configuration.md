@@ -81,7 +81,7 @@ API along with your API token.
   "agencies": [
     {
       "agency_key": "county-connection",
-      "url": "http://cccta.org/GTFS/google_transit.zip"
+      "url": "https://countyconnection.com/GTFS/google_transit.zip"
     }
   ]
 }
@@ -278,7 +278,7 @@ const config = {
   agencies: [
     {
       agency_key: 'county-connection',
-      url: 'http://countyconnection.com/GTFS/google_transit.zip',
+      url: 'https://countyconnection.com/GTFS/google_transit.zip',
       exclude: ['shapes'],
     },
   ],
