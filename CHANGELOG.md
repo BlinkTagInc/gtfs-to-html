@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Handle config with no agency_key
 
+### Updated
+- Dependency updates
+
 ## [2.6.6] - 2024-05-14
 
 ### Updated
