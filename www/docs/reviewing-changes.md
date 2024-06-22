@@ -18,8 +18,12 @@ First generate two folders of GTFS-to-HTML output to compare. To make it easy to
 
 Then, install diff2html:
 
+```bash
     npm install -g diff2html-cli
+```
 
 Use the `diff` command and pipe the output to `diff2html` to get a nicely formatted list of the differences between two folders of html files.
 
+```bash
     diff -bur html/folder1 html/folder2 |  diff2html -i stdin
+```

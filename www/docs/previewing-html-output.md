@@ -11,10 +11,14 @@ After an initial run of `gtfs-to-html`, the GTFS data will be downloaded and loa
 
 You can view an individual route HTML on demand by running the included Express app:
 
+```bash
     node app
+```
 
 By default, `gtfs-to-html` will look for a `config.json` file in the project root. To specify a different path for the configuration file:
 
+```bash
     node app --configPath /path/to/your/custom-config.json
+```
 
 Once running, you can view the HTML in your browser at [localhost:3000](http://localhost:3000)
