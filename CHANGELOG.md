@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Stop popup window on map link to streetview
 
+### Updated
+- Dependency updates
+
 ## [2.6.8] - 2024-06-21
 
 ### Updated
