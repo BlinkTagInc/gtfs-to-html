@@ -1,6 +1,6 @@
 include formatting_functions.pug
 
-<!-- Timetable generated on #{Date()} using GTFS-to-HTML version #{config.gtfsToHtmlVersion} -->
+<!-- Timetable generated on #{new Date().toISOString()} using GTFS-to-HTML version #{config.gtfsToHtmlVersion} -->
 .timetable-page(class=`menu-type-${config.menuType}`)
   .container.mx-4(class="md:mx-auto")
     if config.showRouteTitle
