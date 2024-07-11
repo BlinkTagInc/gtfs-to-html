@@ -60,9 +60,22 @@ function formatStopPopup(feature) {
     $('<strong>').text(feature.properties.stop_code).appendTo(html);
   }
 
-  $('<div>').addClass('text-sm').text('Routes Served:').appendTo(html);
+  $('<label>').addClass('block').text('Routes Served:').appendTo(html);
 
   $(html).append(routes.map((route) => formatRoute(route)));
+
+  $('<a>')
+    .addClass(
+      'bg-blue-500 hover:bg-blue-700 text-white font-bold py-1.5 px-3 rounded inline-block hover:no-underline mt-2',
+    )
+    .prop(
+      'href',
+      `https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${feature.geometry.coordinates[1]},${feature.geometry.coordinates[0]}&heading=0&pitch=0&fov=90`,
+    )
+    .prop('target', '_blank')
+    .prop('rel', 'noopener noreferrer')
+    .html('View on Streetview')
+    .appendTo(html);
 
   return html.prop('outerHTML');
 }
