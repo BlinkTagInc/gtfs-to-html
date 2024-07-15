@@ -1,28 +1,28 @@
 include formatting_functions.pug
 
-.container.mx-4.h-screen.items-stretch(class="md:mx-auto md:flex")
+.h-screen.items-stretch(class="md:flex")
   if !timetablePages || !timetablePages.length
     .flex.justify-center
       .bg-blue-700.text-white.font-bold.rounded-lg.border.shadow-lg.text-lg.p-8(class="w-1/2") No timetables found
   else
-    .overview-list.flex-none(class="md:overflow-y-scroll")
+    .overview-list.flex-none(class="md:overflow-y-scroll md:max-w-96")
       each timetablePageGroup in getAgencyTimetableGroups(timetablePages, agencies)
-        h1.text-2xl.pt-4.pb-2= `${formatAgencyName(timetablePageGroup.agency)} Routes`
+        h1.text-2xl.mx-4.py-3= `${formatAgencyName(timetablePageGroup.agency)} Routes`
+  
         each timetablePage in timetablePageGroup.timetablePages
           if config.allowEmptyTimetables || timetablePage.consolidatedTimetables.length > 0
-            a.block.p-2.border-b.border-slate-200(class="hover:bg-slate-100 hover:no-underline" href=`${timetablePage.relativePath}` data-route-ids=`${timetablePage.route_ids ? timetablePage.route_ids.join(',') : ''}`)
-              .text-lg.text-gray-800.leading-none= timetablePage.timetable_page_label
+            a.timetable-overview-label.flex.items-center.gap-2.block.p-2.border-b.border-slate-200(class="hover:bg-slate-100 hover:no-underline" href=`${timetablePage.relativePath}` data-route-ids=`${timetablePage.route_ids ? timetablePage.route_ids.join(',') : ''}`)
               each route in _.uniqBy(_.flatMap(timetablePage.consolidatedTimetables, timetable => timetable.routes), 'route_id')
-                .flex.my-1.items-center.gap-1
-                  .route-color-swatch.flex-none(style=`background-color: ${formatRouteColor(route)}; color: ${formatRouteTextColor(route)};`)= route.route_short_name || ''
-                  .text-gray-600.leading-none= formatRouteName(route)
-              .inline-flex.items-center.justify-center.px-2.py-1.text-xs.font-bold.leading-none.text-slate-800.bg-slate-200.rounded-full= timetablePage.dayList
+                .route-color-swatch-large.flex-none(style=`background-color: ${formatRouteColor(route)}; color: ${formatRouteTextColor(route)};`)= route.route_short_name || ''
+              div
+                .text-xl.leading-none.text-slate-800= timetablePage.timetable_page_label
+                .inline-flex.items-center.justify-center.px-2.py-1.text-xs.font-bold.leading-none.text-slate-800.bg-slate-200.rounded-full= timetablePage.dayList
     if config.showMap
-      .map.ml-4.h-full.w-full(id="system_map")
+      .map.h-full.w-full(id="system_map")
 
       //- Use #{variable} format to inject values from pug to client side js
       script.
         (function() {
-          var geojson = !{JSON.stringify(geojson) || '\'\''};
+          const geojson = !{JSON.stringify(geojson) || '\'\''};
           createSystemMap('system_map', geojson);
         })();
