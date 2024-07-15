@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Better date format in timetable comment
 - favicon
 - Improved timetable_page_name fallback
+- Update mapbox version
 
 ## [2.6.9] - 2024-07-11
 
