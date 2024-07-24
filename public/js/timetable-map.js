@@ -58,9 +58,7 @@ function formatStopPopup(feature, routes) {
   $(html).append(routeIds.map((routeId) => formatRoute(routes[routeId])));
 
   $('<a>')
-    .addClass(
-      'bg-blue-500 hover:bg-blue-700 text-white font-bold py-1.5 px-3 rounded inline-block hover:no-underline mt-2',
-    )
+    .addClass('btn-blue btn-sm mt-2')
     .prop(
       'href',
       `https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${feature.geometry.coordinates[1]},${feature.geometry.coordinates[0]}&heading=0&pitch=0&fov=90`,

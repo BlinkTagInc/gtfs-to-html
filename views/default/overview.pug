@@ -3,7 +3,7 @@ include formatting_functions.pug
 .h-screen.items-stretch(class="md:flex")
   if !timetablePages || !timetablePages.length
     .flex.justify-center
-      .bg-blue-700.text-white.font-bold.rounded-lg.border.shadow-lg.text-lg.p-8(class="w-1/2") No timetables found
+      .btn-blue(class="w-1/2") No timetables found
   else
     .overview-list.flex-none(class="md:overflow-y-scroll md:max-w-96")
       each timetablePageGroup in getAgencyTimetableGroups(timetablePages, agencies)

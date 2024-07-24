@@ -21,32 +21,26 @@ $(() => {
     $('#day_list_selector input[name="dayList"]').each((index, element) => {
       $(element)
         .parents('label')
-        .toggleClass('text-white bg-blue-600', $(element).is(':checked'));
+        .toggleClass('btn-blue', $(element).is(':checked'));
       $(element)
         .parents('label')
-        .toggleClass(
-          'text-gray-600 bg-gray-300',
-          $(element).is(':not(:checked)')
-        );
+        .toggleClass('btn-gray', $(element).is(':not(:checked)'));
     });
 
     $('#direction_name_selector input[name="directionName"]').each(
       (index, element) => {
         $(element)
           .parents('label')
-          .toggleClass('text-white bg-blue-600', $(element).is(':checked'));
+          .toggleClass('btn-blue', $(element).is(':checked'));
         $(element)
           .parents('label')
-          .toggleClass(
-            'text-gray-600 bg-gray-300',
-            $(element).is(':not(:checked)')
-          );
-      }
+          .toggleClass('btn-gray', $(element).is(':not(:checked)'));
+      },
     );
 
     const dayList = $('#day_list_selector input[name="dayList"]:checked').val();
     const directionName = $(
-      '#direction_name_selector input[name="directionName"]:checked'
+      '#direction_name_selector input[name="directionName"]:checked',
     ).val();
 
     $('.timetable').hide();
@@ -55,7 +49,7 @@ $(() => {
         dayList +
         '"][data-direction-name="' +
         directionName +
-        '"]'
+        '"]',
     ).attr('id');
     showTimetable(id);
   }

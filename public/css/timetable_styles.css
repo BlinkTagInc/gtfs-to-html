@@ -19,6 +19,45 @@ a:hover {
   display: none;
 }
 
+.btn-blue {
+  color: rgb(255 255 255);
+  padding: 0.75rem 2rem;
+  background-color: rgb(37 99 235);
+  border-radius: 0.375rem;
+  justify-content: center;
+  align-items: center;
+  display: inline-flex;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn-blue:hover {
+  background-color: rgb(29 78 216);
+  text-decoration: none;
+}
+
+.btn-gray {
+  color: rgb(75 85 99);
+  padding: 0.75rem 2rem;
+  background-color: rgb(209 213 219);
+  border-radius: 0.375rem;
+  justify-content: center;
+  align-items: center;
+  display: inline-flex;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn-gray:hover {
+  background-color: rgb(201, 206, 213);
+  text-decoration: none;
+}
+
+.btn-sm {
+  padding: 0.25rem 1rem;
+  border-radius: 0.25rem;
+}
+
 .timetable .stop-header {
   text-align: center;
 }
@@ -261,4 +300,8 @@ a:hover {
   display: flex;
   align-items: center;
   line-height: 1;
+}
+
+.map .mapboxgl-popup-content .mapboxgl-popup-close-button {
+  padding: 0 5px;
 }

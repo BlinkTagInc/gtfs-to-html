@@ -28,7 +28,7 @@ if timetablePage.consolidatedTimetables.length > 1
           div
             h3.font-bold= dayList
             each timetable in group
-              a.mb-2.w-full.flex.items-center.justify-center.px-8.py-3.border.border-transparent.text-base.rounded-md.text-white.bg-blue-600(class="hover:bg-blue-700 md:py-4 md:text-lg md:px-10" href=`#timetable_id_${timetable.timetable_id}`)= timetable.timetable_label
+              a.mb-2.w-full.btn-blue(href=`#timetable_id_${timetable.timetable_id}`)= timetable.timetable_label
 
     if config.menuType === 'radio'
       .grid.grid-cols-1.gap-4(class="md:grid-cols-3")
@@ -37,13 +37,13 @@ if timetablePage.consolidatedTimetables.length > 1
           #direction_name_selector
             h3.font-bold Service Direction
             each directionName, idx in directionNames
-              label.cursor-pointer.mb-2.w-full.flex.items-center.justify-center.px-8.py-3.border.border-transparent.text-base.rounded-md(class=idx === 0 ? 'text-white bg-blue-600': 'text-gray-600 bg-gray-300')
+              label.mb-2.w-full(class=idx === 0 ? 'btn-blue' : 'btn-gray')
                 input.hidden(type="radio" name="directionName" autocomplete="off" value=directionName checked=(idx === 0))
                 span= directionName
         div(hidden=timetablePage.dayLists.length <= 1)
           #day_list_selector
             h3.font-bold Day of Week
             each dayList, idx in timetablePage.dayLists
-              label.cursor-pointer.mb-2.w-full.flex.items-center.justify-center.px-8.py-3.border.border-transparent.text-base.rounded-md(class=idx === 0 ? 'text-white bg-blue-600': 'text-gray-600 bg-gray-300')
+              label.mb-2.w-full(class=idx === 0 ? 'btn-blue' : 'btn-gray')
                 input.hidden(type="radio" name="dayList" autocomplete="off" value=dayList checked=(idx === 0))
                 span= dayList
