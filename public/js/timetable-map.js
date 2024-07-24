@@ -7,6 +7,10 @@ function formatRouteColor(route) {
   return route.route_color || '#000000';
 }
 
+function formatRouteTextColor(route) {
+  return route.route_text_color || '#FFFFFF';
+}
+
 function formatRoute(route) {
   const html = route.route_url
     ? $('<a>').attr('href', route.route_url).addClass('hover:no-underline')
@@ -22,6 +26,7 @@ function formatRoute(route) {
         $('<div>')
           .addClass('route-color-swatch flex-shrink-0 text-white')
           .css('backgroundColor', formatRouteColor(route))
+          .css('color', formatRouteTextColor(route))
           .text(route.route_short_name || ''),
         $('<div>')
           .addClass('hover:underline')
