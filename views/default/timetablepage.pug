@@ -9,7 +9,7 @@ include formatting_functions.pug
           .route-color-swatch-large.flex-none(style=`background-color: ${formatRouteColor(route)}; color: ${formatRouteTextColor(route)};`)= route.route_short_name || ''
         div= timetablePage.timetable_page_label
       if config.effectiveDate
-        .effective-date.text-gray-600.mb-2= `Effective ${config.effectiveDate}`
+        .effective-date.text-gray-600.mt-2= `Effective ${config.effectiveDate}`
 
     include timetable_menu.pug
 
