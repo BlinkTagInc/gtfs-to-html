@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Updated
 - Better default for timetable_page_label
+- Larger map on desktop
 
 ## [2.6.12] - 2024-07-26
 

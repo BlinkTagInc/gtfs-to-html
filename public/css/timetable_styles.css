@@ -354,7 +354,13 @@ a:hover {
 }
 
 .timetable-page .table-horizontal tbody tr th.stop-name-container {
-  min-width: 250px;
+  min-width: 175px;
+}
+
+@media screen and (min-width: 768px) {
+  .timetable-page .table-horizontal tbody tr th.stop-name-container {
+    min-width: 250px;
+  }
 }
 
 .timetable-page .table-hourly {
@@ -392,16 +398,16 @@ a:hover {
   flex-shrink: 0;
 }
 
-@media screen and (max-width: 767px) {
-  .timetable-page .table-horizontal tbody tr th.stop-name-container {
-    min-width: 175px;
-  }
-}
-
 /* Map Styles */
 
 .timetable-page .map {
   min-height: 350px;
+}
+
+@media screen and (min-width: 768px) {
+  .timetable-page .map {
+    min-height: 450px;
+  }
 }
 
 .timetable-page .map .mapboxgl-popup-content .popup-title {
