@@ -1,11 +1,11 @@
 -
   function getTimetableSummary(timetable) {
     let summary = `This table shows schedules for a selection of key stops on the route for ${timetable.timetable_label} ${timetable.dayList}.`;
-    if (timetable.orientation = 'vertical') {
+    if (timetable.orientation === 'vertical') {
       summary += ' Stops and their schedule times are listed in the columns.';
-    } else if (timetable.orientation = 'horizontal') {
+    } else if (timetable.orientation === 'horizontal') {
       summary += ' Schedule times are listed in rows, starting with the stop name in the first cell of the row.';
-    } else if (timetable.orientation = 'hourly') {
+    } else if (timetable.orientation === 'hourly') {
       summary += ' Schedule times are listed in rows, starting with the stop name in the first cell of the row and the minutes after the hour in the second row.';
     }
     return summary;
