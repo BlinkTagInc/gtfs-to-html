@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Better default for timetable_page_label
 - Larger map on desktop
 - Improved button styles
+- Serve static assets from templatePath
+- Move static js and css to views/default
 
 ## [2.6.12] - 2024-07-26
 

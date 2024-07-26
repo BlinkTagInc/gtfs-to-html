@@ -4,9 +4,9 @@ import { readFileSync } from 'node:fs';
 import { map } from 'lodash-es';
 import yargs from 'yargs';
 import { openDb } from 'gtfs';
-
 import express from 'express';
 import logger from 'morgan';
+import untildify from 'untildify';
 
 import { formatTimetableLabel } from '../lib/formatters.js';
 import {
@@ -44,7 +44,7 @@ try {
 } catch (error) {
   if (error instanceof Error && error.code === 'SQLITE_CANTOPEN') {
     config.logError(
-      `Unable to open sqlite database "${config.sqlitePath}" defined as \`sqlitePath\` config.json. Ensure the parent directory exists or remove \`sqlitePath\` from config.json.`
+      `Unable to open sqlite database "${config.sqlitePath}" defined as \`sqlitePath\` config.json. Ensure the parent directory exists or remove \`sqlitePath\` from config.json.`,
     );
   }
 
@@ -59,14 +59,14 @@ router.get('/', async (request, response, next) => {
     const timetablePages = [];
     const timetablePageIds = map(
       getTimetablePagesForAgency(config),
-      'timetable_page_id'
+      'timetable_page_id',
     );
 
     for (const timetablePageId of timetablePageIds) {
       // eslint-disable-next-line no-await-in-loop
       const timetablePage = await getFormattedTimetablePage(
         timetablePageId,
-        config
+        config,
       );
 
       if (
@@ -74,7 +74,7 @@ router.get('/', async (request, response, next) => {
         timetablePage.consolidatedTimetables.length === 0
       ) {
         console.error(
-          `No timetables found for timetable_page_id=${timetablePage.timetable_page_id}`
+          `No timetables found for timetable_page_id=${timetablePage.timetable_page_id}`,
         );
       }
 
@@ -107,7 +107,7 @@ router.get('/timetables/:timetablePageId', async (request, response, next) => {
   try {
     const timetablePage = await getFormattedTimetablePage(
       timetablePageId,
-      config
+      config,
     );
 
     const html = await generateTimetableHTML(timetablePage, config);
@@ -121,9 +121,14 @@ app.set('views', path.join(fileURLToPath(import.meta.url), '../../views'));
 app.set('view engine', 'pug');
 
 app.use(logger('dev'));
-app.use(
-  express.static(path.join(fileURLToPath(import.meta.url), '../../public'))
-);
+
+// Serve static assets
+const staticAssetPath =
+  config.templatePath === undefined
+    ? path.join(fileURLToPath(import.meta.url), '../../views/default')
+    : untildify(config.templatePath);
+
+app.use(express.static(staticAssetPath));
 
 app.use('/', router);
 app.set('port', process.env.PORT || 3000);
