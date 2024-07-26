@@ -1,4 +1,4 @@
-- var columnCount = timetable.stops.length;
+- let columnCount = timetable.stops.length;
 - if (config.showStopCity) {
 -   columnCount += timetable.stops.reduce((memo, stop, index) => {
 -     if (index === 0 || stop.stop_city !== timetable.stops[index - 1].stop_city) {
@@ -7,7 +7,7 @@
 -     return memo;
 -   }, 0);
 - }
-- var timetableHasTripNotes = timetable.orderedTrips.flatMap(trip => getNotesForTrip(timetable.notes, trip)).length > 0;
+- const timetableHasTripNotes = timetable.orderedTrips.flatMap(trip => getNotesForTrip(timetable.notes, trip)).length > 0;
 .table-container
   table.table-vertical(summary= getTimetableSummary(timetable) data-orientation="vertical")
     caption.sr-only= `${timetable.timetable_label} | ${timetable.dayList}`
@@ -21,7 +21,7 @@
         if timetable.has_continues_from_route
           th.stop-header.continues-from Continues from route
 
-        - var previousCity = null;
+        - let previousCity = null;
         each stop, idx in timetable.stops
           if stop.stop_city !== '' && previousCity !== stop.stop_city && config.showStopCity
             th.city-column= stop.stop_city
@@ -54,7 +54,7 @@
           if timetable.has_continues_from_route
             include timetable_continuation_from.pug
 
-          - var previousCity = null;
+          - let previousCity = null;
           each stop in timetable.stops
             if stop.stop_city !== '' && previousCity !== stop.stop_city && config.showStopCity
               td

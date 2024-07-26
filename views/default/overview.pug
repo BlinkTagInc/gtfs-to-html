@@ -1,25 +1,24 @@
 include formatting_functions.pug
 
-.h-screen.items-stretch(class="md:flex")
+.timetable-overview
   if !timetablePages || !timetablePages.length
-    h1.text-2xl.mx-4.py-3 No timetables found
+    h1 No timetables found
   else
-    .overview-list.flex-none(class="md:overflow-y-scroll md:max-w-96")
+    .overview-list
       each timetablePageGroup in getAgencyTimetableGroups(timetablePages, agencies)
-        h1.text-2xl.mx-4.py-3= `${formatAgencyName(timetablePageGroup.agency)} Routes`
-  
+        h1= `${formatAgencyName(timetablePageGroup.agency)} Routes`
         each timetablePage in timetablePageGroup.timetablePages
           if config.allowEmptyTimetables || timetablePage.consolidatedTimetables.length > 0
-            a.timetable-overview-label.flex.items-center.gap-2.block.p-2.border-b.border-slate-200(class="hover:bg-slate-100 hover:no-underline" href=`${timetablePage.relativePath}` data-route-ids=`${timetablePage.route_ids ? timetablePage.route_ids.join(',') : ''}`)
+            a.timetable-page-link(href=`${timetablePage.relativePath}` data-route-ids=`${timetablePage.route_ids ? timetablePage.route_ids.join(',') : ''}`)
               each route in _.uniqBy(_.flatMap(timetablePage.consolidatedTimetables, timetable => timetable.routes), 'route_id')
-                .route-color-swatch-large.flex-none(style=`background-color: ${formatRouteColor(route)}; color: ${formatRouteTextColor(route)};`)= route.route_short_name || ''
+                .route-color-swatch-large(style=`background-color: ${formatRouteColor(route)}; color: ${formatRouteTextColor(route)};`)= route.route_short_name || ''
               div
-                .text-xl.leading-none.text-slate-800= timetablePage.timetable_page_label
-                .inline-flex.items-center.justify-center.px-2.py-1.text-xs.font-bold.leading-none.text-slate-800.bg-slate-200.rounded-full= timetablePage.dayList
+                .timetable-page-label= timetablePage.timetable_page_label
+                .badge-gray= timetablePage.dayList
     if config.showMap
-      .map.h-full.w-full(id="system_map")
+      #system_map.overview-map
 
-      //- Use #{variable} format to inject values from pug to client side js
+      //- Use !{variable} format to inject values from pug to client side js
       script.
         (function() {
           const geojson = !{JSON.stringify(geojson) || '\'\''};

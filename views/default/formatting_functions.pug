@@ -1,6 +1,6 @@
 -
   function getTimetableSummary(timetable) {
-    var summary = `This table shows schedules for a selection of key stops on the route for ${timetable.timetable_label} ${timetable.dayList}.`;
+    let summary = `This table shows schedules for a selection of key stops on the route for ${timetable.timetable_label} ${timetable.dayList}.`;
     if (timetable.orientation = 'vertical') {
       summary += ' Stops and their schedule times are listed in the columns.';
     } else if (timetable.orientation = 'horizontal') {
@@ -16,7 +16,7 @@
   }
 
   function formatFrequencyWarning(frequencies) {
-    var warning = 'Trip times shown below are an example only. ';
+    let warning = 'Trip times shown below are an example only. ';
     frequencies.forEach((frequency, idx) => {
       if (idx === 0) {
         warning += 'This route runs every ';
@@ -89,4 +89,12 @@
       routes,
       geojson: minifiedGeojson
     }
+  }
+
+  function getRouteColorsAsCss (route) {
+    if (route && route.route_color) {
+      return `background: #${route.route_color}; color: #${route.route_text_color ?? 'ffffff'};`
+    }
+
+    return ''
   }

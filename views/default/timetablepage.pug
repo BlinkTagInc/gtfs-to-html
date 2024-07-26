@@ -2,65 +2,64 @@ include formatting_functions.pug
 
 <!-- Timetable generated on #{new Date().toISOString()} using GTFS-to-HTML version #{config.gtfsToHtmlVersion} -->
 .timetable-page(class=`menu-type-${config.menuType}`)
-  .container.mx-4(class="md:mx-auto")
-    if config.showRouteTitle
-      h1.timetable-page-label.text-2xl.pt-4.flex.items-center.gap-2
-        each route in _.uniqBy(_.flatMap(timetablePage.consolidatedTimetables, timetable => timetable.routes), 'route_id')
-          .route-color-swatch-large.flex-none(style=`background-color: ${formatRouteColor(route)}; color: ${formatRouteTextColor(route)};`)= route.route_short_name || ''
-        div= timetablePage.timetable_page_label
-      if config.effectiveDate
-        .effective-date.text-gray-600.mt-2= `Effective ${config.effectiveDate}`
+  if config.showRouteTitle
+    h1
+      each route in _.uniqBy(_.flatMap(timetablePage.consolidatedTimetables, timetable => timetable.routes), 'route_id')
+        .route-color-swatch-large(style=`background-color: ${formatRouteColor(route)}; color: ${formatRouteTextColor(route)};`)= route.route_short_name || ''
+      div= timetablePage.timetable_page_label
+    if config.effectiveDate
+      .effective-date= `Effective ${config.effectiveDate}`
 
-    include timetable_menu.pug
+  include timetable_menu.pug
 
-    each timetable in timetablePage.consolidatedTimetables
-      .timetable.mb-10(id=`timetable_id_${formatHtmlId(timetable.timetable_id)}` data-day-list=timetable.dayList data-direction-name=timetable.direction_name data-timetable-id=timetable.timetable_id data-direction-id=timetable.direction_id data-route-id=timetable.route_ids.join('_'))
-        if config.showRouteTitle
-          .mb-2
-            h2.text-xl= `${timetable.timetable_label} | ${timetable.dayListLong}`
-              each note in getNotesForTimetableLabel(timetable.notes)
-                include timetable_note_symbol.pug
-            if timetable.service_notes !== null
-              .service-notes= timetable.service_notes
+  each timetable in timetablePage.consolidatedTimetables
+    .timetable(id=`timetable_id_${formatHtmlId(timetable.timetable_id)}` data-day-list=timetable.dayList data-direction-name=timetable.direction_name data-timetable-id=timetable.timetable_id data-direction-id=timetable.direction_id data-route-id=timetable.route_ids.join('_'))
+      if config.showRouteTitle
+        .timetable-label
+          h2= `${timetable.timetable_label} | ${timetable.dayListLong}`
+            each note in getNotesForTimetableLabel(timetable.notes)
+              include timetable_note_symbol.pug
+          if timetable.service_notes !== null
+            .timetable-service-notes= timetable.service_notes
 
-        if config.showMap
-          .map(id=`map_timetable_id_${formatHtmlId(timetable.timetable_id)}`)
-          script.
-            (function() {
-              const { id, geojson, routes } = !{JSON.stringify(prepareMapData(timetable))};
-              createMap(id, geojson, routes);
-            })();
+      if config.showMap
+        .map(id=`map_timetable_id_${formatHtmlId(timetable.timetable_id)}`)
+        script.
+          (function() {
+            const { id, geojson, routes } = !{JSON.stringify(prepareMapData(timetable))};
+            createMap(id, geojson, routes);
+          })();
 
-        if timetable.orientation === 'horizontal'
-          include timetable_horizontal.pug
-        else if timetable.orientation === 'hourly'
-          include timetable_hourly.pug
-        else if timetable.orientation === 'vertical'
-          include timetable_vertical.pug
+      if timetable.orientation === 'horizontal'
+        include timetable_horizontal.pug
+      else if timetable.orientation === 'hourly'
+        include timetable_hourly.pug
+      else if timetable.orientation === 'vertical'
+        include timetable_vertical.pug
 
-        .grid.grid-cols-1.gap-4(class="md:grid-cols-3")
-          if hasNotesOrNotices(timetable)
-            .notes
-              if timetable.requestPickupSymbolUsed
-                .note(id=`note-${timetable.timetable_id}-request-pickup`)= `${config.requestPickupSymbol} = ${config.requestPickupText}`
-              if timetable.noPickupSymbolUsed
-                .note(id=`note-${timetable.timetable_id}-no-pickup`)= `${config.noPickupSymbol} = ${config.noPickupText}`
-              if timetable.requestDropoffSymbolUsed
-                .note(id=`note-${timetable.timetable_id}-request-dropoff`)= `${config.requestDropoffSymbol} = ${config.requestDropoffText}`
-              if timetable.noDropoffSymbolUsed
-                .note(id=`note-${timetable.timetable_id}-no-dropoff`)= `${config.noDropoffSymbol} = ${config.noDropoffText}`
-              if timetable.noServiceSymbolUsed
-                .note(id=`note-${timetable.timetable_id}-no-service`)= `${config.noServiceSymbol} = ${config.noServiceText}`
-              if timetable.interpolatedStopSymbolUsed
-                .note(id=`note-${timetable.timetable_id}-interpolated-stop`)= `${config.interpolatedStopSymbol} = ${config.interpolatedStopText}`
-              each note in _.uniqBy(timetable.notes, 'note_id')
-                .note(id=`note-${timetable.timetable_id}-${note.note_id}`)
-                  span= note.symbol 
-                  span &nbsp;=&nbsp;
-                  span!= md(note.note)
+      .timetable-footer
+        if hasNotesOrNotices(timetable)
+          .notes
+            if timetable.requestPickupSymbolUsed
+              .note(id=`note-${timetable.timetable_id}-request-pickup`)= `${config.requestPickupSymbol} = ${config.requestPickupText}`
+            if timetable.noPickupSymbolUsed
+              .note(id=`note-${timetable.timetable_id}-no-pickup`)= `${config.noPickupSymbol} = ${config.noPickupText}`
+            if timetable.requestDropoffSymbolUsed
+              .note(id=`note-${timetable.timetable_id}-request-dropoff`)= `${config.requestDropoffSymbol} = ${config.requestDropoffText}`
+            if timetable.noDropoffSymbolUsed
+              .note(id=`note-${timetable.timetable_id}-no-dropoff`)= `${config.noDropoffSymbol} = ${config.noDropoffText}`
+            if timetable.noServiceSymbolUsed
+              .note(id=`note-${timetable.timetable_id}-no-service`)= `${config.noServiceSymbol} = ${config.noServiceText}`
+            if timetable.interpolatedStopSymbolUsed
+              .note(id=`note-${timetable.timetable_id}-interpolated-stop`)= `${config.interpolatedStopSymbol} = ${config.interpolatedStopText}`
+            each note in _.uniqBy(timetable.notes, 'note_id')
+              .note(id=`note-${timetable.timetable_id}-${note.note_id}`)
+                span= note.symbol 
+                span &nbsp;=&nbsp;
+                span!= md(note.note)
 
-          if config.showCalendarExceptions && timetable.calendarDates.includedDates.length
-            .included-dates= `${config.serviceProvidedOnText}: ${timetable.calendarDates.includedDates.join(', ')}`
+        if config.showCalendarExceptions && timetable.calendarDates.includedDates.length
+          .included-dates= `${config.serviceProvidedOnText}: ${timetable.calendarDates.includedDates.join(', ')}`
 
-          if config.showCalendarExceptions && timetable.calendarDates.excludedDates.length
-            .excluded-dates= `${config.serviceNotProvidedOnText}: ${timetable.calendarDates.excludedDates.join(', ')}`
+        if config.showCalendarExceptions && timetable.calendarDates.excludedDates.length
+          .excluded-dates= `${config.serviceNotProvidedOnText}: ${timetable.calendarDates.excludedDates.join(', ')}`

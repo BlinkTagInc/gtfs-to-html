@@ -1,13 +1,7 @@
-if trip.continues_as_route && trip.continues_as_route.route.route_color
-  - var tdStyle = `background: #${trip.continues_as_route.route.route_color};`
-  - var aStyle = `color: #${trip.continues_as_route.route.route_text_color || 'ffffff'};`
-else 
-  - var tdStyle = ''
-  - var aStyle = ''
-  
-td.run-footer(style=tdStyle)
+- const routeColorCss = trip.continues_as_route ? getRouteColorsAsCss(trip.continues_as_route.route) : ''
+td.run-footer(style=routeColorCss)
   if trip.continues_as_route
     if trip.continues_as_route.route.route_url
-      a.continues-as-route(href=`${trip.continues_as_route.route.route_url}` style=aStyle data-trip-id=trip.continues_as_route.trip_id)= trip.continues_as_route.route.route_short_name
+      a.continues-as-route(href=`${trip.continues_as_route.route.route_url}` style=routeColorCss data-trip-id=trip.continues_as_route.trip_id)= trip.continues_as_route.route.route_short_name
     else
       .continues-as-route(data-trip-id=trip.continues_as_route.trip_id)= trip.continues_as_route.route.route_short_name

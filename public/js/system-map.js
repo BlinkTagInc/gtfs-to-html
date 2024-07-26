@@ -1,5 +1,5 @@
 /* global window, document, _, $, mapboxgl */
-/* eslint no-var: "off", prefer-arrow-callback: "off", no-unused-vars: "off" */
+/* eslint prefer-arrow-callback: "off", no-unused-vars: "off" */
 
 const maps = {};
 
@@ -13,27 +13,30 @@ function formatRouteTextColor(route) {
 
 function formatRoute(route) {
   const html = route.route_url
-    ? $('<a>').attr('href', route.route_url).addClass('hover:no-underline')
+    ? $('<a>').attr('href', route.route_url)
     : $('<div>');
 
-  html.addClass('route-item text-xs mb-2');
+  html.addClass('map-route-item');
+
+  // Only add color swatch if route has a color
+  const routeItemDivs = [];
 
   if (route.route_color) {
-    // Only add color swatch if route has a color
-    $('<div>')
-      .addClass('flex items-center gap-2')
-      .html([
-        $('<div>')
-          .addClass('route-color-swatch flex-shrink-0 text-white')
-          .css('backgroundColor', formatRouteColor(route))
-          .css('color', formatRouteTextColor(route))
-          .text(route.route_short_name || ''),
-        $('<div>')
-          .addClass('hover:underline')
-          .text(route.route_long_name || ''),
-      ])
-      .appendTo(html);
+    routeItemDivs.push(
+      $('<div>')
+        .addClass('route-color-swatch')
+        .css('backgroundColor', formatRouteColor(route))
+        .css('color', formatRouteTextColor(route))
+        .text(route.route_short_name ?? ''),
+    );
   }
+  routeItemDivs.push(
+    $('<div>')
+      .addClass('underline-hover')
+      .text(route.route_long_name ?? `Route ${route.route_short_name}`),
+  );
+
+  html.append(routeItemDivs);
 
   return html.prop('outerHTML');
 }
@@ -60,17 +63,24 @@ function formatStopPopup(feature) {
     .appendTo(html);
 
   if (feature.properties.stop_code ?? false) {
-    $('<label>').addClass('mr-1').text('Stop Code:').appendTo(html);
-
-    $('<strong>').text(feature.properties.stop_code).appendTo(html);
+    $('<div>')
+      .html([
+        $('<label>').addClass('popup-label').text('Stop Code:'),
+        $('<strong>').text(feature.properties.stop_code),
+      ])
+      .appendTo(html);
   }
 
-  $('<label>').addClass('block').text('Routes Served:').appendTo(html);
+  $('<label>').text('Routes Served:').appendTo(html);
 
-  $(html).append(routes.map((route) => formatRoute(route)));
+  $(html).append(
+    $('<div>')
+      .addClass('route-list')
+      .html(routes.map((route) => formatRoute(route))),
+  );
 
   $('<a>')
-    .addClass('btn-blue btn-sm mt-2')
+    .addClass('btn-blue btn-sm')
     .prop(
       'href',
       `https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${feature.geometry.coordinates[1]},${feature.geometry.coordinates[0]}&heading=0&pitch=0&fov=90`,
