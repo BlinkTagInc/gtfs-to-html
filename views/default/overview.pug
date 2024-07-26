@@ -10,10 +10,11 @@ include formatting_functions.pug
         each timetablePage in timetablePageGroup.timetablePages
           if config.allowEmptyTimetables || timetablePage.consolidatedTimetables.length > 0
             a.timetable-page-link(href=`${timetablePage.relativePath}` data-route-ids=`${timetablePage.route_ids ? timetablePage.route_ids.join(',') : ''}`)
-              each route in _.uniqBy(_.flatMap(timetablePage.consolidatedTimetables, timetable => timetable.routes), 'route_id')
+              - const timetableRouteList = _.uniqBy(_.flatMap(timetablePage.consolidatedTimetables, timetable => timetable.routes), 'route_id')
+              each route in timetableRouteList
                 .route-color-swatch-large(style=`background-color: ${formatRouteColor(route)}; color: ${formatRouteTextColor(route)};`)= route.route_short_name || ''
               div
-                .timetable-page-label= timetablePage.timetable_page_label
+                .timetable-page-label= timetablePage.timetable_page_label || timetableRouteList.map(route => formatRouteName(route)).join(' and ')
                 .badge-gray= timetablePage.dayList
     if config.showMap
       #system_map.overview-map

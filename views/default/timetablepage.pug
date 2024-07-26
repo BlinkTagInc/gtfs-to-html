@@ -3,10 +3,11 @@ include formatting_functions.pug
 <!-- Timetable generated on #{new Date().toISOString()} using GTFS-to-HTML version #{config.gtfsToHtmlVersion} -->
 .timetable-page(class=`menu-type-${config.menuType}`)
   if config.showRouteTitle
+    - const timetableRouteList = _.uniqBy(_.flatMap(timetablePage.consolidatedTimetables, timetable => timetable.routes), 'route_id')
     h1
-      each route in _.uniqBy(_.flatMap(timetablePage.consolidatedTimetables, timetable => timetable.routes), 'route_id')
+      each route in timetableRouteList
         .route-color-swatch-large(style=`background-color: ${formatRouteColor(route)}; color: ${formatRouteTextColor(route)};`)= route.route_short_name || ''
-      div= timetablePage.timetable_page_label
+      div= timetablePage.timetable_page_label || timetableRouteList.map(route => formatRouteName(route)).join(' and ')
     if config.effectiveDate
       .effective-date= `Effective ${config.effectiveDate}`
 
