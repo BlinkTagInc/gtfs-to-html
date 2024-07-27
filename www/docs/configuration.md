@@ -235,7 +235,7 @@ API along with your API token.
 
 ### endDate
 
-\{String\} A date in ISO 8601 format to use to control which calendars are used for the timetables. Can be used with [startDate](#startdate) configuration options. Can be formatted as `YYYY-MM-DD` or `YYYYMMDD`.
+\{String\} A date in `YYYYMMDD` format to use to control which calendars are used for the timetables. Can be used with [startDate](#startdate) configuration options.
 
 Optional, defaults to using all available calendars if not defined. Overridden by `start_date` and `end_date` defined in `timetables.txt`.
 
@@ -519,7 +519,7 @@ The default trip-sorting algorithm is `common`.
 
 ### startDate
 
-\{String\} A date in ISO 8601 format to use to control which calendars are used for the timetables. Can be used with [endDate](#enddate) configuration options. Can be formatted as `YYYY-MM-DD` or `YYYYMMDD`.
+\{String\} A date in `YYYYMMDD` format to use to control which calendars are used for the timetables. Can be used with [endDate](#enddate) configuration options.
 
 Optional, defaults to using all available calendars if not defined. Overridden by `start_date` and `end_date` defined in `timetables.txt`.
 

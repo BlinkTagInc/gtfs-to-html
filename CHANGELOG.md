@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixes for horizontal orientation labels
 
 ### Updated
+- Better date format documentation
 - Better default for timetable_page_label
 - Larger map on desktop
 - Improved button styles
