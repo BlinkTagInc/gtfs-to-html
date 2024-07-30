@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Updated
 - Warning about invalid timetable start/end dates
+- Deduplicate timetablePage agency_ids
 
 ## [2.7.0] - 2024-07-27
 
