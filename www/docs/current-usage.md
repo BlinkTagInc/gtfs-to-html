@@ -23,10 +23,12 @@ Many transit agencies use GTFS-to-HTML to generate the schedule pages used on th
 | [Marin Transit](https://marintransit.org)                                     | Marin County, California            |
 | [Morongo Basin Transit Authority](https://mbtabus.com)                        | Morongo Basin, California           |
 | [Mountain Transit](http://mountaintransit.org)                                | Big Bear Valley, California         |
+| [Mountain View Community Shuttle](https://mvcommunityshuttle.com)             | Mountain View, California           |
 | [MVgo](https://mvgo.org)                                                      | Mountain View, California           |
 | [NW Connector](http://www.nworegontransit.org)                                | Northwest Oregon                    |
 | [Palo Verde Valley Transit Agency](http://pvvta.com)                          | Palo Verde Valley, California       |
 | [Petaluma Transit](http://transit.cityofpetaluma.net)                         | Petaluma, California                |
+| [Rogue Valley Transportation District](https://rvtd.org)                      | Medford, Oregon                     |
 | [RTC Washoe](https://www.rtcwashoe.com)                                       | Reno, Nevada                        |
 | [Santa Barbara Metropolitan Transit District](https://sbmtd.gov)              | Santa Barbara, California           |
 | [Sonoma County Transit](http://sctransit.com)                                 | Sonoma County, California           |
