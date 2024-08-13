@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- Handle MultiLineString geojson
+
 ### Updated
 - Warning about invalid timetable start/end dates
 - Deduplicate timetablePage agency_ids

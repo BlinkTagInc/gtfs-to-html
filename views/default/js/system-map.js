@@ -96,11 +96,17 @@ function formatStopPopup(feature) {
 function getBounds(geojson) {
   const bounds = new mapboxgl.LngLatBounds();
   for (const feature of geojson.features) {
-    if (feature.geometry.type === 'Point') {
+    if (feature.geometry.type.toLowerCase() === 'point') {
       bounds.extend(feature.geometry.coordinates);
-    } else if (feature.geometry.type === 'LineString') {
+    } else if (feature.geometry.type.toLowerCase() === 'linestring') {
       for (const coordinate of feature.geometry.coordinates) {
         bounds.extend(coordinate);
+      }
+    } else if (feature.geometry.type.toLowerCase() === 'multilinestring') {
+      for (const linestring of feature.geometry.coordinates) {
+        for (const coordinate of linestring) {
+          bounds.extend(coordinate);
+        }
       }
     }
   }
