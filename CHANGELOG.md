@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Warning about invalid timetable start/end dates
 - Deduplicate timetablePage agency_ids
 - Don't show drop_off_type info for first stoptime of a trip, don't show pickup_type info for last stoptime of a trip.
+- Dependency updates
 
 ## [2.7.0] - 2024-07-27
 
