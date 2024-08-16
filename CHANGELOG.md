@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Updated
 - Updated docker to node 20
+- Dependency updates
 
 ## [2.7.1] - 2024-08-13
 
