@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Updated
 - Convert to Typescript
+- Dependency updates
 
 ## [2.7.2] - 2024-08-16
 
