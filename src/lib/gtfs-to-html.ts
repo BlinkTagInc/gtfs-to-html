@@ -32,11 +32,13 @@ import {
   generateStats,
 } from './utils.js';
 
+import type { IConfig } from '../types/global_interfaces.js';
+
 /*
  * Generate HTML timetables from GTFS.
  */
 /* eslint-disable complexity */
-const gtfsToHtml = async (initialConfig) => {
+const gtfsToHtml = async (initialConfig: IConfig) => {
   const config = setDefaultConfig(initialConfig);
   const timer = new Timer();
 
@@ -48,8 +50,8 @@ const gtfsToHtml = async (initialConfig) => {
 
   try {
     openDb(config);
-  } catch (error) {
-    if (error instanceof Error && error.code === 'SQLITE_CANTOPEN') {
+  } catch (error: any) {
+    if (error?.code === 'SQLITE_CANTOPEN') {
       config.logError(
         `Unable to open sqlite database "${config.sqlitePath}" defined as \`sqlitePath\` config.json. Ensure the parent directory exists or remove \`sqlitePath\` from config.json.`,
       );
@@ -68,15 +70,24 @@ const gtfsToHtml = async (initialConfig) => {
   }
 
   const agencyKey = config.agencies
-    .map((agency) => agency.agency_key ?? 'unknown')
+    .map((agency: { agency_key: string }) => agency.agency_key ?? 'unknown')
     .join('-');
   const exportPath = path.join(process.cwd(), 'html', sanitize(agencyKey));
-  const outputStats = {
+  const outputStats: {
+    timetables: number;
+    timetablePages: number;
+    calendars: number;
+    routes: number;
+    trips: number;
+    stops: number;
+    warnings: string[];
+    [key: string]: number | string[];
+  } = {
     timetables: 0,
     timetablePages: 0,
     calendars: 0,
-    trips: 0,
     routes: 0,
+    trips: 0,
     stops: 0,
     warnings: [],
   };
@@ -109,7 +120,7 @@ const gtfsToHtml = async (initialConfig) => {
       for (const timetable of timetablePage.timetables) {
         for (const warning of timetable.warnings) {
           outputStats.warnings.push(warning);
-          bar.interrupt(warning);
+          bar?.interrupt(warning);
         }
       }
 
@@ -160,17 +171,16 @@ const gtfsToHtml = async (initialConfig) => {
       timetablePages.push(timetablePage);
       const timetableStats = generateStats(timetablePage);
 
-      for (const key of Object.keys(outputStats)) {
-        if (timetableStats[key]) {
-          outputStats[key] += timetableStats[key];
-        }
-      }
-    } catch (error) {
-      outputStats.warnings.push(error.message);
-      bar.interrupt(error.message);
+      outputStats.stops += timetableStats.stops;
+      outputStats.routes += timetableStats.routes;
+      outputStats.trips += timetableStats.trips;
+      outputStats.calendars += timetableStats.calendars;
+    } catch (error: any) {
+      outputStats.warnings.push(error?.message);
+      bar?.interrupt(error.message);
     }
 
-    bar.increment();
+    bar?.increment();
   }
   /* eslint-enable no-await-in-loop */
 

@@ -78,9 +78,13 @@ import {
 } from './time-utils.js';
 import { formatTripNameForCSV } from './template-functions.js';
 
-const { version } = JSON.parse(
-  readFileSync(new URL('../package.json', import.meta.url)),
-);
+import type {
+  IConfig,
+  ITimetable,
+  ITimetablePage,
+} from '../types/global_interfaces.js';
+
+import { version } from '../../package.json';
 
 /*
  * Determine if a stoptime is a timepoint.
@@ -1337,7 +1341,7 @@ export function getTimetablePagesForAgency(config) {
 /*
  * Get a timetable_page by id.
  */
-const getTimetablePageById = (timetablePageId, config) => {
+const getTimetablePageById = (timetablePageId: string, config: IConfig) => {
   // Check if there are any timetable pages defined in `timetable_pages.txt`.
   const timetablePages = getTimetablePages({
     timetable_page_id: timetablePageId,
@@ -1511,23 +1515,14 @@ export function setDefaultConfig(initialConfig) {
 /*
  * Get a timetable page by id.
  */
-export function getFormattedTimetablePage(timetablePageId, config) {
-  const timetablePage = getTimetablePageById(timetablePageId, config);
-
-  timetablePage.consolidatedTimetables = formatTimetables(
-    timetablePage.timetables,
+export function getFormattedTimetablePage(
+  timetablePageId: string,
+  config: IConfig,
+) {
+  const timetablePage = getTimetablePageById(
+    timetablePageId,
     config,
-  );
-  timetablePage.dayList = formatDays(
-    getDaysFromCalendars(timetablePage.consolidatedTimetables),
-    config,
-  );
-  timetablePage.dayLists = uniq(
-    timetablePage.consolidatedTimetables.map((timetable) => timetable.dayList),
-  );
-  timetablePage.route_ids = uniq(
-    flatMap(timetablePage.consolidatedTimetables, 'route_ids'),
-  );
+  ) as ITimetablePage;
 
   const timetableRoutes = getRoutes(
     {
@@ -1536,17 +1531,13 @@ export function getFormattedTimetablePage(timetablePageId, config) {
     ['agency_id'],
   );
 
-  timetablePage.agency_ids = uniq(
-    compact(timetableRoutes.map((route) => route.agency_id)),
+  const consolidatedTimetables = formatTimetables(
+    timetablePage.timetables,
+    config,
   );
 
-  // Set default filename.
-  if (!timetablePage.filename) {
-    timetablePage.filename = `${timetablePage.timetable_page_id}.html`;
-  }
-
   // Get `direction_name` for each timetable.
-  for (const timetable of timetablePage.consolidatedTimetables) {
+  for (const timetable of consolidatedTimetables) {
     if (isNullOrEmpty(timetable.direction_name)) {
       timetable.direction_name = getDirectionHeadsignFromTimetable(timetable);
     }
@@ -1558,34 +1549,49 @@ export function getFormattedTimetablePage(timetablePageId, config) {
     }
   }
 
-  return timetablePage;
+  const formattedTimetablePage = {
+    ...timetablePage,
+    consolidatedTimetables,
+    dayList: formatDays(getDaysFromCalendars(consolidatedTimetables), config),
+    dayLists: uniq(
+      consolidatedTimetables.map((timetable) => timetable.dayList),
+    ),
+    route_ids: uniq(flatMap(consolidatedTimetables, 'route_ids')),
+    agency_ids: uniq(compact(timetableRoutes.map((route) => route.agency_id))),
+    filename:
+      timetablePage.filename ?? `${timetablePage.timetable_page_id}.html`,
+  };
+
+  return formattedTimetablePage;
 }
 
 /*
  * Generate stats about timetable page.
  */
-export const generateStats = (timetablePage) => {
+export const generateStats = (timetablePage: ITimetablePage) => {
+  const routeIds: { [key: string]: boolean } = {};
+  const serviceIds: { [key: string]: boolean } = {};
   const stats = {
     stops: 0,
     trips: 0,
-    route_ids: {},
-    service_ids: {},
+    routes: 0,
+    calendars: 0,
   };
 
   for (const timetable of timetablePage.consolidatedTimetables) {
     stats.stops += timetable.stops.length;
     stats.trips += timetable.orderedTrips.length;
     for (const serviceId of timetable.service_ids) {
-      stats.service_ids[serviceId] = true;
+      serviceIds[serviceId] = true;
     }
 
     for (const routeId of timetable.route_ids) {
-      stats.route_ids[routeId] = true;
+      routeIds[routeId] = true;
     }
   }
 
-  stats.routes = size(stats.route_ids);
-  stats.calendars = size(stats.service_ids);
+  stats.routes = size(routeIds);
+  stats.calendars = size(serviceIds);
 
   return stats;
 };

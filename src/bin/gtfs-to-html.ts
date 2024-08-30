@@ -32,7 +32,7 @@ const { argv } = yargs(hideBin(process.argv))
   })
   .default('showOnlyTimepoint', undefined);
 
-const handleError = (error) => {
+const handleError = (error: any) => {
   const text = error || 'Unknown Error';
   process.stdout.write(`\n${formatError(text)}\n`);
   console.error(pe.render(error));
