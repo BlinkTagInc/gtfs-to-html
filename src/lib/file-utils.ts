@@ -68,7 +68,7 @@ function getTemplatePath(templateFileName, config) {
 
   const templatePath =
     config.templatePath === undefined
-      ? path.join(fileURLToPath(import.meta.url), '../../views/default')
+      ? path.join(fileURLToPath(import.meta.url), '../../../views/default')
       : untildify(config.templatePath);
 
   return path.join(templatePath, `${fullTemplateFileName}.pug`);
@@ -98,7 +98,7 @@ export async function prepDirectory(exportPath) {
 export function copyStaticAssets(config, exportPath) {
   const staticAssetPath =
     config.templatePath === undefined
-      ? path.join(fileURLToPath(import.meta.url), '../../views/default')
+      ? path.join(fileURLToPath(import.meta.url), '../../../views/default')
       : untildify(config.templatePath);
 
   copydir.sync(path.join(staticAssetPath, 'css'), path.join(exportPath, 'css'));

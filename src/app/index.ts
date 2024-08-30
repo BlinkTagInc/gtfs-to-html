@@ -3,6 +3,7 @@ import { fileURLToPath } from 'node:url';
 import { readFileSync } from 'node:fs';
 import { map } from 'lodash-es';
 import yargs from 'yargs';
+import { hideBin } from 'yargs/helpers';
 import { openDb } from 'gtfs';
 import express from 'express';
 import logger from 'morgan';
@@ -17,19 +18,21 @@ import {
   generateTimetableHTML,
 } from '../lib/utils.js';
 
-const { argv } = yargs(process.argv).option('c', {
-  alias: 'configPath',
-  describe: 'Path to config file',
-  default: './config.json',
-  type: 'string',
-});
+const argv = yargs(hideBin(process.argv))
+  .option('c', {
+    alias: 'configPath',
+    describe: 'Path to config file',
+    default: './config.json',
+    type: 'string',
+  })
+  .parseSync();
 
 const app = express();
-const router = new express.Router();
+const router: express.Router = express.Router();
 
 const configPath =
-  argv.configPath || new URL('../config.json', import.meta.url);
-const selectedConfig = JSON.parse(readFileSync(configPath));
+  (argv.configPath as string) || new URL('../../config.json', import.meta.url);
+const selectedConfig = JSON.parse(readFileSync(configPath, 'utf8'));
 
 const config = setDefaultConfig(selectedConfig);
 // Override noHead config option so full HTML pages are generated
@@ -41,8 +44,8 @@ config.logError = console.error;
 
 try {
   openDb(config);
-} catch (error) {
-  if (error instanceof Error && error.code === 'SQLITE_CANTOPEN') {
+} catch (error: any) {
+  if (error?.code === 'SQLITE_CANTOPEN') {
     config.logError(
       `Unable to open sqlite database "${config.sqlitePath}" defined as \`sqlitePath\` config.json. Ensure the parent directory exists or remove \`sqlitePath\` from config.json.`,
     );
@@ -117,7 +120,7 @@ router.get('/timetables/:timetablePageId', async (request, response, next) => {
   }
 });
 
-app.set('views', path.join(fileURLToPath(import.meta.url), '../../views'));
+app.set('views', path.join(fileURLToPath(import.meta.url), '../../../views'));
 app.set('view engine', 'pug');
 
 app.use(logger('dev'));
@@ -125,7 +128,7 @@ app.use(logger('dev'));
 // Serve static assets
 const staticAssetPath =
   config.templatePath === undefined
-    ? path.join(fileURLToPath(import.meta.url), '../../views/default')
+    ? path.join(fileURLToPath(import.meta.url), '../../../views/default')
     : untildify(config.templatePath);
 
 app.use(express.static(staticAssetPath));
@@ -134,5 +137,5 @@ app.use('/', router);
 app.set('port', process.env.PORT || 3000);
 
 const server = app.listen(app.get('port'), () => {
-  console.log(`Express server listening on port ${server.address().port}`);
+  console.log(`Express server listening on port ${app.get('port')}`);
 });
