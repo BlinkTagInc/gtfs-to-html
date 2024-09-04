@@ -5,7 +5,7 @@ title: Quick Start
 
 ## Command Line Usage
 
-The `gtfs-to-html` command-line utility will download the GTFS file specified in `config.js` and then build the HTML timetables and save them in `html/:agency_key`.
+The `gtfs-to-html` command-line utility will download the GTFS file specified in `config.js` and then build the HTML timetables and save them in `html/:agencyKey`.
 
 If you would like to use this library as a command-line utility, you can install it globally directly from [npm](https://npmjs.org):
 ```bash

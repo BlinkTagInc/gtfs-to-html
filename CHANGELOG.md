@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Updated
 - Reorganize template formatting functions
+- Rename agency_key to agencyKey
 
 ## [2.8.1] - 2024-08-30
 

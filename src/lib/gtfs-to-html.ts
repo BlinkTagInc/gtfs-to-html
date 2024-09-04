@@ -70,7 +70,10 @@ const gtfsToHtml = async (initialConfig: IConfig) => {
   }
 
   const agencyKey = config.agencies
-    .map((agency: { agency_key: string }) => agency.agency_key ?? 'unknown')
+    .map(
+      (agency: { agencyKey?: string; agency_key?: string }) =>
+        agency.agencyKey ?? agency.agency_key ?? 'unknown',
+    )
     .join('-');
   const exportPath = path.join(process.cwd(), 'html', sanitize(agencyKey));
   const outputStats: {
