@@ -1,20 +1,4 @@
 -
-  function getTimetableSummary(timetable) {
-    let summary = `This table shows schedules for a selection of key stops on the route for ${timetable.timetable_label} ${timetable.dayList}.`;
-    if (timetable.orientation === 'vertical') {
-      summary += ' Stops and their schedule times are listed in the columns.';
-    } else if (timetable.orientation === 'horizontal') {
-      summary += ' Schedule times are listed in rows, starting with the stop name in the first cell of the row.';
-    } else if (timetable.orientation === 'hourly') {
-      summary += ' Schedule times are listed in rows, starting with the stop name in the first cell of the row and the minutes after the hour in the second row.';
-    }
-    return summary;
-  }
-
-  function isNullOrEmpty(value) {
-    return value === null || value === '';
-  }
-
   function formatFrequencyWarning(frequencies) {
     let warning = 'Trip times shown below are an example only. ';
     frequencies.forEach((frequency, idx) => {
@@ -27,14 +11,6 @@
     });
     warning += '.';
     return warning;
-  }
-
-  function formatAgencyName(agency) {
-    if (!agency || !agency.agency_name) {
-      return '';
-    }  
-
-    return agency.agency_name;
   }
 
   function getAgencyTimetableGroups(timetablePages, agencies) {
@@ -96,7 +72,7 @@
     }
   }
 
-  function getRouteColorsAsCss (route) {
+  function getRouteColorsAsCss(route) {
     if (route && route.route_color) {
       return `background: #${route.route_color}; color: #${route.route_text_color ?? 'ffffff'};`
     }
@@ -105,7 +81,7 @@
   }
 
   function formatRouteName(route) {
-    if (isNullOrEmpty(route.route_long_name)) {
+    if (route.route_long_name === null || route.route_long_name === '') {
       return `Route ${route.route_short_name}`;
     }
 
