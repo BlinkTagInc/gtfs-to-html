@@ -1,6 +1,6 @@
 {
   "name": "gtfs-to-html",
-  "version": "2.9.0",
+  "version": "2.9.1",
   "private": false,
   "description": "Build human readable transit timetables as HTML, PDF or CSV from GTFS",
   "keywords": [
