@@ -6,11 +6,11 @@ block extraHeader
   if config.showMap
     script(src="https://unpkg.com/jquery@3.7.1/dist/jquery.min.js" crossorigin="anonymous")
     script(src="https://unpkg.com/lodash@4.17.21/lodash.min.js" crossorigin="anonymous")
-    script(src="https://api.mapbox.com/mapbox-gl-js/v3.5.1/mapbox-gl.js")
+    script(src="https://api.mapbox.com/mapbox-gl-js/v3.6.0/mapbox-gl.js")
     script.
       mapboxgl.accessToken = '#{config.mapboxAccessToken}';
     script(src=`${config.assetPath}js/system-map.js`)
 
-    link(href="https://api.mapbox.com/mapbox-gl-js/v3.5.1/mapbox-gl.css" rel="stylesheet")
+    link(href="https://api.mapbox.com/mapbox-gl-js/v3.6.0/mapbox-gl.css" rel="stylesheet")
 
   link(rel="stylesheet" href=`${config.assetPath}css/overview_styles.css`)

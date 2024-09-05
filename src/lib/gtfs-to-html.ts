@@ -103,7 +103,7 @@ const gtfsToHtml = async (initialConfig: IConfig) => {
   await prepDirectory(exportPath);
 
   if (config.noHead !== true && ['html', 'pdf'].includes(config.outputFormat)) {
-    copyStaticAssets(config, exportPath);
+    await copyStaticAssets(config, exportPath);
   }
 
   const bar = progressBar(

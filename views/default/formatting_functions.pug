@@ -36,39 +36,54 @@
     }), timetableGroup => timetableGroup.agency.agency_name.toLowerCase());
   }
 
-  function prepareMapData(timetable) {
+  function prepareMapData(timetablePage, config) {
     const routes = {}
-    const minifiedGeojson = {
-      type: 'FeatureCollection',
-      features: []
-    }
+    const stops = {}
+    const tripIds = []
+    const geojsons = {}
 
-    for (const feature of timetable.geojson.features) {
-      if (feature.geometry.type.toLowerCase() === 'point') {
-        for (const route of feature.properties.routes) {
-          routes[route.route_id] = route
-        }
+    for (const timetable of timetablePage.consolidatedTimetables) {
+      tripIds.push(...timetable.orderedTrips.map(trip => trip.trip_id))
 
-        feature.properties.routes = feature.properties.routes.map(route => route.route_id)
+      const minifiedGeojson = {
+        type: 'FeatureCollection',
+        features: []
+      }
 
-        minifiedGeojson.features.push(_.omit(feature, ['location_type', 'tts_stop_name']))
-      } else if (feature.geometry.type.toLowerCase() === 'linestring') {
-        feature.properties = {
-          route_color: feature.properties.route_color
-        }
-        minifiedGeojson.features.push(feature)
-      } else if (feature.geometry.type.toLowerCase() === 'multilinestring') {
-        feature.properties = {
-          route_color: feature.properties.route_color
+      for (const feature of timetable.geojson.features) {
+        if (feature.geometry.type.toLowerCase() === 'point') {
+          for (const route of feature.properties.routes) {
+            routes[route.route_id] = route
+          }
+
+          const stop = _.pick(feature.properties, ['stop_id', 'stop_code', 'stop_name'])
+          stops[stop.stop_id] = stop
+
+          feature.properties = {
+            route_ids: feature.properties.routes.map(route => route.route_id),
+            stop_id: feature.properties.stop_id,
+          }
+        } else if (feature.geometry.type.toLowerCase() === 'linestring') {
+          feature.properties = {
+            route_color: feature.properties.route_color
+          }
+        } else if (feature.geometry.type.toLowerCase() === 'multilinestring') {
+          feature.properties = {
+            route_color: feature.properties.route_color
+          }
         }
         minifiedGeojson.features.push(feature)
       }
+
+      geojsons[formatHtmlId(timetable.timetable_id)] = minifiedGeojson
     }
-    
+
     return {
-      id: `timetable_id_${formatHtmlId(timetable.timetable_id)}`,
+      geojsons,
+      tripIds: _.uniq(tripIds),
       routes,
-      geojson: minifiedGeojson
+      stops,
+      gtfsRealtimeUrls: _.pick(config.agencies.find(agency => agency.realtimeVehiclePositions?.url), ['realtimeAlerts', 'realtimeTripUpdates', 'realtimeVehiclePositions']),
     }
   }
 

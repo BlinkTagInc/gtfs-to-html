@@ -14,7 +14,7 @@ $(() => {
 
   function showSelectedTimetable() {
     if ($('.timetable').length === 1) {
-      showTimetable($('.timetable').attr('id'));
+      showTimetable($('.timetable').data('timetable-id'));
       return false;
     }
 
@@ -45,19 +45,13 @@ $(() => {
 
     $('.timetable').hide();
     const id = $(
-      '.timetable[data-day-list="' +
-        dayList +
-        '"][data-direction-name="' +
-        directionName +
-        '"]',
-    ).attr('id');
+      `.timetable[data-day-list="${dayList}"][data-direction-name="${directionName}"]`,
+    ).data('timetable-id');
     showTimetable(id);
   }
 
   function showTimetable(id) {
-    $('#' + id).show();
-    if (typeof maps !== 'undefined' && maps[id]) {
-      maps[id].resize();
-    }
+    $(`#timetable_id_${id}`).show();
+    toggleMap(id);
   }
 });

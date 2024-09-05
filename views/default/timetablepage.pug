@@ -24,13 +24,7 @@ include formatting_functions.pug
             .timetable-service-notes= timetable.service_notes
 
       if config.showMap
-        .map(id=`map_timetable_id_${formatHtmlId(timetable.timetable_id)}`)
-        script.
-          (function() {
-            const { id, geojson, routes } = !{JSON.stringify(prepareMapData(timetable))};
-            createMap(id, geojson, routes);
-          })();
-
+        include timetable_map.pug
       if timetable.orientation === 'horizontal'
         include timetable_horizontal.pug
       else if timetable.orientation === 'hourly'
@@ -64,3 +58,7 @@ include formatting_functions.pug
 
         if config.showCalendarExceptions && timetable.calendarDates.excludedDates.length
           .excluded-dates= `${config.serviceNotProvidedOnText}: ${timetable.calendarDates.excludedDates.join(', ')}`
+
+  script.
+    const { geojsons, tripIds, routes, stops, gtfsRealtimeUrls } = !{JSON.stringify(prepareMapData(timetablePage, config))};
+    createMaps();

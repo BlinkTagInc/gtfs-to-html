@@ -15,7 +15,7 @@ All files starting with `config*.json` are .gitignored - so you can create multi
 
 | option                                                          | type             | description                                                                                      |
 | --------------------------------------------------------------- | ---------------- | ------------------------------------------------------------------------------------------------ |
-| [`agencies`](#agencies)                                         | array            | An array of GTFS files to be imported.                                                           |
+| [`agencies`](#agencies)                                         | array            | An array of GTFS and GTFS-realtime URLs to be imported.                                                           |
 | [`allowEmptyTimetables`](#allowemptytimetables)                 | boolean          | Whether or not to generate timetables that have no trips.                                        |
 | [`beautify`](#beautify)                                         | boolean          | Whether or not to beautify the HTML output.                                                      |
 | [`coordinatePrecision`](#coordinateprecision)                   | integer          | Number of decimal places to include in geoJSON map output.                                       |
@@ -66,13 +66,9 @@ All files starting with `config*.json` are .gitignored - so you can create multi
 
 ### agencies
 
-{Array} Specify the GTFS files to be imported in an `agencies` array. GTFS files can be imported via a `url` or a local `path`.
+{Array} Specify the GTFS to be imported in an `agencies` array. GTFS files can be imported via a `url` or a local `path`. GTFS-Realtime URLs can be specified using `realtimeTripUpdates` and `realtimeVehiclePositions` to support showing realtime vehicle positions and trip updates on a map.
 
-Each file needs an `agency_key`, a short name you create that is specific to that GTFS file. For GTFS files that contain more than one agency, you only need to list each GTFS file once in the `agencies` array, not once per agency that it contains.
-
-To find an agency's GTFS file, visit [transitfeeds.com](http://transitfeeds.com). You can use the
-URL from the agency's website or you can use a URL generated from the transitfeeds.com
-API along with your API token.
+Each GTFS needs an `agencyKey`, a short name you create that is specific to that GTFS file.
 
 - Specify a download URL:
 
@@ -80,7 +76,7 @@ API along with your API token.
 {
   "agencies": [
     {
-      "agency_key": "county-connection",
+      "agencyKey": "county-connection",
       "url": "https://countyconnection.com/GTFS/google_transit.zip"
     }
   ]
@@ -93,7 +89,7 @@ API along with your API token.
 {
   "agencies": [
     {
-      "agency_key": "myAgency",
+      "agencyKey": "myAgency",
       "path": "/path/to/the/gtfs.zip"
     }
   ]
@@ -106,8 +102,39 @@ API along with your API token.
 {
   "agencies": [
     {
-      "agency_key": "myAgency",
+      "agencyKey": "myAgency",
       "path": "/path/to/the/unzipped/gtfs/"
+    }
+  ]
+}
+```
+
+- Add GTFS-Realtime urls to enable vehicle positions on the route map. Each GTFS-Realtime field accepts an object with a `url` field and optional `headers` field to specify HTTP headers to include with the request, usually for authorization purposes.
+
+```json
+{
+  "agencies": [
+    {
+      "agencyKey": "marintransit",
+      "url": "https://marintransit.org/data/google_transit.zip",
+      "realtimeAlerts": {
+        "url": "https://api.marintransit.org/alerts",
+        "headers": {
+          "Authorization": "bearer 123456780"
+        }
+      },
+      "realtimeTripUpdates": {
+        "url": "https://api.marintransit.org/tripupdates",
+        "headers": {
+          "Authorization": "bearer 123456780"
+        }
+      },
+      "realtimeVehiclePositions": {
+        "url": "https://api.marintransit.org/vehiclepositions",
+        "headers": {
+          "Authorization": "bearer 123456780"
+        }
+      }
     }
   ]
 }
@@ -119,7 +146,7 @@ API along with your API token.
 {
   "agencies": [
     {
-      "agency_key": "myAgency",
+      "agencyKey": "myAgency",
       "path": "/path/to/the/unzipped/gtfs/",
       "exclude": [
         "shapes",
@@ -136,7 +163,7 @@ API along with your API token.
 {
   "agencies": [
     {
-      "agency_key": "myAgency",
+      "agencyKey": "myAgency",
       "path": "/path/to/the/unzipped/gtfs/",
       "proj": "+proj=lcc +lat_1=46.8 +lat_0=46.8 +lon_0=0 +k_0=0.99987742 +x_0=600000 +y_0=2200000 +a=6378249.2 +b=6356515 +towgs84=-168,-60,320,0,0,0,0 +pm=paris +units=m +no_defs"
     }
@@ -150,11 +177,11 @@ API along with your API token.
 {
   "agencies": [
     {
-      "agency_key": "myAgency",
+      "agencyKey": "myAgency",
       "path": "/path/to/the/gtfs.zip"
     },
     {
-      "agency_key": "otherAgency",
+      "agencyKey": "otherAgency",
       "path": "/path/to/the/othergtfs.zip"
     }
   ]
@@ -277,7 +304,7 @@ import gtfsToHtml from 'gtfs-to-html';
 const config = {
   agencies: [
     {
-      agency_key: 'county-connection',
+      agencyKey: 'county-connection',
       url: 'https://countyconnection.com/GTFS/google_transit.zip',
       exclude: ['shapes'],
     },

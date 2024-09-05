@@ -89,12 +89,12 @@ a:hover {
 }
 
 .timetable-overview .route-color-swatch {
-  min-width: 34px;
-  height: 34px;
-  border-radius: 17px;
+  min-width: 29px;
+  height: 29px;
+  border-radius: 50%;
   text-align: center;
-  line-height: 34px;
-  font-size: 14px;
+  line-height: 26px;
+  font-size: 12px;
   letter-spacing: -0.5px;
   padding: 0 5px;
   flex: none;
@@ -104,7 +104,7 @@ a:hover {
 .timetable-overview .route-color-swatch-large {
   min-width: 46px;
   height: 46px;
-  border-radius: 23px;
+  border-radius: 50%;
   text-align: center;
   line-height: 46px;
   font-size: 20px;
@@ -114,6 +114,7 @@ a:hover {
   flex: none;
   flex-shrink: 0;
 }
+
 
 .timetable-overview .btn-blue {
   color: rgb(255 255 255);

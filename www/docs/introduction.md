@@ -28,7 +28,8 @@ Custom notes, like "No express service during a full moon" can be programaticall
 
 ## Auto-generated maps
 
-GTFS-to-HTML can also generate a map for each route that can be included with the schedule page. The map shows all stops for the route and lists all routes that serve each stop. See the `showMap` configuration option below.
+GTFS-to-HTML can also generate a map for each route that can be included with the schedule page. The map shows all stops for the route and lists all routes that serve each stop. Maps can also show realtime vehicle locations and predicted arrival times from GTFS-realtime data.
+
 
 Note: If you only want maps of GTFS data, use the [gtfs-to-geojson](https://github.com/blinktaginc/gtfs-to-geojson) package instead and skip making timetables entirely. If offers many different formats of GeoJSON for routes and stops.
 

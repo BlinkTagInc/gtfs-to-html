@@ -372,12 +372,12 @@ a:hover {
 }
 
 .timetable-page .route-color-swatch {
-  min-width: 34px;
-  height: 34px;
-  border-radius: 17px;
+  min-width: 29px;
+  height: 29px;
+  border-radius: 50%;
   text-align: center;
-  line-height: 34px;
-  font-size: 14px;
+  line-height: 26px;
+  font-size: 12px;
   letter-spacing: -0.5px;
   padding: 0 5px;
   flex: none;
@@ -387,7 +387,7 @@ a:hover {
 .timetable-page .route-color-swatch-large {
   min-width: 46px;
   height: 46px;
-  border-radius: 23px;
+  border-radius: 50%;
   text-align: center;
   line-height: 46px;
   font-size: 20px;
@@ -399,6 +399,10 @@ a:hover {
 }
 
 /* Map Styles */
+
+.timetable-page .map-container {
+  position: relative;
+}
 
 .timetable-page .map {
   min-height: 350px;
@@ -444,4 +448,66 @@ a:hover {
 
 .timetable-page .map .mapboxgl-popup-content .mapboxgl-popup-close-button {
   padding: 0 5px;
+}
+
+.timetable-page .map-legend {
+  max-width: 30%;
+  background-color: #fff;
+  border-radius: 3px;
+  bottom: 30px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  position: absolute;
+  left: 10px;
+  bottom: 35px;
+  z-index: 1;
+}
+
+.timetable-page .map-legend .legend-item {
+  padding: 5px 0;
+  display: flex;
+  flex-direction: row;
+  align-items: start;
+  gap: 4px;
+}
+
+.timetable-page .map-legend .legend-item .legend-icon {
+  width: 22px;
+  padding-top: 3px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.timetable-page .map-legend .legend-item .legend-text {
+  font-size: 12px;
+}
+
+.timetable-page .stop-marker {
+  background: #FFFFFF;
+  border: 2px solid #3f4a5c;
+  border-radius: 50%;
+  width: 12px;
+  height: 12px;
+}
+
+.timetable-page .vehicle-marker {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #d52f3e;
+  border: 1px solid #50161c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.timetable-page .vehicle-marker .vehicle-marker-arrow {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 384 512'%3E%3Cpath d='M214.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 141.2 160 448c0 17.7 14.3 32 32 32s32-14.3 32-32l0-306.7L329.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 14px;
+  height: 14px;
 }

@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Add support for GTFS-Realtime
+
 ### Updated
 - Reorganize template formatting functions
 - Rename agency_key to agencyKey

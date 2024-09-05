@@ -1,9 +1,8 @@
 import path from 'node:path';
 import { createWriteStream } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { readFile, rm, mkdir } from 'node:fs/promises';
+import { cp, copyFile, readFile, rm, mkdir } from 'node:fs/promises';
 
-import copydir from 'copy-dir';
 import _ from 'lodash-es';
 import archiver from 'archiver';
 import beautify from 'js-beautify';
@@ -95,14 +94,30 @@ export async function prepDirectory(exportPath) {
 /*
  * Copy needed CSS and JS to export path.
  */
-export function copyStaticAssets(config, exportPath) {
+export async function copyStaticAssets(config, exportPath) {
   const staticAssetPath =
     config.templatePath === undefined
       ? path.join(fileURLToPath(import.meta.url), '../../../views/default')
       : untildify(config.templatePath);
 
-  copydir.sync(path.join(staticAssetPath, 'css'), path.join(exportPath, 'css'));
-  copydir.sync(path.join(staticAssetPath, 'js'), path.join(exportPath, 'js'));
+  await cp(path.join(staticAssetPath, 'css'), path.join(exportPath, 'css'), {
+    recursive: true,
+  });
+  await cp(path.join(staticAssetPath, 'js'), path.join(exportPath, 'js'), {
+    recursive: true,
+  });
+
+  // Add libraries needed for GTFS-Realtime if present
+  if (config.hasGtfsRealtime) {
+    await copyFile(
+      'node_modules/pbf/dist/pbf.js',
+      path.join(exportPath, 'js/pbf.js'),
+    );
+    await copyFile(
+      'node_modules/gtfs-realtime-pbf-js-module/gtfs-realtime.browser.proto.js',
+      path.join(exportPath, 'js/gtfs-realtime.browser.proto.js'),
+    );
+  }
 }
 
 /*

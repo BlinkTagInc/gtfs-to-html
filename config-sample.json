@@ -1,8 +1,17 @@
 {
   "agencies": [
     {
-      "agencyKey": "bart",
-      "url": "http://www.bart.gov/dev/schedules/google_transit.zip"
+      "agencyKey": "marintransit",
+      "url": "https://marintransit.org/data/google_transit.zip",
+      "realtimeAlerts": {
+        "url": "https://api.marintransit.org/alerts"
+      },
+      "realtimeTripUpdates": {
+        "url": "https://api.marintransit.org/tripupdates"
+      },
+      "realtimeVehiclePositions": {
+        "url": "https://api.marintransit.org/vehiclepositions"
+      }
     }
   ],
   "sqlitePath": "/tmp/gtfs",

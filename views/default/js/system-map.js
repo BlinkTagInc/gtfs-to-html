@@ -129,7 +129,7 @@ function createSystemMap(id, geojson) {
   const bounds = getBounds(geojson);
   const map = new mapboxgl.Map({
     container: id,
-    style: 'mapbox://styles/mapbox/light-v10',
+    style: 'mapbox://styles/mapbox/light-v11',
     center: bounds.getCenter(),
     zoom: 12,
   });

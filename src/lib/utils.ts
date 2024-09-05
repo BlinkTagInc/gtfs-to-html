@@ -1505,9 +1505,15 @@ export function setDefaultConfig(initialConfig) {
   const config = Object.assign(defaults, initialConfig);
 
   if (config.outputFormat === 'pdf') {
-    // Force noHead to false to false if pdfs are asked for
+    // Force `noHead` to false to false if pdfs are asked for
     config.noHead = false;
   }
+
+  // Add `hasGtfsRealtime` to config if gtfs realtime URLs are present
+  config.hasGtfsRealtime = config.agencies.some(
+    (agency) =>
+      agency.realtimeTripUpdates?.url || agency.realtimeVehiclePositions?.url,
+  );
 
   return config;
 }

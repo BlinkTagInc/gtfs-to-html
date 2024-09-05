@@ -132,6 +132,21 @@ const staticAssetPath =
     : untildify(config.templatePath);
 
 app.use(express.static(staticAssetPath));
+app.use(
+  '/js',
+  express.static(
+    path.join(fileURLToPath(import.meta.url), '../../../node_modules/pbf/dist'),
+  ),
+);
+app.use(
+  '/js',
+  express.static(
+    path.join(
+      fileURLToPath(import.meta.url),
+      '../../../node_modules/gtfs-realtime-pbf-js-module',
+    ),
+  ),
+);
 
 app.use('/', router);
 app.set('port', process.env.PORT || 3000);
