@@ -1,7 +1,7 @@
 import path from 'node:path';
 import { createWriteStream } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { cp, copyFile, readFile, rm, mkdir } from 'node:fs/promises';
+import { access, cp, copyFile, mkdir, readFile, rm } from 'node:fs/promises';
 
 import _ from 'lodash-es';
 import archiver from 'archiver';
@@ -100,12 +100,23 @@ export async function copyStaticAssets(config, exportPath) {
       ? path.join(fileURLToPath(import.meta.url), '../../../views/default')
       : untildify(config.templatePath);
 
-  await cp(path.join(staticAssetPath, 'css'), path.join(exportPath, 'css'), {
-    recursive: true,
-  });
-  await cp(path.join(staticAssetPath, 'js'), path.join(exportPath, 'js'), {
-    recursive: true,
-  });
+  const foldersToCopy = ['css', 'js', 'img'];
+
+  for (const folder of foldersToCopy) {
+    if (
+      await access(path.join(staticAssetPath, folder))
+        .then(() => true)
+        .catch(() => false)
+    ) {
+      await cp(
+        path.join(staticAssetPath, folder),
+        path.join(exportPath, folder),
+        {
+          recursive: true,
+        },
+      );
+    }
+  }
 
   // Add libraries needed for GTFS-Realtime if present
   if (config.hasGtfsRealtime) {
