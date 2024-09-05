@@ -1,13 +1,16 @@
 /* Base styles */
 body {
   color: #666;
-  font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-family: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   font-feature-settings: normal;
   line-height: inherit;
   margin: 0;
 }
 
-*, ::before, ::after {
+*,
+::before,
+::after {
   box-sizing: border-box;
   border-width: 0;
   border-style: solid;
@@ -35,7 +38,6 @@ a:hover {
 }
 
 /* Overview styles */
-
 
 .timetable-overview {
   height: 100vh;
@@ -85,7 +87,7 @@ a:hover {
 .timetable-overview a.timetable-page-link .timetable-page-label {
   font-size: 1.25rem;
   line-height: 1;
-  color: rgb(30 41 59)
+  color: rgb(30 41 59);
 }
 
 .timetable-overview .route-color-swatch {
@@ -114,7 +116,6 @@ a:hover {
   flex: none;
   flex-shrink: 0;
 }
-
 
 .timetable-overview .btn-blue {
   color: rgb(255 255 255);
@@ -195,4 +196,3 @@ a:hover {
 .overview-map .mapboxgl-popup-content .mapboxgl-popup-close-button {
   padding: 0 5px;
 }
-

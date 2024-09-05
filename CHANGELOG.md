@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Updated
 - Hide menu on PDF export
+- Improved styles for PDF export
 
 ## [2.9.0] - 2024-09-05
 
