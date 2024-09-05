@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Better checks for copying static assets
+- Emulate print for PDF creation in puppeteer
 
 ### Updated
 - Hide menu on PDF export

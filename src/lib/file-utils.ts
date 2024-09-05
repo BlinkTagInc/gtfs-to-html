@@ -216,7 +216,7 @@ export async function renderPdf(htmlPath) {
   const pdfPath = htmlPath.replace(/html$/, 'pdf');
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
-  await page.emulateMediaType('screen');
+  await page.emulateMediaType('print');
   await page.goto(`file://${htmlPath}`, {
     waitUntil: 'networkidle0',
   });
