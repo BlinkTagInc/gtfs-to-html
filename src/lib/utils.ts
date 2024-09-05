@@ -1507,6 +1507,7 @@ export function setDefaultConfig(initialConfig) {
   if (config.outputFormat === 'pdf') {
     // Force `noHead` to false to false if pdfs are asked for
     config.noHead = false;
+    config.menuType = 'none';
   }
 
   // Add `hasGtfsRealtime` to config if gtfs realtime URLs are present

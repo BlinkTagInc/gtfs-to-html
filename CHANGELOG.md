@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Better checks for copying static assets
 
+### Updated
+- Hide menu on PDF export
+
 ## [2.9.0] - 2024-09-05
 
 ### Added
