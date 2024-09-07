@@ -1,4 +1,4 @@
-import path from 'node:path';
+import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { readFileSync } from 'node:fs';
 import { map } from 'lodash-es';
@@ -10,6 +10,7 @@ import logger from 'morgan';
 import untildify from 'untildify';
 
 import { formatTimetableLabel } from '../lib/formatters.js';
+import { getPathToViewsFolder } from '../lib/file-utils.js';
 import {
   setDefaultConfig,
   getTimetablePagesForAgency,
@@ -31,7 +32,7 @@ const app = express();
 const router: express.Router = express.Router();
 
 const configPath =
-  (argv.configPath as string) || new URL('../../config.json', import.meta.url);
+  (argv.configPath as string) || join(process.cwd(), 'config.json');
 const selectedConfig = JSON.parse(readFileSync(configPath, 'utf8'));
 
 const config = setDefaultConfig(selectedConfig);
@@ -120,7 +121,7 @@ router.get('/timetables/:timetablePageId', async (request, response, next) => {
   }
 });
 
-app.set('views', path.join(fileURLToPath(import.meta.url), '../../../views'));
+app.set('views', getPathToViewsFolder(config));
 app.set('view engine', 'pug');
 
 app.use(logger('dev'));
@@ -128,23 +129,20 @@ app.use(logger('dev'));
 // Serve static assets
 const staticAssetPath =
   config.templatePath === undefined
-    ? path.join(fileURLToPath(import.meta.url), '../../../views/default')
+    ? getPathToViewsFolder(config)
     : untildify(config.templatePath);
 
 app.use(express.static(staticAssetPath));
 app.use(
   '/js',
   express.static(
-    path.join(fileURLToPath(import.meta.url), '../../../node_modules/pbf/dist'),
+    join(dirname(fileURLToPath(import.meta.resolve('pbf'))), 'dist'),
   ),
 );
 app.use(
   '/js',
   express.static(
-    path.join(
-      fileURLToPath(import.meta.url),
-      '../../../node_modules/gtfs-realtime-pbf-js-module',
-    ),
+    dirname(fileURLToPath(import.meta.resolve('gtfs-realtime-pbf-js-module'))),
   ),
 );
 

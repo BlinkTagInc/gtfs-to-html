@@ -1,4 +1,4 @@
-import path from 'node:path';
+import { dirname, join, resolve } from 'node:path';
 import { createWriteStream } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { access, cp, copyFile, mkdir, readFile, rm } from 'node:fs/promises';
@@ -29,7 +29,7 @@ export async function getConfig(argv) {
   let config;
 
   try {
-    data = await readFile(path.resolve(untildify(argv.configPath)), 'utf8');
+    data = await readFile(resolve(untildify(argv.configPath)), 'utf8');
   } catch (error) {
     throw new Error(
       `Cannot find configuration file at \`${argv.configPath}\`. Use config-sample.json as a starting point, pass --configPath option`,
@@ -56,21 +56,41 @@ export async function getConfig(argv) {
 }
 
 /*
- * Get the full path of the template file for generating timetables based on
- * config.
+ * Get the full path to the views folder.
  */
-function getTemplatePath(templateFileName, config) {
-  let fullTemplateFileName = templateFileName;
-  if (config.noHead !== true) {
-    fullTemplateFileName += '_full';
+export function getPathToViewsFolder(config) {
+  if (config.templatePath) {
+    return untildify(config.templatePath);
   }
 
-  const templatePath =
-    config.templatePath === undefined
-      ? path.join(fileURLToPath(import.meta.url), '../../../views/default')
-      : untildify(config.templatePath);
+  const __dirname = dirname(fileURLToPath(import.meta.url));
 
-  return path.join(templatePath, `${fullTemplateFileName}.pug`);
+  // Dynamically calculate the path to the views directory
+  let viewsFolderPath;
+  if (__dirname.endsWith('/dist/bin') || __dirname.endsWith('/dist/app')) {
+    // When the file is in 'dist/bin' or 'dist/app'
+    viewsFolderPath = resolve(__dirname, '../../views/default');
+  } else if (__dirname.endsWith('/dist')) {
+    // When the file is in 'dist'
+    viewsFolderPath = resolve(__dirname, '../views/default');
+  } else {
+    // In case it's neither, fallback to project root
+    viewsFolderPath = resolve(__dirname, 'views/default');
+  }
+
+  return viewsFolderPath;
+}
+
+/*
+ * Get the full path of a template file.
+ */
+function getPathToTemplateFile(templateFileName: string, config) {
+  const fullTemplateFileName =
+    config.noHead !== true
+      ? `${templateFileName}_full.pug`
+      : `${templateFileName}.pug`;
+
+  return join(getPathToViewsFolder(config), fullTemplateFileName);
 }
 
 /*
@@ -95,26 +115,19 @@ export async function prepDirectory(exportPath) {
  * Copy needed CSS and JS to export path.
  */
 export async function copyStaticAssets(config, exportPath) {
-  const staticAssetPath =
-    config.templatePath === undefined
-      ? path.join(fileURLToPath(import.meta.url), '../../../views/default')
-      : untildify(config.templatePath);
+  const viewsFolderPath = getPathToViewsFolder(config);
 
   const foldersToCopy = ['css', 'js', 'img'];
 
   for (const folder of foldersToCopy) {
     if (
-      await access(path.join(staticAssetPath, folder))
+      await access(join(viewsFolderPath, folder))
         .then(() => true)
         .catch(() => false)
     ) {
-      await cp(
-        path.join(staticAssetPath, folder),
-        path.join(exportPath, folder),
-        {
-          recursive: true,
-        },
-      );
+      await cp(join(viewsFolderPath, folder), join(exportPath, folder), {
+        recursive: true,
+      });
     }
   }
 
@@ -122,11 +135,11 @@ export async function copyStaticAssets(config, exportPath) {
   if (config.hasGtfsRealtime) {
     await copyFile(
       'node_modules/pbf/dist/pbf.js',
-      path.join(exportPath, 'js/pbf.js'),
+      join(exportPath, 'js/pbf.js'),
     );
     await copyFile(
       'node_modules/gtfs-realtime-pbf-js-module/gtfs-realtime.browser.proto.js',
-      path.join(exportPath, 'js/gtfs-realtime.browser.proto.js'),
+      join(exportPath, 'js/gtfs-realtime.browser.proto.js'),
     );
   }
 }
@@ -135,7 +148,7 @@ export async function copyStaticAssets(config, exportPath) {
  * Zips the content of the specified folder.
  */
 export function zipFolder(exportPath) {
-  const output = createWriteStream(path.join(exportPath, 'timetables.zip'));
+  const output = createWriteStream(join(exportPath, 'timetables.zip'));
   const archive = archiver('zip');
 
   return new Promise((resolve, reject) => {
@@ -187,7 +200,7 @@ export function generateFolderName(timetablePage) {
  * Render the HTML for a timetable based on the config.
  */
 export async function renderTemplate(templateFileName, templateVars, config) {
-  const templatePath = getTemplatePath(templateFileName, config);
+  const templatePath = getPathToTemplateFile(templateFileName, config);
 
   // Make template functions, lodash and marked available inside pug templates.
   const html = await renderFile(templatePath, {
