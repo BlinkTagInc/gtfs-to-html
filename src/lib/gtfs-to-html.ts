@@ -5,6 +5,7 @@ import { map } from 'lodash-es';
 import { openDb, importGtfs } from 'gtfs';
 import sanitize from 'sanitize-filename';
 import Timer from 'timer-machine';
+import untildify from 'untildify';
 
 import {
   prepDirectory,
@@ -65,7 +66,6 @@ const gtfsToHtml = async (initialConfig: IConfig) => {
   }
 
   if (!config.skipImport) {
-    // Import GTFS
     await importGtfs(config);
   }
 
@@ -75,8 +75,10 @@ const gtfsToHtml = async (initialConfig: IConfig) => {
         agency.agencyKey ?? agency.agency_key ?? 'unknown',
     )
     .join('-');
-  const exportPath = path.join(process.cwd(), 'html', sanitize(agencyKey));
-  const outputStats: {
+  const outputPath = config.outputPath
+    ? untildify(config.outputPath)
+    : path.join(process.cwd(), 'html', sanitize(agencyKey));
+  const stats: {
     timetables: number;
     timetablePages: number;
     calendars: number;
@@ -100,10 +102,10 @@ const gtfsToHtml = async (initialConfig: IConfig) => {
     getTimetablePagesForAgency(config),
     'timetable_page_id',
   );
-  await prepDirectory(exportPath);
+  await prepDirectory(outputPath);
 
   if (config.noHead !== true && ['html', 'pdf'].includes(config.outputFormat)) {
-    await copyStaticAssets(config, exportPath);
+    await copyStaticAssets(config, outputPath);
   }
 
   const bar = progressBar(
@@ -122,7 +124,7 @@ const gtfsToHtml = async (initialConfig: IConfig) => {
 
       for (const timetable of timetablePage.timetables) {
         for (const warning of timetable.warnings) {
-          outputStats.warnings.push(warning);
+          stats.warnings.push(warning);
           bar?.interrupt(warning);
         }
       }
@@ -133,13 +135,13 @@ const gtfsToHtml = async (initialConfig: IConfig) => {
         );
       }
 
-      outputStats.timetables += timetablePage.consolidatedTimetables.length;
-      outputStats.timetablePages += 1;
+      stats.timetables += timetablePage.consolidatedTimetables.length;
+      stats.timetablePages += 1;
 
       const datePath = generateFolderName(timetablePage);
 
       // Make directory if it doesn't exist
-      await mkdir(path.join(exportPath, datePath), { recursive: true });
+      await mkdir(path.join(outputPath, datePath), { recursive: true });
       config.assetPath = '../';
 
       timetablePage.relativePath = path.join(
@@ -151,7 +153,7 @@ const gtfsToHtml = async (initialConfig: IConfig) => {
         for (const timetable of timetablePage.consolidatedTimetables) {
           const csv = await generateTimetableCSV(timetable);
           const csvPath = path.join(
-            exportPath,
+            outputPath,
             datePath,
             generateFileName(timetable, config, 'csv'),
           );
@@ -160,7 +162,7 @@ const gtfsToHtml = async (initialConfig: IConfig) => {
       } else {
         const html = await generateTimetableHTML(timetablePage, config);
         const htmlPath = path.join(
-          exportPath,
+          outputPath,
           datePath,
           sanitize(timetablePage.filename),
         );
@@ -174,12 +176,12 @@ const gtfsToHtml = async (initialConfig: IConfig) => {
       timetablePages.push(timetablePage);
       const timetableStats = generateStats(timetablePage);
 
-      outputStats.stops += timetableStats.stops;
-      outputStats.routes += timetableStats.routes;
-      outputStats.trips += timetableStats.trips;
-      outputStats.calendars += timetableStats.calendars;
+      stats.stops += timetableStats.stops;
+      stats.routes += timetableStats.routes;
+      stats.trips += timetableStats.trips;
+      stats.calendars += timetableStats.calendars;
     } catch (error: any) {
-      outputStats.warnings.push(error?.message);
+      stats.warnings.push(error?.message);
       bar?.interrupt(error.message);
     }
 
@@ -188,32 +190,32 @@ const gtfsToHtml = async (initialConfig: IConfig) => {
   /* eslint-enable no-await-in-loop */
 
   if (config.outputFormat === 'html') {
-    // Generate route summary index.html
+    // Generate overview HTML
     config.assetPath = '';
     const html = await generateOverviewHTML(timetablePages, config);
-    await writeFile(path.join(exportPath, 'index.html'), html);
+    await writeFile(path.join(outputPath, 'index.html'), html);
   }
 
-  // Generate output log.txt
-  const logText = generateLogText(outputStats, config);
-  await writeFile(path.join(exportPath, 'log.txt'), logText);
+  // Generate log.txt
+  const logText = generateLogText(stats, config);
+  await writeFile(path.join(outputPath, 'log.txt'), logText);
 
   // Zip output, if specified
   if (config.zipOutput) {
-    await zipFolder(exportPath);
+    await zipFolder(outputPath);
   }
 
-  const fullExportPath = path.join(
-    exportPath,
+  const fullOutputPath = path.join(
+    outputPath,
     config.zipOutput ? '/timetables.zip' : '',
   );
 
   // Print stats
   config.log(
-    `${agencyKey}: ${config.outputFormat.toUpperCase()} timetables created at ${fullExportPath}`,
+    `${agencyKey}: ${config.outputFormat.toUpperCase()} timetables created at ${fullOutputPath}`,
   );
 
-  logStats(outputStats, config);
+  logStats(stats, config);
 
   const seconds = Math.round(timer.time() / 1000);
   config.log(
@@ -221,6 +223,8 @@ const gtfsToHtml = async (initialConfig: IConfig) => {
   );
 
   timer.stop();
+
+  return fullOutputPath;
 };
 /* eslint-enable complexity */
 

@@ -38,6 +38,7 @@ All files starting with `config*.json` are .gitignored - so you can create multi
 | [`noServiceSymbol`](#noservicesymbol)                           | string           | The symbol used when a specific trip does not serve a specified stop.                            |
 | [`noServiceText`](#noservicetext)                               | string           | The text used to describe a stop which is not served by a specific trip.                         |
 | [`outputFormat`](#outputformat)                                 | string           | The file format of the timetables generated. Either `html`, `pdf` or `csv`.                      |
+| [`outputPath`](#outputpath)                                     | string           | The path to write the timetables to. Optional, defaults to `html/<agencyKey>`.  |
 | [`noPickupSymbol`](#nopickupsymbol)                             | string           | The symbol used to indicate a stop where no pickup is available.                                 |
 | [`noPickupText`](#nopickuptext)                                 | string           | The text used to describe a stop where no pickup is available.                                   |
 | [`requestDropoffSymbol`](#requestdropoffsymbol)                 | string           | The symbol used to indicate a stop where riders must request a drop off.                         |
@@ -396,6 +397,14 @@ gtfsToHtml(config);
 
 ```json
 "outputFormat": "html"
+```
+
+### outputPath
+
+\{String\} The path to write the HTML, CSV or PDF timetables to. If `zipOutput` is true, a zip file of all tuimetables will be written to the `outputPath`. Optional, defaults to a folder named `html/<agencyKey>` in the current directory.
+
+```json
+"outputPath": "/path/to/output/timetables"
 ```
 
 ### requestDropoffSymbol

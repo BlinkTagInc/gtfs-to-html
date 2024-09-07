@@ -1,7 +1,15 @@
 import { dirname, join, resolve } from 'node:path';
 import { createWriteStream } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { access, cp, copyFile, mkdir, readFile, rm } from 'node:fs/promises';
+import {
+  access,
+  cp,
+  copyFile,
+  mkdir,
+  readdir,
+  readFile,
+  rm,
+} from 'node:fs/promises';
 
 import _ from 'lodash-es';
 import archiver from 'archiver';
@@ -94,27 +102,39 @@ function getPathToTemplateFile(templateFileName: string, config) {
 }
 
 /*
- * Prepare the specified directory for saving HTML timetables by deleting everything.
+ * Prepare the outputPath directory for writing timetable files.
  */
-export async function prepDirectory(exportPath) {
-  await rm(exportPath, { recursive: true, force: true });
+export async function prepDirectory(outputPath) {
+  // Check if outputPath exists
   try {
-    await mkdir(exportPath, { recursive: true });
-  } catch (error) {
-    if (error.code === 'ENOENT') {
-      throw new Error(
-        `Unable to write to ${exportPath}. Try running this command from a writable directory.`,
-      );
-    }
+    await access(outputPath);
+  } catch (error: any) {
+    try {
+      await mkdir(outputPath, { recursive: true });
+    } catch (error: any) {
+      if (error?.code === 'ENOENT') {
+        throw new Error(
+          `Unable to write to ${outputPath}. Try running this command from a writable directory.`,
+        );
+      }
 
-    throw error;
+      throw error;
+    }
+  }
+
+  // Check if outputPath is empty
+  const files = await readdir(outputPath);
+  if (files.length > 0) {
+    throw new Error(
+      `Output directory ${outputPath} is not empty. Please specify an empty directory.`,
+    );
   }
 }
 
 /*
  * Copy needed CSS and JS to export path.
  */
-export async function copyStaticAssets(config, exportPath) {
+export async function copyStaticAssets(config, outputPath) {
   const viewsFolderPath = getPathToViewsFolder(config);
 
   const foldersToCopy = ['css', 'js', 'img'];
@@ -125,7 +145,7 @@ export async function copyStaticAssets(config, exportPath) {
         .then(() => true)
         .catch(() => false)
     ) {
-      await cp(join(viewsFolderPath, folder), join(exportPath, folder), {
+      await cp(join(viewsFolderPath, folder), join(outputPath, folder), {
         recursive: true,
       });
     }
@@ -135,11 +155,11 @@ export async function copyStaticAssets(config, exportPath) {
   if (config.hasGtfsRealtime) {
     await copyFile(
       'node_modules/pbf/dist/pbf.js',
-      join(exportPath, 'js/pbf.js'),
+      join(outputPath, 'js/pbf.js'),
     );
     await copyFile(
       'node_modules/gtfs-realtime-pbf-js-module/gtfs-realtime.browser.proto.js',
-      join(exportPath, 'js/gtfs-realtime.browser.proto.js'),
+      join(outputPath, 'js/gtfs-realtime.browser.proto.js'),
     );
   }
 }
@@ -147,8 +167,8 @@ export async function copyStaticAssets(config, exportPath) {
 /*
  * Zips the content of the specified folder.
  */
-export function zipFolder(exportPath) {
-  const output = createWriteStream(join(exportPath, 'timetables.zip'));
+export function zipFolder(outputPath) {
+  const output = createWriteStream(join(outputPath, 'timetables.zip'));
   const archive = archiver('zip');
 
   return new Promise((resolve, reject) => {
@@ -156,7 +176,7 @@ export function zipFolder(exportPath) {
     archive.on('error', reject);
     archive.pipe(output);
     archive.glob('**/*.{txt,css,js,html}', {
-      cwd: exportPath,
+      cwd: outputPath,
     });
     archive.finalize();
   });

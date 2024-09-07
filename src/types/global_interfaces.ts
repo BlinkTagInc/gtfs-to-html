@@ -7,8 +7,8 @@ export interface IConfig {
     exclude?: string[];
   }[];
   coordinatePrecision?: number;
-  outputType?: string;
   outputFormat?: string;
+  outputPath?: string;
   startDate?: string;
   endDate?: string;
   verbose?: boolean;
