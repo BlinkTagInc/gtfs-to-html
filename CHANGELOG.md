@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - outputPath config option
 - Return path to timetable output
 
+### Fixed
+- Format timetable_id in template for HTML
+
 ## [2.9.3] - 2024-09-07
 
 ### Fixed
