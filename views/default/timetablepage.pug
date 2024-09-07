@@ -59,6 +59,7 @@ include formatting_functions.pug
         if config.showCalendarExceptions && timetable.calendarDates.excludedDates.length
           .excluded-dates= `${config.serviceNotProvidedOnText}: ${timetable.calendarDates.excludedDates.join(', ')}`
 
-  script.
-    const { geojsons, tripIds, routes, stops, gtfsRealtimeUrls } = !{JSON.stringify(prepareMapData(timetablePage, config))};
-    createMaps();
+  if config.showMap
+    script.
+        const { geojsons, tripIds, routes, stops, gtfsRealtimeUrls } = !{JSON.stringify(prepareMapData(timetablePage, config))};
+        createMaps();

@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Fix path to template folder
+- Update timetablepage template for maps
 
 ## [2.9.2] - 2024-09-06
 
