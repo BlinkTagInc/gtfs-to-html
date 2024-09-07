@@ -31,7 +31,11 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "docker",
+    "examples",
+    "views/default",
+    "config-sample.json"
   ],
   "bin": {
     "gtfs-to-html": "dist/bin/gtfs-to-html.js"
