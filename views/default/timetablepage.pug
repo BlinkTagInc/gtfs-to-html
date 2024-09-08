@@ -61,5 +61,5 @@ include formatting_functions.pug
 
   if config.showMap
     script.
-        const { geojsons, tripIds, routes, stops, gtfsRealtimeUrls } = !{JSON.stringify(prepareMapData(timetablePage, config))};
+        const { routeData, stopData, pageData: { routeIds, tripIds,  geojsons, gtfsRealtimeUrls } } = !{JSON.stringify(prepareMapData(timetablePage, config))};
         createMaps();

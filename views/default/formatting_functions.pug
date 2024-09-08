@@ -37,14 +37,11 @@
   }
 
   function prepareMapData(timetablePage, config) {
-    const routes = {}
-    const stops = {}
-    const tripIds = []
+    const routeData = {}
+    const stopData = {}
     const geojsons = {}
 
     for (const timetable of timetablePage.consolidatedTimetables) {
-      tripIds.push(...timetable.orderedTrips.map(trip => trip.trip_id))
-
       const minifiedGeojson = {
         type: 'FeatureCollection',
         features: []
@@ -53,11 +50,11 @@
       for (const feature of timetable.geojson.features) {
         if (feature.geometry.type.toLowerCase() === 'point') {
           for (const route of feature.properties.routes) {
-            routes[route.route_id] = route
+            routeData[route.route_id] = route
           }
 
           const stop = _.pick(feature.properties, ['stop_id', 'stop_code', 'stop_name'])
-          stops[stop.stop_id] = stop
+          stopData[stop.stop_id] = stop
 
           feature.properties = {
             route_ids: feature.properties.routes.map(route => route.route_id),
@@ -79,11 +76,14 @@
     }
 
     return {
-      geojsons,
-      tripIds: _.uniq(tripIds),
-      routes,
-      stops,
-      gtfsRealtimeUrls: _.pick(config.agencies.find(agency => agency.realtimeVehiclePositions?.url), ['realtimeAlerts', 'realtimeTripUpdates', 'realtimeVehiclePositions']),
+      pageData: {
+        routeIds: _.uniq(_.flatMap(timetablePage.consolidatedTimetables, timetable => timetable.routes.map(route => route.route_id))),
+        tripIds: _.uniq(_.flatMap(timetablePage.consolidatedTimetables, timetable => timetable.orderedTrips.map(trip => trip.trip_id))),
+        geojsons,
+        gtfsRealtimeUrls: _.pick(config.agencies.find(agency => agency.realtimeVehiclePositions?.url), ['realtimeAlerts', 'realtimeTripUpdates', 'realtimeVehiclePositions']),
+      },
+      routeData,
+      stopData,
     }
   }
 

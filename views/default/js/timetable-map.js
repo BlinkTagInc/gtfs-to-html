@@ -1,4 +1,4 @@
-/* global window, document, $, mapboxgl, Pbf, stops, routes, tripIds, gtfsRealtimeUrls, geojsons */
+/* global window, document, $, mapboxgl, Pbf, stopData, routeData, routeIds, tripIds, geojsons, gtfsRealtimeUrls */
 /* eslint no-var: "off", prefer-arrow-callback: "off", no-unused-vars: "off" */
 
 const maps = {};
@@ -102,7 +102,7 @@ function formatStopPopup(feature, stop) {
   $(html).append(
     $('<div>')
       .addClass('route-list')
-      .html(routeIds.map((routeId) => formatRoute(routes[routeId]))),
+      .html(routeIds.map((routeId) => formatRoute(routeData[routeId]))),
   );
 
   $('<a>')
@@ -201,7 +201,7 @@ function getVehiclePopupHtml(vehiclePosition, vehicleTripUpdate) {
       if (stoptimeUpdate.arrival) {
         const secondsToArrival =
           stoptimeUpdate.arrival.time - Date.now() / 1000;
-        const stopName = stops[stoptimeUpdate.stop_id]?.stop_name;
+        const stopName = stopData[stoptimeUpdate.stop_id]?.stop_name;
 
         // Don't show arrivals in the past or non-timepoints
         if (secondsToArrival > 0 && stopName) {
@@ -384,7 +384,6 @@ async function updateArrivals() {
       $('.vehicle-legend-item').hide();
       return;
     }
-
     $('.vehicle-legend-item').show();
 
     const routeVehiclePositions = vehiclePositions.filter((vehiclePosition) => {
@@ -407,6 +406,12 @@ async function updateArrivals() {
         return false;
       }
 
+      // If vehiclePosition includes route_id, use that to filter
+      if (vehiclePosition.vehicle.trip.route_id) {
+        return routeIds.includes(vehiclePosition.vehicle.trip.route_id);
+      }
+
+      // Otherwise, fall back to using trip_id to filter
       return tripIds.includes(vehiclePosition.vehicle.trip.trip_id);
     });
 
@@ -692,7 +697,7 @@ function createMap(id) {
 
       new mapboxgl.Popup()
         .setLngLat(feature.geometry.coordinates)
-        .setHTML(formatStopPopup(feature, stops[feature.properties.stop_id]))
+        .setHTML(formatStopPopup(feature, stopData[feature.properties.stop_id]))
         .addTo(map);
     });
 

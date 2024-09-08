@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Format timetable_id in template for HTML
 
+### Updated
+- Update to map route/trip/stop data format
+
 ## [2.9.3] - 2024-09-07
 
 ### Fixed
