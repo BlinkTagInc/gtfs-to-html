@@ -10,12 +10,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - outputPath config option
 - Return path to timetable output
+- Support for GTFS-Realtime Alerts
 
 ### Fixed
 - Format timetable_id in template for HTML
 
 ### Updated
 - Update to map route/trip/stop data format
+- Move PDF styles to print styles
 
 ## [2.9.3] - 2024-09-07
 

@@ -79,6 +79,7 @@
       pageData: {
         routeIds: _.uniq(_.flatMap(timetablePage.consolidatedTimetables, timetable => timetable.routes.map(route => route.route_id))),
         tripIds: _.uniq(_.flatMap(timetablePage.consolidatedTimetables, timetable => timetable.orderedTrips.map(trip => trip.trip_id))),
+        stopIds: Object.keys(stopData),
         geojsons,
         gtfsRealtimeUrls: _.pick(config.agencies.find(agency => agency.realtimeVehiclePositions?.url), ['realtimeAlerts', 'realtimeTripUpdates', 'realtimeVehiclePositions']),
       },

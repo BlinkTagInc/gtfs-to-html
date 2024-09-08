@@ -525,6 +525,74 @@ a:hover {
   height: 14px;
 }
 
+.timetable-page .timetable-alerts {
+  margin-bottom: 1.5rem;
+}
+
+.timetable-page .timetable-alerts .timetable-alerts-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 0.25rem;
+}
+
+.timetable-page .timetable-alert {
+  background-color: rgb(224, 230, 245);
+  color: rgb(37 99 235);
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.timetable-page .timetable-alerts .alert-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+}
+
+.timetable-page .timetable-alerts .alert-header .route-list {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+}
+
+.timetable-page .timetable-alerts .route-color-swatch {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 30px;
+  font-size: 12px;
+  flex-shrink: 0;
+  color: white;
+  font-weight: bold;
+}
+
+.timetable-page .timetable-alerts .alert-header .alert-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.timetable-page .timetable-alerts .alert-body {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: start;
+}
+
+.timetable-page .timetable-alert-empty {
+  display: none;
+  background-color: rgb(224, 230, 245);
+  color: rgb(37 99 235);
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-size: 16px;
+}
+
 @media print {
   body {
     -webkit-print-color-adjust: exact;

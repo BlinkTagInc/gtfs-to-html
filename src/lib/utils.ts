@@ -1513,7 +1513,13 @@ export function setDefaultConfig(initialConfig) {
   // Add `hasGtfsRealtime` to config if gtfs realtime URLs are present
   config.hasGtfsRealtime = config.agencies.some(
     (agency) =>
-      agency.realtimeTripUpdates?.url || agency.realtimeVehiclePositions?.url,
+      agency.realtimeTripUpdates?.url ||
+      agency.realtimeVehiclePositions?.url ||
+      agency.realtimeAlerts?.url,
+  );
+
+  config.hasGtfsRealtimeAlerts = config.agencies.some(
+    (agency) => agency.realtimeAlerts?.url,
   );
 
   return config;
