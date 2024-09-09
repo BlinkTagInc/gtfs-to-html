@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add html lang attribute
 - Add html title attributes to pages
 
+### Updated
+- Service alert and timetable styles
+
 ## [2.9.5] - 2024-09-08
 
 ### Updated

@@ -83,16 +83,30 @@ a:hover {
 
 .timetable-page h1 {
   font-size: 1.5rem;
-  line-height: 2rem;
+  line-height: 1.5rem;
   padding-top: 1rem;
-  gap: 0.24rem;
+  padding-bottom: 1rem;
+  gap: 0.5rem;
   display: flex;
   align-items: center;
+}
+
+@media (min-width: 768px) {
+  .timetable-page h1 {
+    font-size: 2rem;
+    line-height: 2rem;
+  }
 }
 
 .timetable-page h2 {
   font-size: 1.25rem;
   line-height: 1.75rem;
+}
+
+@media (min-width: 768px) {
+  .timetable-page h2 {
+    font-size: 1.5rem;
+  }
 }
 
 .timetable-page h3 {
@@ -232,6 +246,7 @@ a:hover {
 .timetable-page .timetable .table-vertical .stop-header {
   text-align: center;
   line-height: 1.15;
+  font-size: 14px;
 }
 
 .timetable-page .timetable .run-header {
@@ -307,7 +322,7 @@ a:hover {
 }
 
 .timetable-page .timetable thead tr {
-  background: #bae6fd;
+  background-color: rgb(224, 230, 245);
 }
 
 .timetable-page .timetable thead tr,
@@ -531,23 +546,27 @@ a:hover {
 
 .timetable-page .timetable-alerts .timetable-alerts-list {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(1, minmax(0, 1fr));
   gap: 1rem;
   margin-top: 0.25rem;
 }
 
+@media screen and (min-width: 1024px) {
+  .timetable-page .timetable-alerts .timetable-alerts-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
 .timetable-page .timetable-alert {
   background-color: rgb(224, 230, 245);
-  color: rgb(37 99 235);
   padding: 0.75rem 1.25rem;
   border-radius: 0.5rem;
-  margin-bottom: 0.5rem;
 }
 
 .timetable-page .timetable-alerts .alert-header {
   display: flex;
   flex-direction: row;
-  align-items: center;
+  align-items: start;
   gap: 6px;
 }
 
@@ -586,7 +605,6 @@ a:hover {
 .timetable-page .timetable-alert-empty {
   display: none;
   background-color: rgb(224, 230, 245);
-  color: rgb(37 99 235);
   padding: 0.75rem 1.25rem;
   border-radius: 0.5rem;
   margin-bottom: 0.5rem;
@@ -600,7 +618,7 @@ a:hover {
     margin: 0 auto;
     font-size: 0.8rem;
   }
-  
+
   h1,
   h2,
   h3,
@@ -611,7 +629,7 @@ a:hover {
     orphans: 3;
     widows: 3;
   }
-  
+
   img,
   table {
     max-width: 100%;
@@ -619,57 +637,58 @@ a:hover {
 
   .timetable-page h1 {
     padding-top: 0;
+    font-size: 1.5rem;
   }
-  
+
   .timetable-page .timetable:not(:first-of-type) {
     page-break-before: always;
   }
-  
+
   .timetable-page .timetable .table-container {
     overflow: auto;
     margin-bottom: 0;
   }
-  
+
   .timetable-page .timetable table > thead > tr > th,
   .timetable-page .timetable table > tbody > tr > th,
   .timetable-page .timetable table > tfoot > tr > th {
     padding: 3px 5px;
     line-height: 1.3;
   }
-  
+
   .timetable-page .timetable table > thead > tr > td,
   .timetable-page .timetable table > tbody > tr > td,
   .timetable-page .timetable table > tfoot > tr > td {
     padding: 3px 5px;
     line-height: 1;
   }
-  
+
   .timetable .table-container {
     overflow: hidden;
   }
-  
+
   .timetable table {
     page-break-after: auto;
   }
-  
+
   .timetable tr {
     page-break-inside: avoid;
     page-break-after: auto;
   }
-  
+
   .timetable td {
     page-break-inside: avoid;
     page-break-after: auto;
   }
-  
+
   .timetable thead {
     display: table-header-group;
   }
-  
+
   .timetable tfoot {
     display: table-footer-group;
   }
-  
+
   .timetable-page .map-legend {
     display: none;
   }
