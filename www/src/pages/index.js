@@ -14,8 +14,8 @@ const features = [
     imageUrl: 'img/undraw_proud_coder.svg',
     description: (
       <>
-        Most transit agencies have schedule data in GTFS format but need to show
-        each route's schedule to users on a website.
+        Most transit agencies have schedule data in GTFS format but need publish
+        route timetables and maps on their website
       </>
     ),
   },
@@ -88,7 +88,7 @@ function Home() {
                 <Link
                   className={clsx(
                     'button button--outline button--secondary button--lg',
-                    styles['hero-button']
+                    styles['hero-button'],
                   )}
                   to={useBaseUrl('docs/')}
                 >

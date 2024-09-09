@@ -14,7 +14,7 @@ include formatting_functions.pug
               each route in timetableRouteList
                 .route-color-swatch-large(style=`background-color: ${formatRouteColor(route)}; color: ${formatRouteTextColor(route)};`)= route.route_short_name || ''
               div
-                .timetable-page-label= timetablePage.timetable_page_label || timetableRouteList.map(route => formatRouteName(route)).join(' and ')
+                .timetable-page-label= timetablePage.timetable_page_label
                 .badge-gray= timetablePage.dayList
     if config.showMap
       #system_map.overview-map

@@ -7,7 +7,7 @@ include formatting_functions.pug
     h1
       each route in timetableRouteList
         .route-color-swatch-large(style=`background-color: ${formatRouteColor(route)}; color: ${formatRouteTextColor(route)};`)= route.route_short_name || ''
-      div= timetablePage.timetable_page_label || timetableRouteList.map(route => formatRouteName(route)).join(' and ')
+      div= timetablePage.timetable_page_label
     if config.effectiveDate
       .effective-date= `Effective ${config.effectiveDate}`
 

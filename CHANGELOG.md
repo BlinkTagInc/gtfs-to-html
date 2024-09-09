@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Add html lang attribute
+- Add html title attributes to pages
 
 ## [2.9.5] - 2024-09-08
 

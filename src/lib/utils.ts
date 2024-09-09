@@ -1,5 +1,3 @@
-import { readFileSync } from 'node:fs';
-
 import {
   cloneDeep,
   compact,
@@ -50,10 +48,12 @@ import toposort from 'toposort';
 
 import { generateFileName, renderTemplate } from './file-utils.js';
 import {
+  formatAgencyNames,
   formatDate,
   formatDays,
   formatDaysLong,
   formatFrequency,
+  formatRouteNames,
   formatStopName,
   formatStops,
   formatTimetableId,
@@ -1562,6 +1562,11 @@ export function getFormattedTimetablePage(
     }
   }
 
+  const uniqueRoutes = uniqBy(
+    flatMap(consolidatedTimetables, (timetable) => timetable.routes),
+    'route_id',
+  );
+
   const formattedTimetablePage = {
     ...timetablePage,
     consolidatedTimetables,
@@ -1569,10 +1574,12 @@ export function getFormattedTimetablePage(
     dayLists: uniq(
       consolidatedTimetables.map((timetable) => timetable.dayList),
     ),
-    route_ids: uniq(flatMap(consolidatedTimetables, 'route_ids')),
+    route_ids: uniqueRoutes.map((route) => route.route_id),
     agency_ids: uniq(compact(timetableRoutes.map((route) => route.agency_id))),
     filename:
       timetablePage.filename ?? `${timetablePage.timetable_page_id}.html`,
+    timetable_page_label:
+      timetablePage.timetable_page_label ?? formatRouteNames(uniqueRoutes),
   };
 
   return formattedTimetablePage;
@@ -1613,9 +1620,11 @@ export const generateStats = (timetablePage: ITimetablePage) => {
  * Generate the HTML timetable for a timetable page.
  */
 export function generateTimetableHTML(timetablePage, config) {
+  const agencies = getAgencies() as { agency_name: string }[];
   const templateVars = {
     timetablePage,
     config,
+    title: `${timetablePage.timetable_page_label} | ${formatAgencyNames(agencies)}`,
   };
   return renderTemplate('timetablepage', templateVars, config);
 }
@@ -1666,7 +1675,7 @@ export function generateTimetableCSV(timetable) {
  * Generate the HTML for the agency overview page.
  */
 export function generateOverviewHTML(timetablePages, config) {
-  const agencies = getAgencies();
+  const agencies = getAgencies() as { agency_name: string }[];
   if (agencies.length === 0) {
     throw new Error('No agencies found');
   }
@@ -1706,7 +1715,6 @@ export function generateOverviewHTML(timetablePages, config) {
       }
     },
   ]);
-
   const templateVars = {
     agency: {
       ...first(agencies),
@@ -1716,6 +1724,7 @@ export function generateOverviewHTML(timetablePages, config) {
     geojson,
     config,
     timetablePages: sortedTimetablePages,
+    title: `${formatAgencyNames(agencies)} Timetables`,
   };
   return renderTemplate('overview', templateVars, config);
 }
