@@ -37,4 +37,4 @@ GTFS-to-HTML uses the [`node-gtfs`](https://github.com/blinktaginc/node-gtfs) li
 
 ## GTFS-to-HTML on the web
 
-If you'd like to try out GTFS-to-HTML, you can do so entirely in your browser. [run.gtfstohtml.com](https://run.gtfstohtml.com) provides a web based interface for finding GTFS feeds, setting configuration and then generating downloadable sets of timetables. Use GTFS-to-HTML without actually downloading any code or doing any configuration!
+If you'd like to try out GTFS-to-HTML, you can do so entirely in your browser. [run.gtfstohtml.com](https://run.gtfstohtml.com) provides a web based interface for generating timetables and maps. Use GTFS-to-HTML without actually downloading any code or doing any configuration!

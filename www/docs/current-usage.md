@@ -45,4 +45,4 @@ Are you using GTFS-to-HTML? Let us know via email (brendan@blinktag.com) and we'
 
 - [`transit-custom-posts`](https://trilliumtransit.github.io/transit-custom-posts/) - a GTFS-optimized Wordpress plugin for transit websites. GTFS-to-HTML is used for generating the schedule pages.
 
-- [run.gtfstohtml.com](https://run.gtfstohtml.com) provides a web based interface using GTFS-to-HTML. Find GTFS feeds for agenices, set configuration and generate a previewable and downloadable set of timetables all using your browser. Use GTFS-to-HTML without actually downloading any code or doing any configuration!
+- [run.gtfstohtml.com](https://run.gtfstohtml.com) provides a web based interface using GTFS-to-HTML. Upload GTFS or specify a url to download GTFS from, set configuration and generate set of timetables and maps all using your browser. Use GTFS-to-HTML without actually downloading any code or doing any configuration!
