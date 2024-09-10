@@ -3,14 +3,14 @@ id: configuration
 title: Configuration Options
 ---
 
-GTFS-to-HTML reads its configuration from a JSON file. To get started, copy `config-sample.json` to `config.json` and then add your project's configuration to `config.json`.
+GTFS-to-HTML reads its configuration from a JSON file. To get started, copy `config-sample.json` to `config.json` and add your project's configuration. An example `config-sample-full.json` file includes a full list of all configuration options while `config-sample.json` only includes a few of the most commonly used options.
 
     cp config-sample.json config.json
 
 Ensure that your config.json is [valid JSON](https://jsonformatter.curiousconcept.com) before proceeding.
 
 :::note
-All files starting with `config*.json` are .gitignored - so you can create multiple configuration files such as `config-caltrain.json`.
+All files starting with `config*.json` are .gitignored - so you can create multiple configuration files such as `config-caltrain.json`. Use the --configPath option when running GTFS-to-HTML.
 :::
 
 | option                                                          | type             | description                                                                                      |

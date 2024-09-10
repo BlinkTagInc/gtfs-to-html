@@ -1,0 +1,69 @@
+{
+  "agencies": [
+    {
+      "agencyKey": "marintransit",
+      "url": "https://marintransit.org/data/google_transit.zip",
+      "realtimeAlerts": {
+        "url": "https://api.marintransit.org/alerts"
+      },
+      "realtimeTripUpdates": {
+        "url": "https://api.marintransit.org/tripupdates"
+      },
+      "realtimeVehiclePositions": {
+        "url": "https://api.marintransit.org/vehiclepositions"
+      }
+    }
+  ],
+  "sqlitePath": "/tmp/gtfs",
+  "allowEmptyTimetables": false,
+  "beautify": false,
+  "coordinatePrecision": 5,
+  "dateFormat": "MMM D, YYYY",
+  "daysShortStrings": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+  "daysStrings": [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday"
+  ],
+  "defaultOrientation": "vertical",
+  "effectiveDate": "July 8, 2016",
+  "interpolatedStopSymbol": "•",
+  "interpolatedStopText": "Estimated time of arrival",
+  "linkStopUrls": false,
+  "mapboxAccessToken": "YOUR MAPBOX ACCESS TOKEN",
+  "menuType": "jump",
+  "noDropoffSymbol": "‡",
+  "noDropoffText": "No drop off available",
+  "noHead": false,
+  "noPickupSymbol": "**",
+  "noPickupText": "No pickup available",
+  "noServiceSymbol": "—",
+  "noServiceText": "No service at this stop",
+  "outputFormat": "html",
+  "outputPath": "custom/output/path",
+  "requestDropoffSymbol": "†",
+  "requestDropoffText": "Must request drop off",
+  "requestPickupSymbol": "***",
+  "requestPickupText": "Request stop - call for pickup",
+  "serviceNotProvidedOnText": "Service not provided on",
+  "serviceProvidedOnText": "Service provided on",
+  "showArrivalOnDifference": 0.2,
+  "showCalendarExceptions": true,
+  "showMap": true,
+  "showOnlyTimepoint": true,
+  "showRouteTitle": true,
+  "showStopCity": false,
+  "showStopDescription": false,
+  "showStoptimesForRequestStops": true,
+  "skipImport": false,
+  "sortingAlgorithm": "common",
+  "templatePath": "views/default",
+  "timeFormat": "h:mma",
+  "useParentStation": true,
+  "verbose": true,
+  "zipOutput": false
+}

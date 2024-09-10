@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Updated
 - Add release-it hook
+- Create config-sample-full.json example
 
 ## [2.9.7] - 2024-09-10
 
