@@ -9,4 +9,4 @@ GTFS-to-HTML is an open source project. If you encounter an issue when using it,
 
 # Questions, Feedback and Support
 
-Have questions about GTFS-to-HTML or need help integrating it into your agency's website? Email us at brendan@blinktag.com.
+Have questions about GTFS-to-HTML or need help integrating it into your agency's website? Email us at [gtfs@blinktag.com](mailto:gtfs@blinktag.com).

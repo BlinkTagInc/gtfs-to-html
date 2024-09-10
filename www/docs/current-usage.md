@@ -39,7 +39,7 @@ Many transit agencies use GTFS-to-HTML to generate the schedule pages used on th
 | [Victor Valley Transit](https://vvta.org)                                     | Victory Valley, California          |
 | [Worcester Regional Transit Authority](https://therta.com)                    | Worcester, Massachusetts            |
 
-Are you using GTFS-to-HTML? Let us know via email (brendan@blinktag.com) and we'll add you to this list.
+Are you using GTFS-to-HTML? Let us know via email [gtfs@blinktag.com](mailto:gtfs@blinktag.com) and we'll add you to this list.
 
 ## Projects using GTFS-to-HTML
 
