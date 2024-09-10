@@ -96,6 +96,9 @@
       "@release-it/keep-a-changelog": {
         "filename": "CHANGELOG.md"
       }
+    },
+    "hooks": {
+      "after:bump": "npm run build"
     }
   },
   "prettier": {
