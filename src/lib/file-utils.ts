@@ -175,7 +175,7 @@ export function zipFolder(outputPath) {
     output.on('close', resolve);
     archive.on('error', reject);
     archive.pipe(output);
-    archive.glob('**/*.{txt,css,js,html}', {
+    archive.glob('**/*.{txt,css,js,png,jpg,jpeg,svg,csv,pdf,html}', {
       cwd: outputPath,
     });
     archive.finalize();
