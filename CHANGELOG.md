@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fix for zipped CSV and PDF output
 
+### Updated
+- Dependency updates
+
 ## [2.9.6] - 2024-09-09
 
 ### Added
