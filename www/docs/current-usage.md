@@ -28,6 +28,7 @@ Many transit agencies use GTFS-to-HTML to generate the schedule pages used on th
 | [NW Connector](http://www.nworegontransit.org)                                | Northwest Oregon                    |
 | [Palo Verde Valley Transit Agency](http://pvvta.com)                          | Palo Verde Valley, California       |
 | [Petaluma Transit](http://transit.cityofpetaluma.net)                         | Petaluma, California                |
+| [rabbittransit](https://www.rabbittransit.org)                                | York and Adams County, Pennsylvania |
 | [Rogue Valley Transportation District](https://rvtd.org)                      | Medford, Oregon                     |
 | [RTC Washoe](https://www.rtcwashoe.com)                                       | Reno, Nevada                        |
 | [Santa Barbara Metropolitan Transit District](https://sbmtd.gov)              | Santa Barbara, California           |

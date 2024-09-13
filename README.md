@@ -79,6 +79,7 @@ Many transit agencies use `gtfs-to-html` to generate the schedule pages used on 
 - [Palo Verde Valley Transit Agency](http://pvvta.com)
 - [Petaluma Transit](http://transit.cityofpetaluma.net)
 - [Rogue Valley Transportation District (Medford, OR)](https://rvtd.org)
+- [rabbittransit (York and Adams County, PA)](https://www.rabbittransit.org)
 - [RTC Washoe (Reno, NV)](https://www.rtcwashoe.com)
 - [Santa Barbara Metropolitan Transit District](https://sbmtd.gov)
 - [Sonoma County Transit](http://sctransit.com)
