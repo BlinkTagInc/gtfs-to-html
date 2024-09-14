@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Highlight stop row/column on map click
+- Use anchorme for links in service alerts
 
 ## [2.9.8] - 2024-09-10
 

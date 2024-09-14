@@ -1,4 +1,4 @@
-/* global window, document, $, mapboxgl, Pbf, stopData, routeData, routeIds, tripIds, stopIds, gtfsRealtimeUrls */
+/* global window, document, $, anchorme, mapboxgl, Pbf, stopData, routeData, routeIds, tripIds, stopIds, gtfsRealtimeUrls */
 /* eslint no-var: "off", prefer-arrow-callback: "off", no-unused-vars: "off" */
 
 let gtfsRealtimeAlertsInterval;
@@ -51,14 +51,21 @@ function formatAlertAsHtml(
         .text(alert.alert.header_text.translation[0].text),
     );
 
+  // Use anchorme to convert URLs to clickable links while using jQuery .text to prevent XSS
   const $alertBody = $('<div>')
     .addClass('alert-body')
-    .append($('<div>').text(alert.alert.description_text.translation[0].text));
+    .append(
+      anchorme(
+        $('<div>')
+          .text(alert.alert.description_text.translation[0].text)
+          .html(),
+      ),
+    );
 
   if (alert.alert.url?.translation?.[0].text) {
     $('<a>')
       .attr('href', alert.alert.url.translation[0].text)
-      .addClass('btn-blue btn-sm')
+      .addClass('btn-blue btn-sm alert-more-info')
       .text('More Info')
       .appendTo($alertBody);
   }

@@ -145,6 +145,15 @@ app.use(
     dirname(fileURLToPath(import.meta.resolve('gtfs-realtime-pbf-js-module'))),
   ),
 );
+app.use(
+  '/js',
+  express.static(
+    join(
+      dirname(fileURLToPath(import.meta.resolve('anchorme'))),
+      '../../dist/browser',
+    ),
+  ),
+);
 
 app.use('/', router);
 app.set('port', process.env.PORT || 3000);

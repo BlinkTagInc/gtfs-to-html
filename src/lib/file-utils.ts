@@ -161,6 +161,10 @@ export async function copyStaticAssets(config, outputPath) {
       'node_modules/gtfs-realtime-pbf-js-module/gtfs-realtime.browser.proto.js',
       join(outputPath, 'js/gtfs-realtime.browser.proto.js'),
     );
+    await copyFile(
+      'node_modules/anchorme/dist/browser/anchorme.min.js',
+      join(outputPath, 'js//anchorme.min.js'),
+    );
   }
 }
 

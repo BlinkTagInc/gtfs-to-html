@@ -9,6 +9,7 @@ block extraHeader
     script(src=`${config.assetPath}js/timetable-menu.js`)
 
   if (config.hasGtfsRealtime && config.showMap) || config.hasGtfsRealtimeAlerts
+    script(src=`${config.assetPath}js/anchorme.min.js`)
     script(src=`${config.assetPath}js/pbf.js`)
     script(src=`${config.assetPath}js/gtfs-realtime.browser.proto.js`)
 

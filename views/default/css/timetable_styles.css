@@ -574,7 +574,7 @@ a:hover {
 .timetable-page .timetable-alerts .alert-header {
   display: flex;
   flex-direction: row;
-  align-items: start;
+  align-items: center;
   gap: 6px;
 }
 
@@ -604,10 +604,10 @@ a:hover {
 
 .timetable-page .timetable-alerts .alert-body {
   margin-top: 0.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  align-items: start;
+}
+
+.timetable-page .timetable-alerts .alert-more-info {
+  margin-top: 0.75rem;
 }
 
 .timetable-page .timetable-alert-empty {

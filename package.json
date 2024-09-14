@@ -48,6 +48,7 @@
   "dependencies": {
     "@turf/helpers": "^7.1.0",
     "@turf/simplify": "^7.1.0",
+    "anchorme": "^3.0.8",
     "archiver": "^7.0.1",
     "cli-table": "^0.3.11",
     "csv-stringify": "^6.5.1",
