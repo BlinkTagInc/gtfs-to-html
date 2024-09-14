@@ -113,18 +113,24 @@ jQuery(function ($) {
       const formattedAlerts = [];
 
       for (const alert of alerts) {
-        const affectedRouteIds = alert.alert.informed_entity
-          .filter(
-            (entity) => entity.route_id !== undefined && entity.route_id !== '',
-          )
-          .map((entity) => entity.route_id);
+        const affectedRouteIds = [
+          ...new Set([
+            ...alert.alert.informed_entity
+              .filter(
+                (entity) =>
+                  entity.route_id !== undefined && entity.route_id !== '',
+              )
+              .map((entity) => entity.route_id),
+          ]),
+        ];
+
         const affectedRouteIdsInTimetable = routeIds.filter((routeId) =>
           affectedRouteIds.includes(routeId),
         );
 
         const affectedStopIds = [
           ...new Set([
-            alert.alert.informed_entity
+            ...alert.alert.informed_entity
               .filter(
                 (entity) =>
                   entity.stop_id !== undefined && entity.stop_id !== '',
@@ -137,7 +143,7 @@ jQuery(function ($) {
           affectedStopIds.includes(stopId),
         );
 
-        // Hide alerts that don't affect any stops or routes
+        // Hide alerts that don't affect any stops or routes in this timetable
         if (
           affectedStopsIdsInTimetable.length === 0 &&
           affectedRouteIdsInTimetable.length === 0
