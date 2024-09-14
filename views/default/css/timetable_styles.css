@@ -407,7 +407,7 @@ a:hover {
 .timetable-page .route-color-swatch {
   min-width: 29px;
   height: 29px;
-  border-radius: 50%;
+  border-radius: 15px;
   text-align: center;
   line-height: 26px;
   font-size: 12px;
@@ -420,7 +420,7 @@ a:hover {
 .timetable-page .route-color-swatch-large {
   min-width: 46px;
   height: 46px;
-  border-radius: 50%;
+  border-radius: 23px;
   text-align: center;
   line-height: 46px;
   font-size: 20px;
@@ -588,7 +588,7 @@ a:hover {
 .timetable-page .timetable-alerts .route-color-swatch {
   width: 30px;
   height: 30px;
-  border-radius: 50%;
+  border-radius: 15px;
   text-align: center;
   line-height: 30px;
   font-size: 12px;
