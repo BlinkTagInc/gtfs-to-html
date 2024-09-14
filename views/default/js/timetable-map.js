@@ -703,10 +703,54 @@ function createMap(id) {
 
     function highlightStop(stopId) {
       map.setFilter('stops-highlighted', ['==', 'stop_id', stopId]);
+
+      if ($(`#timetable_id_${id} table`).data('orientation') === 'vertical') {
+        const columnIndexes = [];
+        $(
+          `#timetable_id_${id} table colgroup col[data-stop-id="${stopId}"]`,
+        ).each((index, col) => {
+          columnIndexes.push(
+            $(`#timetable_id_${id} table colgroup col`).index(col),
+          );
+        });
+        $(`#timetable_id_${id} table .stop-time`).removeClass('highlighted');
+        $(`#timetable_id_${id} table thead .stop-header`).removeClass(
+          'highlighted',
+        );
+        $(`#timetable_id_${id} table .trip-row`).each((index, row) => {
+          $('.stop-time', row).each((index, el) => {
+            if (columnIndexes.includes(index)) {
+              $(el).addClass('highlighted');
+            }
+          });
+        });
+
+        $(`#timetable_id_${id} table thead`).each((index, thead) => {
+          $('.stop-header', thead).each((index, el) => {
+            if (columnIndexes.includes(index)) {
+              $(el).addClass('highlighted');
+            }
+          });
+        });
+      } else {
+        $(`#timetable_id_${id} table .stop-row`).removeClass('highlighted');
+        $(`#timetable_id_${id} table #stop_id_${stopId}`).addClass(
+          'highlighted',
+        );
+      }
     }
 
     function unHighlightStop() {
       map.setFilter('stops-highlighted', ['==', 'stop_id', '']);
+
+      if ($(`#timetable_id_${id} table`).data('orientation') === 'vertical') {
+        $(`#timetable_id_${id} table .stop-time`).removeClass('highlighted');
+        $(`#timetable_id_${id} table thead .stop-header`).removeClass(
+          'highlighted',
+        );
+      } else {
+        $(`#timetable_id_${id} table .stop-row`).removeClass('highlighted');
+      }
     }
 
     // On table hover, highlight stop on map

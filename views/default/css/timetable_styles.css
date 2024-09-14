@@ -332,6 +332,7 @@ a:hover {
 
 .timetable-page .timetable th {
   text-align: left;
+  font-size: 0.8rem;
 }
 
 .timetable-page .timetable td,
@@ -346,7 +347,7 @@ a:hover {
 .timetable-page .timetable table > tbody > tr > td,
 .timetable-page .timetable table > tfoot > tr > td {
   padding: 8px;
-  line-height: 1.42857143;
+  line-height: 1.4;
   vertical-align: top;
   border: 1px solid #dddddd;
 }
@@ -376,6 +377,13 @@ a:hover {
 
 .timetable-page .timetable table > tbody > tr:nth-of-type(odd) {
   background-color: #f9f9f9;
+}
+
+.timetable-page .timetable table > tbody > tr.highlighted,
+.timetable-page .timetable table > tbody > tr.highlighted > th,
+.timetable-page .timetable table > tbody .stop-time.highlighted,
+.timetable-page .timetable table > thead .stop-header.highlighted {
+  background-color: #f8f8b9;
 }
 
 .timetable-page .table-horizontal tbody tr th.stop-name-container {
