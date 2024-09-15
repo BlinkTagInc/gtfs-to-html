@@ -671,7 +671,12 @@ function createMap(id) {
       });
       if (features.length > 0) {
         map.getCanvas().style.cursor = 'pointer';
-        highlightStop(features[0].properties.stop_id);
+        const stopIds = [features[0].properties.stop_id];
+        if (features[0].properties.parent_station) {
+          stopIds.push(features[0].properties.parent_station);
+        }
+
+        highlightStop(stopIds);
       } else {
         map.getCanvas().style.cursor = '';
         unHighlightStop();
@@ -701,18 +706,27 @@ function createMap(id) {
         .addTo(map);
     });
 
-    function highlightStop(stopId) {
-      map.setFilter('stops-highlighted', ['==', 'stop_id', stopId]);
+    function highlightStop(stopIds) {
+      map.setFilter('stops-highlighted', [
+        'any',
+        ['in', 'stop_id', ...stopIds],
+        ['in', 'parent_station', ...stopIds],
+      ]);
 
       if ($(`#timetable_id_${id} table`).data('orientation') === 'vertical') {
         const columnIndexes = [];
-        $(
-          `#timetable_id_${id} table colgroup col[data-stop-id="${stopId}"]`,
-        ).each((index, col) => {
+        const stopIdSelectors = stopIds
+          .map(
+            (stopId) =>
+              `#timetable_id_${id} table colgroup col[data-stop-id="${stopId}"]`,
+          )
+          .join(',');
+        $(stopIdSelectors).each((index, col) => {
           columnIndexes.push(
             $(`#timetable_id_${id} table colgroup col`).index(col),
           );
         });
+
         $(`#timetable_id_${id} table .stop-time`).removeClass('highlighted');
         $(`#timetable_id_${id} table thead .stop-header`).removeClass(
           'highlighted',
@@ -734,9 +748,10 @@ function createMap(id) {
         });
       } else {
         $(`#timetable_id_${id} table .stop-row`).removeClass('highlighted');
-        $(`#timetable_id_${id} table #stop_id_${stopId}`).addClass(
-          'highlighted',
-        );
+        const stopIdSelectors = stopIds
+          .map((stopId) => `#timetable_id_${id} table #stop_id_${stopId}`)
+          .join(',');
+        $(stopIdSelectors).addClass('highlighted');
       }
     }
 
@@ -768,7 +783,7 @@ function createMap(id) {
         return;
       }
 
-      highlightStop(stopId.toString());
+      highlightStop([stopId.toString()]);
     }, unHighlightStop);
   });
 

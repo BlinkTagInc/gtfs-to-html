@@ -53,12 +53,13 @@
             routeData[route.route_id] = route
           }
 
-          const stop = _.pick(feature.properties, ['stop_id', 'stop_code', 'stop_name'])
+          const stop = _.pick(feature.properties, ['stop_id', 'stop_code', 'stop_name', 'parent_station'])
           stopData[stop.stop_id] = stop
 
           feature.properties = {
             route_ids: feature.properties.routes.map(route => route.route_id),
             stop_id: feature.properties.stop_id,
+            parent_station: feature.properties.parent_station,
           }
         } else if (feature.geometry.type.toLowerCase() === 'linestring') {
           feature.properties = {
