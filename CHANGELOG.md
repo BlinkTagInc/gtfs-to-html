@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Updated
 - Route color swatch styles
+- Dependency Updates
 
 ### Added
 - Highlight stop row/column on map click
