@@ -349,6 +349,10 @@ function updateVehicleMarkerLocation(
 }
 
 async function fetchGtfsRealtime(url, headers) {
+  if (!url) {
+    return null;
+  }
+
   const response = await fetch(url, {
     headers: { ...(headers ?? {}) },
   });
@@ -367,23 +371,24 @@ async function updateArrivals() {
   const realtimeVehiclePositions = gtfsRealtimeUrls?.realtimeVehiclePositions;
   const realtimeTripUpdates = gtfsRealtimeUrls?.realtimeTripUpdates;
 
-  if (!realtimeVehiclePositions || !realtimeTripUpdates) {
+  if (!realtimeVehiclePositions) {
     return;
   }
 
   try {
     const [vehiclePositions, tripUpdates] = await Promise.all([
       fetchGtfsRealtime(
-        realtimeVehiclePositions.url,
-        realtimeVehiclePositions.headers,
+        realtimeVehiclePositions?.url,
+        realtimeVehiclePositions?.headers,
       ),
-      fetchGtfsRealtime(realtimeTripUpdates.url, realtimeTripUpdates.headers),
+      fetchGtfsRealtime(realtimeTripUpdates?.url, realtimeTripUpdates?.headers),
     ]);
 
-    if (!vehiclePositions.length) {
+    if (!vehiclePositions?.length) {
       $('.vehicle-legend-item').hide();
       return;
     }
+
     $('.vehicle-legend-item').show();
 
     const routeVehiclePositions = vehiclePositions.filter((vehiclePosition) => {
@@ -418,14 +423,14 @@ async function updateArrivals() {
     for (const vehiclePosition of routeVehiclePositions) {
       const vehicleId = vehiclePosition.vehicle.vehicle.id;
 
-      let vehicleTripUpdate = tripUpdates.find(
+      let vehicleTripUpdate = tripUpdates?.find(
         (tripUpdate) =>
           tripUpdate.trip_update.trip.trip_id ===
           vehiclePosition.vehicle.trip.trip_id,
       );
 
       if (!vehicleTripUpdate) {
-        vehicleTripUpdate = tripUpdates.find(
+        vehicleTripUpdate = tripUpdates?.find(
           (tripUpdate) => tripUpdate.trip_update.vehicle.id === vehicleId,
         );
       }

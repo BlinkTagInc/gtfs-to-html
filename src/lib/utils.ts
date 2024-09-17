@@ -1510,12 +1510,13 @@ export function setDefaultConfig(initialConfig) {
     config.menuType = 'none';
   }
 
-  // Add `hasGtfsRealtime` to config if gtfs realtime URLs are present
-  config.hasGtfsRealtime = config.agencies.some(
-    (agency) =>
-      agency.realtimeTripUpdates?.url ||
-      agency.realtimeVehiclePositions?.url ||
-      agency.realtimeAlerts?.url,
+  // Add values to config if gtfs realtime URLs are present
+  config.hasGtfsRealtimeVehiclePositions = config.agencies.some(
+    (agency) => agency.realtimeVehiclePositions?.url,
+  );
+
+  config.hasGtfsRealtimeTripUpdates = config.agencies.some(
+    (agency) => agency.realtimeTripUpdates?.url,
   );
 
   config.hasGtfsRealtimeAlerts = config.agencies.some(

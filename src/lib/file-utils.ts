@@ -152,7 +152,11 @@ export async function copyStaticAssets(config, outputPath) {
   }
 
   // Add libraries needed for GTFS-Realtime if present
-  if (config.hasGtfsRealtime) {
+  if (
+    config.hasGtfsRealtimeVehiclePositions ||
+    config.hasGtfsRealtimeTripUpdates ||
+    config.hasGtfsRealtimeAlerts
+  ) {
     await copyFile(
       'node_modules/pbf/dist/pbf.js',
       join(outputPath, 'js/pbf.js'),
@@ -161,6 +165,9 @@ export async function copyStaticAssets(config, outputPath) {
       'node_modules/gtfs-realtime-pbf-js-module/gtfs-realtime.browser.proto.js',
       join(outputPath, 'js/gtfs-realtime.browser.proto.js'),
     );
+  }
+
+  if (config.hasGtfsRealtimeAlerts) {
     await copyFile(
       'node_modules/anchorme/dist/browser/anchorme.min.js',
       join(outputPath, 'js//anchorme.min.js'),

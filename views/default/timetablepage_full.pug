@@ -8,8 +8,7 @@ block extraHeader
   if config.menuType === 'radio'
     script(src=`${config.assetPath}js/timetable-menu.js`)
 
-  if (config.hasGtfsRealtime && config.showMap) || config.hasGtfsRealtimeAlerts
-    script(src=`${config.assetPath}js/anchorme.min.js`)
+  if ((config.hasGtfsRealtimeVehiclePositions || config.hasGtfsRealtimeTripUpdates) && config.showMap) || config.hasGtfsRealtimeAlerts
     script(src=`${config.assetPath}js/pbf.js`)
     script(src=`${config.assetPath}js/gtfs-realtime.browser.proto.js`)
 
@@ -21,6 +20,7 @@ block extraHeader
     script(src=`${config.assetPath}js/timetable-map.js`)
 
   if config.hasGtfsRealtimeAlerts
+    script(src=`${config.assetPath}js/anchorme.min.js`)
     script(src=`${config.assetPath}js/timetable-alerts.js`)
 
   link(rel="stylesheet" href=`${config.assetPath}css/timetable_styles.css`)

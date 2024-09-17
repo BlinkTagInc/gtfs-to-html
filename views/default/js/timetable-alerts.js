@@ -4,6 +4,10 @@
 let gtfsRealtimeAlertsInterval;
 
 async function fetchGtfsRealtime(url, headers) {
+  if (!url) {
+    return null;
+  }
+
   const response = await fetch(url, {
     headers: { ...(headers ?? {}) },
   });
@@ -98,17 +102,19 @@ function formatAlertAsHtml(
 
 jQuery(function ($) {
   async function updateAlerts() {
-    const realtimeAlerts = gtfsRealtimeUrls?.realtimeAlerts;
-
-    if (!realtimeAlerts) {
+    if (!gtfsRealtimeUrls?.realtimeAlerts) {
       return;
     }
 
     try {
       const alerts = await fetchGtfsRealtime(
-        realtimeAlerts.url,
-        realtimeAlerts.headers,
+        gtfsRealtimeUrls.realtimeAlerts.url,
+        gtfsRealtimeUrls.realtimeAlerts.headers,
       );
+
+      if (!alerts) {
+        return;
+      }
 
       const formattedAlerts = [];
 
