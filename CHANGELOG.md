@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Updated
 - Handle only some GTFS-Realtime URLs
+- Dependency Updates
 
 ## [2.9.9] - 2024-09-14
 
