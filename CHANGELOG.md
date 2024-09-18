@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fix for vehicle popups when toggling maps
 
+### Updated
+- Dependency updates for documentation site
+
 ## [2.9.10] - 2024-09-17
 
 ### Updated
