@@ -409,27 +409,31 @@ a:hover {
   min-width: 29px;
   height: 29px;
   border-radius: 15px;
-  text-align: center;
-  line-height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 12px;
   letter-spacing: -0.5px;
-  padding: 0 5px;
-  flex: none;
+  padding: 0 2px;
   flex-shrink: 0;
+  font-weight: bold;
+  color: white;
 }
 
 .timetable-page .route-color-swatch-large {
   min-width: 46px;
   height: 46px;
   border-radius: 23px;
-  text-align: center;
-  line-height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 20px;
   font-weight: bold;
   letter-spacing: -1px;
   padding: 0 6px;
-  flex: none;
   flex-shrink: 0;
+  font-weight: bold;
+  color: white;
 }
 
 /* Map Styles */
@@ -460,7 +464,7 @@ a:hover {
 }
 
 .timetable-page .map .mapboxgl-popup-content .route-list {
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
 }
 
 .timetable-page .map .mapboxgl-popup-content .map-route-item {
@@ -587,15 +591,18 @@ a:hover {
 }
 
 .timetable-page .timetable-alerts .route-color-swatch {
-  width: 30px;
-  height: 30px;
+  min-width: 29px;
+  height: 29px;
   border-radius: 15px;
-  text-align: center;
-  line-height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 12px;
+  letter-spacing: -0.5px;
+  padding: 0 2px;
   flex-shrink: 0;
-  color: white;
   font-weight: bold;
+  color: white;
 }
 
 .timetable-page .timetable-alerts .alert-header .alert-title {
