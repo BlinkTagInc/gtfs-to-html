@@ -56,8 +56,8 @@ function formatSeconds(seconds) {
 
 function formatRoute(route) {
   const html = route.route_url
-    ? $('<a>').attr('href', route.route_url)
-    : $('<div>');
+    ? jQuery('<a>').attr('href', route.route_url)
+    : jQuery('<div>');
 
   html.addClass('map-route-item');
 
@@ -66,7 +66,7 @@ function formatRoute(route) {
 
   if (route.route_color) {
     routeItemDivs.push(
-      $('<div>')
+      jQuery('<div>')
         .addClass('route-color-swatch')
         .css('backgroundColor', formatRouteColor(route))
         .css('color', formatRouteTextColor(route))
@@ -74,7 +74,7 @@ function formatRoute(route) {
     );
   }
   routeItemDivs.push(
-    $('<div>')
+    jQuery('<div>')
       .addClass('underline-hover')
       .text(route.route_long_name ?? `Route ${route.route_short_name}`),
   );
@@ -86,28 +86,28 @@ function formatRoute(route) {
 
 function formatStopPopup(feature, stop) {
   const routeIds = JSON.parse(feature.properties.route_ids);
-  const html = $('<div>');
+  const html = jQuery('<div>');
 
-  $('<div>').addClass('popup-title').text(stop.stop_name).appendTo(html);
+  jQuery('<div>').addClass('popup-title').text(stop.stop_name).appendTo(html);
 
   if (stop.stop_code ?? false) {
-    $('<div>')
+    jQuery('<div>')
       .html([
-        $('<label>').addClass('popup-label').text('Stop Code:'),
-        $('<strong>').text(stop.stop_code),
+        jQuery('<label>').addClass('popup-label').text('Stop Code:'),
+        jQuery('<strong>').text(stop.stop_code),
       ])
       .appendTo(html);
   }
 
-  $('<label>').text('Routes Served:').appendTo(html);
+  jQuery('<label>').text('Routes Served:').appendTo(html);
 
-  $(html).append(
-    $('<div>')
+  jQuery(html).append(
+    jQuery('<div>')
       .addClass('route-list')
       .html(routeIds.map((routeId) => formatRoute(routeData[routeId]))),
   );
 
-  $('<a>')
+  jQuery('<a>')
     .addClass('btn-blue btn-sm')
     .prop(
       'href',
@@ -164,7 +164,7 @@ function secondsInFuture(dateString) {
 
 function getVehiclePopupHtml(vehiclePosition, vehicleTripUpdate) {
   const lastUpdated = new Date(vehiclePosition.vehicle.timestamp * 1000);
-  const directionName = $(
+  const directionName = jQuery(
     '.timetable #trip_id_' + vehiclePosition.vehicle.trip.trip_id,
   )
     .parents('.timetable')
@@ -246,7 +246,7 @@ function addVehicleMarker(vehiclePosition, vehicleTripUpdate) {
     return;
   }
 
-  const visibleTimetableId = $('.timetable:visible').data('timetable-id');
+  const visibleTimetableId = jQuery('.timetable:visible').data('timetable-id');
 
   // Create a DOM element for each marker
   const el = document.createElement('div');
@@ -318,7 +318,7 @@ function updateVehicleMarkerLocation(
   vehiclePosition,
   vehicleTripUpdate,
 ) {
-  const visibleTimetableId = $('.timetable:visible').data('timetable-id');
+  const visibleTimetableId = jQuery('.timetable:visible').data('timetable-id');
 
   const coordinates = [
     vehiclePosition.vehicle.position.longitude,
@@ -387,11 +387,11 @@ async function updateArrivals() {
     ]);
 
     if (!latestVehiclePositions?.length) {
-      $('.vehicle-legend-item').hide();
+      jQuery('.vehicle-legend-item').hide();
       return;
     }
 
-    $('.vehicle-legend-item').show();
+    jQuery('.vehicle-legend-item').show();
 
     vehiclePositions = latestVehiclePositions;
     tripUpdates = latestTripUpdates;
@@ -531,7 +531,7 @@ function createMap(id) {
   const geojson = geojsons[id];
 
   if (!geojson || geojson.features.length === 0) {
-    $(`#map_timetable_id_${id}`).hide();
+    jQuery(`#map_timetable_id_${id}`).hide();
     return false;
   }
 
@@ -760,7 +760,9 @@ function createMap(id) {
         ['in', 'parent_station', ...stopIds],
       ]);
 
-      if ($(`#timetable_id_${id} table`).data('orientation') === 'vertical') {
+      if (
+        jQuery(`#timetable_id_${id} table`).data('orientation') === 'vertical'
+      ) {
         const columnIndexes = [];
         const stopIdSelectors = stopIds
           .map(
@@ -768,62 +770,72 @@ function createMap(id) {
               `#timetable_id_${id} table colgroup col[data-stop-id="${stopId}"]`,
           )
           .join(',');
-        $(stopIdSelectors).each((index, col) => {
+        jQuery(stopIdSelectors).each((index, col) => {
           columnIndexes.push(
-            $(`#timetable_id_${id} table colgroup col`).index(col),
+            jQuery(`#timetable_id_${id} table colgroup col`).index(col),
           );
         });
 
-        $(`#timetable_id_${id} table .stop-time`).removeClass('highlighted');
-        $(`#timetable_id_${id} table thead .stop-header`).removeClass(
+        jQuery(`#timetable_id_${id} table .stop-time`).removeClass(
           'highlighted',
         );
-        $(`#timetable_id_${id} table .trip-row`).each((index, row) => {
-          $('.stop-time', row).each((index, el) => {
+        jQuery(`#timetable_id_${id} table thead .stop-header`).removeClass(
+          'highlighted',
+        );
+        jQuery(`#timetable_id_${id} table .trip-row`).each((index, row) => {
+          jQuery('.stop-time', row).each((index, el) => {
             if (columnIndexes.includes(index)) {
-              $(el).addClass('highlighted');
+              jQuery(el).addClass('highlighted');
             }
           });
         });
 
-        $(`#timetable_id_${id} table thead`).each((index, thead) => {
-          $('.stop-header', thead).each((index, el) => {
+        jQuery(`#timetable_id_${id} table thead`).each((index, thead) => {
+          jQuery('.stop-header', thead).each((index, el) => {
             if (columnIndexes.includes(index)) {
-              $(el).addClass('highlighted');
+              jQuery(el).addClass('highlighted');
             }
           });
         });
       } else {
-        $(`#timetable_id_${id} table .stop-row`).removeClass('highlighted');
+        jQuery(`#timetable_id_${id} table .stop-row`).removeClass(
+          'highlighted',
+        );
         const stopIdSelectors = stopIds
           .map((stopId) => `#timetable_id_${id} table #stop_id_${stopId}`)
           .join(',');
-        $(stopIdSelectors).addClass('highlighted');
+        jQuery(stopIdSelectors).addClass('highlighted');
       }
     }
 
     function unHighlightStop() {
       map.setFilter('stops-highlighted', ['==', 'stop_id', '']);
 
-      if ($(`#timetable_id_${id} table`).data('orientation') === 'vertical') {
-        $(`#timetable_id_${id} table .stop-time`).removeClass('highlighted');
-        $(`#timetable_id_${id} table thead .stop-header`).removeClass(
+      if (
+        jQuery(`#timetable_id_${id} table`).data('orientation') === 'vertical'
+      ) {
+        jQuery(`#timetable_id_${id} table .stop-time`).removeClass(
+          'highlighted',
+        );
+        jQuery(`#timetable_id_${id} table thead .stop-header`).removeClass(
           'highlighted',
         );
       } else {
-        $(`#timetable_id_${id} table .stop-row`).removeClass('highlighted');
+        jQuery(`#timetable_id_${id} table .stop-row`).removeClass(
+          'highlighted',
+        );
       }
     }
 
     // On table hover, highlight stop on map
-    $('th, td', $(`#timetable_id_${id} table`)).hover((event) => {
+    jQuery('th, td', jQuery(`#timetable_id_${id} table`)).hover((event) => {
       let stopId;
-      const table = $(event.target).parents('table');
+      const table = jQuery(event.target).parents('table');
       if (table.data('orientation') === 'vertical') {
-        var index = $(event.target).index();
-        stopId = $('colgroup col', table).eq(index).data('stop-id');
+        var index = jQuery(event.target).index();
+        stopId = jQuery('colgroup col', table).eq(index).data('stop-id');
       } else {
-        stopId = $(event.target).parents('tr').data('stop-id');
+        stopId = jQuery(event.target).parents('tr').data('stop-id');
       }
 
       if (stopId === undefined) {

@@ -13,8 +13,8 @@ function formatRouteTextColor(route) {
 
 function formatRoute(route) {
   const html = route.route_url
-    ? $('<a>').attr('href', route.route_url)
-    : $('<div>');
+    ? jQuery('<a>').attr('href', route.route_url)
+    : jQuery('<div>');
 
   html.addClass('map-route-item');
 
@@ -23,7 +23,7 @@ function formatRoute(route) {
 
   if (route.route_color) {
     routeItemDivs.push(
-      $('<div>')
+      jQuery('<div>')
         .addClass('route-color-swatch')
         .css('backgroundColor', formatRouteColor(route))
         .css('color', formatRouteTextColor(route))
@@ -31,7 +31,7 @@ function formatRoute(route) {
     );
   }
   routeItemDivs.push(
-    $('<div>')
+    jQuery('<div>')
       .addClass('underline-hover')
       .text(route.route_long_name ?? `Route ${route.route_short_name}`),
   );
@@ -42,44 +42,46 @@ function formatRoute(route) {
 }
 
 function formatRoutePopup(features) {
-  const html = $('<div>');
+  const html = jQuery('<div>');
 
   if (features.length > 1) {
-    $('<div>').addClass('popup-title').text('Routes').appendTo(html);
+    jQuery('<div>').addClass('popup-title').text('Routes').appendTo(html);
   }
 
-  $(html).append(features.map((feature) => formatRoute(feature.properties)));
+  jQuery(html).append(
+    features.map((feature) => formatRoute(feature.properties)),
+  );
 
   return html.prop('outerHTML');
 }
 
 function formatStopPopup(feature) {
   const routes = JSON.parse(feature.properties.routes);
-  const html = $('<div>');
+  const html = jQuery('<div>');
 
-  $('<div>')
+  jQuery('<div>')
     .addClass('popup-title')
     .text(feature.properties.stop_name)
     .appendTo(html);
 
   if (feature.properties.stop_code ?? false) {
-    $('<div>')
+    jQuery('<div>')
       .html([
-        $('<label>').addClass('popup-label').text('Stop Code:'),
-        $('<strong>').text(feature.properties.stop_code),
+        jQuery('<label>').addClass('popup-label').text('Stop Code:'),
+        jQuery('<strong>').text(feature.properties.stop_code),
       ])
       .appendTo(html);
   }
 
-  $('<label>').text('Routes Served:').appendTo(html);
+  jQuery('<label>').text('Routes Served:').appendTo(html);
 
-  $(html).append(
-    $('<div>')
+  jQuery(html).append(
+    jQuery('<div>')
       .addClass('route-list')
       .html(routes.map((route) => formatRoute(route))),
   );
 
-  $('<a>')
+  jQuery('<a>')
     .addClass('btn-blue btn-sm')
     .prop(
       'href',
@@ -122,7 +124,7 @@ function createSystemMap(id, geojson) {
   };
 
   if (!geojson || geojson.features.length === 0) {
-    $('#' + id).hide();
+    jQuery('#' + id).hide();
     return false;
   }
 
@@ -574,16 +576,16 @@ function createSystemMap(id, geojson) {
     }
 
     // On table hover, highlight route on map
-    $(() => {
-      $('.overview-list a').hover((event) => {
-        const routeIdString = $(event.target).data('route-ids');
+    jQuery(() => {
+      jQuery('.overview-list a').hover((event) => {
+        const routeIdString = jQuery(event.target).data('route-ids');
         if (routeIdString) {
           const routeIds = routeIdString.toString().split(',');
           highlightRoutes(routeIds, true);
         }
       });
 
-      $('.overview-list').hover(
+      jQuery('.overview-list').hover(
         () => {},
         () => unHighlightRoutes(true),
       );
