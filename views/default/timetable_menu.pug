@@ -31,14 +31,14 @@ if timetablePage.consolidatedTimetables.length > 1
 
   if config.menuType === 'radio'
     .timetable-radio-menu
-      -const directionNames = _.uniq(timetablePage.consolidatedTimetables.map(timetable => timetable.direction_name));
-      div(hidden=directionNames.length <= 1)
+      -const uniqueDirectionTimetables = _.uniqBy(timetablePage.consolidatedTimetables, 'direction_id');
+      div(hidden=uniqueDirectionTimetables.length <= 1)
         #direction_name_selector
           h3 Service Direction
-          each directionName, idx in directionNames
+          each timetable, idx in uniqueDirectionTimetables
             label(class=idx === 0 ? 'btn-blue' : 'btn-gray')
-              input.hidden(type="radio" name="directionName" autocomplete="off" value=directionName checked=(idx === 0))
-              span= directionName
+              input.hidden(type="radio" name="directionId" autocomplete="off" value=timetable.direction_id checked=(idx === 0))
+              span= timetable.direction_name || timetable.timetable_label
       div(hidden=timetablePage.dayLists.length <= 1)
         #day_list_selector
           h3 Day of Week

@@ -9,9 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Fix for vehicle popups when toggling maps
+- Handle timetables with no direction_name in menu
 
 ### Updated
 - Dependency updates for documentation site
+- Use jQuery instead of $
 
 ## [2.9.10] - 2024-09-17
 

@@ -16,7 +16,7 @@ function showSelectedTimetable() {
       .toggleClass('btn-gray', jQuery(element).is(':not(:checked)'));
   });
 
-  jQuery('#direction_name_selector input[name="directionName"]').each(
+  jQuery('#direction_name_selector input[name="directionId"]').each(
     (index, element) => {
       jQuery(element)
         .parents('label')
@@ -30,14 +30,17 @@ function showSelectedTimetable() {
   const dayList = jQuery(
     '#day_list_selector input[name="dayList"]:checked',
   ).val();
-  const directionName = jQuery(
-    '#direction_name_selector input[name="directionName"]:checked',
+
+  const directionId = jQuery(
+    '#direction_name_selector input[name="directionId"]:checked',
   ).val();
 
   jQuery('.timetable').hide();
+
   const id = jQuery(
-    `.timetable[data-day-list="${dayList}"][data-direction-name="${directionName}"]`,
+    `.timetable[data-day-list="${dayList}"][data-direction-id="${directionId}"]`,
   ).data('timetable-id');
+
   showTimetable(id);
 }
 
@@ -53,7 +56,7 @@ jQuery(() => {
     showSelectedTimetable();
   });
 
-  jQuery('#direction_name_selector input[name="directionName"]').change(() => {
+  jQuery('#direction_name_selector input[name="directionId"]').change(() => {
     showSelectedTimetable();
   });
 });
