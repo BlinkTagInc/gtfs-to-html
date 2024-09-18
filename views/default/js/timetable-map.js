@@ -4,6 +4,8 @@
 const maps = {};
 const vehicleMarkers = {};
 const vehicleMarkersEventListeners = {};
+let vehiclePositions;
+let tripUpdates;
 let vehiclePopup;
 let gtfsRealtimeInterval;
 
@@ -376,7 +378,7 @@ async function updateArrivals() {
   }
 
   try {
-    const [vehiclePositions, tripUpdates] = await Promise.all([
+    const [latestVehiclePositions, latestTripUpdates] = await Promise.all([
       fetchGtfsRealtime(
         realtimeVehiclePositions?.url,
         realtimeVehiclePositions?.headers,
@@ -384,12 +386,15 @@ async function updateArrivals() {
       fetchGtfsRealtime(realtimeTripUpdates?.url, realtimeTripUpdates?.headers),
     ]);
 
-    if (!vehiclePositions?.length) {
+    if (!latestVehiclePositions?.length) {
       $('.vehicle-legend-item').hide();
       return;
     }
 
     $('.vehicle-legend-item').show();
+
+    vehiclePositions = latestVehiclePositions;
+    tripUpdates = latestTripUpdates;
 
     const routeVehiclePositions = vehiclePositions.filter((vehiclePosition) => {
       if (
@@ -471,9 +476,46 @@ async function updateArrivals() {
 
 function toggleMap(id) {
   if (maps[id]) {
+    // Resize the map to fit the visible area
     maps[id].resize();
 
-    for (const vehicleMarker of Object.values(vehicleMarkers)) {
+    // Update vehicle markers to use the current visible map
+    for (const [vehicleId, vehicleMarker] of Object.entries(vehicleMarkers)) {
+      const coordinates = vehicleMarker.getLngLat();
+
+      // Remove previous event listeners
+      vehicleMarker
+        .getElement()
+        .removeEventListener(
+          'mouseenter',
+          vehicleMarkersEventListeners[vehicleId],
+        );
+
+      const vehiclePosition = vehiclePositions.find(
+        (vehiclePosition) => vehiclePosition.vehicle.vehicle.id === vehicleId,
+      );
+
+      const tripUpdate = tripUpdates.find(
+        (tripUpdate) => tripUpdate.trip_update.vehicle.id === vehicleId,
+      );
+
+      // Update event listener function to use the new map
+      vehicleMarkersEventListeners[vehicleId] = () => {
+        vehiclePopup
+          .setLngLat(coordinates)
+          .setHTML(getVehiclePopupHtml(vehiclePosition, tripUpdate))
+          .addTo(maps[id]);
+      };
+
+      // Add updated event listener to marker
+      vehicleMarker
+        .getElement()
+        .addEventListener(
+          'mouseenter',
+          vehicleMarkersEventListeners[vehicleId],
+        );
+
+      // Move marker to the current visible map
       vehicleMarker.addTo(maps[id]);
     }
   }
