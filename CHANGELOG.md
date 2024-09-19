@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Updated
 - Dependency updates for documentation site
 - Use jQuery instead of $
+- Improvements to vehicle popups
 
 ## [2.9.10] - 2024-09-17
 

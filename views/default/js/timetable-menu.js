@@ -1,4 +1,4 @@
-/* global window, document, $, maps */
+/* global jQuery */
 /* eslint no-unused-vars: "off" */
 
 function showSelectedTimetable() {

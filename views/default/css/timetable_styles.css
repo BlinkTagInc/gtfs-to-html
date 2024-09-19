@@ -492,6 +492,22 @@ a:hover {
   padding: 0 5px;
 }
 
+.timetable-page .map .mapboxgl-popup-content .upcoming-stops {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.5rem;
+  line-height: 1;
+}
+
+.timetable-page
+  .map
+  .mapboxgl-popup-content
+  .upcoming-stops
+  div:nth-child(2n-1) {
+  text-align: right;
+  font-weight: bold;
+}
+
 .timetable-page .map-legend {
   max-width: 30%;
   background-color: #fff;

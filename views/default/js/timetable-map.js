@@ -1,5 +1,5 @@
-/* global window, document, $, mapboxgl, Pbf, stopData, routeData, routeIds, tripIds, geojsons, gtfsRealtimeUrls */
-/* eslint no-var: "off", prefer-arrow-callback: "off", no-unused-vars: "off" */
+/* global document, jQuery, mapboxgl, Pbf, stopData, routeData, routeIds, tripIds, geojsons, gtfsRealtimeUrls */
+/* eslint prefer-arrow-callback: "off", no-unused-vars: "off" */
 
 const maps = {};
 const vehicleMarkers = {};
@@ -84,7 +84,7 @@ function formatRoute(route) {
   return html.prop('outerHTML');
 }
 
-function formatStopPopup(feature, stop) {
+function getStopPopupHtml(feature, stop) {
   const routeIds = JSON.parse(feature.properties.route_ids);
   const html = jQuery('<div>');
 
@@ -162,7 +162,33 @@ function secondsInFuture(dateString) {
   return diffInSeconds > 0 ? diffInSeconds : 0;
 }
 
+function formatMovingText(vehiclePosition) {
+  let movingText = '';
+
+  if (
+    (vehiclePosition.vehicle.position.bearing !== undefined &&
+      vehiclePosition.vehicle.position.bearing !== 0) ||
+    vehiclePosition.vehicle.position.speed
+  ) {
+    movingText += 'Moving ';
+  }
+
+  if (
+    vehiclePosition.vehicle.position.bearing !== undefined &&
+    vehiclePosition.vehicle.position.bearing !== 0
+  ) {
+    movingText += degToCompass(vehiclePosition.vehicle.position.bearing);
+  }
+  if (vehiclePosition.vehicle.position.speed) {
+    movingText += ` at ${formatSpeed(metersPerSecondToMph(vehiclePosition.vehicle.position.speed))}`;
+  }
+
+  return movingText;
+}
+
 function getVehiclePopupHtml(vehiclePosition, vehicleTripUpdate) {
+  const html = jQuery('<div>');
+
   const lastUpdated = new Date(vehiclePosition.vehicle.timestamp * 1000);
   const directionName = jQuery(
     '.timetable #trip_id_' + vehiclePosition.vehicle.trip.trip_id,
@@ -170,31 +196,24 @@ function getVehiclePopupHtml(vehiclePosition, vehicleTripUpdate) {
     .parents('.timetable')
     .data('direction-name');
 
-  const descriptionArray = [];
-
   if (directionName) {
-    descriptionArray.push(`<div class="popup-title">${directionName}</div>`);
+    jQuery('<div>')
+      .addClass('popup-title')
+      .text(`Vehicle: ${directionName}`)
+      .appendTo(html);
   }
 
-  let movingText = '';
-
-  if (
-    vehiclePosition.vehicle.position.bearing !== undefined &&
-    vehiclePosition.vehicle.position.bearing !== 0
-  ) {
-    movingText += `Moving: ${degToCompass(vehiclePosition.vehicle.position.bearing)}`;
-  }
-  if (vehiclePosition.vehicle.position.speed) {
-    movingText += ` at ${formatSpeed(metersPerSecondToMph(vehiclePosition.vehicle.position.speed))}`;
-  }
+  const movingText = formatMovingText(vehiclePosition);
 
   if (movingText) {
-    descriptionArray.push(`<div>${movingText}</div>`);
+    jQuery('<div>').text(movingText).appendTo(html);
   }
 
-  descriptionArray.push(
-    `<div><small>Updated: ${lastUpdated.toLocaleTimeString()}</small></div>`,
-  );
+  jQuery('<div>')
+    .append(
+      jQuery('<small>').text(`Updated: ${lastUpdated.toLocaleTimeString()}`),
+    )
+    .appendTo(html);
 
   const nextArrivals = [];
   if (vehicleTripUpdate && vehicleTripUpdate.trip_update.stop_time_update) {
@@ -222,23 +241,32 @@ function getVehiclePopupHtml(vehiclePosition, vehicleTripUpdate) {
   }
 
   if (nextArrivals.length > 0) {
-    descriptionArray.push('<div><strong>Upcoming Stops: </strong></div>');
+    jQuery('<div>')
+      .append(jQuery('<small>').text('Upcoming Stops:'))
+      .appendTo(html);
 
-    for (const arrival of nextArrivals) {
-      let delay = '';
+    jQuery('<div>')
+      .addClass('upcoming-stops')
+      .append(
+        nextArrivals.flatMap((arrival) => {
+          let delay = '';
 
-      if (arrival.delay > 0) {
-        delay = `<span class="delay">${formatSeconds(arrival.delay)} late</span>`;
-      } else if (arrival.delay < 0) {
-        delay = `<span class="delay">${formatSeconds(arrival.delay)} early</span>`;
-      }
-      descriptionArray.push(
-        `<div>${arrival.stopName} in <strong>${formatSeconds(arrival.secondsToArrival)}</strong> ${delay}</div>`,
-      );
-    }
+          if (arrival.delay > 0) {
+            delay = `(${formatSeconds(arrival.delay)} behind schedule)`;
+          } else if (arrival.delay < 0) {
+            delay = `(${formatSeconds(arrival.delay)} ahead of schedule)`;
+          }
+
+          return [
+            jQuery('<div>').text(formatSeconds(arrival.secondsToArrival)),
+            jQuery('<div>').text(`${arrival.stopName} ${delay}`),
+          ];
+        }),
+      )
+      .appendTo(html);
   }
 
-  return descriptionArray.join('');
+  return html.prop('outerHTML');
 }
 
 function addVehicleMarker(vehiclePosition, vehicleTripUpdate) {
@@ -749,7 +777,9 @@ function createMap(id) {
 
       new mapboxgl.Popup()
         .setLngLat(feature.geometry.coordinates)
-        .setHTML(formatStopPopup(feature, stopData[feature.properties.stop_id]))
+        .setHTML(
+          getStopPopupHtml(feature, stopData[feature.properties.stop_id]),
+        )
         .addTo(map);
     });
 

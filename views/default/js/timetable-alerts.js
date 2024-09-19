@@ -1,4 +1,4 @@
-/* global window, document, $, anchorme, mapboxgl, Pbf, stopData, routeData, routeIds, tripIds, stopIds, gtfsRealtimeUrls */
+/* global jQuery, anchorme, Pbf, stopData, routeData, routeIds, tripIds, stopIds, gtfsRealtimeUrls */
 /* eslint no-var: "off", prefer-arrow-callback: "off", no-unused-vars: "off" */
 
 let gtfsRealtimeAlertsInterval;
