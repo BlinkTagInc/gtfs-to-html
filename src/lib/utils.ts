@@ -295,30 +295,30 @@ const getCalendarDatesForTimetable = (timetable, config) => {
   );
   const start = fromGTFSDate(timetable.start_date);
   const end = fromGTFSDate(timetable.end_date);
-  const excludedDates = [];
-  const includedDates = [];
+  const excludedDates = new Set();
+  const includedDates = new Set();
 
   for (const calendarDate of calendarDates) {
     if (moment(calendarDate.date, 'YYYYMMDD').isBetween(start, end)) {
       if (calendarDate.exception_type === 1) {
-        includedDates.push(formatDate(calendarDate, config.dateFormat));
+        includedDates.add(formatDate(calendarDate, config.dateFormat));
       } else if (calendarDate.exception_type === 2) {
-        excludedDates.push(formatDate(calendarDate, config.dateFormat));
+        excludedDates.add(formatDate(calendarDate, config.dateFormat));
       }
     }
   }
 
   // Remove dates that are both included and excluded from both lists
-  const includedAndExcludedDates = excludedDates.filter((date) =>
-    includedDates.includes(date),
+  const includedAndExcludedDates = new Set(
+    [...excludedDates].filter((date) => includedDates.has(date)),
   );
 
   return {
-    excludedDates: excludedDates.filter(
-      (date) => !includedAndExcludedDates.includes(date),
+    excludedDates: [...excludedDates].filter(
+      (date) => !includedAndExcludedDates.has(date),
     ),
-    includedDates: includedDates.filter(
-      (date) => !includedAndExcludedDates.includes(date),
+    includedDates: [...includedDates].filter(
+      (date) => !includedAndExcludedDates.has(date),
     ),
   };
 };
