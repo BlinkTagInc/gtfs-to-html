@@ -265,6 +265,7 @@ a:hover {
 
 .timetable-page .timetable .stop-code {
   font-weight: normal;
+  padding-top: 0.25rem;
 }
 
 .timetable-page .timetable .stop-time {

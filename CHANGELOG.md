@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Deduplicate excluded/included calendar_dates
 
+### Updated
+- Minor style change
+
 ## [2.9.11] - 2024-09-18
 
 ### Fixed
