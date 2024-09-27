@@ -53,8 +53,14 @@
             routeData[route.route_id] = route
           }
 
-          const stop = _.pick(feature.properties, ['stop_id', 'stop_code', 'stop_name', 'parent_station'])
-          stopData[stop.stop_id] = stop
+          stopData[feature.properties.stop_id] = {
+            stop_id: feature.properties.stop_id,
+            stop_code: feature.properties.stop_code,
+            stop_name: feature.properties.stop_name,
+            parent_station: feature.properties.parent_station,
+            stop_lat: feature.geometry.coordinates[1],
+            stop_lon: feature.geometry.coordinates[0],
+          }
 
           feature.properties = {
             route_ids: feature.properties.routes.map(route => route.route_id),

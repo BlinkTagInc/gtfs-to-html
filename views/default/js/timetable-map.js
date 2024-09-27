@@ -269,6 +269,55 @@ function getVehiclePopupHtml(vehiclePosition, vehicleTripUpdate) {
   return html.prop('outerHTML');
 }
 
+function getVehicleBearing(vehiclePosition, vehicleTripUpdate) {
+  // If vehicle position includes bearing, use that
+  if (
+    vehiclePosition.vehicle.position.bearing !== undefined &&
+    vehiclePosition.vehicle.position.bearing !== 0
+  ) {
+    return vehiclePosition.vehicle.position.bearing;
+  }
+
+  // Else try to calculate bearing from next stop
+  if (
+    vehicleTripUpdate &&
+    vehicleTripUpdate?.trip_update?.stop_time_update?.length > 0
+  ) {
+    const nextStopTimeUpdate =
+      vehicleTripUpdate.trip_update.stop_time_update[0];
+    const nextStop = stopData[nextStopTimeUpdate.stop_id];
+
+    if (nextStop && nextStop.stop_lat && nextStop.stop_lon) {
+      const vehicleLocation = vehiclePosition.vehicle.position;
+      const lat1 = vehicleLocation.latitude;
+      const lon1 = vehicleLocation.longitude;
+      const lat2 = nextStop.stop_lat;
+      const lon2 = nextStop.stop_lon;
+
+      const y = Math.sin(lon2 - lon1) * Math.cos(lat2);
+      const x =
+        Math.cos(lat1) * Math.sin(lat2) -
+        Math.sin(lat1) * Math.cos(lat2) * Math.cos(lon2 - lon1);
+      let bearing = (Math.atan2(y, x) * 180) / Math.PI;
+      bearing = (bearing + 360) % 360;
+
+      return bearing;
+    }
+  }
+
+  return null;
+}
+
+function getVehicleDirectionArrow(vehiclePosition, vehicleTripUpdate) {
+  const bearing = getVehicleBearing(vehiclePosition, vehicleTripUpdate);
+
+  if (bearing !== null) {
+    return `<div class="vehicle-marker-arrow" aria-hidden="true" style="transform:rotate(${bearing}deg)"></div>`;
+  } else {
+    return `<div class="vehicle-marker-arrow no-bearing" aria-hidden="true"></div>`;
+  }
+}
+
 function addVehicleMarker(vehiclePosition, vehicleTripUpdate) {
   if (!vehiclePosition.vehicle || !vehiclePosition.vehicle.position) {
     return;
@@ -276,12 +325,20 @@ function addVehicleMarker(vehiclePosition, vehicleTripUpdate) {
 
   const visibleTimetableId = jQuery('.timetable:visible').data('timetable-id');
 
+  const vehicleDirectionArrow = getVehicleDirectionArrow(
+    vehiclePosition,
+    vehicleTripUpdate,
+  );
+
   // Create a DOM element for each marker
   const el = document.createElement('div');
   el.className = 'vehicle-marker';
   el.style.width = '20px';
   el.style.height = '20px';
-  el.innerHTML = `<div class="vehicle-marker-arrow" aria-hidden="true" style="transform:rotate(${vehiclePosition.vehicle.position.bearing}deg)"></div>`;
+
+  if (vehicleDirectionArrow) {
+    el.innerHTML = vehicleDirectionArrow;
+  }
 
   const coordinates = [
     vehiclePosition.vehicle.position.longitude,
@@ -352,7 +409,17 @@ function updateVehicleMarkerLocation(
     vehiclePosition.vehicle.position.longitude,
     vehiclePosition.vehicle.position.latitude,
   ];
-  vehicleMarker.getElement().innerHTML = `<div class="vehicle-marker-arrow" aria-hidden="true" style="transform:rotate(${vehiclePosition.vehicle.position.bearing}deg)"></div>`;
+
+  const vehicleDirectionArrow = getVehicleDirectionArrow(
+    vehiclePosition,
+    vehicleTripUpdate,
+  );
+
+  if (vehicleDirectionArrow) {
+    vehicleMarker.getElement().innerHTML = vehicleDirectionArrow;
+  } else {
+    vehicleMarker.getElement().innerHTML = '';
+  }
 
   vehicleMarker
     .getElement()
