@@ -211,6 +211,7 @@ function getVehiclePopupHtml(vehiclePosition, vehicleTripUpdate) {
     jQuery('<div>').text(movingText).appendTo(html);
   }
 
+  const numberOfArrivalsToShow = 5;
   const nextArrivals = [];
   if (vehicleTripUpdate && vehicleTripUpdate.trip_update.stop_time_update) {
     for (const stoptimeUpdate of vehicleTripUpdate.trip_update
@@ -229,7 +230,7 @@ function getVehiclePopupHtml(vehiclePosition, vehicleTripUpdate) {
           });
         }
 
-        if (nextArrivals.length >= 3) {
+        if (nextArrivals.length >= numberOfArrivalsToShow) {
           break;
         }
       }
