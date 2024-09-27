@@ -498,6 +498,27 @@ a:hover {
   grid-template-columns: auto 1fr;
   gap: 0.5rem;
   line-height: 1;
+  padding-top: 5px;
+}
+
+.timetable-page
+  .map
+  .mapboxgl-popup-content
+  .upcoming-stops div:nth-child(1) {
+  font-weight: bold;
+  border-bottom: 1px solid #dddddd;
+  padding-bottom: 3px;
+  margin-bottom: -3px;
+}
+
+.timetable-page
+  .map
+  .mapboxgl-popup-content
+  .upcoming-stops div:nth-child(2) {
+  font-weight: bold;
+  border-bottom: 1px solid #dddddd;
+  padding-bottom: 3px;
+  margin-bottom: -3px;
 }
 
 .timetable-page
@@ -507,6 +528,16 @@ a:hover {
   div:nth-child(2n-1) {
   text-align: right;
   font-weight: bold;
+}
+
+.timetable-page .map .mapboxgl-popup-content .vehicle-updated {
+  padding-top: 5px;
+  font-size: 10px;
+  text-align: right;
+}
+
+.timetable-page .map .vehicle-popup .mapboxgl-popup-content {
+  padding-bottom: 5px;
 }
 
 .timetable-page .map-legend {

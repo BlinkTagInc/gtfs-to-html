@@ -209,12 +209,6 @@ function getVehiclePopupHtml(vehiclePosition, vehicleTripUpdate) {
     jQuery('<div>').text(movingText).appendTo(html);
   }
 
-  jQuery('<div>')
-    .append(
-      jQuery('<small>').text(`Updated: ${lastUpdated.toLocaleTimeString()}`),
-    )
-    .appendTo(html);
-
   const nextArrivals = [];
   if (vehicleTripUpdate && vehicleTripUpdate.trip_update.stop_time_update) {
     for (const stoptimeUpdate of vehicleTripUpdate.trip_update
@@ -242,11 +236,11 @@ function getVehiclePopupHtml(vehiclePosition, vehicleTripUpdate) {
 
   if (nextArrivals.length > 0) {
     jQuery('<div>')
-      .append(jQuery('<small>').text('Upcoming Stops:'))
-      .appendTo(html);
-
-    jQuery('<div>')
       .addClass('upcoming-stops')
+      .append([
+        jQuery('<div>').text('Time'),
+        jQuery('<div>').text('Upcoming Stop'),
+      ])
       .append(
         nextArrivals.flatMap((arrival) => {
           let delay = '';
@@ -265,6 +259,11 @@ function getVehiclePopupHtml(vehiclePosition, vehicleTripUpdate) {
       )
       .appendTo(html);
   }
+
+  jQuery('<div>')
+    .addClass('vehicle-updated')
+    .text(`Updated: ${lastUpdated.toLocaleTimeString()}`)
+    .appendTo(html);
 
   return html.prop('outerHTML');
 }
