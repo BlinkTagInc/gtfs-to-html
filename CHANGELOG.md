@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Updated
 - Get a vehicle bearing based on next stop location
+- Dependency Updates
 
 ## [2.9.12] - 2024-09-23
 
