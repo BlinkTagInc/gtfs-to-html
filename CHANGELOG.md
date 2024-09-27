@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Get a vehicle bearing based on next stop location
 - Better anchor position for vehicle marker popup
 - Better vehicle popup content
+- Trigger vehicle popup on click
 - Dependency Updates
 
 ## [2.9.12] - 2024-09-23

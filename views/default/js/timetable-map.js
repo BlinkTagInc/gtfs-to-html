@@ -187,7 +187,9 @@ function formatMovingText(vehiclePosition) {
 }
 
 function getVehiclePopupHtml(vehiclePosition, vehicleTripUpdate) {
-  const html = jQuery('<div>');
+  const html = jQuery('<div>', {
+    id: `vehicle-popup-${vehiclePosition.vehicle.vehicle.id}`,
+  });
 
   const lastUpdated = new Date(vehiclePosition.vehicle.timestamp * 1000);
   const directionName = jQuery(
@@ -317,6 +319,47 @@ function getVehicleDirectionArrow(vehiclePosition, vehicleTripUpdate) {
   }
 }
 
+function attachVehicleMarkerClickHandler(
+  vehiclePosition,
+  vehicleTripUpdate,
+  map,
+) {
+  const coordinates = [
+    vehiclePosition.vehicle.position.longitude,
+    vehiclePosition.vehicle.position.latitude,
+  ];
+
+  const vehicleMarker = vehicleMarkers[vehiclePosition.vehicle.vehicle.id];
+
+  vehicleMarker
+    .getElement()
+    .removeEventListener(
+      'click',
+      vehicleMarkersEventListeners[vehiclePosition.vehicle.vehicle.id],
+    );
+
+  vehicleMarkersEventListeners[vehiclePosition.vehicle.vehicle.id] = (
+    event,
+  ) => {
+    event.stopPropagation();
+    if (vehiclePopup.isOpen()) {
+      vehiclePopup.remove();
+    }
+
+    vehiclePopup
+      .setLngLat(coordinates)
+      .setHTML(getVehiclePopupHtml(vehiclePosition, vehicleTripUpdate))
+      .addTo(map);
+  };
+
+  vehicleMarker
+    .getElement()
+    .addEventListener(
+      'click',
+      vehicleMarkersEventListeners[vehiclePosition.vehicle.vehicle.id],
+    );
+}
+
 function addVehicleMarker(vehiclePosition, vehicleTripUpdate) {
   if (!vehiclePosition.vehicle || !vehiclePosition.vehicle.position) {
     return;
@@ -344,32 +387,20 @@ function addVehicleMarker(vehiclePosition, vehicleTripUpdate) {
     vehiclePosition.vehicle.position.latitude,
   ];
 
-  vehicleMarkersEventListeners[vehiclePosition.vehicle.vehicle.id] = () => {
-    vehiclePopup
-      .setLngLat(coordinates)
-      .setHTML(getVehiclePopupHtml(vehiclePosition, vehicleTripUpdate))
-      .addTo(maps[visibleTimetableId]);
-  };
-
-  // Vehicle marker popups
-  el.addEventListener(
-    'mouseenter',
-    vehicleMarkersEventListeners[vehiclePosition.vehicle.vehicle.id],
-  );
-
-  el.addEventListener('mouseleave', () => {
-    vehiclePopup.remove();
-  });
-
   // Add marker to map
-  const marker = new mapboxgl.Marker(el)
+  const vehicleMarker = new mapboxgl.Marker(el)
     .setLngLat(coordinates)
     .addTo(maps[visibleTimetableId]);
 
-  return marker;
+  vehicleMarkers[vehiclePosition.vehicle.vehicle.id] = vehicleMarker;
 }
 
-function animateVehicleMarker(vehicleMarker, newCoordinates) {
+function animateVehicleMarker(vehicleMarker, vehiclePosition) {
+  const newCoordinates = [
+    vehiclePosition.vehicle.position.longitude,
+    vehiclePosition.vehicle.position.latitude,
+  ];
+
   let startTime;
   const duration = 5000;
   const previousCoordinates = vehicleMarker.getLngLat().toArray();
@@ -387,7 +418,18 @@ function animateVehicleMarker(vehicleMarker, newCoordinates) {
       previousCoordinates[1] + safeProgress * latitudeDifference;
 
     vehicleMarker.setLngLat([newLongitude, newLatitude]);
-    vehiclePopup.setLngLat([newLongitude, newLatitude]);
+
+    // Check if vehiclePopup element exists and is for this vehicle
+    const popupElement = vehiclePopup.getElement();
+    const vehiclePopupContentId = `vehicle-popup-${vehiclePosition.vehicle.vehicle.id}`;
+    const markerPopupIsOpenForThisVehicle =
+      popupElement && popupElement.querySelector(`#${vehiclePopupContentId}`);
+
+    // Check if the open vehicle popup is for this vehicle
+    if (vehiclePopup.isOpen() && markerPopupIsOpenForThisVehicle) {
+      // Animate the popup along with the vehicle marker
+      vehiclePopup.setLngLat([newLongitude, newLatitude]);
+    }
 
     if (safeProgress != 1) {
       requestAnimationFrame(animation);
@@ -402,13 +444,6 @@ function updateVehicleMarkerLocation(
   vehiclePosition,
   vehicleTripUpdate,
 ) {
-  const visibleTimetableId = jQuery('.timetable:visible').data('timetable-id');
-
-  const coordinates = [
-    vehiclePosition.vehicle.position.longitude,
-    vehiclePosition.vehicle.position.latitude,
-  ];
-
   const vehicleDirectionArrow = getVehicleDirectionArrow(
     vehiclePosition,
     vehicleTripUpdate,
@@ -420,28 +455,7 @@ function updateVehicleMarkerLocation(
     vehicleMarker.getElement().innerHTML = '';
   }
 
-  vehicleMarker
-    .getElement()
-    .removeEventListener(
-      'mouseenter',
-      vehicleMarkersEventListeners[vehiclePosition.vehicle.vehicle.id],
-    );
-
-  vehicleMarkersEventListeners[vehiclePosition.vehicle.vehicle.id] = () => {
-    vehiclePopup
-      .setLngLat(coordinates)
-      .setHTML(getVehiclePopupHtml(vehiclePosition, vehicleTripUpdate))
-      .addTo(maps[visibleTimetableId]);
-  };
-
-  vehicleMarker
-    .getElement()
-    .addEventListener(
-      'mouseenter',
-      vehicleMarkersEventListeners[vehiclePosition.vehicle.vehicle.id],
-    );
-
-  animateVehicleMarker(vehicleMarker, coordinates);
+  animateVehicleMarker(vehicleMarker, vehiclePosition);
 }
 
 async function fetchGtfsRealtime(url, headers) {
@@ -536,12 +550,9 @@ async function updateArrivals() {
 
       let vehicleMarker = vehicleMarkers[vehicleId];
 
-      // If not on map, add it
       if (vehicleMarker === undefined) {
-        vehicleMarkers[vehicleId] = addVehicleMarker(
-          vehiclePosition,
-          vehicleTripUpdate,
-        );
+        // If not on map, add it
+        addVehicleMarker(vehiclePosition, vehicleTripUpdate);
       } else {
         // Otherwise update location
         updateVehicleMarkerLocation(
@@ -550,6 +561,14 @@ async function updateArrivals() {
           vehicleTripUpdate,
         );
       }
+
+      const visibleTimetableId =
+        jQuery('.timetable:visible').data('timetable-id');
+      attachVehicleMarkerClickHandler(
+        vehiclePosition,
+        vehicleTripUpdate,
+        maps[visibleTimetableId],
+      );
     }
 
     // Remove vehicles not in the feed
@@ -575,39 +594,19 @@ function toggleMap(id) {
 
     // Update vehicle markers to use the current visible map
     for (const [vehicleId, vehicleMarker] of Object.entries(vehicleMarkers)) {
-      const coordinates = vehicleMarker.getLngLat();
-
-      // Remove previous event listeners
-      vehicleMarker
-        .getElement()
-        .removeEventListener(
-          'mouseenter',
-          vehicleMarkersEventListeners[vehicleId],
-        );
-
       const vehiclePosition = vehiclePositions.find(
         (vehiclePosition) => vehiclePosition.vehicle.vehicle.id === vehicleId,
       );
 
-      const tripUpdate = tripUpdates.find(
+      const vehicleTripUpdate = tripUpdates.find(
         (tripUpdate) => tripUpdate.trip_update.vehicle.id === vehicleId,
       );
 
-      // Update event listener function to use the new map
-      vehicleMarkersEventListeners[vehicleId] = () => {
-        vehiclePopup
-          .setLngLat(coordinates)
-          .setHTML(getVehiclePopupHtml(vehiclePosition, tripUpdate))
-          .addTo(maps[id]);
-      };
-
-      // Add updated event listener to marker
-      vehicleMarker
-        .getElement()
-        .addEventListener(
-          'mouseenter',
-          vehicleMarkersEventListeners[vehicleId],
-        );
+      attachVehicleMarkerClickHandler(
+        vehiclePosition,
+        vehicleTripUpdate,
+        maps[id],
+      );
 
       // Move marker to the current visible map
       vehicleMarker.addTo(maps[id]);
@@ -957,7 +956,6 @@ function createMaps() {
   ) {
     // Popup for realtime vehicle locations
     vehiclePopup = new mapboxgl.Popup({
-      closeButton: false,
       closeOnClick: false,
       className: 'vehicle-popup',
       offset: {
