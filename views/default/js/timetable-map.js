@@ -961,7 +961,16 @@ function createMaps() {
       closeButton: false,
       closeOnClick: false,
       className: 'vehicle-popup',
-      offset: [0, -10],
+      offset: {
+        top: [0, 10],
+        bottom: [0, -10],
+        left: [10, 0],
+        right: [-10, 0],
+        'top-left': [10, 10],
+        'top-right': [-10, 10],
+        'bottom-left': [10, -10],
+        'bottom-right': [-10, -10],
+      },
     });
 
     const arrivalUpdateInterval = 10 * 1000; // 10 seconds
