@@ -5,9 +5,9 @@
     "moduleResolution": "nodenext",
     "declaration": true,
     "outDir": "./dist",
+    "allowImportingTsExtensions": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true,
     "strict": true,
     "skipLibCheck": true
   },
