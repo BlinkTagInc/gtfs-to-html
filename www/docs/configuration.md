@@ -39,6 +39,7 @@ All files starting with `config*.json` are .gitignored - so you can create multi
 | [`noServiceText`](#noservicetext)                               | string           | The text used to describe a stop which is not served by a specific trip.                         |
 | [`outputFormat`](#outputformat)                                 | string           | The file format of the timetables generated. Either `html`, `pdf` or `csv`.                      |
 | [`outputPath`](#outputpath)                                     | string           | The path to write the timetables to. Optional, defaults to `html/<agencyKey>`.  |
+| [`overwriteExistingFiles`](#overwriteexistingfiles)             | boolean          | Whether or not to overwrite existing files in the `outputPath` directory.                               |
 | [`noPickupSymbol`](#nopickupsymbol)                             | string           | The symbol used to indicate a stop where no pickup is available.                                 |
 | [`noPickupText`](#nopickuptext)                                 | string           | The text used to describe a stop where no pickup is available.                                   |
 | [`requestDropoffSymbol`](#requestdropoffsymbol)                 | string           | The symbol used to indicate a stop where riders must request a drop off.                         |
@@ -406,6 +407,13 @@ gtfsToHtml(config);
 ```json
 "outputPath": "/path/to/output/timetables"
 ```
+
+### overwriteExistingFiles
+
+\{Boolean\} Whether or not to overwrite existing files in the `outputPath` folder. Optional, defaults to `true`.
+
+```json
+"overwriteExistingFiles": true
 
 ### requestDropoffSymbol
 

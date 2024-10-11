@@ -47,7 +47,19 @@ const gtfsToHtml = async (initialConfig: IConfig) => {
   config.logWarning = logWarning(config);
   config.logError = logError(config);
 
+  const agencyKey = config.agencies
+    .map(
+      (agency: { agencyKey?: string; agency_key?: string }) =>
+        agency.agencyKey ?? agency.agency_key ?? 'unknown',
+    )
+    .join('-');
+  const outputPath = config.outputPath
+    ? untildify(config.outputPath)
+    : path.join(process.cwd(), 'html', sanitize(agencyKey));
+
   timer.start();
+
+  await prepDirectory(outputPath, config);
 
   try {
     openDb(config);
@@ -69,15 +81,6 @@ const gtfsToHtml = async (initialConfig: IConfig) => {
     await importGtfs(config);
   }
 
-  const agencyKey = config.agencies
-    .map(
-      (agency: { agencyKey?: string; agency_key?: string }) =>
-        agency.agencyKey ?? agency.agency_key ?? 'unknown',
-    )
-    .join('-');
-  const outputPath = config.outputPath
-    ? untildify(config.outputPath)
-    : path.join(process.cwd(), 'html', sanitize(agencyKey));
   const stats: {
     timetables: number;
     timetablePages: number;
@@ -102,7 +105,6 @@ const gtfsToHtml = async (initialConfig: IConfig) => {
     getTimetablePagesForAgency(config),
     'timetable_page_id',
   );
-  await prepDirectory(outputPath);
 
   if (config.noHead !== true && ['html', 'pdf'].includes(config.outputFormat)) {
     await copyStaticAssets(config, outputPath);

@@ -28,6 +28,7 @@ export interface IConfig {
   noServiceSymbol?: string;
   noServiceText?: string;
   outputFormat?: 'html' | 'pdf' | 'csv';
+  overwriteExistingFiles?: boolean;
   outputPath?: string;
   requestDropoffSymbol?: string;
   requestDropoffText?: string;

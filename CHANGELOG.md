@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Updated
 - Dependency Updates
 
+### Added
+-  `overwriteExistingFiles` config option
+
 ## [2.9.13] - 2024-09-27
 
 ### Updated

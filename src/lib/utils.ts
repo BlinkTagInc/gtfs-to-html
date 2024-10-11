@@ -1480,6 +1480,7 @@ export function setDefaultConfig(initialConfig) {
     noServiceSymbol: '-',
     noServiceText: 'No service at this stop',
     outputFormat: 'html',
+    overwriteExistingFiles: true,
     requestDropoffSymbol: '†',
     requestDropoffText: 'Must request drop off',
     requestPickupSymbol: '***',

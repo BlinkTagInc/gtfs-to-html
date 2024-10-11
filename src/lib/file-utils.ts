@@ -11,7 +11,7 @@ import {
   rm,
 } from 'node:fs/promises';
 
-import _ from 'lodash-es';
+import * as _ from 'lodash-es';
 import archiver from 'archiver';
 import beautify from 'js-beautify';
 import { renderFile } from 'pug';
@@ -28,6 +28,8 @@ import {
   formatRouteTextColor,
 } from './formatters.js';
 import * as templateFunctions from './template-functions.js';
+
+import type { IConfig } from '../types/global_interfaces.js';
 
 /*
  * Attempt to parse the specified config JSON file.
@@ -66,7 +68,7 @@ export async function getConfig(argv) {
 /*
  * Get the full path to the views folder.
  */
-export function getPathToViewsFolder(config) {
+export function getPathToViewsFolder(config: IConfig) {
   if (config.templatePath) {
     return untildify(config.templatePath);
   }
@@ -92,7 +94,7 @@ export function getPathToViewsFolder(config) {
 /*
  * Get the full path of a template file.
  */
-function getPathToTemplateFile(templateFileName: string, config) {
+function getPathToTemplateFile(templateFileName: string, config: IConfig) {
   const fullTemplateFileName =
     config.noHead !== true
       ? `${templateFileName}_full.pug`
@@ -104,7 +106,7 @@ function getPathToTemplateFile(templateFileName: string, config) {
 /*
  * Prepare the outputPath directory for writing timetable files.
  */
-export async function prepDirectory(outputPath) {
+export async function prepDirectory(outputPath: string, config: IConfig) {
   // Check if outputPath exists
   try {
     await access(outputPath);
@@ -124,17 +126,22 @@ export async function prepDirectory(outputPath) {
 
   // Check if outputPath is empty
   const files = await readdir(outputPath);
-  if (files.length > 0) {
+  if (config.overwriteExistingFiles === false && files.length > 0) {
     throw new Error(
       `Output directory ${outputPath} is not empty. Please specify an empty directory.`,
     );
+  }
+
+  // Delete all files in outputPath if `overwriteExistingFiles` is true
+  if (config.overwriteExistingFiles === true) {
+    await rm(join(outputPath, '*'), { recursive: true, force: true });
   }
 }
 
 /*
  * Copy needed CSS and JS to export path.
  */
-export async function copyStaticAssets(config, outputPath) {
+export async function copyStaticAssets(config: IConfig, outputPath: string) {
   const viewsFolderPath = getPathToViewsFolder(config);
 
   const foldersToCopy = ['css', 'js', 'img'];

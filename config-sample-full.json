@@ -44,6 +44,7 @@
   "noServiceSymbol": "—",
   "noServiceText": "No service at this stop",
   "outputFormat": "html",
+  "overwriteExistingFiles": true,
   "outputPath": "custom/output/path",
   "requestDropoffSymbol": "†",
   "requestDropoffText": "Must request drop off",
