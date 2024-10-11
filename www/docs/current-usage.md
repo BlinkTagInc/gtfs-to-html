@@ -11,6 +11,7 @@ Many transit agencies use GTFS-to-HTML to generate the schedule pages used on th
 | ----------------------------------------------------------------------------- | ----------------------------------- |
 | [Advance Transit](https://advancetransit.com)                                 | Vermont                             |
 | [Brockton Area Transit Authority](https://ridebat.com)                        | Brockton, Massachusetts             |
+| [BusWay – CIRA](https://busway-cira.pt)                                       | Aveiro, Portugal                    |
 | [Capital Transit](http://www.ridethecapitalt.org)                             | Helena, Montana                     |
 | [Capital Transit](https://juneaucapitaltransit.org)                           | Juneau, Alaska                      |
 | [Central Transit](https://centraltransit.org)                                 | Ellensburg, Washington              |

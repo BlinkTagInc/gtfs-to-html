@@ -61,6 +61,7 @@ Many transit agencies use `gtfs-to-html` to generate the schedule pages used on 
 
 - [Advance Transit](https://advancetransit.com)
 - [Brockton Area Transit Authority](https://ridebat.com)
+- [BusWay – CIRA (Aveiro, Portugal)](https://busway-cira.pt)
 - [Capital Transit (Helena, Montana)](http://www.ridethecapitalt.org)
 - [Capital Transit (Juneau, Alaska)](https://juneaucapitaltransit.org)
 - [Central Transit (Ellensburg, Washington)](https://centraltransit.org)
