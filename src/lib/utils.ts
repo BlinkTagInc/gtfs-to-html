@@ -78,7 +78,7 @@ import {
 } from './time-utils.js';
 import { formatTripNameForCSV } from './template-functions.js';
 
-import type { IConfig, ITimetablePage } from '../types/global_interfaces.js';
+import type { Config, TimetablePage } from '../types/global_interfaces.js';
 
 import { version } from '../../package.json';
 
@@ -99,7 +99,7 @@ export const isTimepoint = (stoptime) => {
 /*
  * Find the longest trip (most stops) in a group of trips and return stoptimes.
  */
-const getLongestTripStoptimes = (trips, config: IConfig) => {
+const getLongestTripStoptimes = (trips, config: Config) => {
   const filteredTripStoptimes = trips.map((trip) =>
     trip.stoptimes.filter((stoptime) => {
       // If `showOnlyTimepoint` is true, then filter out all non-timepoints.
@@ -117,7 +117,7 @@ const getLongestTripStoptimes = (trips, config: IConfig) => {
  * Find the first stop_id that all trips have in common, otherwise use the first
  * stoptime.
  */
-const findCommonStopId = (trips, config: IConfig) => {
+const findCommonStopId = (trips, config: Config) => {
   const longestTripStoptimes = getLongestTripStoptimes(trips, config);
 
   if (!longestTripStoptimes) {
@@ -200,7 +200,7 @@ const deduplicateTrips = (trips, commonStopId) => {
 /*
  * Sort trips chronologically, using specified config.sortingAlgorithm
  */
-const sortTrips = (trips, config: IConfig) => {
+const sortTrips = (trips, config: Config) => {
   let sortedTrips;
   let commonStopId;
 
@@ -281,7 +281,7 @@ const sortTripsByStoptimeAtStop = (trips, stopId) =>
 /*
  * Get all calendar dates for a specific timetable.
  */
-const getCalendarDatesForTimetable = (timetable, config: IConfig) => {
+const getCalendarDatesForTimetable = (timetable, config: Config) => {
   const calendarDates = getCalendarDates(
     {
       service_id: timetable.service_ids,
@@ -372,7 +372,7 @@ const getDirectionHeadsignFromTimetable = (timetable) => {
 /*
  * Get the notes for a specific timetable.
  */
-const getTimetableNotesForTimetable = (timetable, config: IConfig) => {
+const getTimetableNotesForTimetable = (timetable, config: Config) => {
   const noteReferences = [
     // Get all notes for this timetable.
     ...getTimetableNotesReferences({
@@ -464,7 +464,7 @@ const getTimetableNotesForTimetable = (timetable, config: IConfig) => {
  * Create a timetable page from a single timetable. Used if no
  * `timetable_pages.txt` is present.
  */
-const convertTimetableToTimetablePage = (timetable, config: IConfig) => {
+const convertTimetableToTimetablePage = (timetable, config: Config) => {
   if (!timetable.routes) {
     timetable.routes = getRoutes({
       route_id: timetable.route_ids,
@@ -491,7 +491,7 @@ const convertRouteToTimetablePage = (
   direction,
   calendars,
   calendarDates,
-  config: IConfig,
+  config: Config,
 ) => {
   const timetable = {
     route_ids: [route.route_id],
@@ -538,7 +538,7 @@ const convertRouteToTimetablePage = (
  * Create timetable pages for all routes in an agency. Used if no
  * `timetables.txt` is present.
  */
-const convertRoutesToTimetablePages = (config: IConfig) => {
+const convertRoutesToTimetablePages = (config: Config) => {
   const db = openDb(config);
   const routes = getRoutes();
 
@@ -622,7 +622,7 @@ const convertRoutesToTimetablePages = (config: IConfig) => {
 /*
  * Generate all trips based on a start trip and an array of frequencies.
  */
-const generateTripsByFrequencies = (trip, frequencies, config: IConfig) => {
+const generateTripsByFrequencies = (trip, frequencies, config: Config) => {
   const formattedFrequencies = frequencies.map((frequency) =>
     formatFrequency(frequency, config),
   );
@@ -657,7 +657,7 @@ const generateTripsByFrequencies = (trip, frequencies, config: IConfig) => {
 const duplicateStopsForDifferentArrivalDeparture = (
   stopIds,
   timetable,
-  config: IConfig,
+  config: Config,
 ) => {
   if (config.showArrivalOnDifference === null) {
     return stopIds;
@@ -696,7 +696,7 @@ const duplicateStopsForDifferentArrivalDeparture = (
 /*
  * Get a sorted array of stop_ids for a specific timetable.
  */
-const getStopOrder = (timetable, config: IConfig) => {
+const getStopOrder = (timetable, config: Config) => {
   // First, check if `timetable_stop_order.txt` for route exists
   const timetableStopOrders = getTimetableStopOrders(
     {
@@ -768,7 +768,7 @@ const getStopOrder = (timetable, config: IConfig) => {
 /*
  * Get an array of stops for a specific timetable.
  */
-const getStopsForTimetable = (timetable, config: IConfig) => {
+const getStopsForTimetable = (timetable, config: Config) => {
   if (timetable.orderedTrips.length === 0) {
     return [];
   }
@@ -1093,7 +1093,7 @@ const filterTrips = (timetable) => {
  */
 
 /* eslint-disable complexity */
-const getTripsForTimetable = (timetable, calendars, config: IConfig) => {
+const getTripsForTimetable = (timetable, calendars, config: Config) => {
   const tripQuery = {
     route_id: timetable.route_ids,
     service_id: timetable.service_ids,
@@ -1230,7 +1230,7 @@ const getTripsForTimetable = (timetable, calendars, config: IConfig) => {
 /*
  * Format timetables for display.
  */
-const formatTimetables = (timetables, config: IConfig) => {
+const formatTimetables = (timetables, config: Config) => {
   const formattedTimetables = timetables.map((timetable) => {
     timetable.warnings = [];
     const dayList = formatDays(timetable, config);
@@ -1297,7 +1297,7 @@ const formatTimetables = (timetables, config: IConfig) => {
 /*
  * Get all timetable pages for an agency.
  */
-export function getTimetablePagesForAgency(config: IConfig) {
+export function getTimetablePagesForAgency(config: Config) {
   const timetables = mergeTimetablesWithSameId(getTimetables());
 
   // If no timetables, build each route and direction into a timetable.
@@ -1345,7 +1345,7 @@ export function getTimetablePagesForAgency(config: IConfig) {
 /*
  * Get a timetable_page by id.
  */
-const getTimetablePageById = (timetablePageId: string, config: IConfig) => {
+const getTimetablePageById = (timetablePageId: string, config: Config) => {
   // Check if there are any timetable pages defined in `timetable_pages.txt`.
   const timetablePages = getTimetablePages({
     timetable_page_id: timetablePageId,
@@ -1536,12 +1536,12 @@ export function setDefaultConfig(initialConfig) {
  */
 export function getFormattedTimetablePage(
   timetablePageId: string,
-  config: IConfig,
+  config: Config,
 ) {
   const timetablePage = getTimetablePageById(
     timetablePageId,
     config,
-  ) as ITimetablePage;
+  ) as TimetablePage;
 
   const timetableRoutes = getRoutes(
     {
@@ -1625,7 +1625,7 @@ export const generateStats = (timetablePage) => {
 /*
  * Generate the HTML timetable for a timetable page.
  */
-export function generateTimetableHTML(timetablePage, config: IConfig) {
+export function generateTimetableHTML(timetablePage, config: Config) {
   const agencies = getAgencies() as { agency_name: string }[];
   const templateVars = {
     timetablePage,
@@ -1680,7 +1680,7 @@ export function generateTimetableCSV(timetable) {
 /*
  * Generate the HTML for the agency overview page.
  */
-export function generateOverviewHTML(timetablePages, config: IConfig) {
+export function generateOverviewHTML(timetablePages, config: Config) {
   const agencies = getAgencies() as { agency_name: string }[];
   if (agencies.length === 0) {
     throw new Error('No agencies found');

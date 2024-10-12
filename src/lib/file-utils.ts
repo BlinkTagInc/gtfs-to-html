@@ -29,7 +29,7 @@ import {
 } from './formatters.js';
 import * as templateFunctions from './template-functions.js';
 
-import type { IConfig } from '../types/global_interfaces.js';
+import type { Config } from '../types/global_interfaces.js';
 
 /*
  * Attempt to parse the specified config JSON file.
@@ -68,7 +68,7 @@ export async function getConfig(argv) {
 /*
  * Get the full path to the views folder.
  */
-export function getPathToViewsFolder(config: IConfig) {
+export function getPathToViewsFolder(config: Config) {
   if (config.templatePath) {
     return untildify(config.templatePath);
   }
@@ -94,7 +94,7 @@ export function getPathToViewsFolder(config: IConfig) {
 /*
  * Get the full path of a template file.
  */
-function getPathToTemplateFile(templateFileName: string, config: IConfig) {
+function getPathToTemplateFile(templateFileName: string, config: Config) {
   const fullTemplateFileName =
     config.noHead !== true
       ? `${templateFileName}_full.pug`
@@ -106,7 +106,7 @@ function getPathToTemplateFile(templateFileName: string, config: IConfig) {
 /*
  * Prepare the outputPath directory for writing timetable files.
  */
-export async function prepDirectory(outputPath: string, config: IConfig) {
+export async function prepDirectory(outputPath: string, config: Config) {
   // Check if outputPath exists
   try {
     await access(outputPath);
@@ -141,7 +141,7 @@ export async function prepDirectory(outputPath: string, config: IConfig) {
 /*
  * Copy needed CSS and JS to export path.
  */
-export async function copyStaticAssets(config: IConfig, outputPath: string) {
+export async function copyStaticAssets(config: Config, outputPath: string) {
   const viewsFolderPath = getPathToViewsFolder(config);
 
   const foldersToCopy = ['css', 'js', 'img'];

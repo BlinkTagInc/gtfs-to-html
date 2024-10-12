@@ -1,4 +1,4 @@
-export interface IConfig {
+export interface Config {
   agencies: {
     agencyKey: string;
     agency_key?: string;
@@ -56,7 +56,7 @@ export interface IConfig {
   logError?: (text: string) => void;
 }
 
-export interface ITimetable {
+export interface Timetable {
   timetable_id: string;
   route_id: string;
   direction_id: number;
@@ -84,11 +84,11 @@ export interface ITimetable {
   warnings: string[];
 }
 
-export interface ITimetablePage {
+export interface TimetablePage {
   timetable_page_id: string;
   timetable_page_label?: string;
   filename?: string;
-  timetables: ITimetable[];
+  timetables: Timetable[];
   routes: Record<string, string>;
   relativePath?: string;
 }

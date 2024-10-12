@@ -33,13 +33,13 @@ import {
   generateStats,
 } from './utils.js';
 
-import type { IConfig } from '../types/global_interfaces.js';
+import type { Config } from '../types/global_interfaces.js';
 
 /*
  * Generate HTML timetables from GTFS.
  */
 /* eslint-disable complexity */
-const gtfsToHtml = async (initialConfig: IConfig) => {
+const gtfsToHtml = async (initialConfig: Config) => {
   const config = setDefaultConfig(initialConfig);
   const timer = new Timer();
 
