@@ -769,7 +769,7 @@ function createMap(id) {
         data: geojson,
       },
       paint: {
-        'circle-color': '#fff',
+        'circle-color': '#ffffff',
         'circle-radius': {
           base: 1.75,
           stops: [
@@ -792,12 +792,12 @@ function createMap(id) {
         data: geojson,
       },
       paint: {
-        'circle-color': '#fff',
+        'circle-color': '#f8f8b9',
         'circle-radius': {
           base: 1.75,
           stops: [
-            [12, 5],
-            [22, 125],
+            [12, 6],
+            [22, 150],
           ],
         },
         'circle-stroke-width': 2,
