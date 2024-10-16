@@ -110,7 +110,8 @@ function getStopPopupHtml(feature, stop) {
         tripUpdate.trip_update.stop_time_update.filter(
           (stopTimeUpdate) =>
             stopTimeUpdate.stop_id === stop.stop_id &&
-            stopTimeUpdate.departure !== null &&
+            (stopTimeUpdate.departure !== null ||
+              stopTimeUpdate.arrival !== null) &&
             stopTimeUpdate.schedule_relationship !== 3,
         );
       if (stopTimeUpdatesForStop.length > 0) {
@@ -146,7 +147,11 @@ function getStopPopupHtml(feature, stop) {
           const departureTimes = stopTimeUpdates[direction].map(
             (stopTimeUpdate) =>
               Math.round(
-                (stopTimeUpdate.departure.time - Date.now() / 1000) / 60,
+                ((stopTimeUpdate.departure
+                  ? stopTimeUpdate.departure.time
+                  : stopTimeUpdate.arrival.time) -
+                  Date.now() / 1000) /
+                  60,
               ),
           );
 
