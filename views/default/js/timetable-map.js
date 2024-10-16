@@ -93,13 +93,78 @@ function getStopPopupHtml(feature, stop) {
   if (stop.stop_code ?? false) {
     jQuery('<div>')
       .html([
-        jQuery('<label>').addClass('popup-label').text('Stop Code:'),
+        jQuery('<div>').addClass('popup-label').text('Stop Code:'),
         jQuery('<strong>').text(stop.stop_code),
       ])
       .appendTo(html);
   }
 
-  jQuery('<label>').text('Routes Served:').appendTo(html);
+  if (tripUpdates) {
+    const stopTimeUpdates = {
+      0: [],
+      1: [],
+    };
+
+    for (const tripUpdate of tripUpdates) {
+      const stopTimeUpdatesForStop =
+        tripUpdate.trip_update.stop_time_update.filter(
+          (stopTimeUpdate) =>
+            stopTimeUpdate.stop_id === stop.stop_id &&
+            stopTimeUpdate.departure !== null &&
+            stopTimeUpdate.schedule_relationship !== 3,
+        );
+      if (stopTimeUpdatesForStop.length > 0) {
+        stopTimeUpdates[tripUpdate.trip_update.trip.direction_id].push(
+          ...stopTimeUpdatesForStop,
+        );
+      }
+    }
+
+    stopTimeUpdates['0'].sort((a, b) => {
+      const timeA = a.departure ? a.departure.time : a.arrival.time;
+      const timeB = b.departure ? b.departure.time : b.arrival.time;
+      return timeA - timeB;
+    });
+
+    stopTimeUpdates['1'].sort((a, b) => {
+      const timeA = a.departure ? a.departure.time : a.arrival.time;
+      const timeB = b.departure ? b.departure.time : b.arrival.time;
+      return timeA - timeB;
+    });
+
+    if (stopTimeUpdates['0'].length > 0 || stopTimeUpdates['1'].length > 0) {
+      jQuery('<div>')
+        .addClass('popup-label')
+        .text('Upcoming Departures:')
+        .appendTo(html);
+
+      for (const direction of ['0', '1']) {
+        if (stopTimeUpdates[direction].length > 0) {
+          const directionName = jQuery(
+            `.timetable[data-direction-id="${direction}"]`,
+          ).data('direction-name');
+          const departureTimes = stopTimeUpdates[direction].map(
+            (stopTimeUpdate) =>
+              Math.round(
+                (stopTimeUpdate.departure.time - Date.now() / 1000) / 60,
+              ),
+          );
+
+          // Only use the next 4 departures
+          const formattedDepartures = new Intl.ListFormat('en', {
+            style: 'long',
+            type: 'conjunction',
+          }).format(departureTimes.slice(0, 4).map((time) => `<b>${time}</b>`));
+
+          jQuery('<div>')
+            .html(`<b>${directionName}</b> in ${formattedDepartures} min`)
+            .appendTo(html);
+        }
+      }
+    }
+  }
+
+  jQuery('<div>').addClass('popup-label').text('Routes Served:').appendTo(html);
 
   jQuery(html).append(
     jQuery('<div>')
@@ -502,10 +567,7 @@ async function updateArrivals() {
 
     jQuery('.vehicle-legend-item').show();
 
-    vehiclePositions = latestVehiclePositions;
-    tripUpdates = latestTripUpdates;
-
-    const routeVehiclePositions = vehiclePositions.filter((vehiclePosition) => {
+    vehiclePositions = latestVehiclePositions.filter((vehiclePosition) => {
       if (
         !vehiclePosition ||
         !vehiclePosition.vehicle ||
@@ -534,7 +596,19 @@ async function updateArrivals() {
       return tripIds.includes(vehiclePosition.vehicle.trip.trip_id);
     });
 
-    for (const vehiclePosition of routeVehiclePositions) {
+    tripUpdates = latestTripUpdates.filter((tripUpdate) => {
+      if (
+        !tripUpdate ||
+        !tripUpdate.trip_update ||
+        !tripUpdate.trip_update.trip
+      ) {
+        return false;
+      }
+
+      return tripIds.includes(tripUpdate.trip_update.trip.trip_id);
+    });
+
+    for (const vehiclePosition of vehiclePositions) {
       const vehicleId = vehiclePosition.vehicle.vehicle.id;
 
       let vehicleTripUpdate = tripUpdates?.find(
@@ -575,7 +649,7 @@ async function updateArrivals() {
     // Remove vehicles not in the feed
     for (const vehicleId of Object.keys(vehicleMarkers)) {
       if (
-        !routeVehiclePositions.find(
+        !vehiclePositions.find(
           (vehiclePosition) => vehiclePosition.vehicle.vehicle.id === vehicleId,
         )
       ) {

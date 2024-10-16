@@ -67,13 +67,13 @@ function formatStopPopup(feature) {
   if (feature.properties.stop_code ?? false) {
     jQuery('<div>')
       .html([
-        jQuery('<label>').addClass('popup-label').text('Stop Code:'),
+        jQuery('<div>').addClass('popup-label').text('Stop Code:'),
         jQuery('<strong>').text(feature.properties.stop_code),
       ])
       .appendTo(html);
   }
 
-  jQuery('<label>').text('Routes Served:').appendTo(html);
+  jQuery('<div>').addClass('popup-label').text('Routes Served:').appendTo(html);
 
   jQuery(html).append(
     jQuery('<div>')

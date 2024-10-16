@@ -461,11 +461,13 @@ a:hover {
 }
 
 .timetable-page .map .mapboxgl-popup-content .popup-label {
-  margin-right: 0.25rem;
+  border-bottom: 1px solid #e0e0e0;
+  padding-top: 0.5rem;
 }
 
 .timetable-page .map .mapboxgl-popup-content .route-list {
   margin-bottom: 1rem;
+  margin-top: 0.25rem;
 }
 
 .timetable-page .map .mapboxgl-popup-content .map-route-item {
