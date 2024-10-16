@@ -638,311 +638,319 @@ function createMap(id) {
     preserveDrawingBuffer: true,
   });
 
-  map.initialize = () =>
-    map.fitBounds(bounds, {
-      padding: {
-        top: 40,
-        bottom: 40,
-        left: 20,
-        right: 40,
-      },
-      duration: 0,
-    });
+  map.initialize = () => fitMapToBounds(map, bounds);
 
   map.scrollZoom.disable();
   map.addControl(new mapboxgl.NavigationControl());
 
   map.on('load', () => {
-    map.fitBounds(bounds, {
-      padding: {
-        top: 40,
-        bottom: 40,
-        left: 20,
-        right: 40,
-      },
-      duration: 0,
-    });
-
-    // Turn off Points of Interest labels
-    map.setLayoutProperty('poi-label', 'visibility', 'none');
-
-    // Find the index of the first symbol layer in the map style to put the route lines underneath
-    let firstSymbolId;
-    for (const layer of map.getStyle().layers) {
-      if (layer.type === 'symbol') {
-        firstSymbolId = layer.id;
-        break;
-      }
-    }
-
-    // Add route drop shadow outline first
-    map.addLayer(
-      {
-        id: 'route-line-shadow',
-        type: 'line',
-        source: {
-          type: 'geojson',
-          data: geojson,
-        },
-        paint: {
-          'line-color': '#000000',
-          'line-opacity': 0.3,
-          'line-width': {
-            base: 12,
-            stops: [
-              [14, 20],
-              [18, 42],
-            ],
-          },
-          'line-blur': {
-            base: 12,
-            stops: [
-              [14, 20],
-              [18, 42],
-            ],
-          },
-        },
-        layout: lineLayout,
-        filter: ['!has', 'stop_id'],
-      },
-      firstSymbolId,
-    );
-
-    // Add route line outline
-    map.addLayer(
-      {
-        id: 'route-line-outline',
-        type: 'line',
-        source: {
-          type: 'geojson',
-          data: geojson,
-        },
-        paint: {
-          'line-color': '#FFFFFF',
-          'line-opacity': 1,
-          'line-width': {
-            base: 8,
-            stops: [
-              [14, 12],
-              [18, 32],
-            ],
-          },
-        },
-        layout: lineLayout,
-        filter: ['!has', 'stop_id'],
-      },
-      firstSymbolId,
-    );
-
-    // Add route line
-    map.addLayer(
-      {
-        id: 'route-line',
-        type: 'line',
-        source: {
-          type: 'geojson',
-          data: geojson,
-        },
-        paint: {
-          'line-color': ['to-color', ['get', 'route_color'], defaultRouteColor],
-          'line-opacity': 1,
-          'line-width': {
-            base: 4,
-            stops: [
-              [14, 6],
-              [18, 16],
-            ],
-          },
-        },
-        layout: lineLayout,
-        filter: ['!has', 'stop_id'],
-      },
-      firstSymbolId,
-    );
-
-    // Add stops
-    map.addLayer({
-      id: 'stops',
-      type: 'circle',
-      source: {
-        type: 'geojson',
-        data: geojson,
-      },
-      paint: {
-        'circle-color': '#ffffff',
-        'circle-radius': {
-          base: 1.75,
-          stops: [
-            [12, 4],
-            [22, 100],
-          ],
-        },
-        'circle-stroke-color': '#3f4a5c',
-        'circle-stroke-width': 2,
-      },
-      filter: ['has', 'stop_id'],
-    });
-
-    // Layer for highlighted stops
-    map.addLayer({
-      id: 'stops-highlighted',
-      type: 'circle',
-      source: {
-        type: 'geojson',
-        data: geojson,
-      },
-      paint: {
-        'circle-color': '#f8f8b9',
-        'circle-radius': {
-          base: 1.75,
-          stops: [
-            [12, 6],
-            [22, 150],
-          ],
-        },
-        'circle-stroke-width': 2,
-        'circle-stroke-color': '#3f4a5c',
-      },
-      filter: ['==', 'stop_id', ''],
-    });
-
-    map.on('mousemove', (event) => {
-      const features = map.queryRenderedFeatures(event.point, {
-        layers: ['stops'],
-      });
-      if (features.length > 0) {
-        map.getCanvas().style.cursor = 'pointer';
-        const stopIds = [features[0].properties.stop_id];
-        if (features[0].properties.parent_station) {
-          stopIds.push(features[0].properties.parent_station);
-        }
-
-        highlightStop(stopIds);
-      } else {
-        map.getCanvas().style.cursor = '';
-        unHighlightStop();
-      }
-    });
-
-    map.on('click', (event) => {
-      // Set bbox as 5px rectangle area around clicked point
-      const bbox = [
-        [event.point.x - 5, event.point.y - 5],
-        [event.point.x + 5, event.point.y + 5],
-      ];
-      const features = map.queryRenderedFeatures(bbox, {
-        layers: ['stops-highlighted', 'stops'],
-      });
-
-      if (!features || features.length === 0) {
-        return;
-      }
-
-      // Get the first feature and show popup
-      const feature = features[0];
-
-      new mapboxgl.Popup()
-        .setLngLat(feature.geometry.coordinates)
-        .setHTML(
-          getStopPopupHtml(feature, stopData[feature.properties.stop_id]),
-        )
-        .addTo(map);
-    });
-
-    function highlightStop(stopIds) {
-      map.setFilter('stops-highlighted', [
-        'any',
-        ['in', 'stop_id', ...stopIds],
-        ['in', 'parent_station', ...stopIds],
-      ]);
-
-      if (
-        jQuery(`#timetable_id_${id} table`).data('orientation') === 'vertical'
-      ) {
-        const columnIndexes = [];
-        const stopIdSelectors = stopIds
-          .map(
-            (stopId) =>
-              `#timetable_id_${id} table colgroup col[data-stop-id="${stopId}"]`,
-          )
-          .join(',');
-        jQuery(stopIdSelectors).each((index, col) => {
-          columnIndexes.push(
-            jQuery(`#timetable_id_${id} table colgroup col`).index(col),
-          );
-        });
-
-        jQuery(`#timetable_id_${id} table .stop-time`).removeClass(
-          'highlighted',
-        );
-        jQuery(`#timetable_id_${id} table thead .stop-header`).removeClass(
-          'highlighted',
-        );
-        jQuery(`#timetable_id_${id} table .trip-row`).each((index, row) => {
-          jQuery('.stop-time', row).each((index, el) => {
-            if (columnIndexes.includes(index)) {
-              jQuery(el).addClass('highlighted');
-            }
-          });
-        });
-
-        jQuery(`#timetable_id_${id} table thead`).each((index, thead) => {
-          jQuery('.stop-header', thead).each((index, el) => {
-            if (columnIndexes.includes(index)) {
-              jQuery(el).addClass('highlighted');
-            }
-          });
-        });
-      } else {
-        jQuery(`#timetable_id_${id} table .stop-row`).removeClass(
-          'highlighted',
-        );
-        const stopIdSelectors = stopIds
-          .map((stopId) => `#timetable_id_${id} table #stop_id_${stopId}`)
-          .join(',');
-        jQuery(stopIdSelectors).addClass('highlighted');
-      }
-    }
-
-    function unHighlightStop() {
-      map.setFilter('stops-highlighted', ['==', 'stop_id', '']);
-
-      if (
-        jQuery(`#timetable_id_${id} table`).data('orientation') === 'vertical'
-      ) {
-        jQuery(`#timetable_id_${id} table .stop-time`).removeClass(
-          'highlighted',
-        );
-        jQuery(`#timetable_id_${id} table thead .stop-header`).removeClass(
-          'highlighted',
-        );
-      } else {
-        jQuery(`#timetable_id_${id} table .stop-row`).removeClass(
-          'highlighted',
-        );
-      }
-    }
-
-    // On table hover, highlight stop on map
-    jQuery('th, td', jQuery(`#timetable_id_${id} table`)).hover((event) => {
-      let stopId;
-      const table = jQuery(event.target).parents('table');
-      if (table.data('orientation') === 'vertical') {
-        var index = jQuery(event.target).index();
-        stopId = jQuery('colgroup col', table).eq(index).data('stop-id');
-      } else {
-        stopId = jQuery(event.target).parents('tr').data('stop-id');
-      }
-
-      if (stopId === undefined) {
-        return;
-      }
-
-      highlightStop([stopId.toString()]);
-    }, unHighlightStop);
+    fitMapToBounds(map, bounds);
+    disablePointsOfInterest(map);
+    addMapLayers(map, geojson, defaultRouteColor, lineLayout);
+    setupEventListeners(map, id);
   });
 
   return map;
+}
+
+function fitMapToBounds(map, bounds) {
+  map.fitBounds(bounds, {
+    padding: { top: 40, bottom: 40, left: 20, right: 40 },
+    duration: 0,
+  });
+}
+
+function disablePointsOfInterest(map) {
+  map.setLayoutProperty('poi-label', 'visibility', 'none');
+}
+
+function addMapLayers(map, geojson, defaultRouteColor, lineLayout) {
+  const firstSymbolId = getFirstSymbolLayerId(map);
+
+  addRouteLineShadow(map, geojson, lineLayout, firstSymbolId);
+  addRouteLineOutline(map, geojson, lineLayout, firstSymbolId);
+  addRouteLine(map, geojson, defaultRouteColor, lineLayout, firstSymbolId);
+  addStops(map, geojson);
+  addHighlightedStops(map, geojson);
+}
+
+function getFirstSymbolLayerId(map) {
+  const layers = map.getStyle().layers;
+  return layers.find((layer) => layer.type === 'symbol').id;
+}
+
+function addRouteLineShadow(map, geojson, lineLayout, firstSymbolId) {
+  map.addLayer(
+    {
+      id: 'route-line-shadow',
+      type: 'line',
+      source: { type: 'geojson', data: geojson },
+      paint: {
+        'line-color': '#000000',
+        'line-opacity': 0.3,
+        'line-width': {
+          base: 12,
+          stops: [
+            [14, 20],
+            [18, 42],
+          ],
+        },
+        'line-blur': {
+          base: 12,
+          stops: [
+            [14, 20],
+            [18, 42],
+          ],
+        },
+      },
+      layout: lineLayout,
+      filter: ['!has', 'stop_id'],
+    },
+    firstSymbolId,
+  );
+}
+
+function addRouteLineOutline(map, geojson, lineLayout, firstSymbolId) {
+  map.addLayer(
+    {
+      id: 'route-line-outline',
+      type: 'line',
+      source: { type: 'geojson', data: geojson },
+      paint: {
+        'line-color': '#FFFFFF',
+        'line-opacity': 1,
+        'line-width': {
+          base: 8,
+          stops: [
+            [14, 12],
+            [18, 32],
+          ],
+        },
+      },
+      layout: lineLayout,
+      filter: ['!has', 'stop_id'],
+    },
+    firstSymbolId,
+  );
+}
+
+function addRouteLine(
+  map,
+  geojson,
+  defaultRouteColor,
+  lineLayout,
+  firstSymbolId,
+) {
+  map.addLayer(
+    {
+      id: 'route-line',
+      type: 'line',
+      source: { type: 'geojson', data: geojson },
+      paint: {
+        'line-color': ['to-color', ['get', 'route_color'], defaultRouteColor],
+        'line-opacity': 1,
+        'line-width': {
+          base: 4,
+          stops: [
+            [14, 6],
+            [18, 16],
+          ],
+        },
+      },
+      layout: lineLayout,
+      filter: ['!has', 'stop_id'],
+    },
+    firstSymbolId,
+  );
+}
+
+function addStops(map, geojson) {
+  map.addLayer({
+    id: 'stops',
+    type: 'circle',
+    source: { type: 'geojson', data: geojson },
+    paint: {
+      'circle-color': '#ffffff',
+      'circle-radius': {
+        base: 1.75,
+        stops: [
+          [12, 4],
+          [22, 100],
+        ],
+      },
+      'circle-stroke-color': '#3f4a5c',
+      'circle-stroke-width': 2,
+    },
+    filter: ['has', 'stop_id'],
+  });
+}
+
+function addHighlightedStops(map, geojson) {
+  map.addLayer({
+    id: 'stops-highlighted',
+    type: 'circle',
+    source: { type: 'geojson', data: geojson },
+    paint: {
+      'circle-color': '#f8f8b9',
+      'circle-radius': {
+        base: 1.75,
+        stops: [
+          [12, 6],
+          [22, 150],
+        ],
+      },
+      'circle-stroke-width': 2,
+      'circle-stroke-color': '#3f4a5c',
+    },
+    filter: ['==', 'stop_id', ''],
+  });
+}
+
+function setupEventListeners(map, id) {
+  map.on('mousemove', (event) => handleMouseMove(event, map, id));
+  map.on('click', (event) => handleClick(event, map));
+  setupTableHoverListeners(id, map);
+}
+
+function handleMouseMove(event, map, id) {
+  const features = map.queryRenderedFeatures(event.point, {
+    layers: ['stops'],
+  });
+  if (features.length > 0) {
+    map.getCanvas().style.cursor = 'pointer';
+    const stopIds = [features[0].properties.stop_id];
+    if (features[0].properties.parent_station) {
+      stopIds.push(features[0].properties.parent_station);
+    }
+    highlightStop(map, id, stopIds);
+  } else {
+    map.getCanvas().style.cursor = '';
+    unHighlightStop(map, id);
+  }
+}
+
+function handleClick(event, map) {
+  const bbox = [
+    [event.point.x - 5, event.point.y - 5],
+    [event.point.x + 5, event.point.y + 5],
+  ];
+  const features = map.queryRenderedFeatures(bbox, {
+    layers: ['stops-highlighted', 'stops'],
+  });
+
+  if (!features || features.length === 0) return;
+
+  const feature = features[0];
+  showStopPopup(map, feature);
+}
+
+function showStopPopup(map, feature) {
+  new mapboxgl.Popup()
+    .setLngLat(feature.geometry.coordinates)
+    .setHTML(getStopPopupHtml(feature, stopData[feature.properties.stop_id]))
+    .addTo(map);
+}
+
+function highlightStop(map, id, stopIds) {
+  map.setFilter('stops-highlighted', [
+    'any',
+    ['in', 'stop_id', ...stopIds],
+    ['in', 'parent_station', ...stopIds],
+  ]);
+
+  highlightTimetableStops(id, stopIds);
+}
+
+function unHighlightStop(map, id) {
+  map.setFilter('stops-highlighted', ['==', 'stop_id', '']);
+  unHighlightTimetableStops(id);
+}
+
+function highlightTimetableStops(id, stopIds) {
+  const table = jQuery(`#timetable_id_${id} table`);
+  const isVertical = table.data('orientation') === 'vertical';
+
+  if (isVertical) {
+    highlightVerticalTimetableStops(id, stopIds);
+  } else {
+    highlightHorizontalTimetableStops(id, stopIds);
+  }
+}
+
+function highlightVerticalTimetableStops(id, stopIds) {
+  const table = jQuery(`#timetable_id_${id} table`);
+  const columnIndexes = [];
+  const stopIdSelectors = stopIds
+    .map(
+      (stopId) =>
+        `#timetable_id_${id} table colgroup col[data-stop-id="${stopId}"]`,
+    )
+    .join(',');
+
+  jQuery(stopIdSelectors).each((index, col) => {
+    columnIndexes.push(
+      jQuery(`#timetable_id_${id} table colgroup col`).index(col),
+    );
+  });
+
+  table.find('.stop-time, thead .stop-header').removeClass('highlighted');
+  table.find('.trip-row').each((index, row) => {
+    jQuery('.stop-time', row).each((index, el) => {
+      if (columnIndexes.includes(index)) {
+        jQuery(el).addClass('highlighted');
+      }
+    });
+  });
+
+  table.find('thead').each((index, thead) => {
+    jQuery('.stop-header', thead).each((index, el) => {
+      if (columnIndexes.includes(index)) {
+        jQuery(el).addClass('highlighted');
+      }
+    });
+  });
+}
+
+function highlightHorizontalTimetableStops(id, stopIds) {
+  const table = jQuery(`#timetable_id_${id} table`);
+  table.find('.stop-row').removeClass('highlighted');
+  const stopIdSelectors = stopIds
+    .map((stopId) => `#timetable_id_${id} table #stop_id_${stopId}`)
+    .join(',');
+  jQuery(stopIdSelectors).addClass('highlighted');
+}
+
+function unHighlightTimetableStops(id) {
+  const table = jQuery(`#timetable_id_${id} table`);
+  const isVertical = table.data('orientation') === 'vertical';
+
+  if (isVertical) {
+    table.find('.stop-time, thead .stop-header').removeClass('highlighted');
+  } else {
+    table.find('.stop-row').removeClass('highlighted');
+  }
+}
+
+function setupTableHoverListeners(id, map) {
+  jQuery('th, td', jQuery(`#timetable_id_${id} table`)).hover(
+    (event) => {
+      const stopId = getStopIdFromTableCell(event.target);
+      if (stopId !== undefined) {
+        highlightStop(map, id, [stopId.toString()]);
+      }
+    },
+    () => unHighlightStop(map, id),
+  );
+}
+
+function getStopIdFromTableCell(cell) {
+  const table = jQuery(cell).closest('table');
+  if (table.data('orientation') === 'vertical') {
+    const index = jQuery(cell).index();
+    return jQuery('colgroup col', table).eq(index).data('stop-id');
+  } else {
+    return jQuery(cell).closest('tr').data('stop-id');
+  }
 }
 
 function createMaps() {
