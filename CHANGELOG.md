@@ -11,9 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependency Updates
 - Upgrade to Express 5.0 for demo app
 - Improved stop highlight styles on map
+- Better error handlers for demo app
 
 ### Added
 - Warning about toposort stop order failure
+- Add Realtime trip updates to stop popups
 - Add types for GTFS files
 
 ## [2.9.14] - 2024-10-11

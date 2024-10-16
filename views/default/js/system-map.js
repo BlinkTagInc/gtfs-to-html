@@ -18,7 +18,6 @@ function formatRoute(route) {
 
   html.addClass('map-route-item');
 
-  // Only add color swatch if route has a color
   const routeItemDivs = [];
 
   if (route.route_color) {
@@ -145,396 +144,430 @@ function createSystemMap(id, geojson) {
   map.addControl(new mapboxgl.NavigationControl());
 
   map.on('load', () => {
-    map.fitBounds(bounds, {
-      padding: 20,
-      duration: 0,
-    });
+    fitMapToBounds(map, bounds);
+    disablePointsOfInterest(map);
+    addMapLayers(map, geojson, defaultRouteColor, lineLayout);
+    setupEventListeners(map, id, routes);
+  });
 
-    // Turn off Points of Interest labels
-    map.setLayoutProperty('poi-label', 'visibility', 'none');
+  maps[id] = map;
+}
 
-    // Find the index of the first symbol layer in the map style to put the route lines underneath
-    let firstSymbolId;
-    for (const layer of map.getStyle().layers) {
-      if (layer.type === 'symbol') {
-        firstSymbolId = layer.id;
-        break;
-      }
-    }
+function fitMapToBounds(map, bounds) {
+  map.fitBounds(bounds, {
+    padding: 20,
+    duration: 0,
+  });
+}
 
-    // Add route drop shadow outline first
-    map.addLayer(
-      {
-        id: 'route-line-shadows',
-        type: 'line',
-        source: {
-          type: 'geojson',
-          data: geojson,
-        },
-        paint: {
-          'line-color': '#000000',
-          'line-opacity': 0.3,
-          'line-width': {
-            base: 12,
-            stops: [
-              [14, 20],
-              [18, 42],
-            ],
-          },
-          'line-blur': {
-            base: 12,
-            stops: [
-              [14, 20],
-              [18, 42],
-            ],
-          },
-        },
-        layout: lineLayout,
-        filter: ['!has', 'stop_id'],
-      },
-      firstSymbolId,
-    );
+function disablePointsOfInterest(map) {
+  map.setLayoutProperty('poi-label', 'visibility', 'none');
+}
 
-    // Add highlighted route drop shadow outlines next
-    map.addLayer(
-      {
-        id: 'highlighted-route-line-shadows',
-        type: 'line',
-        source: {
-          type: 'geojson',
-          data: geojson,
-        },
-        paint: {
-          'line-color': '#000000',
-          'line-opacity': 0.3,
-          'line-width': {
-            base: 16,
-            stops: [
-              [14, 24],
-              [18, 50],
-            ],
-          },
-          'line-blur': {
-            base: 16,
-            stops: [
-              [14, 24],
-              [18, 50],
-            ],
-          },
-        },
-        layout: lineLayout,
-        filter: ['==', ['get', 'route_id'], 'none'],
-      },
-      firstSymbolId,
-    );
+function addMapLayers(map, geojson, defaultRouteColor, lineLayout) {
+  const firstSymbolId = getFirstSymbolLayerId(map);
 
-    // Add white outlines to routes next
-    map.addLayer(
-      {
-        id: `route-outlines`,
-        type: 'line',
-        source: {
-          type: 'geojson',
-          data: geojson,
-        },
-        paint: {
-          'line-color': '#FFFFFF',
-          'line-opacity': 1,
-          'line-width': {
-            base: 8,
-            stops: [
-              [14, 12],
-              [18, 32],
-            ],
-          },
-        },
-        layout: lineLayout,
-        filter: ['has', 'route_id'],
-      },
-      firstSymbolId,
-    );
+  addRouteLineShadow(map, geojson, lineLayout, firstSymbolId);
+  addHighlightedRouteLineShadow(map, geojson, lineLayout, firstSymbolId);
+  addRouteLineOutline(map, geojson, lineLayout, firstSymbolId);
+  addHighlightedRouteLineOutline(map, geojson, lineLayout, firstSymbolId);
+  addRouteLine(map, geojson, defaultRouteColor, lineLayout, firstSymbolId);
+  addHighlightedRouteLine(
+    map,
+    geojson,
+    defaultRouteColor,
+    lineLayout,
+    firstSymbolId,
+  );
+  addStops(map, geojson);
+  addHighlightedStops(map, geojson);
+  addRouteLabels(map, geojson);
+}
 
-    // Add route lines next
-    map.addLayer(
-      {
-        id: 'routes',
-        type: 'line',
-        source: {
-          type: 'geojson',
-          data: geojson,
-        },
-        paint: {
-          'line-color': ['coalesce', ['get', 'route_color'], defaultRouteColor],
-          'line-opacity': 1,
-          'line-width': {
-            base: 4,
-            stops: [
-              [14, 6],
-              [18, 16],
-            ],
-          },
-        },
-        layout: lineLayout,
-        filter: ['has', 'route_id'],
-      },
-      firstSymbolId,
-    );
+function getFirstSymbolLayerId(map) {
+  const layers = map.getStyle().layers;
+  return layers.find((layer) => layer.type === 'symbol').id;
+}
 
-    // Add highlighted route white outlines next
-    map.addLayer(
-      {
-        id: `highlighted-route-outlines`,
-        type: 'line',
-        source: {
-          type: 'geojson',
-          data: geojson,
-        },
-        paint: {
-          'line-color': '#FFFFFF',
-          'line-opacity': 1,
-          'line-width': {
-            base: 10,
-            stops: [
-              [14, 16],
-              [18, 40],
-            ],
-          },
-        },
-        layout: lineLayout,
-        filter: ['==', ['get', 'route_id'], 'none'],
-      },
-      firstSymbolId,
-    );
-
-    // Add highlighted route lines next
-    map.addLayer(
-      {
-        id: 'highlighted-routes',
-        type: 'line',
-        source: {
-          type: 'geojson',
-          data: geojson,
-        },
-        paint: {
-          'line-color': ['coalesce', ['get', 'route_color'], defaultRouteColor],
-          'line-opacity': 1,
-          'line-width': {
-            base: 6,
-            stops: [
-              [14, 8],
-              [18, 20],
-            ],
-          },
-        },
-        layout: lineLayout,
-        filter: ['==', ['get', 'route_id'], 'none'],
-      },
-      firstSymbolId,
-    );
-
-    // Add stops when zoomed in
-    map.addLayer({
-      id: 'stops',
-      type: 'circle',
-      source: {
-        type: 'geojson',
-        data: geojson,
-      },
+function addRouteLineShadow(map, geojson, lineLayout, firstSymbolId) {
+  map.addLayer(
+    {
+      id: 'route-line-shadows',
+      type: 'line',
+      source: { type: 'geojson', data: geojson },
       paint: {
-        'circle-color': '#fff',
-        'circle-radius': {
-          base: 1.75,
+        'line-color': '#000000',
+        'line-opacity': 0.3,
+        'line-width': {
+          base: 12,
           stops: [
-            [12, 4],
-            [22, 100],
+            [14, 20],
+            [18, 42],
           ],
         },
-        'circle-stroke-color': '#3F4A5C',
-        'circle-stroke-width': 2,
-        'circle-opacity': ['interpolate', ['linear'], ['zoom'], 13, 0, 13.5, 1],
-        'circle-stroke-opacity': [
-          'interpolate',
-          ['linear'],
-          ['zoom'],
-          13,
-          0,
-          13.5,
-          1,
-        ],
-      },
-      filter: ['has', 'stop_id'],
-    });
-
-    // Layer for highlighted stops
-    map.addLayer({
-      id: 'stops-highlighted',
-      type: 'circle',
-      source: {
-        type: 'geojson',
-        data: geojson,
-      },
-      paint: {
-        'circle-color': '#fff',
-        'circle-radius': {
-          base: 1.75,
+        'line-blur': {
+          base: 12,
           stops: [
-            [12, 5],
-            [22, 125],
+            [14, 20],
+            [18, 42],
           ],
         },
-        'circle-stroke-width': 2,
-        'circle-stroke-color': '#3f4a5c',
-        'circle-opacity': ['interpolate', ['linear'], ['zoom'], 13, 0, 13.5, 1],
-        'circle-stroke-opacity': [
-          'interpolate',
-          ['linear'],
-          ['zoom'],
-          13,
-          0,
-          13.5,
-          1,
+      },
+      layout: lineLayout,
+      filter: ['!has', 'stop_id'],
+    },
+    firstSymbolId,
+  );
+}
+
+function addHighlightedRouteLineShadow(
+  map,
+  geojson,
+  lineLayout,
+  firstSymbolId,
+) {
+  map.addLayer(
+    {
+      id: 'highlighted-route-line-shadows',
+      type: 'line',
+      source: { type: 'geojson', data: geojson },
+      paint: {
+        'line-color': '#000000',
+        'line-opacity': 0.3,
+        'line-width': {
+          base: 16,
+          stops: [
+            [14, 24],
+            [18, 50],
+          ],
+        },
+        'line-blur': {
+          base: 16,
+          stops: [
+            [14, 24],
+            [18, 50],
+          ],
+        },
+      },
+      layout: lineLayout,
+      filter: ['==', ['get', 'route_id'], 'none'],
+    },
+    firstSymbolId,
+  );
+}
+
+function addRouteLineOutline(map, geojson, lineLayout, firstSymbolId) {
+  map.addLayer(
+    {
+      id: 'route-outlines',
+      type: 'line',
+      source: { type: 'geojson', data: geojson },
+      paint: {
+        'line-color': '#FFFFFF',
+        'line-opacity': 1,
+        'line-width': {
+          base: 8,
+          stops: [
+            [14, 12],
+            [18, 32],
+          ],
+        },
+      },
+      layout: lineLayout,
+      filter: ['has', 'route_id'],
+    },
+    firstSymbolId,
+  );
+}
+
+function addHighlightedRouteLineOutline(
+  map,
+  geojson,
+  lineLayout,
+  firstSymbolId,
+) {
+  map.addLayer(
+    {
+      id: 'highlighted-route-outlines',
+      type: 'line',
+      source: { type: 'geojson', data: geojson },
+      paint: {
+        'line-color': '#FFFFFF',
+        'line-opacity': 1,
+        'line-width': {
+          base: 10,
+          stops: [
+            [14, 16],
+            [18, 40],
+          ],
+        },
+      },
+      layout: lineLayout,
+      filter: ['==', ['get', 'route_id'], 'none'],
+    },
+    firstSymbolId,
+  );
+}
+
+function addRouteLine(
+  map,
+  geojson,
+  defaultRouteColor,
+  lineLayout,
+  firstSymbolId,
+) {
+  map.addLayer(
+    {
+      id: 'routes',
+      type: 'line',
+      source: { type: 'geojson', data: geojson },
+      paint: {
+        'line-color': ['coalesce', ['get', 'route_color'], defaultRouteColor],
+        'line-opacity': 1,
+        'line-width': {
+          base: 4,
+          stops: [
+            [14, 6],
+            [18, 16],
+          ],
+        },
+      },
+      layout: lineLayout,
+      filter: ['has', 'route_id'],
+    },
+    firstSymbolId,
+  );
+}
+
+function addHighlightedRouteLine(
+  map,
+  geojson,
+  defaultRouteColor,
+  lineLayout,
+  firstSymbolId,
+) {
+  map.addLayer(
+    {
+      id: 'highlighted-routes',
+      type: 'line',
+      source: { type: 'geojson', data: geojson },
+      paint: {
+        'line-color': ['coalesce', ['get', 'route_color'], defaultRouteColor],
+        'line-opacity': 1,
+        'line-width': {
+          base: 6,
+          stops: [
+            [14, 8],
+            [18, 20],
+          ],
+        },
+      },
+      layout: lineLayout,
+      filter: ['==', ['get', 'route_id'], 'none'],
+    },
+    firstSymbolId,
+  );
+}
+
+function addStops(map, geojson) {
+  map.addLayer({
+    id: 'stops',
+    type: 'circle',
+    source: { type: 'geojson', data: geojson },
+    paint: {
+      'circle-color': '#fff',
+      'circle-radius': {
+        base: 1.75,
+        stops: [
+          [12, 4],
+          [22, 100],
         ],
       },
-      filter: ['==', 'stop_id', ''],
-    });
+      'circle-stroke-color': '#3F4A5C',
+      'circle-stroke-width': 2,
+      'circle-opacity': ['interpolate', ['linear'], ['zoom'], 13, 0, 13.5, 1],
+      'circle-stroke-opacity': [
+        'interpolate',
+        ['linear'],
+        ['zoom'],
+        13,
+        0,
+        13.5,
+        1,
+      ],
+    },
+    filter: ['has', 'stop_id'],
+  });
+}
 
-    // Add labels
-    map.addLayer({
-      id: 'route-labels',
-      type: 'symbol',
-      source: {
-        type: 'geojson',
-        data: geojson,
+function addHighlightedStops(map, geojson) {
+  map.addLayer({
+    id: 'stops-highlighted',
+    type: 'circle',
+    source: { type: 'geojson', data: geojson },
+    paint: {
+      'circle-color': '#fff',
+      'circle-radius': {
+        base: 1.75,
+        stops: [
+          [12, 5],
+          [22, 125],
+        ],
       },
-      layout: {
-        'symbol-placement': 'line',
-        'text-field': ['get', 'route_short_name'],
-        'text-size': 14,
-      },
-      paint: {
-        'text-color': '#000000',
-        'text-halo-width': 2,
-        'text-halo-color': '#ffffff',
-      },
-      filter: ['has', 'route_short_name'],
-    });
+      'circle-stroke-width': 2,
+      'circle-stroke-color': '#3f4a5c',
+      'circle-opacity': ['interpolate', ['linear'], ['zoom'], 13, 0, 13.5, 1],
+      'circle-stroke-opacity': [
+        'interpolate',
+        ['linear'],
+        ['zoom'],
+        13,
+        0,
+        13.5,
+        1,
+      ],
+    },
+    filter: ['==', 'stop_id', ''],
+  });
+}
 
-    map.on('mousemove', (event) => {
-      const features = map.queryRenderedFeatures(event.point, {
-        layers: ['routes', 'route-outlines', 'stops-highlighted', 'stops'],
-      });
-      if (features.length > 0) {
-        map.getCanvas().style.cursor = 'pointer';
-        highlightRoutes(
-          _.compact(
-            _.uniq(features.map((feature) => feature.properties.route_id)),
-          ),
-        );
+function addRouteLabels(map, geojson) {
+  map.addLayer({
+    id: 'route-labels',
+    type: 'symbol',
+    source: { type: 'geojson', data: geojson },
+    layout: {
+      'symbol-placement': 'line',
+      'text-field': ['get', 'route_short_name'],
+      'text-size': 14,
+    },
+    paint: {
+      'text-color': '#000000',
+      'text-halo-width': 2,
+      'text-halo-color': '#ffffff',
+    },
+    filter: ['has', 'route_short_name'],
+  });
+}
 
-        if (features.some((feature) => feature.layer.id === 'stops')) {
-          highlightStop(
-            features.find((feature) => feature.layer.id === 'stops').properties
-              .stop_id,
-          );
-        }
-      } else {
-        map.getCanvas().style.cursor = '';
-        unHighlightRoutes();
-        unHighlightStop();
-      }
-    });
+function setupEventListeners(map, id, routes) {
+  map.on('mousemove', (event) => handleMouseMove(event, map, routes));
+  map.on('click', (event) => handleClick(event, map));
+  setupTableHoverListeners(id, map, routes);
+}
 
-    map.on('click', (event) => {
-      // Set bbox as 5px rectangle area around clicked point
-      const bbox = [
-        [event.point.x - 5, event.point.y - 5],
-        [event.point.x + 5, event.point.y + 5],
-      ];
+function handleMouseMove(event, map, routes) {
+  const features = map.queryRenderedFeatures(event.point, {
+    layers: ['routes', 'route-outlines', 'stops-highlighted', 'stops'],
+  });
+  if (features.length > 0) {
+    map.getCanvas().style.cursor = 'pointer';
+    highlightRoutes(
+      map,
+      _.compact(_.uniq(features.map((feature) => feature.properties.route_id))),
+    );
 
-      const stopFeatures = map.queryRenderedFeatures(bbox, {
-        layers: ['stops-highlighted', 'stops'],
-      });
-
-      if (stopFeatures && stopFeatures.length > 0) {
-        // Get the stop feature and show popup
-        const stopFeature = stopFeatures[0];
-
-        new mapboxgl.Popup()
-          .setLngLat(stopFeature.geometry.coordinates)
-          .setHTML(formatStopPopup(stopFeature))
-          .addTo(map);
-      } else {
-        const routeFeatures = map.queryRenderedFeatures(bbox, {
-          layers: ['routes', 'route-outlines'],
-        });
-
-        if (routeFeatures && routeFeatures.length > 0) {
-          const routes = _.orderBy(
-            _.uniqBy(
-              routeFeatures,
-              (feature) => feature.properties.route_short_name,
-            ),
-            (feature) =>
-              Number.parseInt(feature.properties.route_short_name, 10),
-          );
-
-          new mapboxgl.Popup()
-            .setLngLat(event.lngLat)
-            .setHTML(formatRoutePopup(routes))
-            .addTo(map);
-        }
-      }
-    });
-
-    function highlightStop(stopId) {
-      map.setFilter('stops-highlighted', ['==', 'stop_id', stopId]);
-    }
-
-    function unHighlightStop() {
-      map.setFilter('stops-highlighted', ['==', 'stop_id', '']);
-    }
-
-    function highlightRoutes(routeIds, zoom) {
-      map.setFilter('highlighted-routes', [
-        'all',
-        ['has', 'route_short_name'],
-        ['in', ['get', 'route_id'], ['literal', routeIds]],
-      ]);
-      map.setFilter('highlighted-route-outlines', [
-        'all',
-        ['has', 'route_short_name'],
-        ['in', ['get', 'route_id'], ['literal', routeIds]],
-      ]);
-      map.setFilter('highlighted-route-line-shadows', [
-        'all',
-        ['has', 'route_short_name'],
-        ['in', ['get', 'route_id'], ['literal', routeIds]],
-      ]);
-
-      // Show labels only for highlighted route
-      map.setFilter('route-labels', [
-        'in',
-        ['get', 'route_id'],
-        ['literal', routeIds],
-      ]);
-
-      const routeLineOpacity = 0.4;
-
-      // De-emphasize other routes
-      map.setPaintProperty('routes', 'line-opacity', routeLineOpacity);
-      map.setPaintProperty('route-outlines', 'line-opacity', routeLineOpacity);
-      map.setPaintProperty(
-        'route-line-shadows',
-        'line-opacity',
-        routeLineOpacity,
+    if (features.some((feature) => feature.layer.id === 'stops')) {
+      highlightStop(
+        map,
+        features.find((feature) => feature.layer.id === 'stops').properties
+          .stop_id,
       );
+    }
+  } else {
+    map.getCanvas().style.cursor = '';
+    unHighlightRoutes(map);
+    unHighlightStop(map);
+  }
+}
 
-      const highlightedFeatures = geojson.features.filter((feature) =>
+function handleClick(event, map) {
+  const bbox = [
+    [event.point.x - 5, event.point.y - 5],
+    [event.point.x + 5, event.point.y + 5],
+  ];
+  const stopFeatures = map.queryRenderedFeatures(bbox, {
+    layers: ['stops-highlighted', 'stops'],
+  });
+
+  if (stopFeatures && stopFeatures.length > 0) {
+    showStopPopup(map, stopFeatures[0]);
+  } else {
+    const routeFeatures = map.queryRenderedFeatures(bbox, {
+      layers: ['routes', 'route-outlines'],
+    });
+
+    if (routeFeatures && routeFeatures.length > 0) {
+      showRoutePopup(map, routeFeatures, event.lngLat);
+    }
+  }
+}
+
+function showStopPopup(map, feature) {
+  new mapboxgl.Popup()
+    .setLngLat(feature.geometry.coordinates)
+    .setHTML(formatStopPopup(feature))
+    .addTo(map);
+}
+
+function showRoutePopup(map, features, lngLat) {
+  const routes = _.orderBy(
+    _.uniqBy(features, (feature) => feature.properties.route_short_name),
+    (feature) => Number.parseInt(feature.properties.route_short_name, 10),
+  );
+
+  new mapboxgl.Popup()
+    .setLngLat(lngLat)
+    .setHTML(formatRoutePopup(routes))
+    .addTo(map);
+}
+
+function highlightStop(map, stopId) {
+  map.setFilter('stops-highlighted', ['==', 'stop_id', stopId]);
+}
+
+function unHighlightStop(map) {
+  map.setFilter('stops-highlighted', ['==', 'stop_id', '']);
+}
+
+function highlightRoutes(map, routeIds, zoom) {
+  map.setFilter('highlighted-routes', [
+    'all',
+    ['has', 'route_short_name'],
+    ['in', ['get', 'route_id'], ['literal', routeIds]],
+  ]);
+  map.setFilter('highlighted-route-outlines', [
+    'all',
+    ['has', 'route_short_name'],
+    ['in', ['get', 'route_id'], ['literal', routeIds]],
+  ]);
+  map.setFilter('highlighted-route-line-shadows', [
+    'all',
+    ['has', 'route_short_name'],
+    ['in', ['get', 'route_id'], ['literal', routeIds]],
+  ]);
+
+  map.setFilter('route-labels', [
+    'in',
+    ['get', 'route_id'],
+    ['literal', routeIds],
+  ]);
+
+  const routeLineOpacity = 0.4;
+
+  map.setPaintProperty('routes', 'line-opacity', routeLineOpacity);
+  map.setPaintProperty('route-outlines', 'line-opacity', routeLineOpacity);
+  map.setPaintProperty('route-line-shadows', 'line-opacity', routeLineOpacity);
+
+  if (zoom) {
+    const data = map.querySourceFeatures('routes');
+    if (data) {
+      const highlightedFeatures = data.filter((feature) =>
         routeIds.includes(feature.properties.route_id),
       );
-
-      if (highlightedFeatures.length > 0 && zoom) {
+      if (highlightedFeatures.length > 0) {
         const zoomBounds = getBounds({
+          type: 'FeatureCollection',
           features: highlightedFeatures,
         });
         map.fitBounds(zoomBounds, {
@@ -542,55 +575,56 @@ function createSystemMap(id, geojson) {
         });
       }
     }
+  }
+}
 
-    function unHighlightRoutes(zoom) {
-      map.setFilter('highlighted-routes', ['==', ['get', 'route_id'], 'none']);
-      map.setFilter('highlighted-route-outlines', [
-        '==',
-        ['get', 'route_id'],
-        'none',
-      ]);
-      map.setFilter('highlighted-route-line-shadows', [
-        '==',
-        ['get', 'route_id'],
-        'none',
-      ]);
+function unHighlightRoutes(map, zoom) {
+  map.setFilter('highlighted-routes', ['==', ['get', 'route_id'], 'none']);
+  map.setFilter('highlighted-route-outlines', [
+    '==',
+    ['get', 'route_id'],
+    'none',
+  ]);
+  map.setFilter('highlighted-route-line-shadows', [
+    '==',
+    ['get', 'route_id'],
+    'none',
+  ]);
 
-      // Show labels for all routes
-      map.setFilter('route-labels', ['has', 'route_short_name']);
+  map.setFilter('route-labels', ['has', 'route_short_name']);
 
-      const routeLineOpacity = 1;
+  const routeLineOpacity = 1;
 
-      // Re-emphasize other routes
-      map.setPaintProperty('routes', 'line-opacity', routeLineOpacity);
-      map.setPaintProperty('route-outlines', 'line-opacity', routeLineOpacity);
-      map.setPaintProperty(
-        'route-line-shadows',
-        'line-opacity',
-        routeLineOpacity,
+  map.setPaintProperty('routes', 'line-opacity', routeLineOpacity);
+  map.setPaintProperty('route-outlines', 'line-opacity', routeLineOpacity);
+  map.setPaintProperty('route-line-shadows', 'line-opacity', routeLineOpacity);
+
+  if (zoom) {
+    const data = map.querySourceFeatures('routes');
+    if (data) {
+      map.fitBounds(
+        getBounds({
+          type: 'FeatureCollection',
+          features: data,
+        }),
       );
-
-      if (zoom) {
-        map.fitBounds(bounds);
-      }
     }
+  }
+}
 
-    // On table hover, highlight route on map
-    jQuery(() => {
-      jQuery('.overview-list a').hover((event) => {
-        const routeIdString = jQuery(event.target).data('route-ids');
-        if (routeIdString) {
-          const routeIds = routeIdString.toString().split(',');
-          highlightRoutes(routeIds, true);
-        }
-      });
-
-      jQuery('.overview-list').hover(
-        () => {},
-        () => unHighlightRoutes(true),
-      );
+function setupTableHoverListeners(id, map, routes) {
+  jQuery(() => {
+    jQuery('.overview-list a').hover((event) => {
+      const routeIdString = jQuery(event.target).data('route-ids');
+      if (routeIdString) {
+        const routeIds = routeIdString.toString().split(',');
+        highlightRoutes(map, routeIds, true);
+      }
     });
-  });
 
-  maps[id] = map;
+    jQuery('.overview-list').hover(
+      () => {},
+      () => unHighlightRoutes(map, true),
+    );
+  });
 }
