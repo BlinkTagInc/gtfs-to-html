@@ -6,7 +6,6 @@ import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import { openDb } from 'gtfs';
 import express from 'express';
-import logger from 'morgan';
 import untildify from 'untildify';
 
 import { formatTimetableLabel } from '../lib/formatters.js';
@@ -29,7 +28,6 @@ const argv = yargs(hideBin(process.argv))
   .parseSync();
 
 const app = express();
-const router: express.Router = express.Router();
 
 const configPath =
   (argv.configPath as string) || join(process.cwd(), 'config.json');
@@ -51,80 +49,17 @@ try {
       `Unable to open sqlite database "${config.sqlitePath}" defined as \`sqlitePath\` config.json. Ensure the parent directory exists or remove \`sqlitePath\` from config.json.`,
     );
   }
-
   throw error;
 }
-
-/*
- * Show all timetable pages
- */
-router.get('/', async (request, response, next) => {
-  try {
-    const timetablePages = [];
-    const timetablePageIds = map(
-      getTimetablePagesForAgency(config),
-      'timetable_page_id',
-    );
-
-    for (const timetablePageId of timetablePageIds) {
-      // eslint-disable-next-line no-await-in-loop
-      const timetablePage = await getFormattedTimetablePage(
-        timetablePageId,
-        config,
-      );
-
-      if (
-        !timetablePage.consolidatedTimetables ||
-        timetablePage.consolidatedTimetables.length === 0
-      ) {
-        console.error(
-          `No timetables found for timetable_page_id=${timetablePage.timetable_page_id}`,
-        );
-      }
-
-      timetablePage.relativePath = `/timetables/${timetablePage.timetable_page_id}`;
-      for (const timetable of timetablePage.consolidatedTimetables) {
-        timetable.timetable_label = formatTimetableLabel(timetable);
-      }
-
-      timetablePages.push(timetablePage);
-    }
-
-    const html = await generateOverviewHTML(timetablePages, config);
-    response.send(html);
-  } catch (error) {
-    console.error(error);
-    next(error);
-  }
-});
-
-/*
- * Show a specific timetable page
- */
-router.get('/timetables/:timetablePageId', async (request, response, next) => {
-  const { timetablePageId } = request.params;
-
-  if (!timetablePageId) {
-    return next(new Error('No timetablePageId provided'));
-  }
-
-  try {
-    const timetablePage = await getFormattedTimetablePage(
-      timetablePageId,
-      config,
-    );
-
-    const html = await generateTimetableHTML(timetablePage, config);
-    response.send(html);
-  } catch (error) {
-    next(error);
-  }
-});
 
 app.set('views', getPathToViewsFolder(config));
 app.set('view engine', 'pug');
 
-app.use(logger('dev'));
+// Logging middleware
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.url}`);
+  next();
+});
 
 // Serve static assets
 const staticAssetPath =
@@ -155,9 +90,103 @@ app.use(
   ),
 );
 
-app.use('/', router);
-app.set('port', process.env.PORT || 3000);
+// Show all timetable pages
+app.get('/', async (req, res, next) => {
+  try {
+    const timetablePages = [];
+    const timetablePageIds = map(
+      getTimetablePagesForAgency(config),
+      'timetable_page_id',
+    );
 
-const server = app.listen(app.get('port'), () => {
-  console.log(`Express server listening on port ${app.get('port')}`);
+    for (const timetablePageId of timetablePageIds) {
+      const timetablePage = await getFormattedTimetablePage(
+        timetablePageId,
+        config,
+      );
+
+      if (
+        !timetablePage.consolidatedTimetables ||
+        timetablePage.consolidatedTimetables.length === 0
+      ) {
+        console.error(
+          `No timetables found for timetable_page_id=${timetablePage.timetable_page_id}`,
+        );
+        continue;
+      }
+
+      timetablePage.relativePath = `/timetables/${timetablePage.timetable_page_id}`;
+      for (const timetable of timetablePage.consolidatedTimetables) {
+        timetable.timetable_label = formatTimetableLabel(timetable);
+      }
+
+      timetablePages.push(timetablePage);
+    }
+
+    const html = await generateOverviewHTML(timetablePages, config);
+    res.send(html);
+  } catch (error) {
+    next(error);
+  }
 });
+
+// Show a specific timetable page
+app.get('/timetables/:timetablePageId', async (req, res, next) => {
+  const { timetablePageId } = req.params;
+
+  if (!timetablePageId) {
+    return next(new Error('No timetablePageId provided'));
+  }
+
+  try {
+    const timetablePage = await getFormattedTimetablePage(
+      timetablePageId,
+      config,
+    );
+    const html = await generateTimetableHTML(timetablePage, config);
+    res.send(html);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Error handling middleware
+app.use(
+  (
+    err: Error,
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction,
+  ) => {
+    console.error(err.stack);
+    res.status(500).send('Something broke!');
+  },
+);
+
+const startServer = async (port: number): Promise<void> => {
+  try {
+    await new Promise<void>((resolve, reject) => {
+      const server = app
+        .listen(port)
+        .once('listening', () => {
+          console.log(`Express server listening on port ${port}`);
+          resolve();
+        })
+        .once('error', (err: NodeJS.ErrnoException) => {
+          if (err.code === 'EADDRINUSE') {
+            console.log(`Port ${port} is in use, trying ${port + 1}`);
+            server.close();
+            resolve(startServer(port + 1));
+          } else {
+            reject(err);
+          }
+        });
+    });
+  } catch (err) {
+    console.error('Failed to start server:', err);
+    process.exit(1);
+  }
+};
+
+const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
+startServer(port);
