@@ -135,7 +135,8 @@ app.get('/timetables/:timetablePageId', async (req, res, next) => {
   const { timetablePageId } = req.params;
 
   if (!timetablePageId) {
-    return next(new Error('No timetablePageId provided'));
+    res.status(400).send('No timetablePageId provided');
+    return;
   }
 
   try {
@@ -143,11 +144,31 @@ app.get('/timetables/:timetablePageId', async (req, res, next) => {
       timetablePageId,
       config,
     );
+
+    if (
+      !timetablePage ||
+      !timetablePage.consolidatedTimetables ||
+      timetablePage.consolidatedTimetables.length === 0
+    ) {
+      res.status(404).send('Timetable page not found');
+      return;
+    }
+
     const html = await generateTimetableHTML(timetablePage, config);
     res.send(html);
-  } catch (error) {
+  } catch (error: any) {
+    if (error?.message.startsWith('No timetable found')) {
+      res.status(404).send('Timetable page not found');
+      return;
+    }
+
     next(error);
   }
+});
+
+// Fallback 404 route
+app.use((req, res) => {
+  res.status(404).send('Not Found');
 });
 
 // Error handling middleware
