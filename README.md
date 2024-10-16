@@ -59,7 +59,8 @@ You can now use `gtfs-to-html` without actually downloading any code or doing an
 
 Many transit agencies use `gtfs-to-html` to generate the schedule pages used on their websites, including:
 
-- [Advance Transit](https://advancetransit.com)
+- [Advance Transit (Vermont)](https://advancetransit.com)
+- [Basin Transit (Morongo Basin, California)](https://basin-transit.com/)
 - [Brockton Area Transit Authority](https://ridebat.com)
 - [BusWay – CIRA (Aveiro, Portugal)](https://busway-cira.pt)
 - [Capital Transit (Helena, Montana)](http://www.ridethecapitalt.org)
@@ -70,6 +71,7 @@ Many transit agencies use `gtfs-to-html` to generate the schedule pages used on 
 - [Greater Attleboro-Taunton Regional Transit Authority](https://www.gatra.org)
 - [Humboldt Transit Authority](http://hta.org)
 - [Kings Area Rural Transit (KART)](https://www.kartbus.org)
+- [Lowell Regional Transit Authority](https://lrta.com)
 - [Madera County Connection](http://mcctransit.com)
 - [Marin Transit](https://marintransit.org)
 - [Morongo Basin Transit Authority](https://mbtabus.com)

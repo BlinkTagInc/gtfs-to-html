@@ -10,6 +10,7 @@ Many transit agencies use GTFS-to-HTML to generate the schedule pages used on th
 | Agency                                                                        | Location                            |
 | ----------------------------------------------------------------------------- | ----------------------------------- |
 | [Advance Transit](https://advancetransit.com)                                 | Vermont                             |
+| [Basin Transit](https://basin-transit.com/)                                   | Morongo Basin, California       |
 | [Brockton Area Transit Authority](https://ridebat.com)                        | Brockton, Massachusetts             |
 | [BusWay – CIRA](https://busway-cira.pt)                                       | Aveiro, Portugal                    |
 | [Capital Transit](http://www.ridethecapitalt.org)                             | Helena, Montana                     |
@@ -20,6 +21,7 @@ Many transit agencies use GTFS-to-HTML to generate the schedule pages used on th
 | [Greater Attleboro-Taunton Regional Transit Authority](https://www.gatra.org) | Attleboro-Taunton, Massachusetts    |
 | [Humboldt Transit Authority](http://hta.org)                                  | Humboldt County, California         |
 | [Kings Area Rural Transit (KART)](https://www.kartbus.org)                    | Kings County, California            |
+| [Lowell Regional Transit Authority](https://lrta.com)                         | Lowell, Massachusetts           |
 | [Madera County Connection](http://mcctransit.com)                             | Madera County, California           |
 | [Marin Transit](https://marintransit.org)                                     | Marin County, California            |
 | [Morongo Basin Transit Authority](https://mbtabus.com)                        | Morongo Basin, California           |
