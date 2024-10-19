@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Updated
 - Fix for stop popup realtime trip updates
 - Use maplibregl
+- Add geocoder to system map
 
 ## [2.9.15] - 2024-10-16
 
