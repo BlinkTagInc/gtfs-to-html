@@ -724,6 +724,7 @@ function createMap(id) {
 
   map.scrollZoom.disable();
   map.addControl(new maplibregl.NavigationControl());
+  map.addControl(new maplibregl.FullscreenControl());
 
   map.on('load', () => {
     fitMapToBounds(map, bounds);

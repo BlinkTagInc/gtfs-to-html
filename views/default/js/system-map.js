@@ -140,6 +140,7 @@ function createSystemMap() {
 
   map.scrollZoom.disable();
   map.addControl(new maplibregl.NavigationControl());
+  map.addControl(new maplibregl.FullscreenControl());
 
   addGeocoder(map, bounds);
 
