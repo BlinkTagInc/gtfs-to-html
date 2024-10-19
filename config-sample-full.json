@@ -34,7 +34,7 @@
   "interpolatedStopSymbol": "•",
   "interpolatedStopText": "Estimated time of arrival",
   "linkStopUrls": false,
-  "mapboxAccessToken": "YOUR MAPBOX ACCESS TOKEN",
+  "mapStyleUrl": "https://tiles.openfreemap.org/styles/liberty",
   "menuType": "jump",
   "noDropoffSymbol": "‡",
   "noDropoffText": "No drop off available",

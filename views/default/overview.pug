@@ -21,7 +21,6 @@ include formatting_functions.pug
 
       //- Use !{variable} format to inject values from pug to client side js
       script.
-        (function() {
-          const geojson = !{JSON.stringify(geojson) || '\'\''};
-          createSystemMap('system_map', geojson);
-        })();
+        const geojson = !{JSON.stringify(geojson) || '\'\''};
+        const mapStyleUrl = '#{config.mapStyleUrl}';
+        createSystemMap();

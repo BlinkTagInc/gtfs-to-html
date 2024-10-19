@@ -18,7 +18,7 @@ export interface Config {
   interpolatedStopSymbol?: string;
   interpolatedStopText?: string;
   linkStopUrls?: boolean;
-  mapboxAccessToken?: string;
+  mapStyleUrl?: string;
   menuType?: 'simple' | 'jump' | 'radio';
   noDropoffSymbol?: string;
   noDropoffText?: string;

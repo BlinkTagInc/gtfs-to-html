@@ -166,23 +166,23 @@ a:hover {
   width: 100%;
 }
 
-.overview-map .mapboxgl-popup-content .popup-title {
+.overview-map .maplibregl-popup-content .popup-title {
   margin: 0 20px 5px 0;
   font-size: 16px;
   font-weight: bold;
 }
 
-.overview-map .mapboxgl-popup-content .popup-label {
+.overview-map .maplibregl-popup-content .popup-label {
   border-bottom: 1px solid #e0e0e0;
   padding-top: 0.5rem;
 }
 
-.overview-map .mapboxgl-popup-content .route-list {
+.overview-map .maplibregl-popup-content .route-list {
   margin-bottom: 1rem;
   margin-top: 0.25rem;
 }
 
-.overview-map .mapboxgl-popup-content .map-route-item {
+.overview-map .maplibregl-popup-content .map-route-item {
   display: flex;
   align-items: center;
   font-size: 0.75rem;
@@ -191,14 +191,14 @@ a:hover {
   gap: 0.5rem;
 }
 
-.overview-map .mapboxgl-popup-content .map-route-item:hover {
+.overview-map .maplibregl-popup-content .map-route-item:hover {
   text-decoration: none;
 }
 
-.overview-map .mapboxgl-popup-content a.map-route-item .underline-hover:hover {
+.overview-map .maplibregl-popup-content a.map-route-item .underline-hover:hover {
   text-decoration: underline;
 }
 
-.overview-map .mapboxgl-popup-content .mapboxgl-popup-close-button {
+.overview-map .maplibregl-popup-content .maplibregl-popup-close-button {
   padding: 0 5px;
 }

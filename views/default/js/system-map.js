@@ -1,7 +1,5 @@
-/* global window, document, _, $, mapboxgl */
+/* global document, jQuery, _, maplibregl, geojson, mapStyleUrl */
 /* eslint prefer-arrow-callback: "off", no-unused-vars: "off" */
-
-const maps = {};
 
 function formatRouteColor(route) {
   return route.route_color || '#000000';
@@ -95,7 +93,7 @@ function formatStopPopup(feature) {
 }
 
 function getBounds(geojson) {
-  const bounds = new mapboxgl.LngLatBounds();
+  const bounds = new maplibregl.LngLatBounds();
   for (const feature of geojson.features) {
     if (feature.geometry.type.toLowerCase() === 'point') {
       bounds.extend(feature.geometry.coordinates);
@@ -115,7 +113,7 @@ function getBounds(geojson) {
   return bounds;
 }
 
-function createSystemMap(id, geojson) {
+function createSystemMap() {
   const defaultRouteColor = '#000000';
   const lineLayout = {
     'line-join': 'round',
@@ -128,9 +126,9 @@ function createSystemMap(id, geojson) {
   }
 
   const bounds = getBounds(geojson);
-  const map = new mapboxgl.Map({
-    container: id,
-    style: 'mapbox://styles/mapbox/light-v11',
+  const map = new maplibregl.Map({
+    container: 'system_map',
+    style: mapStyleUrl,
     center: bounds.getCenter(),
     zoom: 12,
   });
@@ -141,16 +139,14 @@ function createSystemMap(id, geojson) {
   }
 
   map.scrollZoom.disable();
-  map.addControl(new mapboxgl.NavigationControl());
+  map.addControl(new maplibregl.NavigationControl());
 
   map.on('load', () => {
     fitMapToBounds(map, bounds);
     disablePointsOfInterest(map);
     addMapLayers(map, geojson, defaultRouteColor, lineLayout);
-    setupEventListeners(map, id, routes);
+    setupEventListeners(map, routes);
   });
-
-  maps[id] = map;
 }
 
 function fitMapToBounds(map, bounds) {
@@ -161,23 +157,32 @@ function fitMapToBounds(map, bounds) {
 }
 
 function disablePointsOfInterest(map) {
-  map.setLayoutProperty('poi-label', 'visibility', 'none');
+  const layers = map.getStyle().layers;
+  const poiLayerIds = layers
+    .filter((layer) => layer.id.startsWith('poi'))
+    ?.map((layer) => layer.id);
+  poiLayerIds.forEach((layerId) => {
+    map.setLayoutProperty(layerId, 'visibility', 'none');
+  });
 }
 
 function addMapLayers(map, geojson, defaultRouteColor, lineLayout) {
-  const firstSymbolId = getFirstSymbolLayerId(map);
+  const layers = map.getStyle().layers;
+  const firstLabelLayerId = layers.find(
+    (layer) => layer.type === 'symbol' && layer.id.includes('label'),
+  )?.id;
 
-  addRouteLineShadow(map, geojson, lineLayout, firstSymbolId);
-  addHighlightedRouteLineShadow(map, geojson, lineLayout, firstSymbolId);
-  addRouteLineOutline(map, geojson, lineLayout, firstSymbolId);
-  addHighlightedRouteLineOutline(map, geojson, lineLayout, firstSymbolId);
-  addRouteLine(map, geojson, defaultRouteColor, lineLayout, firstSymbolId);
+  addRouteLineShadow(map, geojson, lineLayout, firstLabelLayerId);
+  addHighlightedRouteLineShadow(map, geojson, lineLayout, firstLabelLayerId);
+  addRouteLineOutline(map, geojson, lineLayout, firstLabelLayerId);
+  addHighlightedRouteLineOutline(map, geojson, lineLayout, firstLabelLayerId);
+  addRouteLine(map, geojson, defaultRouteColor, lineLayout, firstLabelLayerId);
   addHighlightedRouteLine(
     map,
     geojson,
     defaultRouteColor,
     lineLayout,
-    firstSymbolId,
+    firstLabelLayerId,
   );
   addStops(map, geojson);
   addHighlightedStops(map, geojson);
@@ -450,10 +455,10 @@ function addRouteLabels(map, geojson) {
   });
 }
 
-function setupEventListeners(map, id, routes) {
+function setupEventListeners(map, routes) {
   map.on('mousemove', (event) => handleMouseMove(event, map, routes));
   map.on('click', (event) => handleClick(event, map));
-  setupTableHoverListeners(id, map, routes);
+  setupTableHoverListeners(map);
 }
 
 function handleMouseMove(event, map, routes) {
@@ -504,7 +509,7 @@ function handleClick(event, map) {
 }
 
 function showStopPopup(map, feature) {
-  new mapboxgl.Popup()
+  new maplibregl.Popup()
     .setLngLat(feature.geometry.coordinates)
     .setHTML(formatStopPopup(feature))
     .addTo(map);
@@ -516,7 +521,7 @@ function showRoutePopup(map, features, lngLat) {
     (feature) => Number.parseInt(feature.properties.route_short_name, 10),
   );
 
-  new mapboxgl.Popup()
+  new maplibregl.Popup()
     .setLngLat(lngLat)
     .setHTML(formatRoutePopup(routes))
     .addTo(map);
@@ -612,7 +617,7 @@ function unHighlightRoutes(map, zoom) {
   }
 }
 
-function setupTableHoverListeners(id, map, routes) {
+function setupTableHoverListeners(map) {
   jQuery(() => {
     jQuery('.overview-list a').hover((event) => {
       const routeIdString = jQuery(event.target).data('route-ids');

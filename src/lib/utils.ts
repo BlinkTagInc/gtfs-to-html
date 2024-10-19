@@ -1509,6 +1509,7 @@ export function setDefaultConfig(initialConfig) {
     interpolatedStopText: 'Estimated time of arrival',
     gtfsToHtmlVersion: version,
     linkStopUrls: false,
+    mapStyleUrl: 'https://tiles.openfreemap.org/styles/liberty',
     menuType: 'jump',
     noDropoffSymbol: '‡',
     noDropoffText: 'No drop off available',

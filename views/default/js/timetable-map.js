@@ -1,4 +1,4 @@
-/* global document, jQuery, mapboxgl, Pbf, stopData, routeData, routeIds, tripIds, geojsons, gtfsRealtimeUrls */
+/* global document, jQuery, maplibregl, Pbf, mapStyleUrl, stopData, routeData, routeIds, tripIds, geojsons, gtfsRealtimeUrls */
 /* eslint prefer-arrow-callback: "off", no-unused-vars: "off" */
 
 const maps = {};
@@ -192,7 +192,7 @@ function getStopPopupHtml(feature, stop) {
 }
 
 function getBounds(geojson) {
-  const bounds = new mapboxgl.LngLatBounds();
+  const bounds = new maplibregl.LngLatBounds();
   for (const feature of geojson.features) {
     if (feature.geometry.type.toLowerCase() === 'point') {
       bounds.extend(feature.geometry.coordinates);
@@ -459,7 +459,10 @@ function addVehicleMarker(vehiclePosition, vehicleTripUpdate) {
   ];
 
   // Add marker to map
-  const vehicleMarker = new mapboxgl.Marker(el)
+  const vehicleMarker = new maplibregl.Marker({
+    element: el,
+    anchor: 'center',
+  })
     .setLngLat(coordinates)
     .addTo(maps[visibleTimetableId]);
 
@@ -709,9 +712,9 @@ function createMap(id) {
   }
 
   const bounds = getBounds(geojson);
-  const map = new mapboxgl.Map({
+  const map = new maplibregl.Map({
     container: `map_timetable_id_${id}`,
-    style: 'mapbox://styles/mapbox/light-v11',
+    style: mapStyleUrl,
     center: bounds.getCenter(),
     zoom: 12,
     preserveDrawingBuffer: true,
@@ -720,7 +723,7 @@ function createMap(id) {
   map.initialize = () => fitMapToBounds(map, bounds);
 
   map.scrollZoom.disable();
-  map.addControl(new mapboxgl.NavigationControl());
+  map.addControl(new maplibregl.NavigationControl());
 
   map.on('load', () => {
     fitMapToBounds(map, bounds);
@@ -740,22 +743,26 @@ function fitMapToBounds(map, bounds) {
 }
 
 function disablePointsOfInterest(map) {
-  map.setLayoutProperty('poi-label', 'visibility', 'none');
+  const layers = map.getStyle().layers;
+  const poiLayerIds = layers
+    .filter((layer) => layer.id.startsWith('poi'))
+    ?.map((layer) => layer.id);
+  poiLayerIds.forEach((layerId) => {
+    map.setLayoutProperty(layerId, 'visibility', 'none');
+  });
 }
 
 function addMapLayers(map, geojson, defaultRouteColor, lineLayout) {
-  const firstSymbolId = getFirstSymbolLayerId(map);
+  const layers = map.getStyle().layers;
+  const firstLabelLayerId = layers.find(
+    (layer) => layer.type === 'symbol' && layer.id.includes('label'),
+  )?.id;
 
-  addRouteLineShadow(map, geojson, lineLayout, firstSymbolId);
-  addRouteLineOutline(map, geojson, lineLayout, firstSymbolId);
-  addRouteLine(map, geojson, defaultRouteColor, lineLayout, firstSymbolId);
+  addRouteLineShadow(map, geojson, lineLayout, firstLabelLayerId);
+  addRouteLineOutline(map, geojson, lineLayout, firstLabelLayerId);
+  addRouteLine(map, geojson, defaultRouteColor, lineLayout, firstLabelLayerId);
   addStops(map, geojson);
   addHighlightedStops(map, geojson);
-}
-
-function getFirstSymbolLayerId(map) {
-  const layers = map.getStyle().layers;
-  return layers.find((layer) => layer.type === 'symbol').id;
 }
 
 function addRouteLineShadow(map, geojson, lineLayout, firstSymbolId) {
@@ -924,7 +931,7 @@ function handleClick(event, map) {
 }
 
 function showStopPopup(map, feature) {
-  new mapboxgl.Popup()
+  new maplibregl.Popup()
     .setLngLat(feature.geometry.coordinates)
     .setHTML(getStopPopupHtml(feature, stopData[feature.properties.stop_id]))
     .addTo(map);
@@ -1043,18 +1050,27 @@ function createMaps() {
     gtfsRealtimeUrls?.realtimeVehiclePositions?.url
   ) {
     // Popup for realtime vehicle locations
-    vehiclePopup = new mapboxgl.Popup({
+    const markerHeight = 20;
+    const markerRadius = 10;
+    const linearOffset = 15;
+    vehiclePopup = new maplibregl.Popup({
       closeOnClick: false,
       className: 'vehicle-popup',
       offset: {
-        top: [0, 10],
-        bottom: [0, -10],
-        left: [10, 0],
-        right: [-10, 0],
-        'top-left': [10, 10],
-        'top-right': [-10, 10],
-        'bottom-left': [10, -10],
-        'bottom-right': [-10, -10],
+        top: [0, 0],
+        'top-left': [0, 0],
+        'top-right': [0, 0],
+        bottom: [0, -markerHeight],
+        'bottom-left': [
+          linearOffset,
+          (markerHeight - markerRadius + linearOffset) * -1,
+        ],
+        'bottom-right': [
+          -linearOffset,
+          (markerHeight - markerRadius + linearOffset) * -1,
+        ],
+        left: [markerRadius, (markerHeight - markerRadius) * -1],
+        right: [-markerRadius, (markerHeight - markerRadius) * -1],
       },
     });
 

@@ -18,7 +18,7 @@ All files starting with `config*.json` are .gitignored - so you can create multi
 | [`agencies`](#agencies)                                         | array            | An array of GTFS and GTFS-realtime URLs to be imported.                                                           |
 | [`allowEmptyTimetables`](#allowemptytimetables)                 | boolean          | Whether or not to generate timetables that have no trips.                                        |
 | [`beautify`](#beautify)                                         | boolean          | Whether or not to beautify the HTML output.                                                      |
-| [`coordinatePrecision`](#coordinateprecision)                   | integer          | Number of decimal places to include in geoJSON map output.                                       |
+| [`coordinatePrecision`](#coordinateprecision)                   | integer          | Number of decimal places to include when rendering geoJSON map output.                                       |
 | [`dateFormat`](#dateformat)                                     | string           | A string defining date format in moment.js style.                                                |
 | [`dayShortStrings`](#dayshortstrings)                           | array of strings | An array defining contractions of weekdays names from Monday to Sunday.                          |
 | [`dayStrings`](#daystrings)                                     | array of strings | An array defining weekdays names from Monday to Sunday.                                          |
@@ -30,7 +30,7 @@ All files starting with `config*.json` are .gitignored - so you can create multi
 | [`interpolatedStopText`](#interpolatedstoptext)                 | string           | The text used to describe a timepoint isn't fixed, but just interpolated.                        |
 | [`linkStopUrls`](#linkStopurls)                                 | boolean          | Whether or not to hyperlink timetable stop names to the `stop_url` defined in `stops.txt`.       |
 | [`logFunction`](#logfunction)                                   | function         | A custom logging function for handling output of logs.                                           |
-| [`mapboxAccessToken`](#mapboxaccesstoken)                       | string           | The Mapbox access token for generating a map of the route.                                       |
+| [`mapStyleUrl`](#mapstyleurl)                       | string           | The URL to a MapLibre style to use for maps.                                |
 | [`menuType`](#menutype)                                         | string           | The type of menu to use for selecting timetables on a timetable page.                            |
 | [`noDropoffSymbol`](#nodropoffsymbol)                           | string           | The symbol used to indicate ta stop where no drop off is available.                              |
 | [`noDropoffText`](#nodropofftext)                               | string           | The text used to describe a stop where no drop off is available.                                 |
@@ -320,12 +320,12 @@ const config = {
 gtfsToHtml(config);
 ```
 
-### mapboxAccessToken
+### mapStyleUrl
 
-\{String\} The [Mapbox access token](https://www.mapbox.com/help/define-access-token/) for generating a map of the route.
+\{String\} The URL to a [MapLibre JSON style](https://maplibre.org/maplibre-style-spec/). Optional, defaults to [https://tiles.openfreemap.org/styles/liberty](https://tiles.openfreemap.org/styles/liberty). Customize your own map style using [Maputnik](https://maputnik.github.io).
 
 ```json
-"mapboxAccessToken": "pk.eyXaX5F8oCJSYedim3yCnTGsVBfnRjsoXdy4Ej7ZZZydrCn2WMDXha5bPj5.bPj5xsBo8u8N8GJqJh"
+"mapStyleUrl": "https://tiles.openfreemap.org/styles/bright"
 ```
 
 ### menuType

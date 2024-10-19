@@ -453,24 +453,24 @@ a:hover {
   }
 }
 
-.timetable-page .map .mapboxgl-popup-content .popup-title {
+.timetable-page .map .maplibregl-popup-content .popup-title {
   margin: 0 20px 5px 0;
   font-size: 1rem;
   font-weight: 700;
   line-height: 1;
 }
 
-.timetable-page .map .mapboxgl-popup-content .popup-label {
+.timetable-page .map .maplibregl-popup-content .popup-label {
   border-bottom: 1px solid #e0e0e0;
   padding-top: 0.5rem;
 }
 
-.timetable-page .map .mapboxgl-popup-content .route-list {
+.timetable-page .map .maplibregl-popup-content .route-list {
   margin-bottom: 1rem;
   margin-top: 0.25rem;
 }
 
-.timetable-page .map .mapboxgl-popup-content .map-route-item {
+.timetable-page .map .maplibregl-popup-content .map-route-item {
   display: flex;
   align-items: center;
   font-size: 0.75rem;
@@ -479,23 +479,23 @@ a:hover {
   gap: 0.5rem;
 }
 
-.timetable-page .map .mapboxgl-popup-content .map-route-item:hover {
+.timetable-page .map .maplibregl-popup-content .map-route-item:hover {
   text-decoration: none;
 }
 
 .timetable-page
   .map
-  .mapboxgl-popup-content
+  .maplibregl-popup-content
   a.map-route-item
   .underline-hover:hover {
   text-decoration: underline;
 }
 
-.timetable-page .map .mapboxgl-popup-content .mapboxgl-popup-close-button {
+.timetable-page .map .maplibregl-popup-content .maplibregl-popup-close-button {
   padding: 0 5px;
 }
 
-.timetable-page .map .mapboxgl-popup-content .upcoming-stops {
+.timetable-page .map .maplibregl-popup-content .upcoming-stops {
   display: grid;
   grid-template-columns: auto 1fr;
   gap: 0.5rem;
@@ -505,7 +505,7 @@ a:hover {
 
 .timetable-page
   .map
-  .mapboxgl-popup-content
+  .maplibregl-popup-content
   .upcoming-stops div:nth-child(1) {
   font-weight: bold;
   border-bottom: 1px solid #dddddd;
@@ -515,7 +515,7 @@ a:hover {
 
 .timetable-page
   .map
-  .mapboxgl-popup-content
+  .maplibregl-popup-content
   .upcoming-stops div:nth-child(2) {
   font-weight: bold;
   border-bottom: 1px solid #dddddd;
@@ -525,20 +525,20 @@ a:hover {
 
 .timetable-page
   .map
-  .mapboxgl-popup-content
+  .maplibregl-popup-content
   .upcoming-stops
   div:nth-child(2n-1) {
   text-align: right;
   font-weight: bold;
 }
 
-.timetable-page .map .mapboxgl-popup-content .vehicle-updated {
+.timetable-page .map .maplibregl-popup-content .vehicle-updated {
   padding-top: 5px;
   font-size: 10px;
   text-align: right;
 }
 
-.timetable-page .map .vehicle-popup .mapboxgl-popup-content {
+.timetable-page .map .vehicle-popup .maplibregl-popup-content {
   padding-bottom: 5px;
 }
 
@@ -550,7 +550,7 @@ a:hover {
   padding: 10px;
   position: absolute;
   left: 10px;
-  bottom: 35px;
+  bottom: 10px;
   z-index: 1;
 }
 
