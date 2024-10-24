@@ -2,6 +2,7 @@ import {
   cloneDeep,
   compact,
   countBy,
+  difference,
   entries,
   every,
   find,
@@ -783,9 +784,23 @@ const getStopOrder = (timetable: Timetable, config: Config) => {
     );
     const stopIds = longestTripStoptimes.map((stoptime) => stoptime.stop_id);
 
-    config.logWarning(
-      `Timetable ${timetable.timetable_id} stops are unable to be topologically sorted and has no \`timetable_stop_order.txt\`. Falling back to using the using the stop order from trip with most stoptimes, but this can result in timetables with some stops missing. Try manually specifying stops with \`timetable_stop_order.txt\`.`,
+    const missingStopIds = difference(
+      uniq(
+        timetable.orderedTrips.flatMap((trip: Trip) =>
+          trip.stoptimes.map((stoptime: StopTime) => stoptime.stop_id),
+        ),
+      ),
+      uniq(stopIds),
     );
+
+    if (missingStopIds.length > 0) {
+      config.logWarning(
+        `Timetable ${timetable.timetable_id} stops are unable to be topologically sorted and has no \`timetable_stop_order.txt\`.
+        Falling back to using the using the stop order from trip with most stoptimes, but this does not include stop_ids ${new Intl.ListFormat('en', { style: 'long', type: 'conjunction' }).format(missingStopIds)}.
+        Try manually specifying stops with \`timetable_stop_order.txt\`.
+        Read more at https://gtfstohtml.com/docs/timetable-stop-order`,
+      );
+    }
 
     return duplicateStopsForDifferentArrivalDeparture(
       stopIds,
