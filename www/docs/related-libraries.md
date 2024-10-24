@@ -20,7 +20,7 @@ title: Related Libraries
 ## `gtfs-to-chart`
 [`https://github.com/blinktaginc/gtfs-to-chart`](https://github.com/blinktaginc/gtfs-to-chart)
 <div style={{ display: 'flex', gap: 20 }}>
-  <div style={{ width: 100, flexShrink: 0 }}><img src="https://github.com/BlinkTagInc/gtfs-to-chart/raw/master/docs/images/gtfs-to-chart-logo.svg" alt="gtfs-to-chart" width="100" /></div>
+  <div style={{ width: 100, flexShrink: 0 }}><img src="https://raw.githubusercontent.com/BlinkTagInc/gtfs-to-chart/main/docs/images/gtfs-to-chart-logo.svg" alt="gtfs-to-chart" width="100" /></div>
   <div><a href="https://github.com/blinktaginc/gtfs-to-chart"><code>gtfs-to-chart</code></a> generates a stringline chart in D3 using data from an agency's GTFS. This chart shows all trips for a specific route as they travel through space over a single day.</div>
 </div>
 
@@ -51,4 +51,11 @@ title: Related Libraries
   <div style={{ width: 100, flexShrink: 0 }}><img src="https://github.com/BlinkTagInc/node-gtfs-realtime/raw/main/docs/images/node-gtfs-realtime-logo.svg
   " alt="Transit Departures Widget" width="100" /></div>
   <div>GTFS-realtime transit data is in <a href="https://developers.google.com/protocol-buffers">protobuf format</a> which means its not human-readable by default. <code>node-GTFS-Realtime</code> aims to make it fast and easy to inspect GTFS-realtime data by providing a one-line command for downloading GTFS-realtime format data and converting to JSON. Try it out by running <code>npx gtfs-realtime http://api.bart.gov/gtfsrt/tripupdate.aspx</code> in your terminal.</div>
+</div>
+
+## `gtfs-to-blocks`
+[`https://github.com/blinktaginc/gtfs-to-blocks`](https://github.com/blinktaginc/gtfs-to-blocks)
+<div style={{ display: 'flex', gap: 20 }}>
+  <div style={{ width: 100, flexShrink: 0 }}><img src="https://raw.githubusercontent.com/BlinkTagInc/gtfs-to-blocks/main/docs/images/gtfs-to-blocks-logo.svg" alt="gtfs-to-blocks" width="100" /></div>
+  <div><a href="https://github.com/blinktaginc/gtfs-to-blocks"><code>gtfs-to-blocks</code></a> exports all trip segments sorted by block_id and their departure times from a GTFS file in CSV format.</div>
 </div>
