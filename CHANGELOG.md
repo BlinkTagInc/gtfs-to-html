@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Updated
 - Improved non-topological sort warning
+- Log all warnings to logfile
+- Change to logging functions
 
 ## [2.10.0] - 2024-10-18
 

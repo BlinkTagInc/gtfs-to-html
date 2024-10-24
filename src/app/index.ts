@@ -37,18 +37,14 @@ const config = setDefaultConfig(selectedConfig);
 // Override noHead config option so full HTML pages are generated
 config.noHead = false;
 config.assetPath = '/';
-config.log = console.log;
-config.logWarning = console.warn;
-config.logError = console.error;
+config.logFunction = console.log;
 
 try {
   openDb(config);
 } catch (error: any) {
-  if (error?.code === 'SQLITE_CANTOPEN') {
-    config.logError(
-      `Unable to open sqlite database "${config.sqlitePath}" defined as \`sqlitePath\` config.json. Ensure the parent directory exists or remove \`sqlitePath\` from config.json.`,
-    );
-  }
+  console.error(
+    `Unable to open sqlite database "${config.sqlitePath}" defined as \`sqlitePath\` config.json. Ensure the parent directory exists and run gtfs-to-html to import GTFS before running this app.`,
+  );
   throw error;
 }
 

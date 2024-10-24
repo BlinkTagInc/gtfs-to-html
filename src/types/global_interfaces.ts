@@ -51,9 +51,7 @@ export interface Config {
   useParentStation?: boolean;
   verbose?: boolean;
   zipOutput?: boolean;
-  log?: (text: string) => void;
-  logWarning?: (text: string) => void;
-  logError?: (text: string) => void;
+  logFunction?: (text: string) => void;
 }
 
 export interface Timetable {

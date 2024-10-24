@@ -16,12 +16,11 @@ import {
   generateFileName,
 } from './file-utils.js';
 import {
-  log,
-  logWarning,
-  logError,
   progressBar,
   generateLogText,
   logStats,
+  logError,
+  log,
 } from './log-utils.js';
 import {
   setDefaultConfig,
@@ -43,10 +42,6 @@ const gtfsToHtml = async (initialConfig: Config) => {
   const config = setDefaultConfig(initialConfig);
   const timer = new Timer();
 
-  config.log = log(config);
-  config.logWarning = logWarning(config);
-  config.logError = logError(config);
-
   const agencyKey = config.agencies
     .map(
       (agency: { agencyKey?: string; agency_key?: string }) =>
@@ -65,7 +60,7 @@ const gtfsToHtml = async (initialConfig: Config) => {
     openDb(config);
   } catch (error: any) {
     if (error?.code === 'SQLITE_CANTOPEN') {
-      config.logError(
+      logError(config)(
         `Unable to open sqlite database "${config.sqlitePath}" defined as \`sqlitePath\` config.json. Ensure the parent directory exists or remove \`sqlitePath\` from config.json.`,
       );
     }
@@ -213,14 +208,14 @@ const gtfsToHtml = async (initialConfig: Config) => {
   );
 
   // Print stats
-  config.log(
+  log(config)(
     `${agencyKey}: ${config.outputFormat.toUpperCase()} timetables created at ${fullOutputPath}`,
   );
 
-  logStats(stats, config);
+  logStats(config)(stats);
 
   const seconds = Math.round(timer.time() / 1000);
-  config.log(
+  log(config)(
     `${agencyKey}: ${config.outputFormat.toUpperCase()} timetable generation required ${seconds} seconds`,
   );
 

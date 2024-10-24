@@ -2,6 +2,7 @@ import { getShapesAsGeoJSON, getStopsAsGeoJSON } from 'gtfs';
 import { flatMap } from 'lodash-es';
 import simplify from '@turf/simplify';
 import { featureCollection, round } from '@turf/helpers';
+import { logWarning } from './log-utils.js';
 
 /*
  * Merge any number of geojson objects into one. Only works for `FeatureCollection`.
@@ -43,24 +44,6 @@ const truncateGeoJSONDecimals = (geojson, config) => {
 };
 
 /*
- * Simplify geojson to a specific tolerance
- */
-const simplifyGeoJSON = (geojson, config) => {
-  try {
-    const simplifiedGeojson = simplify(geojson, {
-      tolerance: 1 / 10 ** config.coordinatePrecision,
-      highQuality: true,
-    });
-
-    return truncateGeoJSONDecimals(simplifiedGeojson, config);
-  } catch {
-    config.logWarning('Unable to simplify geojson');
-
-    return truncateGeoJSONDecimals(geojson, config);
-  }
-};
-
-/*
  * Get the geoJSON for a timetable.
  */
 export function getTimetableGeoJSON(timetable, config) {
@@ -81,7 +64,21 @@ export function getTimetableGeoJSON(timetable, config) {
   );
 
   const geojson = mergeGeojson(...shapesGeojsons, ...stopsGeojsons);
-  return simplifyGeoJSON(geojson, config);
+
+  let simplifiedGeojson;
+  try {
+    simplifiedGeojson = simplify(geojson, {
+      tolerance: 1 / 10 ** config.coordinatePrecision,
+      highQuality: true,
+    });
+  } catch {
+    timetable.warnings.push(
+      `Timetable ${timetable.timetable_id} - Unable to simplify geojson`,
+    );
+    simplifiedGeojson = geojson;
+  }
+
+  return truncateGeoJSONDecimals(simplifiedGeojson, config);
 }
 
 /*
@@ -92,5 +89,17 @@ export function getAgencyGeoJSON(config) {
   const stopsGeojsons = getStopsAsGeoJSON();
 
   const geojson = mergeGeojson(shapesGeojsons, stopsGeojsons);
-  return simplifyGeoJSON(geojson, config);
+
+  let simplifiedGeojson;
+  try {
+    simplifiedGeojson = simplify(geojson, {
+      tolerance: 1 / 10 ** config.coordinatePrecision,
+      highQuality: true,
+    });
+  } catch {
+    logWarning(config)('Unable to simplify geojson');
+    simplifiedGeojson = geojson;
+  }
+
+  return truncateGeoJSONDecimals(simplifiedGeojson, config);
 }

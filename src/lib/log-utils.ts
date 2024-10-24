@@ -3,11 +3,12 @@ import { noop } from 'lodash-es';
 import * as colors from 'yoctocolors';
 import { getFeedInfo } from 'gtfs';
 import Table from 'cli-table';
+import { Config } from '../types/global_interfaces.ts';
 
 /*
  * Creates text for a log of output details.
  */
-export function generateLogText(outputStats, config) {
+export function generateLogText(outputStats, config: Config) {
   const feedInfo = getFeedInfo();
   const feedVersion =
     feedInfo.length > 0 && feedInfo[0].feed_version
@@ -44,7 +45,7 @@ export function generateLogText(outputStats, config) {
 /*
  * Returns a log function based on config settings
  */
-export function log(config) {
+export function log(config: Config) {
   if (config.verbose === false) {
     return noop;
   }
@@ -53,7 +54,7 @@ export function log(config) {
     return config.logFunction;
   }
 
-  return (text, overwrite) => {
+  return (text: string, overwrite: boolean) => {
     if (overwrite === true && process.stdout.isTTY) {
       clearLine(process.stdout, 0);
       cursorTo(process.stdout, 0);
@@ -68,12 +69,12 @@ export function log(config) {
 /*
  * Returns an warning log function based on config settings
  */
-export function logWarning(config) {
+export function logWarning(config: Config) {
   if (config.logFunction) {
     return config.logFunction;
   }
 
-  return (text) => {
+  return (text: string) => {
     process.stdout.write(`\n${formatWarning(text)}\n`);
   };
 }
@@ -81,12 +82,12 @@ export function logWarning(config) {
 /*
  * Returns an error log function based on config settings
  */
-export function logError(config) {
+export function logError(config: Config) {
   if (config.logFunction) {
     return config.logFunction;
   }
 
-  return (text) => {
+  return (text: string) => {
     process.stdout.write(`\n${formatError(text)}\n`);
   };
 }
@@ -94,7 +95,7 @@ export function logError(config) {
 /*
  * Format console warning text
  */
-export function formatWarning(text) {
+export function formatWarning(text: string) {
   const warningMessage = `${colors.underline('Warning')}: ${text}`;
   return colors.yellow(warningMessage);
 }
@@ -102,7 +103,7 @@ export function formatWarning(text) {
 /*
  * Format console error text
  */
-export function formatError(error) {
+export function formatError(error: any) {
   const messageText = error instanceof Error ? error.message : error;
   const errorMessage = `${colors.underline('Error')}: ${messageText.replace(
     'Error: ',
@@ -114,28 +115,30 @@ export function formatError(error) {
 /*
  * Print a table of stats to the console.
  */
-export function logStats(stats, config) {
+export function logStats(config: Config) {
   // Hide stats table from custom log functions
   if (config.logFunction) {
-    return;
+    return noop;
   }
 
-  const table = new Table({
-    colWidths: [40, 20],
-    head: ['Item', 'Count'],
-  });
+  return (stats: any) => {
+    const table = new Table({
+      colWidths: [40, 20],
+      head: ['Item', 'Count'],
+    });
 
-  table.push(
-    ['📄 Timetable Pages', stats.timetablePages],
-    ['🕑 Timetables', stats.timetables],
-    ['📅 Calendar Service IDs', stats.calendars],
-    ['🔄 Routes', stats.routes],
-    ['🚍 Trips', stats.trips],
-    ['🛑 Stops', stats.stops],
-    ['⛔️ Warnings', stats.warnings.length],
-  );
+    table.push(
+      ['📄 Timetable Pages', stats.timetablePages],
+      ['🕑 Timetables', stats.timetables],
+      ['📅 Calendar Service IDs', stats.calendars],
+      ['🔄 Routes', stats.routes],
+      ['🚍 Trips', stats.trips],
+      ['🛑 Stops', stats.stops],
+      ['⛔️ Warnings', stats.warnings.length],
+    );
 
-  config.log(table.toString());
+    log(config)(table.toString());
+  };
 }
 
 /*
@@ -179,7 +182,11 @@ const generateProgressBarString = (barTotal, barProgress, size = 40) => {
 /*
  * Print a progress bar to the console.
  */
-export function progressBar(formatString, barTotal, config) {
+export function progressBar(
+  formatString: string,
+  barTotal: number,
+  config: Config,
+) {
   let barProgress = 0;
 
   if (config.verbose === false) {
@@ -199,17 +206,17 @@ export function progressBar(formatString, barTotal, config) {
       .replace('{total}', barTotal)
       .replace('{bar}', generateProgressBarString(barTotal, barProgress));
 
-  config.log(renderProgressString(), true);
+  log(config)(renderProgressString(), true);
 
   return {
-    interrupt(text) {
+    interrupt(text: string) {
       // Log two lines to avoid overwrite by progress bar
-      config.logWarning(text);
-      config.log('');
+      logWarning(config)(text);
+      log(config)('');
     },
     increment() {
       barProgress += 1;
-      config.log(renderProgressString(), true);
+      log(config)(renderProgressString(), true);
     },
   };
 }

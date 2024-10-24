@@ -436,7 +436,7 @@ const getTimetableNotesForTimetable = (
 
     // Note references with stop_sequence must also have stop_id.
     if (noteReference.stop_id === '' || noteReference.stop_id === null) {
-      config.logWarning(
+      timetable.warnings.push(
         `Timetable Note Reference for note_id=${noteReference.note_id} has a \`stop_sequence\` but no \`stop_id\` - ignoring`,
       );
       continue;
@@ -794,11 +794,8 @@ const getStopOrder = (timetable: Timetable, config: Config) => {
     );
 
     if (missingStopIds.length > 0) {
-      config.logWarning(
-        `Timetable ${timetable.timetable_id} stops are unable to be topologically sorted and has no \`timetable_stop_order.txt\`.
-        Falling back to using the using the stop order from trip with most stoptimes, but this does not include stop_ids ${new Intl.ListFormat('en', { style: 'long', type: 'conjunction' }).format(missingStopIds)}.
-        Try manually specifying stops with \`timetable_stop_order.txt\`.
-        Read more at https://gtfstohtml.com/docs/timetable-stop-order`,
+      timetable.warnings.push(
+        `Timetable ${timetable.timetable_id} stops are unable to be topologically sorted and has no \`timetable_stop_order.txt\`. Falling back to using the using the stop order from trip with most stoptimes, but this does not include stop_ids ${new Intl.ListFormat('en', { style: 'long', type: 'conjunction' }).format(missingStopIds)}. Try manually specifying stops with \`timetable_stop_order.txt\`. Read more at https://gtfstohtml.com/docs/timetable-stop-order`,
       );
     }
 
