@@ -3,134 +3,125 @@ id: quick-start
 title: Quick Start
 ---
 
-## Command Line Usage
+GTFS-to-HTML is a flexible tool that converts GTFS transit data into human-readable HTML timetables. This guide covers multiple ways to use the tool, from a simple web interface to advanced programmatic usage.
 
-The `gtfs-to-html` command-line utility will download the GTFS file specified in `config.js` and then build the HTML timetables and save them in `html/:agencyKey`.
+## Installation Options
 
-If you would like to use this library as a command-line utility, you can install it globally directly from [npm](https://npmjs.org):
+### 1. Hosted Web Version (No Installation Required)
+
+For users who prefer a no-setup solution, visit our hosted version at [run.gtfstohtml.com](https://run.gtfstohtml.com). This option:
+
+- Runs entirely in your browser
+- Supports HTML, CSV, and PDF output formats
+- Allows customization via a user-friendly interface
+
+Currently, the hosted web version is limited to relatively small GTFS files and doesn't offer support for [Custom Templates](/docs/custom-templates).
+
+### 2. Command Line Installation
+
+For developers and users comfortable with the command line, install globally via npm:
+
 ```bash
 npm install gtfs-to-html -g
 ```
-Then you can run `gtfs-to-html`.
+
+Basic usage:
 ```bash
 gtfs-to-html
 ```
-### Command-line options
 
-`configPath`
+#### Command Line Options
 
-Allows specifying a path to a configuration json file. By default, `gtfs-to-html` will look for a `config.json` file in the directory it is being run from. [See all configuration options](https://gtfstohtml.com/docs/configuration)
+| Option | Description |
+|--------|-------------|
+| `--configPath` | Specify a custom configuration file path |
+| `--skipImport` | Skip GTFS import (useful for repeated runs where the GTFS doesn't change) |
+
+Example usage:
 ```bash
-gtfs-to-html --configPath /path/to/your/custom-config.json
+gtfs-to-html --configPath ./custom-config.json --skipImport
 ```
-`skipImport`
 
-Skips importing GTFS into SQLite. Useful if you are rerunning with an unchanged GTFS file. If you use this option and the GTFS file hasn't been imported, you'll get an error.
-```bash
-gtfs-to-html --skipImport
-```
-### Customizing the output
+#### Extremely Large GTFS Files
 
-You can create your own template to completely customize the HTML output using [custom templates](https://gtfstohtml.com/docs/custom-templates).
-
-### Processing very large GTFS files.
-
-By default, node has a memory limit of 512 MB or 1 GB. If you have a very large GTFS file and want to use the option `showOnlyTimepoint` = `false` you may need to allocate more memory. Use the `max-old-space-size` option. For example to allocate 4 GB:
+For processing large GTFS files, increase Node.js memory limit:
 ```bash
 NODE_OPTIONS=--max_old_space_size=4096 gtfs-to-html
 ```
-## Docker Usage
 
-You can use both [`docker`](https://docker.com) and [`docker-compose`](https://docs.docker.com/compose/) to run GTFS-to-HTML.
+### 3. Programmatic Usage as a node module
 
-### Dockerfile
-
-A `Dockerfile` is available in the `docker` directory.
-
-- Create a `config.json` file and save in the same directory as your `Dockerfile`. You can use `config-sample.json` from the project root as a starting point. For Docker usage, remove any `sqlitePath` and `templatePath` values from the config.json.
-
-- Build the docker image:
-```bash
-docker build -t gtfs-to-html .
-```
-- Run the docker image:
-```bash
-docker run gtfs-to-html
-```
-- Copy the generated HTML out of the docker container
-
-```bash
-// Figure out what your container ID is
-docker container ls -a
-
-// Then copy the html folder from that container
-docker cp <YOUR IMAGE CONTAINER ID>:/html .
-
-// For example:
-docker cp ca45a38963d9:/html .
-```
-
-### Docker Compose
-
-Docker compose is used for multi-container Docker applications. In this context, it is just a convenient way to manage volumes. This allows (_i_) to get the generated HTML out of the docker container without explicitly copying with `docker cp`, and (_ii_) to tweak and run a new configuration without rebuilding the container from scratch.
-
-- Create a `config.json` file and save in the same directory as your `Dockerfile` and `docker-compose.yml`;
-
-- build and run the container:
-```bash
-docker-compose up
-```
-- the generated HTML will be available in the folder `html` next to docker files.
-
-Do you want to change something? Just delete the old HTML, change your `config.json`, and finally run `docker-compose up` again.
-
-## Usage as a node module
-
-If you are using this as a node module as part of an application, you can include it in your project's `package.json` file.
-
-### Code example
+For integration into Node.js applications:
 
 ```javascript
 import gtfsToHtml from 'gtfs-to-html';
 import { readFile } from 'fs/promises';
+
 const config = JSON.parse(
   await readFile(new URL('./config.json', import.meta.url))
 );
 
-gtfsToHtml(config)
-  .then(() => {
-    console.log('HTML Generation Successful');
-    process.exit();
-  })
-  .catch((err) => {
-    console.error(err);
-    process.exit(1);
-  });
+try {
+  await gtfsToHtml(config);
+  console.log('Timetables generated successfully');
+} catch (err) {
+  console.error('Generation failed:', err);
+}
 ```
 
-### Example Application
+### 4. Docker Installation
 
-An example Express application that uses `gtfs-to-html` is included in the `dist/app` folder. After an initial run of `gtfs-to-html`, the GTFS data will be downloaded and loaded into SQLite.
+We provide Docker support for containerized environments in the `docker` directory.
 
-You can view an individual route HTML on demand by running the included Express app:
+#### Using Dockerfile
+
+1. Create your `config.json` (use `config-sample.json` as a template)
+2. Remove  `sqlitePath` and `templatePath` values from your config.json.
+3. Build and run:
 ```bash
+docker build -t gtfs-to-html .
+docker run gtfs-to-html
+```
+
+4. Extract generated files:
+```bash
+# Get container ID
+docker container ls -a
+
+# Copy files (replace with your container ID)
+docker cp <container-id>:/html .
+```
+
+#### Using Docker Compose
+
+For easier volume management and configuration:
+
+1. Prepare your `config.json` and save in the same directory as your `Dockerfile` and `docker-compose.yml`
+2. Run:
+```bash
+docker-compose up
+```
+
+Generated files will appear in the folder `html` next to docker files.
+
+## Development Server
+
+For local development and testing, we provide an Express.js application:
+
+```bash
+# Start the development server
 node ./dist/app
+
+# With custom config
+node ./dist/app --configPath ./custom-config.json
 ```
-By default, `gtfs-to-html` will look for a `config.json` file in the project root. To specify a different path for the configuration file:
-```bash
-node ./dist/app --configPath /path/to/your/custom-config.json
-```
-Once running, you can view the HTML in your browser at [localhost:3000](http://localhost:3000)
 
-## Usage as a hosted web app
+Access the development server at [localhost:3000](http://localhost:3000).
 
-A [hosted version of GTFS-to-HTML as a service](https://run.gtfstohtml.com) allows you to use it entirely within your browser - no downloads or command line necessary. Currently, it is limited to relatively small GTFS files and doesn't offer support for [Custom Templates](/docs/custom-templates).
+## Next Steps
 
-It provides:
-
-- a web-based interface for finding GTFS feeds or ability to enter your own URL
-- support for adding [custom configuration](/docs/configuration) as JSON
-- creation of HTML or PDF timetables as a downloadable .zip file
-- a preview of all timetables generated directly in your browser
-
-[run.gtfstohtml.com](https://run.gtfstohtml.com)
+- [Configuration Options](/docs/configuration) - Customize your timetable output
+- [Custom Templates](/docs/custom-templates) - Create custom HTML templates to completely control how timetables are laid out and styled
+- [Additional GTFS Files](/docs/additional-files) - Control timetable generation by adding additional .txt files to your GTFS
+- [Related Libraries](/docs/related-libraries) - Other libraries for processing and using GTFS and GTFS-Realtime
+- [Current Usage](/docs/current-usage) - List of transit agencies that use GTFS-to-HTML
