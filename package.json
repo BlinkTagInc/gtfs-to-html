@@ -63,7 +63,7 @@
     "pbf": "^4.0.1",
     "pretty-error": "^4.0.0",
     "pug": "^3.0.3",
-    "puppeteer": "^23.6.0",
+    "puppeteer": "^23.6.1",
     "sanitize-filename": "^1.6.3",
     "sqlstring": "^2.3.3",
     "timer-machine": "^1.1.0",
@@ -79,7 +79,7 @@
     "@types/js-beautify": "^1.14.3",
     "@types/lodash-es": "^4.17.12",
     "@types/morgan": "^1.9.9",
-    "@types/node": "^20.17.0",
+    "@types/node": "^20.17.2",
     "@types/pug": "^2.0.10",
     "@types/puppeteer": "^7.0.4",
     "@types/sanitize-filename": "^1.6.3",
@@ -89,7 +89,7 @@
     "husky": "^9.1.6",
     "lint-staged": "^15.2.10",
     "prettier": "^3.3.3",
-    "tsup": "^8.3.0",
+    "tsup": "^8.3.5",
     "typescript": "^5.6.3"
   },
   "engines": {
