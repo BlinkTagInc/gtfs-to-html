@@ -143,7 +143,8 @@ export function getNotesForStoptime(notes, stoptime) {
 }
 
 /*
- * Formats a trip name.
+ * Formats a trip name for HTML timetable.
+ * Deprecated, use `formatTripName` in formatting_functions.pug instead.
  */
 export function formatTripName(trip, index, timetable) {
   let tripName;
@@ -166,7 +167,7 @@ export function formatTripName(trip, index, timetable) {
 }
 
 /*
- * Formats a trip name.
+ * Formats a trip name for CSV export.
  */
 export function formatTripNameForCSV(trip, timetable) {
   let tripName = '';

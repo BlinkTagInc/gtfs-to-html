@@ -250,9 +250,12 @@ a:hover {
   font-size: 0.875rem;
 }
 
-.timetable-page .timetable .run-header {
-  text-align: center;
+.timetable-page .timetable .table-horizontal th {
   line-height: 1.15;
+}
+
+.timetable-page .timetable .trip-header {
+  text-align: center;
 }
 
 .timetable-page .timetable .run-footer {
