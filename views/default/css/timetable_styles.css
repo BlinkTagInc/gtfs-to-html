@@ -258,6 +258,10 @@ a:hover {
   text-align: center;
 }
 
+.timetable-page .timetable .trip-name {
+  display: inline-block;
+}
+
 .timetable-page .timetable .run-footer {
   text-align: center;
 }
