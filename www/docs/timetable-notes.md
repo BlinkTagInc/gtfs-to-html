@@ -3,19 +3,23 @@ id: timetable-notes
 title: timetable_notes.txt
 ---
 
-This is an optional, non-standard file called `timetable_notes.txt` which can be included in an agency's GTFS. This file specifies notes about specific stops, trips, stoptimes, routes or timetables that should be included in the HTML output of a timetable.
+This is an optional, non-standard file called `timetable_notes.txt`. This file specifies notes about specific stops, trips, stoptimes, routes or timetables that should be included in the HTML output of a timetable.
 
 The symbol and text of each note is defined in this file while the locations that each note should be placed is defined in [`timetable_notes_references.txt`](/docs/timetable-notes-references). This allows one note to be used in multiple places, such as two different trips, without having to duplicate the text of the note multiple times.
 
 Notes can have a `symbol` specified or can be left blank and GTFS-to-HTML will assign a letter a-z to each note (falling back to using integers if more than 26 symbols are needed).
 
-### Column Definitions
+## Field Definitions
 
-| column name | description |
-| ----------- | ----------- |
-| `note_id` | A unique ID for the timetable note |
-| `symbol` | The symbol used to indicate the note, such as `§`. Optional, if omitted a letter of the alphabet starting with `a` will be used. |
-| `note` | The text of the note, such as "This stop is sometimes underwater". [Markdown syntax](https://daringfireball.net/projects/markdown/syntax) is supported which allows including links and formatting. |
+### timetable_notes.txt
+
+Primary key (`note_id`)
+
+| Field Name      | Type                                             | Presence     | Description                                                                                                                                                           |
+| --------------- | ------------------------------------------------ | ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `note_id` |  Unique ID | **Required** | A unique ID for the timetable note. |
+| `symbol` | Text | Optional | The symbol used to indicate the note, such as `§`. Optional, if omitted a letter of the alphabet starting with `a` will be used. |
+| `note` | Text | **Required** | The text of the note, such as "This stop is sometimes underwater". [Markdown syntax](https://daringfireball.net/projects/markdown/syntax) is supported which allows including links and formatting. |
 
 ### Example
 

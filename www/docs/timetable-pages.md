@@ -3,17 +3,23 @@ id: timetable-pages
 title: timetable_pages.txt
 ---
 
-This is an optional, non-standard file called `timetable_pages.txt` which can be included in an agency's GTFS. This file specifies which HTML timetable to group together into a single HTML page.
+This is an optional, non-standard file called `timetable_pages.txt`. This file specifies which HTML timetables to group onto a single HTML page.
 
-If you'd like to show timetables both directions of a route on the same HTML page or show timetables for weekdays and weekends on the same HTML page then you'll need `timetable_pages.txt`.
+If you'd like to show timetables for both directions of a route on the same HTML page or show timetables for weekdays and weekends on the same HTML page then you'll want to use `timetable_pages.txt`.
 
-### Column Definitions
+Multiple routes can also be grouped onto the same page, such as an express and local route that have similar service patterns.
 
-| column name | description |
-| ----------- | ----------- |
-| `timetable_page_id` | A unique ID for the timetable page |
-| `timetable_page_label` | A label that will show up on the top of the page. Optional, defaults to using route name. |
-| `filename` | The filename to use for the generated HTML file. Optional, defaults to `timetable_page_id` with file extension `.html`, for example `1.html`. |
+## Field Definitions
+
+### timetable_pages.txt
+
+Primary key (`timetable_page_id`)
+
+| Field Name             | Type      | Presence     | Description                                                                                                                                   |
+| ---------------------- | --------- | ------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `timetable_page_id`    | Unique ID | **Required** | A unique ID for the timetable page.                                                                                                           |
+| `timetable_page_label` | Text      | Optional     | A label that will show up on the top of the page. Optional, defaults to using route name.                                                     |
+| `filename`             | Text      | Optional     | The filename to use for the generated HTML file. Optional, defaults to `timetable_page_id` with file extension `.html`, for example `1.html`. |
 
 ### Example
 

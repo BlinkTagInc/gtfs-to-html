@@ -3,19 +3,23 @@ id: timetable-notes-references
 title: timetable_notes_references.txt
 ---
 
-This is an optional, non-standard file called `timetable_notes_references.txt` which can be included in an agency's GTFS. This file specifies where notes that are defined in [`timetable_notes.txt`](/docs/timetable-notes) should be placed. Using `timetable_notes_references.txt` notes can be placed on specific stops, trips, stoptimes, routes or timetables.
+This is an optional, non-standard file called `timetable_notes_references.txt`. This file specifies where notes that are defined in [`timetable_notes.txt`](/docs/timetable-notes) should be placed. Using `timetable_notes_references.txt` notes can be placed on specific stops, trips, stoptimes, routes or timetables.
 
-### Column Definitions
+## Field Definitions
 
-| column name | description |
-| ----------- | ----------- |
-| `note_id` | The `note_id` that this reference refers to. |
-| `timetable_id` | Use to attach a note to an entire timetable, or in combination with `stop_id` to restrict which timetable a a note should show up on. Optional. |
-| `route_id` | Use to attach a note to all timetables for a specific route, or in combination with `stop_id` to restrict which timetable a a note should show up on. Optional. |
-| `trip_id` | Use to attach a note to a specific trip row or column, or in combination with `stop_id` to restrict to a specific stoptime. Optional. |
-| `stop_id` | Use to attach a note to a specific stop row or column, or in combination with `trip_id` to restrict to a specific stoptime. Optional. |
-| `stop_sequence` | Use along with a `stop_id` to attach a note to a specific stop and stop_sequence. Useful for routes that serve the same stop more than once in a trip such as circular routes. Optional. |
-| `show_on_stoptime` | A binary value that indicates whether this note should show up on all stoptimes of a trip or stop that it applies to. Valid options are `0` and `1`.  Optional, defaults to `0`. |
+### timetable_notes_references.txt
+
+Primary key (`note_id, timetable_id, route_id, trip_id, stop_id, stop_sequence`)
+
+| Field Name         | Type                                             | Presence     | Description                                                                                                                                                                                                                                    |
+| ------------------ | ------------------------------------------------ | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `note_id`          | Foreign ID referencing `timetable_notes.note_id` | **Required** | The `note_id` that this reference refers to.                                                                                                                                                                                                   |
+| `timetable_id`     | Foreign ID referencing `timetables.timetable_id` | Optional     | Use to attach a note to an entire timetable, or in combination with `stop_id` to restrict which timetable a a note should show up on.                                                                                                          |
+| `route_id`         | Foreign ID referencing `routes.route_id`         | Optional     | Use to attach a note to all timetables for a specific route, or in combination with `stop_id` to restrict which timetable a a note should show up on.                                                                                          |
+| `trip_id`          | Foreign ID referencing `trips.trip_id`           | Optional     | Use to attach a note to a specific trip row or column, or in combination with `stop_id` to restrict to a specific stoptime.                                                                                                                    |
+| `stop_id`          | Foreign ID referencing `stops.stop_id`           | Optional     | Use to attach a note to a specific stop row or column, or in combination with `trip_id` to restrict to a specific stoptime.                                                                                                                    |
+| `stop_sequence`    | Non-negative integer                             | Optional     | Use along with a `stop_id` to attach a note to a specific stop and stop_sequence. Useful for routes that serve the same stop more than once in a trip such as circular routes.                                                                 |
+| `show_on_stoptime` | Enum                                             | Optional     | Whether this note should show up on all stoptimes of a trip or stop that it applies to. Valid options are:<br /><br />`1` - show note on all stoptimes of a trip or stop.<br />`0` - do not show on all stoptimes.<br /><br />Optional, defaults to `0`. |
 
 ### Example
 
