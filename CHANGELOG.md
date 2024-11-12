@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated additional files documentation
 - Documentation site dependency updates
 - Better map legend on mobile
+- Dependency updates
 
 ## [2.10.2] - 2024-10-28
 
