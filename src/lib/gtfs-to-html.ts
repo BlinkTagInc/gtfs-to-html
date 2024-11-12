@@ -1,7 +1,6 @@
 import path from 'node:path';
 import { mkdir, writeFile } from 'node:fs/promises';
 
-import { map } from 'lodash-es';
 import { openDb, importGtfs } from 'gtfs';
 import sanitize from 'sanitize-filename';
 import Timer from 'timer-machine';
@@ -96,9 +95,8 @@ const gtfsToHtml = async (initialConfig: Config) => {
   };
 
   const timetablePages = [];
-  const timetablePageIds = map(
-    getTimetablePagesForAgency(config),
-    'timetable_page_id',
+  const timetablePageIds = getTimetablePagesForAgency(config).map(
+    (timetablePage) => timetablePage.timetable_page_id,
   );
 
   if (config.noHead !== true && ['html', 'pdf'].includes(config.outputFormat)) {

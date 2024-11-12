@@ -1,7 +1,6 @@
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { readFileSync } from 'node:fs';
-import { map } from 'lodash-es';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import { openDb } from 'gtfs';
@@ -90,9 +89,8 @@ app.use(
 app.get('/', async (req, res, next) => {
   try {
     const timetablePages = [];
-    const timetablePageIds = map(
-      getTimetablePagesForAgency(config),
-      'timetable_page_id',
+    const timetablePageIds = getTimetablePagesForAgency(config).map(
+      (timetablePage) => timetablePage.timetable_page_id,
     );
 
     for (const timetablePageId of timetablePageIds) {

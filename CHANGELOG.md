@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Documentation site dependency updates
 - Better map legend on mobile
 - Dependency updates
+- Use dompurify instead of insane
 
 ## [2.10.2] - 2024-10-28
 

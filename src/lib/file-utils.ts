@@ -14,11 +14,11 @@ import {
 import * as _ from 'lodash-es';
 import archiver from 'archiver';
 import beautify from 'js-beautify';
+import DOMPurify from 'dompurify';
 import { renderFile } from 'pug';
 import puppeteer from 'puppeteer';
 import sanitize from 'sanitize-filename';
 import untildify from 'untildify';
-import insane from 'insane';
 import { marked } from 'marked';
 
 import {
@@ -237,13 +237,18 @@ export function generateFolderName(timetablePage) {
 /*
  * Render the HTML for a timetable based on the config.
  */
-export async function renderTemplate(templateFileName, templateVars, config) {
+export async function renderTemplate(
+  templateFileName: string,
+  templateVars,
+  config: Config,
+) {
   const templatePath = getPathToTemplateFile(templateFileName, config);
 
   // Make template functions, lodash and marked available inside pug templates.
   const html = await renderFile(templatePath, {
     _,
-    md: (text) => insane(marked.parseInline(text)),
+    md: (text: string) =>
+      DOMPurify.sanitize(marked.parseInline(text) as string),
     ...templateFunctions,
     formatRouteColor,
     formatRouteTextColor,
@@ -263,7 +268,7 @@ export async function renderTemplate(templateFileName, templateVars, config) {
 /*
  * Render the PDF for a timetable based on the config.
  */
-export async function renderPdf(htmlPath) {
+export async function renderPdf(htmlPath: string) {
   const pdfPath = htmlPath.replace(/html$/, 'pdf');
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
