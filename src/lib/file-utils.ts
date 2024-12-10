@@ -14,7 +14,7 @@ import {
 import * as _ from 'lodash-es';
 import archiver from 'archiver';
 import beautify from 'js-beautify';
-import DOMPurify from 'dompurify';
+import sanitizeHtml from 'sanitize-html';
 import { renderFile } from 'pug';
 import puppeteer from 'puppeteer';
 import sanitize from 'sanitize-filename';
@@ -247,8 +247,7 @@ export async function renderTemplate(
   // Make template functions, lodash and marked available inside pug templates.
   const html = await renderFile(templatePath, {
     _,
-    md: (text: string) =>
-      DOMPurify.sanitize(marked.parseInline(text) as string),
+    md: (text: string) => sanitizeHtml(marked.parseInline(text) as string),
     ...templateFunctions,
     formatRouteColor,
     formatRouteTextColor,
