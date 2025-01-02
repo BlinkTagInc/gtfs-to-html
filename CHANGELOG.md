@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Handle stoptimes with empty arrival/departure time
 
+### Updated
+- Dependency updates
+
 ## [2.10.5] - 2024-12-09
 
 ### Fixed
