@@ -106,7 +106,11 @@ function formatStopTime(stoptime, timetable, config) {
     }
   }
 
-  if (stoptime.timepoint === null && stoptime.departure_time === null) {
+  if (
+    stoptime.timepoint === null &&
+    stoptime.departure_time === null &&
+    stoptime.stop_sequence === null
+  ) {
     stoptime.skipped = true;
     stoptime.classes.push('skipped');
     if (timetable.noServiceSymbol !== null) {
