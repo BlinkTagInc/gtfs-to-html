@@ -498,6 +498,9 @@ export function formatTimetableLabel(timetable) {
   return timetableLabel;
 }
 
+/*
+ * Format a route name.
+ */
 export const formatRouteName = (route: Record<string, string>) => {
   if (route.route_long_name === null || route.route_long_name === '') {
     return `Route ${route.route_short_name}`;
@@ -506,18 +509,14 @@ export const formatRouteName = (route: Record<string, string>) => {
   return route.route_long_name ?? 'Unknown';
 };
 
-export const formatRouteNames = (routes: Record<string, string>[]) => {
+/*
+ * Format a list for display.
+ */
+export const formatListForDisplay = (list: string[]) => {
   return new Intl.ListFormat('en-US', {
     style: 'long',
     type: 'conjunction',
-  }).format(routes.map((route) => formatRouteName(route)));
-};
-
-export const formatAgencyNames = (agencies: { agency_name: string }[]) => {
-  return new Intl.ListFormat('en-US', {
-    style: 'long',
-    type: 'conjunction',
-  }).format(agencies.map((agency) => agency.agency_name));
+  }).format(list);
 };
 
 /*

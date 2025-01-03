@@ -6,7 +6,7 @@ include formatting_functions.pug
   else
     .overview-list
       each timetablePageGroup in getAgencyTimetableGroups(timetablePages, agencies)
-        h1= `${!agency || !agency.agency_name ? '' : agency.agency_name} Routes`
+        h1= `${formatListForDisplay(agencies.map((agency) => agency.agency_name))} Routes`
         each timetablePage in timetablePageGroup.timetablePages
           if config.allowEmptyTimetables || timetablePage.consolidatedTimetables.length > 0
             a.timetable-page-link(href=`${timetablePage.relativePath}` data-route-ids=`${timetablePage.route_ids ? timetablePage.route_ids.join(',') : ''}`)

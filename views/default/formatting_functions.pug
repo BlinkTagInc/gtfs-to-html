@@ -137,3 +137,10 @@
 
     return tripName;
   }
+
+  function formatListForDisplay(list) {
+    return new Intl.ListFormat('en-US', {
+      style: 'long',
+      type: 'conjunction',
+    }).format(list);
+  }

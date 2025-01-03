@@ -55,12 +55,12 @@ import toposort from 'toposort';
 
 import { generateFileName, renderTemplate } from './file-utils.js';
 import {
-  formatAgencyNames,
   formatDate,
   formatDays,
   formatDaysLong,
   formatFrequency,
-  formatRouteNames,
+  formatListForDisplay,
+  formatRouteName,
   formatStopName,
   formatStops,
   formatTimetableId,
@@ -782,7 +782,9 @@ const getStopOrder = (timetable: Timetable, config: Config) => {
       timetable.orderedTrips,
       config,
     );
-    const stopIds = longestTripStoptimes.map((stoptime) => stoptime.stop_id);
+    const stopIds = longestTripStoptimes.map(
+      (stoptime) => stoptime.stop_id,
+    ) as string[];
 
     const missingStopIds = difference(
       uniq(
@@ -791,11 +793,11 @@ const getStopOrder = (timetable: Timetable, config: Config) => {
         ),
       ),
       uniq(stopIds),
-    );
+    ) as string[];
 
     if (missingStopIds.length > 0) {
       timetable.warnings.push(
-        `Timetable ${timetable.timetable_id} stops are unable to be topologically sorted and has no \`timetable_stop_order.txt\`. Falling back to using the using the stop order from trip with most stoptimes, but this does not include stop_ids ${new Intl.ListFormat('en', { style: 'long', type: 'conjunction' }).format(missingStopIds)}. Try manually specifying stops with \`timetable_stop_order.txt\`. Read more at https://gtfstohtml.com/docs/timetable-stop-order`,
+        `Timetable ${timetable.timetable_id} stops are unable to be topologically sorted and has no \`timetable_stop_order.txt\`. Falling back to using the using the stop order from trip with most stoptimes, but this does not include stop_ids ${formatListForDisplay(missingStopIds)}. Try manually specifying stops with \`timetable_stop_order.txt\`. Read more at https://gtfstohtml.com/docs/timetable-stop-order`,
       );
     }
 
@@ -1632,7 +1634,8 @@ export function getFormattedTimetablePage(
     filename:
       timetablePage.filename ?? `${timetablePage.timetable_page_id}.html`,
     timetable_page_label:
-      timetablePage.timetable_page_label ?? formatRouteNames(uniqueRoutes),
+      timetablePage.timetable_page_label ??
+      formatListForDisplay(uniqueRoutes.map((route) => formatRouteName(route))),
   };
 
   return formattedTimetablePage;
@@ -1680,7 +1683,7 @@ export function generateTimetableHTML(
   const templateVars = {
     timetablePage,
     config,
-    title: `${timetablePage.timetable_page_label} | ${formatAgencyNames(agencies)}`,
+    title: `${timetablePage.timetable_page_label} | ${formatListForDisplay(agencies.map((agency) => agency.agency_name))}`,
   };
   return renderTemplate('timetablepage', templateVars, config);
 }
@@ -1778,12 +1781,12 @@ export function generateOverviewHTML(
     agency: {
       ...first(agencies),
       geojson,
-    },
+    }, // Legacy agency object
     agencies,
     geojson,
     config,
     timetablePages: sortedTimetablePages,
-    title: `${formatAgencyNames(agencies)} Timetables`,
+    title: `${formatListForDisplay(agencies.map((agency) => agency.agency_name))} Timetables`,
   };
   return renderTemplate('overview', templateVars, config);
 }
