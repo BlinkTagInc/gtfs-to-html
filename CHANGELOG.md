@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Better support for GTFS with multiple agencies
 
+### Updated
+- Dependency updates
+
 ## [2.10.6] - 2025-01-01
 
 ### Fixed
