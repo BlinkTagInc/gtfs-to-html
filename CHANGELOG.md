@@ -648,16 +648,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix for showRouteTitle config
 
-## [2.3.1] - 2021-11-26
-
-### Added
-
-- Husky and Prettier
-
-### Updated
-
-- Dependency updates
-
 ## [2.1.0] - 2021-07-08
 
 ### Changed
