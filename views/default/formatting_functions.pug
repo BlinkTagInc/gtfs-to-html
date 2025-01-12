@@ -144,3 +144,21 @@
       type: 'conjunction',
     }).format(list);
   }
+
+  function sortTimetablePages(timetablePages) {
+    return _.sortBy(timetablePages, [
+      timetablePage => {
+        // First sort numerically by route_short_name, removing leading non-digits
+        const firstRoute = timetablePage.consolidatedTimetables?.[0]?.routes?.[0];
+        if (!firstRoute?.route_short_name) {
+          return 0;
+        }
+
+        return Number.parseInt(firstRoute.route_short_name.replace(/^\D+/g, ''), 10) || 0;
+      },
+      timetablePage => {
+        // Then sort by route_short_name alphabetically
+        return timetablePage.consolidatedTimetables?.[0]?.routes?.[0]?.route_short_name ?? '';
+      }
+    ]);
+  }

@@ -7,7 +7,7 @@ include formatting_functions.pug
     .overview-list
       each timetablePageGroup in getAgencyTimetableGroups(timetablePages, agencies)
         h1= `${formatListForDisplay(agencies.map((agency) => agency.agency_name))} Routes`
-        each timetablePage in timetablePageGroup.timetablePages
+        each timetablePage in sortTimetablePages(timetablePageGroup.timetablePages)
           if config.allowEmptyTimetables || timetablePage.consolidatedTimetables.length > 0
             a.timetable-page-link(href=`${timetablePage.relativePath}` data-route-ids=`${timetablePage.route_ids ? timetablePage.route_ids.join(',') : ''}`)
               - const timetableRouteList = _.uniqBy(_.flatMap(timetablePage.consolidatedTimetables, timetable => timetable.routes), 'route_id')

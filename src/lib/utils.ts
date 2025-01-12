@@ -1742,41 +1742,8 @@ export function generateOverviewHTML(
     throw new Error('No agencies found');
   }
 
-  let geojson;
-  if (config.showMap) {
-    geojson = getAgencyGeoJSON(config);
-  }
+  const geojson = config.showMap ? getAgencyGeoJSON(config) : undefined;
 
-  // Sort timetables for display, first numerically then alphabetically.
-  const sortedTimetablePages = sortBy(timetablePages, [
-    (timetablePage) => {
-      // First sort numerically by route_short_name, removing leading non-digits
-      if (
-        timetablePage.consolidatedTimetables.length > 0 &&
-        timetablePage.consolidatedTimetables[0].routes.length > 0
-      ) {
-        return (
-          Number.parseInt(
-            timetablePage.consolidatedTimetables[0].routes[0].route_short_name?.replace(
-              /^\D+/g,
-              '',
-            ),
-            10,
-          ) || 0
-        );
-      }
-    },
-    (timetablePage) => {
-      // Then sort by route_short_name alphabetically
-      if (
-        timetablePage.consolidatedTimetables.length > 0 &&
-        timetablePage.consolidatedTimetables[0].routes.length > 0
-      ) {
-        return timetablePage.consolidatedTimetables[0].routes[0]
-          .route_short_name;
-      }
-    },
-  ]);
   const templateVars = {
     agency: {
       ...first(agencies),
@@ -1785,7 +1752,7 @@ export function generateOverviewHTML(
     agencies,
     geojson,
     config,
-    timetablePages: sortedTimetablePages,
+    timetablePages,
     title: `${formatListForDisplay(agencies.map((agency) => agency.agency_name))} Timetables`,
   };
   return renderTemplate('overview', templateVars, config);
