@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Updated
 - Move timetablepage sort logic to formatting_functions.pug
+- Dependency updates
 
 ## [2.10.7] - 2025-01-02
 
