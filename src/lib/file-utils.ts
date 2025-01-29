@@ -85,7 +85,7 @@ export function getPathToViewsFolder(config: Config) {
     viewsFolderPath = resolve(__dirname, '../views/default');
   } else {
     // In case it's neither, fallback to project root
-    viewsFolderPath = resolve(__dirname, 'views/default');
+    viewsFolderPath = resolve(__dirname, '../../views/default');
   }
 
   return viewsFolderPath;
