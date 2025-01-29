@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Template path detection when installed globally
 
+### Updated
+- Dependency updates
+
 ## [2.10.8] - 2025-01-11
 
 ### Updated
