@@ -91,7 +91,8 @@ import type {
   TimetablePage,
 } from '../types/global_interfaces.js';
 
-import { version } from '../../package.json';
+import packageJson from '../../package.json' assert { type: 'json' };
+const { version } = packageJson;
 
 type FormattedTrip = Trip & {
   firstStoptime: number;
