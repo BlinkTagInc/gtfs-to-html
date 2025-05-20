@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - If a stop is marked as a timepoint in any trips, treat it as a timepoint in all trips for sorting purposes.
 
+### Updated
+- Dependency updates
+
 ## [2.10.11] - 2025-04-17
 
 ### Updated
