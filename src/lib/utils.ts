@@ -748,12 +748,21 @@ const getStopOrder = (timetable: Timetable, config: Config) => {
   try {
     const stopGraph = [];
 
+    // If a stop is marked as a timepoint in any trips, treat it as a timepoint in all trips for sorting purposes.
+    const timepointStopIds = new Set(
+      timetable.orderedTrips.flatMap((trip) =>
+        trip.stoptimes
+          .filter((stoptime) => isTimepoint(stoptime))
+          .map((stoptime) => stoptime.stop_id),
+      ),
+    );
+
     for (const trip of timetable.orderedTrips) {
       const sortedStopIds = trip.stoptimes
         .filter((stoptime) => {
           // If `showOnlyTimepoint` is true, then filter out all non-timepoints.
           if (config.showOnlyTimepoint === true) {
-            return isTimepoint(stoptime);
+            return timepointStopIds.has(stoptime.stop_id);
           }
           return true;
         })
@@ -788,12 +797,12 @@ const getStopOrder = (timetable: Timetable, config: Config) => {
     ) as string[];
 
     const missingStopIds = difference(
-      uniq(
+      new Set(
         timetable.orderedTrips.flatMap((trip: Trip) =>
           trip.stoptimes.map((stoptime: StopTime) => stoptime.stop_id),
         ),
       ),
-      uniq(stopIds),
+      new Set(stopIds),
     ) as string[];
 
     if (missingStopIds.length > 0) {
