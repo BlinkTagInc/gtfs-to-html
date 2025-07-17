@@ -18,7 +18,7 @@ All files starting with `config*.json` are .gitignored - so you can create multi
 | [`agencies`](#agencies)                                         | Array[Object]    | An array of GTFS and GTFS-realtime URLs to be imported.                                                           |
 | [`allowEmptyTimetables`](#allowemptytimetables)                 | Boolean          | Whether to generate timetables that have no trips.                                        |
 | [`beautify`](#beautify)                                         | Boolean          | Whether to beautify the HTML output.                                                      |
-| [`coordinatePrecision`](#coordinateprecision)                   | Integer          | Number of decimal places to include when rendering GeoJSON map output.                                       |
+| [`coordinatePrecision`](#coordinateprecision)                   | Number          | Number of decimal places to include when rendering GeoJSON map output.                                       |
 | [`dateFormat`](#dateformat)                                     | String           | A string defining date format in moment.js style.                                                |
 | [`daysShortStrings`](#daysshortstrings)                           | Array[String]    | An array defining contractions of weekday names from Monday to Sunday.                          |
 | [`daysStrings`](#daysstrings)                                     | Array[String]    | An array defining weekday names from Monday to Sunday.                                          |
@@ -48,7 +48,7 @@ All files starting with `config*.json` are .gitignored - so you can create multi
 | [`requestPickupText`](#requestpickuptext)                       | String           | The text used to describe a stop where riders must request a pickup.                             |
 | [`serviceNotProvidedOnText`](#servicenotprovidedontext)         | String           | The text used to label days where service is not provided.                                       |
 | [`serviceProvidedOnText`](#serviceprovidedontext)               | String           | The text used to label days where service is provided.                                           |
-| [`showArrivalOnDifference`](#showarrivalondifference)           | Float            | Defines a difference between departure and arrival on which arrival column/row will be shown.   |
+| [`showArrivalOnDifference`](#showarrivalondifference)           | Number            | Defines a difference between departure and arrival on which arrival column/row will be shown.   |
 | [`showCalendarExceptions`](#showcalendarexceptions)             | Boolean          | Whether to show a list of calendar exceptions below each timetable. |
 | [`showDuplicateTrips`](#showduplicatetrips)                     | Boolean          | Whether to show duplicate trips with identical stops and times.                                  |
 | [`showMap`](#showmap)                                           | Boolean          | Whether to show a map of the route on the timetable.                                      |
@@ -217,7 +217,7 @@ Specify multiple agencies to be imported. Note that it is often better to have o
 
 ## coordinatePrecision
 
-{Integer} The number of decimal places to include in the latitude and longitude of coordinates in GeoJSON used in maps. **Optional.** Omit to avoid any rounding. `5` is a reasonable value (about 1.1 meters).
+{Number} The number of decimal places to include in the latitude and longitude of coordinates in GeoJSON used in maps. **Optional.** Omit to avoid any rounding. `5` is a reasonable value (about 1.1 meters).
 
 ```json
 "coordinatePrecision": 5
@@ -473,7 +473,7 @@ gtfsToHtml(config);
 
 ## showArrivalOnDifference
 
-{Float} Whether to show an arrival column/row in the timetable. It means that if on at least one stop the difference (stay on that stop) is **equal or greater** than specified here, the arrival time will be shown. Use `0` to show on each stop or `null` to skip showing an additional column for arrival. **Optional.** No default value.
+{Number} Whether to show an arrival column/row in the timetable. It means that if on at least one stop the difference (stay on that stop) is **equal or greater** than specified here, the arrival time will be shown. Use `0` to show on each stop or `null` to skip showing an additional column for arrival. **Optional.** No default value.
 
 ```json
 "showArrivalOnDifference": 0.2
