@@ -167,52 +167,30 @@ const findCommonStopId = (trips: FormattedTrip[], config: Config) => {
 };
 
 /*
- * Return a set of unique trips (with at least one unique stop time) from an
- * array of trips.
+ * Return a set of unique trips based on departure and arrival times.
  */
-const deduplicateTrips = (trips: FormattedTrip[], commonStopId: string) => {
-  // Remove duplicate trips (from overlapping service_ids)
-  const deduplicatedTrips = [];
+const deduplicateTrips = (trips: FormattedTrip[]) => {
+  if (trips.length <= 1) {
+    return trips;
+  }
+
+  const uniqueTrips = new Map<string, FormattedTrip>();
 
   for (const trip of trips) {
-    if (deduplicatedTrips.length === 0 || trip.stoptimes.length === 0) {
-      deduplicatedTrips.push(trip);
-      continue;
-    }
+    // Create a unique signature for this trip based on departure and arrival times.
+    const tripSignature = trip.stoptimes
+      .map(
+        (stoptime) =>
+          `${stoptime.stop_id}|${stoptime.departure_time}|${stoptime.arrival_time}`,
+      )
+      .join('|');
 
-    const stoptimes = trip.stoptimes.map((stoptime) => stoptime.departure_time);
-    const selectedStoptime = commonStopId
-      ? find(trip.stoptimes, {
-          stop_id: commonStopId,
-        })
-      : trip.stoptimes[0];
-
-    // Find all other trips where the common stop has the same departure time.
-    const similarTrips = deduplicatedTrips.filter((trip) => {
-      const stoptime = find(trip.stoptimes, {
-        stop_id: selectedStoptime?.stop_id,
-      });
-      if (!stoptime) {
-        return false;
-      }
-
-      return stoptime.departure_time === selectedStoptime?.departure_time;
-    });
-
-    // Only add trip if no existing trip with the same set of timepoints has already been added.
-    const tripIsUnique = every(similarTrips, (similarTrip) => {
-      const similarTripStoptimes = similarTrip.stoptimes.map(
-        (stoptime) => stoptime.departure_time,
-      );
-      return !isEqual(stoptimes, similarTripStoptimes);
-    });
-
-    if (tripIsUnique) {
-      deduplicatedTrips.push(trip);
+    if (!uniqueTrips.has(tripSignature)) {
+      uniqueTrips.set(tripSignature, trip);
     }
   }
 
-  return deduplicatedTrips;
+  return Array.from(uniqueTrips.values());
 };
 
 /*
@@ -288,7 +266,7 @@ const sortTrips = (trips: FormattedTrip[], config: Config): FormattedTrip[] => {
     sortedTrips = sortTripsByStoptimeAtStop(trips, lastStopId);
   }
 
-  return deduplicateTrips(sortedTrips, commonStopId);
+  return deduplicateTrips(sortedTrips ?? []);
 };
 
 /*
