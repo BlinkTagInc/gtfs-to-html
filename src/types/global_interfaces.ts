@@ -38,6 +38,7 @@ export interface Config {
   serviceProvidedOnText?: string;
   showArrivalOnDifference?: number;
   showCalendarExceptions?: boolean;
+  showDuplicateTrips?: boolean;
   showMap?: boolean;
   showOnlyTimepoint?: boolean;
   showRouteTitle?: boolean;

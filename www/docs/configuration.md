@@ -50,6 +50,7 @@ All files starting with `config*.json` are .gitignored - so you can create multi
 | [`serviceProvidedOnText`](#serviceprovidedontext)               | string           | The text used to label days where service is provided.                                           |
 | [`showArrivalOnDifference`](#showarrivalondifference)           | float            | Defines a difference between departure and arrival, on which arrival column/row will be shown.   |
 | [`showCalendarExceptions`](#showcalendarexecptions)             | boolean          | Whether or not to show a list of calendar exceptions below each timetable. |
+| [`showDuplicateTrips`](#showduplicatetrips)                     | boolean          | Whether or not to show duplicate trips with identical stops and times.                                  |
 | [`showMap`](#showmap)                                           | boolean          | Whether or not to show a map of the route on the timetable.                                      |
 | [`showOnlyTimepoint`](#showonlytimepoint)                       | boolean          | Whether or not all stops should be shown, or only stops with a `timepoint` value in `stops.txt`. |
 | [`showRouteTitle`](#showroutetitle)                             | boolean          | Whether or not to show the route title at the top of the timetable page.                         |
@@ -477,6 +478,14 @@ gtfsToHtml(config);
 
 ```json
 "showCalendarExceptions": true
+```
+
+### showDuplicateTrips
+
+\{Boolean\} Whether or not to show duplicate trips with identical stops and times. Defaults to false.
+
+```json
+"showDuplicateTrips": false
 ```
 
 ### showMap

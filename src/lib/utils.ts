@@ -266,7 +266,11 @@ const sortTrips = (trips: FormattedTrip[], config: Config): FormattedTrip[] => {
     sortedTrips = sortTripsByStoptimeAtStop(trips, lastStopId);
   }
 
-  return deduplicateTrips(sortedTrips ?? []);
+  if (config.showDuplicateTrips === false) {
+    return deduplicateTrips(sortedTrips ?? []);
+  }
+
+  return sortedTrips ?? [];
 };
 
 /*
@@ -1530,6 +1534,7 @@ export function setDefaultConfig(initialConfig) {
     serviceProvidedOnText: 'Service provided on',
     showArrivalOnDifference: 0.2,
     showCalendarExceptions: true,
+    showDuplicateTrips: false,
     showMap: false,
     showOnlyTimepoint: false,
     showRouteTitle: true,

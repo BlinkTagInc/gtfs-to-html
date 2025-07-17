@@ -54,6 +54,7 @@
   "serviceProvidedOnText": "Service provided on",
   "showArrivalOnDifference": 0.2,
   "showCalendarExceptions": true,
+  "showDuplicateTrips": false,
   "showMap": true,
   "showOnlyTimepoint": true,
   "showRouteTitle": true,
