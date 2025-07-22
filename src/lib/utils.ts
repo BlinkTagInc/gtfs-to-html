@@ -759,6 +759,12 @@ const getStopOrder = (timetable: Timetable, config: Config) => {
       }
     }
 
+    if (stopGraph.length === 0 && config.showOnlyTimepoint === true) {
+      timetable.warnings.push(
+        `Timetable ${timetable.timetable_id}'s trips have stoptimes with timepoints but \`showOnlyTimepoint\` is true. Try setting \`showOnlyTimepoint\` to false.`,
+      );
+    }
+
     const stopIds = toposort(stopGraph);
 
     return duplicateStopsForDifferentArrivalDeparture(
