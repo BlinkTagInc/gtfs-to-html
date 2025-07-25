@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Updated
 - Remove unneeded geojson properties
+- Log agency name
 
 ## [2.10.14] - 2025-07-16
 

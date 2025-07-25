@@ -1,7 +1,7 @@
 import { clearLine, cursorTo } from 'node:readline';
 import { noop } from 'lodash-es';
 import * as colors from 'yoctocolors';
-import { getFeedInfo } from 'gtfs';
+import { getAgencies, getFeedInfo } from 'gtfs';
 import Table from 'cli-table';
 import { Config } from '../types/global_interfaces.ts';
 
@@ -10,12 +10,14 @@ import { Config } from '../types/global_interfaces.ts';
  */
 export function generateLogText(outputStats, config: Config) {
   const feedInfo = getFeedInfo();
+  const agencies = getAgencies();
   const feedVersion =
     feedInfo.length > 0 && feedInfo[0].feed_version
       ? feedInfo[0].feed_version
       : 'Unknown';
 
   const logText = [
+    `Agencies: ${agencies.map((agency) => agency.agency_name).join(', ')}`,
     `Feed Version: ${feedVersion}`,
     `GTFS-to-HTML Version: ${config.gtfsToHtmlVersion}`,
     `Date Generated: ${new Date().toISOString()}`,
