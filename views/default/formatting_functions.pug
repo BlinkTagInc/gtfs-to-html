@@ -36,6 +36,21 @@
     }), timetableGroup => timetableGroup.agency.agency_name.toLowerCase());
   }
 
+  function optimizeGeojsonProperties(geojson) {
+    const propertiesToRemove = ['location_type', 'tts_stop_name', 'wheelchair_boarding', 'zone_id', 'stop_timezone', 'level_id', 'route_sort_order', 'continuous_pickup', 'continuous_drop_off', 'network_id']
+    return {
+      ...geojson,
+      features: geojson.features.map(feature => ({
+        ...feature,
+        properties: Object.fromEntries(
+          Object.entries(feature.properties || {}).filter(
+            ([key]) => !propertiesToRemove.includes(key)
+          )
+        )
+      }))
+    };
+  }
+
   function prepareMapData(timetablePage, config) {
     const routeData = {}
     const stopData = {}
@@ -79,7 +94,7 @@
         minifiedGeojson.features.push(feature)
       }
 
-      geojsons[formatHtmlId(timetable.timetable_id)] = minifiedGeojson
+      geojsons[formatHtmlId(timetable.timetable_id)] = optimizeGeojsonProperties(minifiedGeojson)
     }
 
     const gtfsRealtimeUrls = {}
