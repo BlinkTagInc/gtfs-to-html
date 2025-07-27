@@ -3,22 +3,36 @@ id: additional-files
 title: Why Additional Files?
 ---
 
-You can better control timetable generation by adding some additional, non-standard .txt files to your GTFS.
+You can gain greater control and flexibility over timetable generation in GTFS-to-HTML by including several optional, non-standard `.txt` files in your GTFS dataset.
 
-## Controlling timetable output
-By default, GTFS-to-HTML attempts to generate a timetable for each route and direction present in a GTFS file. However, greater control over which routes, directions and days of the week should be built into timetables is possible by adding `timetables.txt`, `timetable_pages.txt` and `timetable_stop_order.txt` files to an your GTFS.
+## Customizing Timetable Output
 
-* [timetables.txt](/docs/timetables) - Specifies which HTML timetables should be built based on route_id, direction_id, days of the week and a date range. Often, this is the only additional file you'll need.
-* [timetable_stop_order.txt](/docs/timetable-stop-order) - Specifies the stop order that should be used for timetables.
-* [timetable_pages.txt](/docs/timetable-pages) - Specifies which HTML timetables should be grouped together into a single HTML page.
+By default, GTFS-to-HTML generates a timetable for each route and direction found in your GTFS feed. For advanced customization—such as specifying which routes, directions, or days of the week to include—you can add the following files:
 
-## Adding notes to timetables
-Notes about a specific trip, stop, stoptime, route or timetable can be added to timetables by using `timetable_notes.txt` and `timetable_notes_references.txt` in your GTFS. These notes can include links and other formatting using Markdown syntax.
+- [`timetables.txt`](/docs/timetables): Define which HTML timetables to generate, based on `route_id`, `direction_id`, days of the week, and date ranges.  
+  
+  _Tip: This is often the only additional file you’ll need for basic customization._
+- [`timetable_stop_order.txt`](/docs/timetable-stop-order): Specify the exact stop order for specific timetables, overriding the default GTFS stop sequence.
+  
+  _Tip: Use this for complicated routes where not all trips serve all stops._
+- [`timetable_pages.txt`](/docs/timetable-pages): Group multiple timetables together into a single HTML page.
 
-* [timetable_notes.txt](/docs/timetable-notes) - Specifies notes to be used in timetables.
-* [timetable_notes_references.txt](/docs/timetable-notes-references) - Specifies where notes should be placed in timetables.
+  _Tip: Use this to put both direstions of a route, or weekend and weekday timetables all on the same page. Can also be used to put related routes on the same page._
 
-## Additional info about a stop
-Additional information about a stop can be added using `stop_attributes.txt` in your GTFS.
+## Adding Notes to Timetables
 
-* [stop_attributes.txt](/docs/stop-attributes) - Specifies additional information about a stop.
+You can annotate your timetables with custom notes for specific trips, stops, stop times, routes, or entire timetables. Notes support Markdown formatting, allowing you to include links and rich text.
+
+- [`timetable_notes.txt`](/docs/timetable-notes): Define the content of notes to be displayed in timetables.
+- [`timetable_notes_references.txt`](/docs/timetable-notes-references): Specify where each note should appear (e.g., linked to a particular trip, stop, or timetable).
+
+_Example use cases:_
+- Indicate accessibility features for a stop.
+- Add notes about a specific trip.
+- Link to external resources for more information.
+
+## Adding Extra Information to Stops
+
+To provide additional details about stops:
+
+- [`stop_attributes.txt`](/docs/stop-attributes): Add extra fields and information for each stop.
