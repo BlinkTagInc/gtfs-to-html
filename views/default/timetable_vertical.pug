@@ -12,8 +12,12 @@
   table.table-vertical(summary=`This table shows schedules for a selection of key stops on the route for ${timetable.timetable_label} ${timetable.dayList}.  Stops and their schedule times are listed in the columns.` data-orientation="vertical")
     caption.sr-only= `${timetable.timetable_label} | ${timetable.dayList}`
     colgroup
+      if timetable.has_continues_from_route
+        col
       each stop, idx in timetable.stops
         col(id=`stop_id_${formatHtmlId(stop.stop_id)}` class=`stop-${idx}` data-stop-id=`${stop.stop_id}` data-is-timepoint=`${stop.is_timepoint}`)
+      if timetable.has_continues_as_route
+        col
     thead
       tr
         if timetableHasTripNotes || timetable.routes.length > 1

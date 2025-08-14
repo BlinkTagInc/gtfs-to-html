@@ -980,9 +980,9 @@ function highlightVerticalTimetableStops(id, stopIds) {
     );
   });
 
-  table.find('.stop-time, thead .stop-header').removeClass('highlighted');
+  table.find('td, thead th').removeClass('highlighted');
   table.find('.trip-row').each((index, row) => {
-    jQuery('.stop-time', row).each((index, el) => {
+    jQuery('td', row).each((index, el) => {
       if (columnIndexes.includes(index)) {
         jQuery(el).addClass('highlighted');
       }
@@ -990,7 +990,7 @@ function highlightVerticalTimetableStops(id, stopIds) {
   });
 
   table.find('thead').each((index, thead) => {
-    jQuery('.stop-header', thead).each((index, el) => {
+    jQuery('th', thead).each((index, el) => {
       if (columnIndexes.includes(index)) {
         jQuery(el).addClass('highlighted');
       }
@@ -1012,7 +1012,7 @@ function unHighlightTimetableStops(id) {
   const isVertical = table.data('orientation') === 'vertical';
 
   if (isVertical) {
-    table.find('.stop-time, thead .stop-header').removeClass('highlighted');
+    table.find('td, thead th').removeClass('highlighted');
   } else {
     table.find('.stop-row').removeClass('highlighted');
   }
