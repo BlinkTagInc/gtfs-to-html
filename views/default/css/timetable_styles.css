@@ -266,6 +266,7 @@ a:hover {
   text-align: center;
 }
 
+.timetable-page .timetable .run-footer .continues-from-route,
 .timetable-page .timetable .run-footer .continues-as-route {
   font-weight: bold;
 }
