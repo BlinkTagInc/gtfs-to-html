@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Updated
 - Timetable styles update
+- Dependency updates
 
 ### Fixed
 - Fix for column highlighting with trip continuation columns
