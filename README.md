@@ -59,39 +59,43 @@ You can now use `gtfs-to-html` without actually downloading any code or doing an
 
 Many transit agencies use `gtfs-to-html` to generate the schedule pages used on their websites, including:
 
-- [Advance Transit (Vermont)](https://advancetransit.com)
-- [Basin Transit (Morongo Basin, California)](https://basin-transit.com/)
-- [Brockton Area Transit Authority](https://ridebat.com)
-- [BusWay – CIRA (Aveiro, Portugal)](https://busway-cira.pt)
-- [Capital Transit (Helena, Montana)](http://www.ridethecapitalt.org)
-- [Capital Transit (Juneau, Alaska)](https://juneaucapitaltransit.org)
-- [Central Transit (Ellensburg, Washington)](https://centraltransit.org)
-- [County Connection (Contra Costa County, California)](https://countyconnection.com)
-- [El Dorado Transit](http://eldoradotransit.com)
-- [Greater Attleboro-Taunton Regional Transit Authority](https://www.gatra.org)
-- [Humboldt Transit Authority](http://hta.org)
-- [Kings Area Rural Transit (KART)](https://www.kartbus.org)
-- [Lowell Regional Transit Authority](https://lrta.com)
-- [Madera County Connection](http://mcctransit.com)
-- [Marin Transit](https://marintransit.org)
-- [Morongo Basin Transit Authority](https://mbtabus.com)
-- [Mountain Transit](http://mountaintransit.org)
-- [Mountain View Community Shuttle](http://mvcommunityshuttle.com)
-- [MVgo (Mountain View, CA)](https://mvgo.org)
-- [NW Connector (Oregon)](http://www.nworegontransit.org)
-- [Palo Verde Valley Transit Agency](http://pvvta.com)
-- [Petaluma Transit](http://transit.cityofpetaluma.net)
-- [Rogue Valley Transportation District (Medford, OR)](https://rvtd.org)
-- [rabbittransit (York and Adams County, PA)](https://www.rabbittransit.org)
-- [RTC Washoe (Reno, NV)](https://www.rtcwashoe.com)
-- [Santa Barbara Metropolitan Transit District](https://sbmtd.gov)
-- [Sonoma County Transit](http://sctransit.com)
-- [Tahoe Transportation District](https://www.tahoetransportation.org)
-- [Tahoe Truckee Area Regional Transit](https://tahoetruckeetransit.com)
-- [Transcollines](https://transcollines.ca)
-- [Tulare County Area Transit](https://ridetcat.org)
-- [Victor Valley Transit](https://vvta.org)
-- [Worcester Regional Transit Authority](https://therta.com)
+| Agency                                                                        | Location                            |
+| ----------------------------------------------------------------------------- | ----------------------------------- |
+| [Basin Transit](https://basin-transit.com)                                    | Morongo Basin, California           |
+| [Brockton Area Transit Authority](https://ridebat.com)                        | Brockton, Massachusetts             |
+| [Cape Ann Transportation Authority](https://canntran.com)                     | Gloucester, Massachusetts           |
+| [Capital Transit](https://juneaucapitaltransit.org)                           | Juneau, Alaska                      |
+| [Central Transit](https://centraltransit.org)                                 | Ellensburg, Washington              |
+| [Citibus](https://citibus.com)                                                | Lubbock, Texas                      |
+| [Commute.org](https://commute.org)                                            | San Mateo County, California        |
+| [County Connection](https://countyconnection.com)                             | Contra Costa County, California     |
+| [El Dorado Transit](https://eldoradotransit.com)                              | El Dorado County, California        |
+| [Greater Attleboro-Taunton Regional Transit Authority](https://www.gatra.org) | Attleboro-Taunton, Massachusetts    |
+| [Humboldt Transit Authority](https://hta.org)                                 | Humboldt County, California         |
+| [Jefferson Parish Transit](https://jptransit.org)                             | Jefferson Parish, Louisiana         |
+| [Kings Area Rural Transit (KART)](https://www.kartbus.org)                    | Kings County, California            |
+| [Lowell Regional Transit Authority](https://lrta.com)                         | Lowell, Massachusetts               |
+| [Madera County Connection](https://mcctransit.com)                            | Madera County, California           |
+| [Marin Transit](https://marintransit.org)                                     | Marin County, California            |
+| [Morongo Basin Transit Authority](https://mbtabus.com)                        | Morongo Basin, California           |
+| [Mountain Transit](https://mountaintransit.org)                               | Big Bear Valley, California         |
+| [Mountain View Community Shuttle](https://mvcommunityshuttle.com)             | Mountain View, California           |
+| [MVgo](https://mvgo.org)                                                      | Mountain View, California           |
+| [Petaluma Transit](https://transit.cityofpetaluma.net)                        | Petaluma, California                |
+| [rabbittransit](https://www.rabbittransit.org)                                | York and Adams County, Pennsylvania |
+| [Rogue Valley Transportation District](https://rvtd.org)                      | Medford, Oregon                     |
+| [RTC Washoe](https://www.rtcwashoe.com)                                       | Reno, Nevada                        |
+| [Santa Barbara Metropolitan Transit District](https://sbmtd.gov)              | Santa Barbara, California           |
+| [Sonoma County Transit](https://sctransit.com)                                | Sonoma County, California           |
+| [South Central Transit](https://southcentraltransit.org)                      | South Central Illinois              |
+| [STAR Transit](https://www.startransit.org)                                   | Balch Springs, Texas                |
+| [Sunline Transit Agency](https://www.sunline.org)                             | Riverside County, California        |
+| [Tahoe Transportation District](https://www.tahoetransportation.org)          | Lake Tahoe, California              |
+| [Tahoe Truckee Area Regional Transit](https://tahoetruckeetransit.com)        | Truckee, California                 |
+| [Transcollines](https://transcollines.ca)                                     | Les Collines-de-l'Outaouais, Quebec |
+| [Tulare County Area Transit](https://ridetcat.org)                            | Tulare County, California           |
+| [Victor Valley Transit](https://vvta.org)                                     | Victory Valley, California          |
+| [Worcester Regional Transit Authority](https://therta.com)                    | Worcester, Massachusetts            |
 
 Are you using `gtfs-to-html`? Let us know via email [gtfs@blinktag.com](mailto:gtfs@blinktag.com) or via opening a github issue or pull request if your agency is using this library.
 
