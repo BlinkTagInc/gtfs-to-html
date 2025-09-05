@@ -34,7 +34,7 @@
   "interpolatedStopSymbol": "•",
   "interpolatedStopText": "Estimated time of arrival",
   "linkStopUrls": false,
-  "mapStyleUrl": "https://tiles.openfreemap.org/styles/liberty",
+  "mapStyleUrl": "https://tiles.openfreemap.org/styles/positron",
   "menuType": "jump",
   "noDropoffSymbol": "‡",
   "noDropoffText": "No drop off available",

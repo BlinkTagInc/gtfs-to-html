@@ -195,6 +195,11 @@ function addGeocoder(map, bounds) {
       },
       {
         maplibregl,
+        proximity: {
+          latitude: bounds.getCenter()[0],
+          longitude: bounds.getCenter()[1],
+        },
+        showResultsWhileTyping: true,
         zoom: 12,
       },
     ),
