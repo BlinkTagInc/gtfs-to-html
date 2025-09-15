@@ -1,5 +1,4 @@
 import { getShapesAsGeoJSON, getStopsAsGeoJSON } from 'gtfs';
-import { flatMap } from 'lodash-es';
 import simplify from '@turf/simplify';
 import { featureCollection, round } from '@turf/helpers';
 import { logWarning } from './log-utils.js';
@@ -8,7 +7,7 @@ import { logWarning } from './log-utils.js';
  * Merge any number of geojson objects into one. Only works for `FeatureCollection`.
  */
 const mergeGeojson = (...geojsons) =>
-  featureCollection(flatMap(geojsons, (geojson) => geojson.features));
+  featureCollection(geojsons.flatMap((geojson) => geojson.features));
 
 /*
  * Truncate a geojson coordinates to a specific number of decimal places.

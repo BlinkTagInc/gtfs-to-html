@@ -1,3 +1,5 @@
+import { Route, UnixTimestamp } from 'gtfs';
+
 export interface Config {
   agencies: {
     agencyKey: string;
@@ -6,6 +8,7 @@ export interface Config {
     path?: string;
     exclude?: string[];
   }[];
+  assetPath?: string;
   sqlitePath?: string;
   allowEmptyTimetables?: boolean;
   beautify?: boolean;
@@ -15,11 +18,12 @@ export interface Config {
   daysStrings?: string[];
   defaultOrientation?: string;
   effectiveDate?: string;
+  endDate?: string;
   interpolatedStopSymbol?: string;
   interpolatedStopText?: string;
   linkStopUrls?: boolean;
   mapStyleUrl?: string;
-  menuType?: 'simple' | 'jump' | 'radio';
+  menuType?: 'none' | 'simple' | 'jump' | 'radio';
   noDropoffSymbol?: string;
   noDropoffText?: string;
   noHead?: boolean;
@@ -47,6 +51,7 @@ export interface Config {
   showStoptimesForRequestStops?: boolean;
   skipImport?: boolean;
   sortingAlgorithm?: string;
+  startDate?: string;
   templatePath?: string;
   timeFormat?: string;
   useParentStation?: boolean;
@@ -56,22 +61,24 @@ export interface Config {
 }
 
 export interface Timetable {
-  timetable_id: string;
-  route_id: string;
-  direction_id: number;
+  timetable_id?: string;
+  route_ids: string[];
+  routes: Route[];
+  direction_id?: 0 | 1;
   start_date?: number;
   end_date?: number;
-  monday: number;
-  tuesday: number;
-  wednesday: number;
-  thursday: number;
-  friday: number;
-  saturday: number;
-  sunday: number;
+  monday?: 0 | 1;
+  tuesday?: 0 | 1;
+  wednesday?: 0 | 1;
+  thursday?: 0 | 1;
+  friday?: 0 | 1;
+  saturday?: 0 | 1;
+  sunday?: 0 | 1;
+  service_ids?: string[];
   start_time?: string;
-  start_timestamp?: number;
+  start_timestamp?: UnixTimestamp;
   end_time?: string;
-  end_timestamp?: number;
+  end_timestamp?: UnixTimestamp;
   timetable_label?: string;
   service_notes?: string;
   orientation?: string;
@@ -80,7 +87,9 @@ export interface Timetable {
   direction_name?: string;
   include_exceptions?: number;
   show_trip_continuation?: string;
-  warnings: string[];
+  warnings?: string[];
+  has_continues_as_route?: boolean;
+  has_continues_from_route?: boolean;
 }
 
 export interface TimetablePage {
@@ -88,6 +97,6 @@ export interface TimetablePage {
   timetable_page_label?: string;
   filename?: string;
   timetables: Timetable[];
-  routes: Record<string, string>;
+  routes: Route[];
   relativePath?: string;
 }

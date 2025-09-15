@@ -113,7 +113,7 @@ const gtfsToHtml = async (initialConfig: Config) => {
   for (const timetablePageId of timetablePageIds) {
     try {
       const timetablePage = await getFormattedTimetablePage(
-        timetablePageId,
+        timetablePageId as string,
         config,
       );
 

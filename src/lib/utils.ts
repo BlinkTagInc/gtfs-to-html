@@ -47,6 +47,7 @@ import {
   Route,
   Trip,
   StopTime,
+  Stop,
 } from 'gtfs';
 import { stringify } from 'csv-stringify';
 import moment from 'moment';
@@ -91,7 +92,7 @@ import type {
   TimetablePage,
 } from '../types/global_interfaces.js';
 
-import packageJson from '../../package.json' assert { type: 'json' };
+import packageJson from '../../package.json' with { type: 'json' };
 const { version } = packageJson;
 
 type FormattedTrip = Trip & {
@@ -144,7 +145,7 @@ const findCommonStopId = (trips: FormattedTrip[], config: Config) => {
 
   const commonStoptime = longestTripStoptimes.find((stoptime, idx) => {
     // If longest trip is a loop (first and last stops the same), then skip first stoptime.
-    if (idx === 0 && stoptime.stop_id === last(longestTripStoptimes).stop_id) {
+    if (idx === 0 && stoptime.stop_id === last(longestTripStoptimes)?.stop_id) {
       return false;
     }
 
@@ -571,7 +572,9 @@ const convertRoutesToTimetablePages = (config: Config) => {
     whereClause = `WHERE ${whereClauses.join(' AND ')}`;
   }
 
-  const calendars = db.prepare(`SELECT * FROM calendar ${whereClause}`).all();
+  const calendars: Calendar[] = db
+    .prepare(`SELECT * FROM calendar ${whereClause}`)
+    .all();
 
   // Find all calendar dates with service_ids not present in `calendar.txt`.
   const serviceIds = calendars.map((calendar) => calendar.service_id);
@@ -673,7 +676,10 @@ const duplicateStopsForDifferentArrivalDeparture = (
   timetable: Timetable,
   config: Config,
 ) => {
-  if (config.showArrivalOnDifference === null) {
+  if (
+    config.showArrivalOnDifference === null ||
+    config.showArrivalOnDifference === undefined
+  ) {
     return stopIds;
   }
 
@@ -845,7 +851,7 @@ const getStopsForTimetable = (timetable: Timetable, config: Config) => {
   });
 
   // If `showStopCity` is true, look up stop attributes.
-  if (timetable.showStopCity) {
+  if (config.showStopCity) {
     const stopAttributes = getStopAttributes({
       stop_id: orderedStopIds,
     });
@@ -898,7 +904,7 @@ const getCalendarsFromTimetable = (timetable: Timetable) => {
   // Create an 'OR' query array of days based on calendars.
   const dayQueries = reduce(
     days,
-    (memo, value, key) => {
+    (memo: string[], value: number, key: string) => {
       if (value === 1) {
         memo.push(`${key} = 1`);
       }
@@ -934,7 +940,7 @@ const getCalendarDatesServiceIds = (startDate?: string, endDate?: string) => {
     whereClauses.push(`date >= ${sqlString.escape(startDate)}`);
   }
 
-  const calendarDates = db
+  const calendarDates: CalendarDate[] = db
     .prepare(
       `SELECT DISTINCT service_id FROM calendar_dates WHERE ${whereClauses.join(
         ' AND ',
@@ -1117,15 +1123,19 @@ const filterTrips = (timetable: Timetable) => {
   }
 
   // Remove stoptimes for stops not used in timetable
-  const timetableStopIds = new Set(timetable.stops.map((stop) => stop.stop_id));
+  const timetableStopIds = new Set(
+    timetable.stops.map((stop: Stop) => stop.stop_id),
+  );
   for (const trip of filteredTrips) {
-    trip.stoptimes = trip.stoptimes.filter((stoptime) =>
+    trip.stoptimes = trip.stoptimes.filter((stoptime: StopTime) =>
       timetableStopIds.has(stoptime.stop_id),
     );
   }
 
   // Exclude trips with less than two stops
-  filteredTrips = filteredTrips.filter((trip) => trip.stoptimes.length > 1);
+  filteredTrips = filteredTrips.filter(
+    (trip: Trip) => trip.stoptimes.length > 1,
+  );
 
   return filteredTrips;
 };
@@ -1343,7 +1353,7 @@ const formatTimetables = (timetables: Timetable[], config: Config) => {
 /*
  * Get all timetable pages for an agency.
  */
-export function getTimetablePagesForAgency(config: Config) {
+export function getTimetablePagesForAgency(config: Config): TimetablePage[] {
   const timetables = mergeTimetablesWithSameId(getTimetables());
 
   // If no timetables, build each route and direction into a timetable.
@@ -1448,7 +1458,7 @@ const getTimetablePageById = (timetablePageId: string, config: Config) => {
   let directionId = '';
   const parts = timetablePageId.split('|');
   if (parts.length > 2) {
-    directionId = Number.parseInt(parts.pop(), 10);
+    directionId = Number.parseInt(parts.pop(), 10).toString();
     calendarCode = parts.pop();
   } else if (parts.length > 1) {
     directionId = null;
@@ -1476,7 +1486,7 @@ const getTimetablePageById = (timetablePageId: string, config: Config) => {
     );
   }
 
-  if (/^[01]*$/.test(calendarCode)) {
+  if (/^[01]*$/.test(calendarCode ?? '')) {
     calendars = getCalendars({
       ...calendarCodeToCalendar(calendarCode),
     });
@@ -1500,7 +1510,7 @@ const getTimetablePageById = (timetablePageId: string, config: Config) => {
 /*
  * Initialize configuration with defaults.
  */
-export function setDefaultConfig(initialConfig) {
+export function setDefaultConfig(initialConfig: Config) {
   const defaults = {
     allowEmptyTimetables: false,
     beautify: false,

@@ -94,6 +94,10 @@ app.get('/', async (req, res, next) => {
     );
 
     for (const timetablePageId of timetablePageIds) {
+      if (!timetablePageId) {
+        continue;
+      }
+
       const timetablePage = await getFormattedTimetablePage(
         timetablePageId,
         config,
