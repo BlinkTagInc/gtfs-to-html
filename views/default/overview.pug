@@ -9,9 +9,9 @@ include formatting_functions.pug
         h1= `${formatListForDisplay(agencies.map((agency) => agency.agency_name))} Routes`
         each timetablePage in sortTimetablePages(timetablePageGroup.timetablePages)
           if config.allowEmptyTimetables || timetablePage.consolidatedTimetables.length > 0
-            a.timetable-page-link(href=`${timetablePage.relativePath}` data-route-ids=`${timetablePage.route_ids ? timetablePage.route_ids.join(',') : ''}`)
-              - const timetableRouteList = _.uniqBy(_.flatMap(timetablePage.consolidatedTimetables, timetable => timetable.routes), 'route_id')
-              each route in timetableRouteList
+            - const timetableRoutes = _.uniqBy(_.flatMap(timetablePage.consolidatedTimetables, timetable => timetable.routes), 'route_id')
+            a.timetable-page-link(href=`${timetablePage.relativePath}` data-route-ids=`${timetableRoutes.map((route) => route.route_id).join(',')}`)
+              each route in timetableRoutes
                 .route-color-swatch-large(style=`background-color: ${formatRouteColor(route)}; color: ${formatRouteTextColor(route)};`)= route.route_short_name || ''
               div
                 .timetable-page-label= timetablePage.timetable_page_label
