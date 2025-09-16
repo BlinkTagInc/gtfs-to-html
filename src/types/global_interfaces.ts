@@ -1,13 +1,7 @@
-import { Route, UnixTimestamp } from 'gtfs';
+import { Route, UnixTimestamp, ConfigAgency } from 'gtfs';
 
 export interface Config {
-  agencies: {
-    agencyKey: string;
-    agency_key?: string;
-    url?: string;
-    path?: string;
-    exclude?: string[];
-  }[];
+  agencies: ConfigAgency[];
   assetPath?: string;
   sqlitePath?: string;
   allowEmptyTimetables?: boolean;

@@ -1,7 +1,7 @@
 import path from 'node:path';
 import { mkdir, writeFile } from 'node:fs/promises';
 
-import { openDb, importGtfs } from 'gtfs';
+import { openDb, importGtfs, ConfigAgency } from 'gtfs';
 import sanitize from 'sanitize-filename';
 
 import {
@@ -44,7 +44,7 @@ const gtfsToHtml = async (initialConfig: Config) => {
 
   const agencyKey = config.agencies
     .map(
-      (agency: { agencyKey?: string; agency_key?: string }) =>
+      (agency: ConfigAgency & { agencyKey?: string; agency_key?: string }) =>
         agency.agencyKey ?? agency.agency_key ?? 'unknown',
     )
     .join('-');
