@@ -9,13 +9,12 @@ import {
   findLast,
   first,
   flatMap,
-  flattenDeep,
   flow,
-  isEqual,
   groupBy,
   head,
   last,
   maxBy,
+  orderBy,
   partialRight,
   reduce,
   size,
@@ -54,7 +53,7 @@ import moment from 'moment';
 import sqlString from 'sqlstring';
 import toposort from 'toposort';
 
-import { generateFileName, renderTemplate } from './file-utils.js';
+import { generateTimetablePageFileName, renderTemplate } from './file-utils.js';
 import {
   formatDate,
   formatDays,
@@ -77,8 +76,6 @@ import {
 } from './formatters.js';
 import { getTimetableGeoJSON, getAgencyGeoJSON } from './geojson-utils.js';
 import {
-  fromGTFSDate,
-  toGTFSDate,
   calendarToCalendarCode,
   secondsAfterMidnight,
   fromGTFSTime,
@@ -229,11 +226,7 @@ const sortTrips = (trips: FormattedTrip[], config: Config): FormattedTrip[] => {
       );
     }
 
-    sortedTrips = sortBy(
-      trips,
-      ['firstStoptime', 'lastStoptime'],
-      ['asc', 'asc'],
-    );
+    sortedTrips = sortBy(trips, ['firstStoptime', 'lastStoptime']);
   } else if (config.sortingAlgorithm === 'end') {
     // Sort trips chronologically using last stoptime of each trip, which can be at different stops.
 
@@ -248,11 +241,7 @@ const sortTrips = (trips: FormattedTrip[], config: Config): FormattedTrip[] => {
       );
     }
 
-    sortedTrips = sortBy(
-      trips,
-      ['lastStoptime', 'firstStoptime'],
-      ['asc', 'asc'],
-    );
+    sortedTrips = sortBy(trips, ['lastStoptime', 'firstStoptime']);
   } else if (config.sortingAlgorithm === 'first') {
     // Sort trips chronologically using the stoptime of a the first stop of the longest trip.
 
@@ -294,8 +283,8 @@ const getCalendarDatesForTimetable = (timetable: Timetable, config: Config) => {
     [],
     [['date', 'ASC']],
   );
-  const start = fromGTFSDate(timetable.start_date);
-  const end = fromGTFSDate(timetable.end_date);
+  const start = moment(timetable.start_date, 'YYYYMMDD');
+  const end = moment(timetable.end_date, 'YYYYMMDD');
   const excludedDates = new Set();
   const includedDates = new Set();
 
@@ -469,51 +458,101 @@ const getTimetableNotesForTimetable = (
 };
 
 /*
- * Create a timetable page from a single timetable. Used if no
+ * Create a timetable page from timetables. Used if no
  * `timetable_pages.txt` is present.
  */
-const convertTimetableToTimetablePage = (
-  timetable: Timetable,
-  config: Config,
-) => {
-  if (!timetable.routes) {
-    timetable.routes = getRoutes({
-      route_id: timetable.route_ids,
-    });
-  }
+const createTimetablePage = ({
+  timetablePageId,
+  timetables,
+  config,
+}: {
+  timetablePageId: string;
+  timetables: Timetable[];
+  config: Config;
+}) => {
+  const updatedTimetables = timetables.map((timetable) => {
+    if (!timetable.routes) {
+      timetable.routes = getRoutes({
+        route_id: timetable.route_ids,
+      });
+    }
 
-  const filename = generateFileName(timetable, config, 'html');
+    return timetable;
+  });
+
+  const timetablePage = {
+    timetable_page_id: timetablePageId,
+    timetables: updatedTimetables,
+    routes: updatedTimetables.flatMap((timetable) => timetable.routes),
+  };
+
+  const filename = generateTimetablePageFileName(timetablePage, config);
 
   return {
-    timetable_page_id: timetable.timetable_id,
-    timetable_page_label: timetable.timetable_label,
-    timetables: [timetable],
+    ...timetablePage,
     filename,
   };
 };
 
 /*
- * Create a timetable page from a single route. Used if no `timetables.txt`
- * is present.
+ * Create a timetable from a route/direction/calendars/calendarDates. Used if no `timetables.txt` is present.
  */
-/* eslint-disable max-params */
-const convertRouteToTimetablePage = (
-  route: Route,
-  direction,
-  calendars: Calendar[],
-  calendarDates: CalendarDate[],
-  config: Config,
-) => {
-  const timetable = {
+const createTimetable = ({
+  route,
+  directionId,
+  tripHeadsign,
+  calendars,
+  calendarDates,
+}: {
+  route: Route;
+  directionId?: 0 | 1;
+  tripHeadsign?: string;
+  calendars?: Calendar[];
+  calendarDates?: CalendarDate[];
+}): Timetable => {
+  const serviceIds = uniq([
+    ...(calendars?.map((calendar) => calendar.service_id) ?? []),
+    ...(calendarDates?.map((calendarDate) => calendarDate.service_id) ?? []),
+  ]);
+
+  const days = {};
+  let startDate: number | null = null;
+  let endDate: number | null = null;
+
+  if (calendars && calendars.length > 0) {
+    Object.assign(days, getDaysFromCalendars(calendars));
+
+    startDate = parseInt(
+      moment
+        .min(
+          calendars.map((calendar) => moment(calendar.start_date, 'YYYYMMDD')),
+        )
+        .format('YYYYMMDD'),
+      10,
+    );
+
+    endDate = parseInt(
+      moment
+        .max(calendars.map((calendar) => moment(calendar.end_date, 'YYYYMMDD')))
+        .format('YYYYMMDD'),
+      10,
+    );
+  }
+
+  const timetableId = formatTimetableId({
+    routeIds: [route.route_id],
+    directionId: directionId,
+    days: days,
+  });
+
+  return {
+    timetable_id: timetableId,
     route_ids: [route.route_id],
-    direction_id: direction ? direction.direction_id : undefined,
-    direction_name: direction ? direction.trip_headsign : undefined,
+    direction_id: directionId === null ? null : directionId,
+    direction_name: tripHeadsign === null ? null : tripHeadsign,
     routes: [route],
     include_exceptions: calendarDates && calendarDates.length > 0 ? 1 : 0,
-    service_id:
-      calendarDates && calendarDates.length > 0
-        ? calendarDates[0].service_id
-        : null,
+    service_ids: serviceIds,
     service_notes: null,
     timetable_label: null,
     start_time: null,
@@ -521,28 +560,10 @@ const convertRouteToTimetablePage = (
     orientation: null,
     timetable_sequence: null,
     show_trip_continuation: null,
-    start_date: null,
-    end_date: null,
+    start_date: startDate,
+    end_date: endDate,
+    ...days,
   };
-  /* eslint-enable max-params */
-
-  if (calendars && calendars.length > 0) {
-    // Get days of week from calendars and assign to timetable.
-    Object.assign(timetable, getDaysFromCalendars(calendars));
-
-    timetable.start_date = toGTFSDate(
-      moment.min(
-        calendars.map((calendar) => fromGTFSDate(calendar.start_date)),
-      ),
-    );
-    timetable.end_date = toGTFSDate(
-      moment.max(calendars.map((calendar) => fromGTFSDate(calendar.end_date))),
-    );
-  }
-
-  timetable.timetable_id = formatTimetableId(timetable);
-
-  return convertTimetableToTimetablePage(timetable, config);
 };
 
 /*
@@ -550,86 +571,83 @@ const convertRouteToTimetablePage = (
  * `timetables.txt` is present.
  */
 const convertRoutesToTimetablePages = (config: Config) => {
-  const db = openDb(config);
   const routes = getRoutes();
+  const timetablePages: TimetablePage[] = [];
+  const { calendars, calendarDates } = getCalendarsFromConfig(config);
 
-  let whereClause = '';
-  const whereClauses = [];
-
-  if (config.endDate) {
-    whereClauses.push(
-      `start_date <= ${sqlString.escape(toGTFSDate(moment(config.endDate)))}`,
-    );
-  }
-
-  if (config.startDate) {
-    whereClauses.push(
-      `end_date >= ${sqlString.escape(toGTFSDate(moment(config.startDate)))}`,
-    );
-  }
-
-  if (whereClauses.length > 0) {
-    whereClause = `WHERE ${whereClauses.join(' AND ')}`;
-  }
-
-  const calendars: Calendar[] = db
-    .prepare(`SELECT * FROM calendar ${whereClause}`)
-    .all();
-
-  // Find all calendar dates with service_ids not present in `calendar.txt`.
-  const serviceIds = calendars.map((calendar) => calendar.service_id);
-  const calendarDates = db
-    .prepare(
-      `SELECT * FROM calendar_dates WHERE exception_type = 1 AND service_id NOT IN (${serviceIds
-        .map((serviceId) => `'${serviceId}'`)
-        .join(', ')})`,
-    )
-    .all();
-
-  const timetablePages = routes.map((route) => {
+  for (const route of routes) {
     const trips = getTrips(
       {
         route_id: route.route_id,
       },
       ['trip_headsign', 'direction_id', 'trip_id', 'service_id'],
     );
-    const directions = uniqBy(trips, (trip) => trip.direction_id);
-    const dayGroups = groupBy(calendars, calendarToCalendarCode);
+    const uniqueTripDirections = orderBy(
+      uniqBy(trips, (trip) => trip.direction_id),
+      'direction_id',
+    );
+    const sortedCalendars = orderBy(calendars, calendarToCalendarCode, 'desc');
+    const calendarGroups = groupBy(sortedCalendars, calendarToCalendarCode);
     const calendarDateGroups = groupBy(calendarDates, 'service_id');
 
-    return directions.map((direction) => [
-      Object.values(dayGroups).map((calendars) => {
+    const timetables: Timetable[] = [];
+
+    for (const uniqueTripDirection of uniqueTripDirections) {
+      for (const calendars of Object.values(calendarGroups)) {
         const tripsForCalendars = trips.filter((trip) =>
           some(calendars, { service_id: trip.service_id }),
         );
         if (tripsForCalendars.length > 0) {
-          return convertRouteToTimetablePage(
-            route,
-            direction,
-            calendars,
-            null,
-            config,
+          timetables.push(
+            createTimetable({
+              route,
+              directionId: uniqueTripDirection.direction_id,
+              tripHeadsign: uniqueTripDirection.trip_headsign,
+              calendars,
+            }),
           );
         }
-      }),
-      Object.values(calendarDateGroups).map((calendarDates) => {
+      }
+
+      for (const calendarDates of Object.values(calendarDateGroups)) {
         const tripsForCalendarDates = trips.filter((trip) =>
           some(calendarDates, { service_id: trip.service_id }),
         );
         if (tripsForCalendarDates.length > 0) {
-          return convertRouteToTimetablePage(
-            route,
-            direction,
-            null,
-            calendarDates,
-            config,
+          timetables.push(
+            createTimetable({
+              route,
+              directionId: uniqueTripDirection.direction_id,
+              tripHeadsign: uniqueTripDirection.trip_headsign,
+              calendarDates,
+            }),
           );
         }
-      }),
-    ]);
-  });
+      }
+    }
 
-  return compact(flattenDeep(timetablePages));
+    if (config.groupTimetablesIntoPages === true) {
+      timetablePages.push(
+        createTimetablePage({
+          timetablePageId: `route_${route.route_short_name ?? route.route_long_name}`,
+          timetables,
+          config,
+        }),
+      );
+    } else {
+      for (const timetable of timetables) {
+        timetablePages.push(
+          createTimetablePage({
+            timetablePageId: timetable.timetable_id,
+            timetables: [timetable],
+            config,
+          }),
+        );
+      }
+    }
+  }
+
+  return timetablePages;
 };
 
 /*
@@ -870,6 +888,57 @@ const getStopsForTimetable = (timetable: Timetable, config: Config) => {
   return orderedStops;
 };
 
+const getCalendarsFromConfig = (config: Config) => {
+  const db = openDb();
+  let whereClause = '';
+  const whereClauses = [];
+
+  if (config.endDate) {
+    // Validate config.endDate is a valid date
+    if (!moment(config.endDate).isValid()) {
+      throw new Error(`Invalid endDate=${config.endDate} in config.json`);
+    }
+
+    whereClauses.push(
+      `start_date <= ${sqlString.escape(moment(config.endDate).format('YYYYMMDD'))}`,
+    );
+  }
+
+  if (config.startDate) {
+    // Validate config.startDate is a valid date
+    if (!moment(config.startDate).isValid()) {
+      throw new Error(`Invalid startDate=${config.startDate} in config.json`);
+    }
+
+    whereClauses.push(
+      `end_date >= ${sqlString.escape(moment(config.startDate).format('YYYYMMDD'))}`,
+    );
+  }
+
+  if (whereClauses.length > 0) {
+    whereClause = `WHERE ${whereClauses.join(' AND ')}`;
+  }
+
+  const calendars: Calendar[] = db
+    .prepare(`SELECT * FROM calendar ${whereClause}`)
+    .all();
+
+  // Find all calendar dates with service_ids not present in `calendar.txt`.
+  const serviceIds = calendars.map((calendar) => calendar.service_id);
+  const calendarDates = db
+    .prepare(
+      `SELECT * FROM calendar_dates WHERE exception_type = 1 AND service_id NOT IN (${serviceIds
+        .map((serviceId) => `'${serviceId}'`)
+        .join(', ')})`,
+    )
+    .all();
+
+  return {
+    calendars,
+    calendarDates,
+  };
+};
+
 /*
  * Get all calendars from a specific timetable.
  */
@@ -928,7 +997,10 @@ const getCalendarsFromTimetable = (timetable: Timetable) => {
 /*
  * Get all calendar date service ids for an agency between two dates.
  */
-const getCalendarDatesServiceIds = (startDate?: string, endDate?: string) => {
+const getCalendarDatesServiceIds = (
+  startDate?: number | null,
+  endDate?: number | null,
+) => {
   const db = openDb();
   const whereClauses = ['exception_type = 1'];
 
@@ -1150,7 +1222,11 @@ const getTripsForTimetable = (
   calendars: Calendar[],
   config: Config,
 ) => {
-  const tripQuery = {
+  const tripQuery: {
+    route_id: string[];
+    service_id?: string[];
+    direction_id?: number;
+  } = {
     route_id: timetable.route_ids,
     service_id: timetable.service_ids,
   };
@@ -1291,7 +1367,7 @@ const formatTimetables = (timetables: Timetable[], config: Config) => {
     timetable.warnings = [];
     const dayList = formatDays(timetable, config);
     const calendars = getCalendarsFromTimetable(timetable);
-    let serviceIds = calendars.map((calendar) => calendar.service_id);
+    let serviceIds = calendars.map((calendar: Calendar) => calendar.service_id);
 
     if (timetable.include_exceptions === 1) {
       const calendarDatesServiceIds = getCalendarDatesServiceIds(
@@ -1355,6 +1431,15 @@ const formatTimetables = (timetables: Timetable[], config: Config) => {
  */
 export function getTimetablePagesForAgency(config: Config): TimetablePage[] {
   const timetables = mergeTimetablesWithSameId(getTimetables());
+  const routes = getRoutes();
+  const formattedTimetables = timetables.map((timetable) => {
+    return {
+      ...timetable,
+      routes: routes.filter((route) =>
+        timetable.route_ids.includes(route.route_id),
+      ),
+    } as Timetable;
+  });
 
   // If no timetables, build each route and direction into a timetable.
   if (timetables.length === 0) {
@@ -1370,33 +1455,86 @@ export function getTimetablePagesForAgency(config: Config): TimetablePage[] {
   // Check if there are any timetable pages defined in `timetable_pages.txt`.
   if (timetablePages.length === 0) {
     // If no timetablepages, use timetables
-    return timetables.map((timetable) =>
-      convertTimetableToTimetablePage(timetable, config),
+    return formattedTimetables.map((timetable) =>
+      createTimetablePage({
+        timetablePageId: timetable.timetable_id,
+        timetables: [timetable],
+        config,
+      }),
     );
   }
 
-  const routes = getRoutes();
-
   // Otherwise, use timetable pages defined in `timetable_pages.txt`.
   return timetablePages.map((timetablePage) => {
-    timetablePage.timetables = sortBy(
-      timetables.filter(
-        (timetable) =>
-          timetable.timetable_page_id === timetablePage.timetable_page_id,
+    return {
+      ...timetablePage,
+      timetables: sortBy(
+        formattedTimetables.filter(
+          (timetable) =>
+            timetable.timetable_page_id === timetablePage.timetable_page_id,
+        ),
+        'timetable_sequence',
       ),
-      'timetable_sequence',
-    );
-
-    // Add routes for each timetable.
-    for (const timetable of timetablePage.timetables) {
-      timetable.routes = routes.filter((route) =>
-        timetable.route_ids.includes(route.route_id),
-      );
-    }
-
-    return timetablePage;
+    } as TimetablePage;
   });
 }
+
+const getDataForTimetablePageById = (timetablePageId: string) => {
+  let calendarCode;
+  let calendars;
+  let calendarDates;
+  let serviceId;
+  let directionId: number | string | null = '';
+  const parts = timetablePageId?.split('|') ?? [];
+  if (parts.length > 2) {
+    directionId = Number.parseInt(parts.pop(), 10);
+    calendarCode = parts.pop();
+  } else if (parts.length > 1) {
+    directionId = null;
+    calendarCode = parts.pop();
+  }
+
+  const routeId = parts.join('|');
+
+  const routes = getRoutes({
+    route_id: routeId,
+  });
+
+  const trips = getTrips(
+    {
+      route_id: routeId,
+      direction_id: directionId,
+    },
+    ['trip_headsign', 'direction_id'],
+  );
+  const uniqueTripDirections = uniqBy(trips, (trip) => trip.direction_id);
+
+  if (uniqueTripDirections.length === 0) {
+    throw new Error(
+      `No trips found for timetable_page_id=${timetablePageId} route_id=${routeId} direction_id=${directionId}`,
+    );
+  }
+
+  if (/^[01]*$/.test(calendarCode ?? '')) {
+    calendars = getCalendars({
+      ...calendarCodeToCalendar(calendarCode),
+    });
+  } else {
+    serviceId = calendarCode;
+    calendarDates = getCalendarDates({
+      exception_type: 1,
+      service_id: serviceId,
+    });
+  }
+
+  return {
+    calendars,
+    calendarDates,
+    route: routes[0],
+    directionId: uniqueTripDirections[0].direction_id,
+    tripHeadsign: uniqueTripDirections[0].trip_headsign,
+  };
+};
 
 /*
  * Get a timetable_page by id.
@@ -1407,7 +1545,7 @@ const getTimetablePageById = (timetablePageId: string, config: Config) => {
     timetable_page_id: timetablePageId,
   });
 
-  const timetables = mergeTimetablesWithSameId(getTimetables());
+  const timetables = mergeTimetablesWithSameId(getTimetables()) as Timetable[];
 
   if (timetablePages.length > 1) {
     throw new Error(
@@ -1447,64 +1585,101 @@ const getTimetablePageById = (timetablePageId: string, config: Config) => {
       );
     }
 
-    return convertTimetableToTimetablePage(timetablePageTimetables[0], config);
+    return createTimetablePage({
+      timetablePageId: timetablePageId,
+      timetables: [timetablePageTimetables[0]],
+      config,
+    });
   }
 
-  // If no `timetables.txt` in GTFS, build the route and direction into a timetable.
-  let calendarCode;
-  let calendars;
-  let calendarDates;
-  let serviceId;
-  let directionId = '';
-  const parts = timetablePageId.split('|');
-  if (parts.length > 2) {
-    directionId = Number.parseInt(parts.pop(), 10).toString();
-    calendarCode = parts.pop();
-  } else if (parts.length > 1) {
-    directionId = null;
-    calendarCode = parts.pop();
-  }
+  // If no `timetables.txt` in GTFS and timetable_page_id starts with "route_", build the route into a timetable page using all calendars and directions.
+  if (timetablePageId.startsWith('route_')) {
+    const routes = getRoutes({
+      route_short_name: timetablePageId.split('_')[1],
+    });
 
-  const routeId = parts.join('|');
+    if (routes.length === 0) {
+      throw new Error(
+        `No route found for timetable_page_id=${timetablePageId}`,
+      );
+    }
 
-  const routes = getRoutes({
-    route_id: routeId,
-  });
+    const { calendars, calendarDates } = getCalendarsFromConfig(config);
 
-  const trips = getTrips(
-    {
-      route_id: routeId,
-      direction_id: directionId,
-    },
-    ['trip_headsign', 'direction_id'],
-  );
-  const directions = uniqBy(trips, (trip) => trip.direction_id);
-
-  if (directions.length === 0) {
-    throw new Error(
-      `No trips found for timetable_page_id=${timetablePageId} route_id=${routeId} direction_id=${directionId}`,
+    const trips = getTrips(
+      {
+        route_id: routes[0].route_id,
+      },
+      ['trip_headsign', 'direction_id', 'trip_id', 'service_id'],
     );
+    const uniqueTripDirections = orderBy(
+      uniqBy(trips, (trip) => trip.direction_id),
+      'direction_id',
+    );
+    const sortedCalendars = orderBy(calendars, calendarToCalendarCode, 'desc');
+    const calendarGroups = groupBy(sortedCalendars, calendarToCalendarCode);
+    const calendarDateGroups = groupBy(calendarDates, 'service_id');
+
+    const timetables: Timetable[] = [];
+
+    for (const uniqueTripDirection of uniqueTripDirections) {
+      for (const calendars of Object.values(calendarGroups)) {
+        const tripsForCalendars = trips.filter((trip) =>
+          some(calendars, { service_id: trip.service_id }),
+        );
+        if (tripsForCalendars.length > 0) {
+          timetables.push(
+            createTimetable({
+              route: routes[0],
+              directionId: uniqueTripDirection.direction_id,
+              tripHeadsign: uniqueTripDirection.trip_headsign,
+              calendars,
+            }),
+          );
+        }
+      }
+
+      for (const calendarDates of Object.values(calendarDateGroups)) {
+        const tripsForCalendarDates = trips.filter((trip) =>
+          some(calendarDates, { service_id: trip.service_id }),
+        );
+        if (tripsForCalendarDates.length > 0) {
+          timetables.push(
+            createTimetable({
+              route: routes[0],
+              directionId: uniqueTripDirection.direction_id,
+              tripHeadsign: uniqueTripDirection.trip_headsign,
+              calendarDates,
+            }),
+          );
+        }
+      }
+    }
+
+    return createTimetablePage({
+      timetablePageId,
+      timetables,
+      config,
+    });
   }
 
-  if (/^[01]*$/.test(calendarCode ?? '')) {
-    calendars = getCalendars({
-      ...calendarCodeToCalendar(calendarCode),
-    });
-  } else {
-    serviceId = calendarCode;
-    calendarDates = getCalendarDates({
-      exception_type: 1,
-      service_id: serviceId,
-    });
-  }
+  // If no `timetables.txt` in GTFS, try to parse the timetable_page_id and build the route and direction into a timetable.
+  const { calendars, calendarDates, route, directionId, tripHeadsign } =
+    getDataForTimetablePageById(timetablePageId);
 
-  return convertRouteToTimetablePage(
-    routes[0],
-    directions[0],
+  const timetable = createTimetable({
+    route,
+    directionId,
+    tripHeadsign,
     calendars,
     calendarDates,
+  });
+
+  return createTimetablePage({
+    timetablePageId,
+    timetables: [timetable],
     config,
-  );
+  });
 };
 
 /*
@@ -1529,6 +1704,7 @@ export function setDefaultConfig(initialConfig: Config) {
     defaultOrientation: 'vertical',
     interpolatedStopSymbol: '•',
     interpolatedStopText: 'Estimated time of arrival',
+    groupTimetablesIntoPages: true,
     gtfsToHtmlVersion: version,
     linkStopUrls: false,
     mapStyleUrl: 'https://tiles.openfreemap.org/styles/positron',
@@ -1601,13 +1777,6 @@ export function getFormattedTimetablePage(
     config,
   ) as TimetablePage;
 
-  const timetableRoutes = getRoutes(
-    {
-      route_id: timetablePage.route_ids,
-    },
-    ['agency_id'],
-  );
-
   const consolidatedTimetables = formatTimetables(
     timetablePage.timetables,
     config,
@@ -1639,7 +1808,7 @@ export function getFormattedTimetablePage(
       consolidatedTimetables.map((timetable) => timetable.dayList),
     ),
     route_ids: uniqueRoutes.map((route) => route.route_id),
-    agency_ids: uniq(compact(timetableRoutes.map((route) => route.agency_id))),
+    agency_ids: uniq(compact(uniqueRoutes.map((route) => route.agency_id))),
     filename:
       timetablePage.filename ?? `${timetablePage.timetable_page_id}.html`,
     timetable_page_label:

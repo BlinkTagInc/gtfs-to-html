@@ -26,6 +26,7 @@ All files starting with `config*.json` are .gitignored - so you can create multi
 | [`defaultOrientation`](#defaultorientation)                     | String           | Specify timetable orientation when not specified in `timetables.txt`.                           |
 | [`effectiveDate`](#effectivedate)                               | String           | A date to print at the top of the timetable.                                                     |
 | [`endDate`](#enddate)                                        | String           | A date in ISO 8601 format to control which calendars are used for the timetables.                |
+| [`groupTimetablesIntoPages`](#grouptimetablesintopages)         | Boolean          | Whether to group timetables for the same route onto one page.                                                 |
 | [`interpolatedStopSymbol`](#interpolatedstopsymbol)             | String           | The symbol used to indicate that a timepoint isn't fixed, but just interpolated.                 |
 | [`interpolatedStopText`](#interpolatedstoptext)                 | String           | The text used to describe a timepoint that isn't fixed, but just interpolated.                        |
 | [`linkStopUrls`](#linkstopurls)                                 | Boolean          | Whether to hyperlink timetable stop names to the `stop_url` defined in `stops.txt`.       |
@@ -277,6 +278,14 @@ Specify multiple agencies to be imported. Note that it is often better to have o
 
 ```json
 "endDate": "2024-04-01"
+```
+
+## groupTimetablesIntoPages
+
+{Boolean}  Whether to group timetables for the same route into the same page. Ignored if `timetable_pages.txt` is present. **Optional.** Defaults to `true`.
+
+```json
+"groupTimetablesIntoPages": true
 ```
 
 ## interpolatedStopSymbol

@@ -21,27 +21,17 @@ export function toGTFSTime(time) {
 }
 
 /*
- * Convert a GTFS formatted date string into a moment.
- */
-export function fromGTFSDate(gtfsDate) {
-  return moment(gtfsDate, 'YYYYMMDD');
-}
-
-/*
- * Convert a moment date into a GTFS formatted date string.
- */
-export function toGTFSDate(date) {
-  return moment(date).format('YYYYMMDD');
-}
-
-/*
  * Convert a object of weekdays into a a string containing 1s and 0s.
  */
-export function calendarToCalendarCode(c) {
-  if (c.service_id) {
-    return c.service_id;
-  }
-
+export function calendarToCalendarCode(c: {
+  monday?: null | 0 | 1;
+  tuesday?: null | 0 | 1;
+  wednesday?: null | 0 | 1;
+  thursday?: null | 0 | 1;
+  friday?: null | 0 | 1;
+  saturday?: null | 0 | 1;
+  sunday?: null | 0 | 1;
+}) {
   return `${c.monday}${c.tuesday}${c.wednesday}${c.thursday}${c.friday}${c.saturday}${c.sunday}`;
 }
 

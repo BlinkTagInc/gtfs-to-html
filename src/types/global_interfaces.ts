@@ -19,6 +19,7 @@ export interface Config {
   defaultOrientation?: string;
   effectiveDate?: string;
   endDate?: string;
+  groupTimetablesIntoPages?: boolean;
   interpolatedStopSymbol?: string;
   interpolatedStopText?: string;
   linkStopUrls?: boolean;
@@ -61,32 +62,32 @@ export interface Config {
 }
 
 export interface Timetable {
-  timetable_id?: string;
+  timetable_id: string;
   route_ids: string[];
   routes: Route[];
-  direction_id?: 0 | 1;
-  start_date?: number;
-  end_date?: number;
-  monday?: 0 | 1;
-  tuesday?: 0 | 1;
-  wednesday?: 0 | 1;
-  thursday?: 0 | 1;
-  friday?: 0 | 1;
-  saturday?: 0 | 1;
-  sunday?: 0 | 1;
+  direction_id?: null | 0 | 1;
+  start_date?: null | number;
+  end_date?: null | number;
+  monday?: null | 0 | 1;
+  tuesday?: null | 0 | 1;
+  wednesday?: null | 0 | 1;
+  thursday?: null | 0 | 1;
+  friday?: null | 0 | 1;
+  saturday?: null | 0 | 1;
+  sunday?: null | 0 | 1;
   service_ids?: string[];
-  start_time?: string;
-  start_timestamp?: UnixTimestamp;
-  end_time?: string;
-  end_timestamp?: UnixTimestamp;
-  timetable_label?: string;
-  service_notes?: string;
-  orientation?: string;
-  timetable_page_id?: string;
-  timetable_sequence?: number;
-  direction_name?: string;
-  include_exceptions?: number;
-  show_trip_continuation?: string;
+  start_time?: null | string;
+  start_timestamp?: null | UnixTimestamp;
+  end_time?: null | string;
+  end_timestamp?: null | UnixTimestamp;
+  timetable_label?: null | string;
+  service_notes?: null | string;
+  orientation?: null | string;
+  timetable_page_id?: null | string;
+  timetable_sequence?: null | number;
+  direction_name?: null | string;
+  include_exceptions?: null | number;
+  show_trip_continuation?: null | string;
   warnings?: string[];
   has_continues_as_route?: boolean;
   has_continues_from_route?: boolean;
@@ -94,8 +95,8 @@ export interface Timetable {
 
 export interface TimetablePage {
   timetable_page_id: string;
-  timetable_page_label?: string;
-  filename?: string;
+  timetable_page_label?: null | string;
+  filename?: null | string;
   timetables: Timetable[];
   routes: Route[];
   relativePath?: string;

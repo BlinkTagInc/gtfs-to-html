@@ -31,6 +31,7 @@
   ],
   "defaultOrientation": "vertical",
   "effectiveDate": "July 8, 2016",
+  "groupTimetablesIntoPages": true,
   "interpolatedStopSymbol": "•",
   "interpolatedStopText": "Estimated time of arrival",
   "linkStopUrls": false,

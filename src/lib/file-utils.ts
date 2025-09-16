@@ -12,6 +12,7 @@ import {
 } from 'node:fs/promises';
 
 import * as _ from 'lodash-es';
+import { uniqBy } from 'lodash-es';
 import archiver from 'archiver';
 import beautify from 'js-beautify';
 import sanitizeHtml from 'sanitize-html';
@@ -26,10 +27,15 @@ import {
   formatDays,
   formatRouteColor,
   formatRouteTextColor,
+  formatRouteNameForFilename,
 } from './formatters.js';
 import * as templateFunctions from './template-functions.js';
 
-import type { Config } from '../types/global_interfaces.js';
+import type {
+  Config,
+  Timetable,
+  TimetablePage,
+} from '../types/global_interfaces.js';
 
 /*
  * Attempt to parse the specified config JSON file.
@@ -201,22 +207,58 @@ export function zipFolder(outputPath) {
 }
 
 /*
- * Generate the filename for a given timetable.
+ * Generate the filename for an html file.
  */
-export function generateFileName(timetable, config, extension = 'html') {
-  let filename = timetable.timetable_id;
+export function generateTimetablePageFileName(
+  timetablePage: TimetablePage,
+  config: Config,
+) {
+  // If the timetable page is from timetable_pages.txt, use the filename specified.
+  if (timetablePage.filename) {
+    return sanitize(timetablePage.filename);
+  }
+
+  // Else if config.groupTimetablesIntoPages is true and all timetables share the same route, use the route as the filename
+  if (
+    config.groupTimetablesIntoPages === true &&
+    uniqBy(timetablePage.timetables, 'route_id').length === 1
+  ) {
+    const route = timetablePage.timetables[0].routes[0];
+    return sanitize(`${formatRouteNameForFilename(route).toLowerCase()}.html`);
+  }
+
+  // Else generate a detailed filename
+  const timetable = timetablePage.timetables[0];
+  let filename = timetable.timetable_id ?? '';
 
   for (const route of timetable.routes) {
-    filename += isNullOrEmpty(route.route_short_name)
-      ? `_${route.route_long_name.replace(/\s/g, '-')}`
-      : `_${route.route_short_name.replace(/\s/g, '-')}`;
+    filename += `_${formatRouteNameForFilename(route)}`;
   }
 
   if (!isNullOrEmpty(timetable.direction_id)) {
     filename += `_${timetable.direction_id}`;
   }
 
-  filename += `_${formatDays(timetable, config).replace(/\s/g, '')}.${extension}`;
+  filename += `_${formatDays(timetable, config).replace(/\s/g, '')}.html`;
+
+  return sanitize(filename.toLowerCase());
+}
+
+/*
+ * Generate the filename for a csv file.
+ */
+export function generateCSVFileName(timetable: Timetable, config: Config) {
+  let filename = timetable.timetable_id ?? '';
+
+  for (const route of timetable.routes) {
+    filename += `_${formatRouteNameForFilename(route)}`;
+  }
+
+  if (!isNullOrEmpty(timetable.direction_id)) {
+    filename += `_${timetable.direction_id}`;
+  }
+
+  filename += `_${formatDays(timetable, config).replace(/\s/g, '')}.csv`;
 
   return sanitize(filename).toLowerCase();
 }

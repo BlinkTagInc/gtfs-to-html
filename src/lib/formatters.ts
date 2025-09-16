@@ -9,6 +9,7 @@ import {
   zipObject,
 } from 'lodash-es';
 import moment from 'moment';
+import { Route } from 'gtfs';
 
 import {
   fromGTFSTime,
@@ -265,12 +266,26 @@ export function formatFrequency(frequency, config) {
 /*
  * Generate a timetable id.
  */
-export function formatTimetableId(timetable) {
-  let timetableId = `${timetable.route_ids.join('_')}|${calendarToCalendarCode(
-    timetable,
-  )}`;
-  if (!isNullOrEmpty(timetable.direction_id)) {
-    timetableId += `|${timetable.direction_id}`;
+export function formatTimetableId({
+  routeIds,
+  directionId,
+  days,
+}: {
+  routeIds: string[];
+  directionId?: 0 | 1;
+  days: {
+    monday?: null | 0 | 1;
+    tuesday?: null | 0 | 1;
+    wednesday?: null | 0 | 1;
+    thursday?: null | 0 | 1;
+    friday?: null | 0 | 1;
+    saturday?: null | 0 | 1;
+    sunday?: null | 0 | 1;
+  };
+}) {
+  let timetableId = `${routeIds.join('_')}|${calendarToCalendarCode(days)}`;
+  if (!isNullOrEmpty(directionId)) {
+    timetableId += `|${directionId}`;
   }
 
   return timetableId;
@@ -501,12 +516,25 @@ export function formatTimetableLabel(timetable) {
 /*
  * Format a route name.
  */
-export const formatRouteName = (route: Record<string, string>) => {
-  if (route.route_long_name === null || route.route_long_name === '') {
-    return `Route ${route.route_short_name}`;
+export const formatRouteName = (route: Route) => {
+  if (route.route_long_name) {
+    return `Route ${route.route_long_name}`;
   }
 
-  return route.route_long_name ?? 'Unknown';
+  return route.route_short_name ?? 'Unknown';
+};
+
+/*
+ * Format a route name for use in a filename.
+ */
+export const formatRouteNameForFilename = (route: Route) => {
+  if (route.route_short_name) {
+    return route.route_short_name.replace(/\s/g, '-');
+  } else if (route.route_long_name) {
+    return route.route_long_name.replace(/\s/g, '-');
+  }
+
+  return 'Unknown';
 };
 
 /*

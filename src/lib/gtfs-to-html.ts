@@ -12,7 +12,7 @@ import {
   generateFolderName,
   renderPdf,
   zipFolder,
-  generateFileName,
+  generateCSVFileName,
 } from './file-utils.js';
 import {
   progressBar,
@@ -118,9 +118,11 @@ const gtfsToHtml = async (initialConfig: Config) => {
       );
 
       for (const timetable of timetablePage.timetables) {
-        for (const warning of timetable.warnings) {
-          stats.warnings.push(warning);
-          bar?.interrupt(warning);
+        if (timetable.warnings) {
+          for (const warning of timetable.warnings) {
+            stats.warnings.push(warning);
+            bar?.interrupt(warning);
+          }
         }
       }
 
@@ -150,7 +152,7 @@ const gtfsToHtml = async (initialConfig: Config) => {
           const csvPath = path.join(
             outputPath,
             datePath,
-            generateFileName(timetable, config, 'csv'),
+            generateCSVFileName(timetable, config),
           );
           await writeFile(csvPath, csv);
         }
