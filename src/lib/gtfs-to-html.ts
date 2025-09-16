@@ -3,7 +3,6 @@ import { mkdir, writeFile } from 'node:fs/promises';
 
 import { openDb, importGtfs } from 'gtfs';
 import sanitize from 'sanitize-filename';
-import Timer from 'timer-machine';
 
 import {
   prepDirectory,
@@ -39,7 +38,9 @@ import type { Config } from '../types/global_interfaces.js';
 /* eslint-disable complexity */
 const gtfsToHtml = async (initialConfig: Config) => {
   const config = setDefaultConfig(initialConfig);
-  const timer = new Timer();
+
+  // Start timer
+  const startTime = process.hrtime.bigint();
 
   const agencyKey = config.agencies
     .map(
@@ -50,8 +51,6 @@ const gtfsToHtml = async (initialConfig: Config) => {
   const outputPath = config.outputPath
     ? untildify(config.outputPath)
     : path.join(process.cwd(), 'html', sanitize(agencyKey));
-
-  timer.start();
 
   await prepDirectory(outputPath, config);
 
@@ -214,12 +213,12 @@ const gtfsToHtml = async (initialConfig: Config) => {
 
   logStats(config)(stats);
 
-  const seconds = Math.round(timer.time() / 1000);
-  log(config)(
-    `${agencyKey}: ${config.outputFormat.toUpperCase()} timetable generation required ${seconds} seconds`,
-  );
+  const endTime = process.hrtime.bigint();
+  const elapsedSeconds = Number(endTime - startTime) / 1_000_000_000;
 
-  timer.stop();
+  log(config)(
+    `${agencyKey}: ${config.outputFormat.toUpperCase()} timetable generation required ${elapsedSeconds.toFixed(1)} seconds`,
+  );
 
   return fullOutputPath;
 };

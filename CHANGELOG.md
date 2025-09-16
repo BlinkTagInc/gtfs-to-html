@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Overview template improvements
 - `groupTimetablesIntoPages` configuation option
 - Remove untildify package
+- Remove timer-machine package
 
 ## [2.10.17] - 2025-09-04
 
