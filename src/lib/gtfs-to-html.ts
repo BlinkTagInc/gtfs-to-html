@@ -4,7 +4,6 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import { openDb, importGtfs } from 'gtfs';
 import sanitize from 'sanitize-filename';
 import Timer from 'timer-machine';
-import untildify from 'untildify';
 
 import {
   prepDirectory,
@@ -13,6 +12,7 @@ import {
   renderPdf,
   zipFolder,
   generateCSVFileName,
+  untildify,
 } from './file-utils.js';
 import {
   progressBar,

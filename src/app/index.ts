@@ -5,10 +5,9 @@ import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import { openDb } from 'gtfs';
 import express from 'express';
-import untildify from 'untildify';
 
 import { formatTimetableLabel } from '../lib/formatters.js';
-import { getPathToViewsFolder } from '../lib/file-utils.js';
+import { getPathToViewsFolder, untildify } from '../lib/file-utils.js';
 import {
   setDefaultConfig,
   getTimetablePagesForAgency,

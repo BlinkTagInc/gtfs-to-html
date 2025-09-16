@@ -10,6 +10,7 @@ import {
   readFile,
   rm,
 } from 'node:fs/promises';
+import { homedir } from 'node:os';
 
 import * as _ from 'lodash-es';
 import { uniqBy } from 'lodash-es';
@@ -19,7 +20,6 @@ import sanitizeHtml from 'sanitize-html';
 import { renderFile } from 'pug';
 import puppeteer from 'puppeteer';
 import sanitize from 'sanitize-filename';
-import untildify from 'untildify';
 import { marked } from 'marked';
 
 import {
@@ -36,6 +36,8 @@ import type {
   Timetable,
   TimetablePage,
 } from '../types/global_interfaces.js';
+
+const homeDirectory = homedir();
 
 /*
  * Attempt to parse the specified config JSON file.
@@ -322,4 +324,15 @@ export async function renderPdf(htmlPath: string) {
   });
 
   await browser.close();
+}
+
+/**
+ * Converts a tilde path to a full path
+ * @param pathWithTilde The path to convert
+ * @returns The full path
+ */
+export function untildify(pathWithTilde: string): string {
+  return homeDirectory
+    ? pathWithTilde.replace(/^~(?=$|\/|\\)/, homeDirectory)
+    : pathWithTilde;
 }
