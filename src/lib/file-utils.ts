@@ -11,6 +11,7 @@ import {
   rm,
 } from 'node:fs/promises';
 import { homedir } from 'node:os';
+import { findPackageJSON } from 'node:module';
 
 import * as _ from 'lodash-es';
 import { uniqBy } from 'lodash-es';
@@ -166,26 +167,41 @@ export async function copyStaticAssets(config: Config, outputPath: string) {
     }
   }
 
-  // Add libraries needed for GTFS-Realtime if present
+  // Copy js libraries from node_modules if needed for GTFS-Realtime
   if (
     config.hasGtfsRealtimeVehiclePositions ||
     config.hasGtfsRealtimeTripUpdates ||
     config.hasGtfsRealtimeAlerts
   ) {
     await copyFile(
-      'node_modules/pbf/dist/pbf.js',
+      join(
+        dirname(findPackageJSON('pbf', import.meta.url) as string),
+        'dist/pbf.js',
+      ),
       join(outputPath, 'js/pbf.js'),
     );
+
     await copyFile(
-      'node_modules/gtfs-realtime-pbf-js-module/gtfs-realtime.browser.proto.js',
+      join(
+        dirname(
+          findPackageJSON(
+            'gtfs-realtime-pbf-js-module',
+            import.meta.url,
+          ) as string,
+        ),
+        'gtfs-realtime.browser.proto.js',
+      ),
       join(outputPath, 'js/gtfs-realtime.browser.proto.js'),
     );
   }
 
   if (config.hasGtfsRealtimeAlerts) {
     await copyFile(
-      'node_modules/anchorme/dist/browser/anchorme.min.js',
-      join(outputPath, 'js//anchorme.min.js'),
+      join(
+        dirname(findPackageJSON('anchorme', import.meta.url) as string),
+        'dist/browser/anchorme.min.js',
+      ),
+      join(outputPath, 'js/anchorme.min.js'),
     );
   }
 }
