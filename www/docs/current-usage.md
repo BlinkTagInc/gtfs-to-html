@@ -31,6 +31,7 @@ Many transit agencies use GTFS-to-HTML to generate the schedule pages used on th
 | [MVgo](https://mvgo.org)                                                      | Mountain View, California           |
 | [Petaluma Transit](https://transit.cityofpetaluma.net)                        | Petaluma, California                |
 | [rabbittransit](https://www.rabbittransit.org)                                | York and Adams County, Pennsylvania |
+| [River Valley Transit](https://rivervalleytransit.com)                        | Middletown, Connecticut |
 | [Rogue Valley Transportation District](https://rvtd.org)                      | Medford, Oregon                     |
 | [RTC Washoe](https://www.rtcwashoe.com)                                       | Reno, Nevada                        |
 | [Santa Barbara Metropolitan Transit District](https://sbmtd.gov)              | Santa Barbara, California           |
