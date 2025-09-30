@@ -32,6 +32,10 @@ export function calendarToCalendarCode(c: {
   saturday?: null | 0 | 1;
   sunday?: null | 0 | 1;
 }) {
+  if (Object.values(c).every((value) => value === null)) {
+    return '';
+  }
+
   return `${c.monday}${c.tuesday}${c.wednesday}${c.thursday}${c.friday}${c.saturday}${c.sunday}`;
 }
 

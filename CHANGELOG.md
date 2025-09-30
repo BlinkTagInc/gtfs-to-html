@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Updated
 - Update Dockerfile
 
+### Fixed
+- Handle GTFS with no calendar.txt
+
 ## [2.11.1] - 2025-09-19
 
 ### Fixed

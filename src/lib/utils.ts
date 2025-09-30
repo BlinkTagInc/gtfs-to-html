@@ -515,7 +515,23 @@ const createTimetable = ({
     ...(calendarDates?.map((calendarDate) => calendarDate.service_id) ?? []),
   ]);
 
-  const days = {};
+  const days: {
+    monday: null | 0 | 1;
+    tuesday: null | 0 | 1;
+    wednesday: null | 0 | 1;
+    thursday: null | 0 | 1;
+    friday: null | 0 | 1;
+    saturday: null | 0 | 1;
+    sunday: null | 0 | 1;
+  } = {
+    monday: null,
+    tuesday: null,
+    wednesday: null,
+    thursday: null,
+    friday: null,
+    saturday: null,
+    sunday: null,
+  };
   let startDate: number | null = null;
   let endDate: number | null = null;
 
@@ -543,6 +559,7 @@ const createTimetable = ({
     routeIds: [route.route_id],
     directionId: directionId,
     days: days,
+    dates: calendarDates?.map((calendarDate) => calendarDate.date),
   });
 
   return {
@@ -624,6 +641,10 @@ const convertRoutesToTimetablePages = (config: Config) => {
           );
         }
       }
+    }
+
+    if (timetables.length === 0) {
+      continue;
     }
 
     if (config.groupTimetablesIntoPages === true) {

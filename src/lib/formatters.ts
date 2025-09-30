@@ -270,6 +270,7 @@ export function formatTimetableId({
   routeIds,
   directionId,
   days,
+  dates,
 }: {
   routeIds: string[];
   directionId?: 0 | 1;
@@ -282,8 +283,16 @@ export function formatTimetableId({
     saturday?: null | 0 | 1;
     sunday?: null | 0 | 1;
   };
+  dates?: number[];
 }) {
-  let timetableId = `${routeIds.join('_')}|${calendarToCalendarCode(days)}`;
+  let timetableId = routeIds.join('_');
+
+  if (calendarToCalendarCode(days)) {
+    timetableId += `|${calendarToCalendarCode(days)}`;
+  } else if (dates && dates.length > 0) {
+    timetableId += `|${dates.join('_')}`;
+  }
+
   if (!isNullOrEmpty(directionId)) {
     timetableId += `|${directionId}`;
   }
