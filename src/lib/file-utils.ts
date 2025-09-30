@@ -245,9 +245,17 @@ export function generateTimetablePageFileName(
     return sanitize(`${formatRouteNameForFilename(route).toLowerCase()}.html`);
   }
 
-  // Else generate a detailed filename
   const timetable = timetablePage.timetables[0];
-  let filename = timetable.timetable_id ?? '';
+
+  // Else use timetable_id for filename
+  if (timetable.timetable_id) {
+    return sanitize(
+      `${timetable.timetable_id.replace(/\|/g, '_').toLowerCase()}.html`,
+    );
+  }
+
+  // Else generate a detailed filename
+  let filename = '';
 
   for (const route of timetable.routes) {
     filename += `_${formatRouteNameForFilename(route)}`;
