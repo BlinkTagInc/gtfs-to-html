@@ -85,9 +85,9 @@ import { formatTripNameForCSV } from './template-functions.js';
 
 import type {
   Config,
-  Timetable,
-  TimetablePage,
-} from '../types/global_interfaces.js';
+  FormattedTimetable,
+  FormattedTimetablePage,
+} from '../types/index.ts';
 
 import packageJson from '../../package.json' with { type: 'json' };
 const { version } = packageJson;
@@ -275,7 +275,10 @@ const sortTripsByStoptimeAtStop = (trips: FormattedTrip[], stopId: string) =>
 /*
  * Get all calendar dates for a specific timetable.
  */
-const getCalendarDatesForTimetable = (timetable: Timetable, config: Config) => {
+const getCalendarDatesForTimetable = (
+  timetable: FormattedTimetable,
+  config: Config,
+) => {
   const calendarDates = getCalendarDates(
     {
       service_id: timetable.service_ids,
@@ -340,7 +343,7 @@ const getDaysFromCalendars = (calendars: Calendar[]) => {
 /*
  * Get the `trip_headsign` for a specific timetable.
  */
-const getDirectionHeadsignFromTimetable = (timetable: Timetable) => {
+const getDirectionHeadsignFromTimetable = (timetable: FormattedTimetable) => {
   const trips = getTrips(
     {
       direction_id: timetable.direction_id,
@@ -367,7 +370,7 @@ const getDirectionHeadsignFromTimetable = (timetable: Timetable) => {
  * Get the notes for a specific timetable.
  */
 const getTimetableNotesForTimetable = (
-  timetable: Timetable,
+  timetable: FormattedTimetable,
   config: Config,
 ) => {
   const noteReferences = [
@@ -467,7 +470,7 @@ const createTimetablePage = ({
   config,
 }: {
   timetablePageId: string;
-  timetables: Timetable[];
+  timetables: FormattedTimetable[];
   config: Config;
 }) => {
   const updatedTimetables = timetables.map((timetable) => {
@@ -509,7 +512,7 @@ const createTimetable = ({
   tripHeadsign?: string;
   calendars?: Calendar[];
   calendarDates?: CalendarDate[];
-}): Timetable => {
+}): FormattedTimetable => {
   const serviceIds = uniq([
     ...(calendars?.map((calendar) => calendar.service_id) ?? []),
     ...(calendarDates?.map((calendarDate) => calendarDate.service_id) ?? []),
@@ -589,7 +592,7 @@ const createTimetable = ({
  */
 const convertRoutesToTimetablePages = (config: Config) => {
   const routes = getRoutes();
-  const timetablePages: TimetablePage[] = [];
+  const timetablePages: FormattedTimetablePage[] = [];
   const { calendars, calendarDates } = getCalendarsFromConfig(config);
 
   for (const route of routes) {
@@ -1450,7 +1453,9 @@ const formatTimetables = (timetables: Timetable[], config: Config) => {
 /*
  * Get all timetable pages for an agency.
  */
-export function getTimetablePagesForAgency(config: Config): TimetablePage[] {
+export function getTimetablePagesForAgency(
+  config: Config,
+): FormattedTimetablePage[] {
   const timetables = mergeTimetablesWithSameId(getTimetables());
   const routes = getRoutes();
   const formattedTimetables = timetables.map((timetable) => {
@@ -1459,7 +1464,7 @@ export function getTimetablePagesForAgency(config: Config): TimetablePage[] {
       routes: routes.filter((route) =>
         timetable.route_ids.includes(route.route_id),
       ),
-    } as Timetable;
+    } as FormattedTimetable;
   });
 
   // If no timetables, build each route and direction into a timetable.
@@ -1496,7 +1501,7 @@ export function getTimetablePagesForAgency(config: Config): TimetablePage[] {
         ),
         'timetable_sequence',
       ),
-    } as TimetablePage;
+    } as FormattedTimetablePage;
   });
 }
 
@@ -1566,7 +1571,9 @@ const getTimetablePageById = (timetablePageId: string, config: Config) => {
     timetable_page_id: timetablePageId,
   });
 
-  const timetables = mergeTimetablesWithSameId(getTimetables()) as Timetable[];
+  const timetables = mergeTimetablesWithSameId(
+    getTimetables(),
+  ) as FormattedTimetable[];
 
   if (timetablePages.length > 1) {
     throw new Error(
@@ -1641,7 +1648,7 @@ const getTimetablePageById = (timetablePageId: string, config: Config) => {
     const calendarGroups = groupBy(sortedCalendars, calendarToCalendarCode);
     const calendarDateGroups = groupBy(calendarDates, 'service_id');
 
-    const timetables: Timetable[] = [];
+    const timetables: FormattedTimetable[] = [];
 
     for (const uniqueTripDirection of uniqueTripDirections) {
       for (const calendars of Object.values(calendarGroups)) {
@@ -1796,7 +1803,7 @@ export function getFormattedTimetablePage(
   const timetablePage = getTimetablePageById(
     timetablePageId,
     config,
-  ) as TimetablePage;
+  ) as FormattedTimetablePage;
 
   const consolidatedTimetables = formatTimetables(
     timetablePage.timetables,
@@ -1843,7 +1850,7 @@ export function getFormattedTimetablePage(
 /*
  * Generate stats about timetable page.
  */
-export const generateStats = (timetablePage: TimetablePage) => {
+export const generateStats = (timetablePage: FormattedTimetablePage) => {
   const routeIds: { [key: string]: boolean } = {};
   const serviceIds: { [key: string]: boolean } = {};
   const stats = {
@@ -1875,7 +1882,7 @@ export const generateStats = (timetablePage: TimetablePage) => {
  * Generate the HTML timetable for a timetable page.
  */
 export function generateTimetableHTML(
-  timetablePage: TimetablePage,
+  timetablePage: FormattedTimetablePage,
   config: Config,
 ) {
   const agencies = getAgencies() as { agency_name: string }[];
@@ -1933,7 +1940,7 @@ export function generateTimetableCSV(timetable) {
  * Generate the HTML for the agency overview page.
  */
 export function generateOverviewHTML(
-  timetablePages: TimetablePage[],
+  timetablePages: FormattedTimetablePage[],
   config: Config,
 ) {
   const agencies = getAgencies() as { agency_name: string }[];

@@ -34,9 +34,9 @@ import * as templateFunctions from './template-functions.js';
 
 import type {
   Config,
-  Timetable,
-  TimetablePage,
-} from '../types/global_interfaces.js';
+  FormattedTimetable,
+  FormattedTimetablePage,
+} from '../types/index.ts';
 
 const homeDirectory = homedir();
 
@@ -228,7 +228,7 @@ export function zipFolder(outputPath) {
  * Generate the filename for an html file.
  */
 export function generateTimetablePageFileName(
-  timetablePage: TimetablePage,
+  timetablePage: FormattedTimetablePage,
   config: Config,
 ) {
   // If the timetable page is from timetable_pages.txt, use the filename specified.
@@ -273,7 +273,10 @@ export function generateTimetablePageFileName(
 /*
  * Generate the filename for a csv file.
  */
-export function generateCSVFileName(timetable: Timetable, config: Config) {
+export function generateCSVFileName(
+  timetable: FormattedTimetable,
+  config: Config,
+) {
   let filename = timetable.timetable_id ?? '';
 
   for (const route of timetable.routes) {

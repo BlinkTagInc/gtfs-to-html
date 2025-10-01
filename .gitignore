@@ -12,7 +12,7 @@ html
 views/custom
 
 # config files
-config*
+config*.json
 !config-sample*
 
 # docker

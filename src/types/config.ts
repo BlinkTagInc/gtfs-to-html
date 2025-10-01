@@ -1,4 +1,4 @@
-import { Route, UnixTimestamp, ConfigAgency } from 'gtfs';
+import { ConfigAgency } from 'gtfs';
 
 export interface Config {
   agencies: ConfigAgency[];
@@ -53,45 +53,4 @@ export interface Config {
   verbose?: boolean;
   zipOutput?: boolean;
   logFunction?: (text: string) => void;
-}
-
-export interface Timetable {
-  timetable_id: string;
-  route_ids: string[];
-  routes: Route[];
-  direction_id?: null | 0 | 1;
-  start_date?: null | number;
-  end_date?: null | number;
-  monday?: null | 0 | 1;
-  tuesday?: null | 0 | 1;
-  wednesday?: null | 0 | 1;
-  thursday?: null | 0 | 1;
-  friday?: null | 0 | 1;
-  saturday?: null | 0 | 1;
-  sunday?: null | 0 | 1;
-  service_ids?: string[];
-  start_time?: null | string;
-  start_timestamp?: null | UnixTimestamp;
-  end_time?: null | string;
-  end_timestamp?: null | UnixTimestamp;
-  timetable_label?: null | string;
-  service_notes?: null | string;
-  orientation?: null | string;
-  timetable_page_id?: null | string;
-  timetable_sequence?: null | number;
-  direction_name?: null | string;
-  include_exceptions?: null | number;
-  show_trip_continuation?: null | string;
-  warnings?: string[];
-  has_continues_as_route?: boolean;
-  has_continues_from_route?: boolean;
-}
-
-export interface TimetablePage {
-  timetable_page_id: string;
-  timetable_page_label?: null | string;
-  filename?: null | string;
-  timetables: Timetable[];
-  routes: Route[];
-  relativePath?: string;
 }

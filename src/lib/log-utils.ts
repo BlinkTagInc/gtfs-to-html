@@ -3,7 +3,7 @@ import { noop } from 'lodash-es';
 import * as colors from 'yoctocolors';
 import { getAgencies, getFeedInfo } from 'gtfs';
 import Table from 'cli-table';
-import { Config } from '../types/global_interfaces.ts';
+import { Config } from '../types/index.ts';
 
 /*
  * Creates text for a log of output details.

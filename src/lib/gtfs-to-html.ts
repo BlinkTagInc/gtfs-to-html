@@ -30,7 +30,7 @@ import {
   generateStats,
 } from './utils.js';
 
-import type { Config } from '../types/global_interfaces.js';
+import type { Config } from '../types/index.ts';
 
 /*
  * Generate HTML timetables from GTFS.
