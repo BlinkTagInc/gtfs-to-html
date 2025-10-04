@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Include trip_ids from duplicate trips
 
+### Updated
+- Dependency updates
+
 ## [2.11.2] - 2025-09-30
 
 ### Updated
