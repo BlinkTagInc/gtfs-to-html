@@ -5,6 +5,9 @@
 # dependencies
 node_modules
 
+#input for use in devcontainer
+input
+
 # output
 html
 
