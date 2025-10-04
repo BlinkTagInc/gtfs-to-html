@@ -116,7 +116,7 @@
       mapStyleUrl: config.mapStyleUrl,
       pageData: {
         routeIds: _.uniq(_.flatMap(timetablePage.consolidatedTimetables, timetable => timetable.routes.map(route => route.route_id))),
-        tripIds: _.uniq(_.flatMap(timetablePage.consolidatedTimetables, timetable => timetable.orderedTrips.map(trip => trip.trip_id))),
+        tripIds: _.uniq(_.flatMap(timetablePage.consolidatedTimetables, timetable => timetable.trip_ids)),
         stopIds: Object.keys(stopData),
         geojsons,
       },

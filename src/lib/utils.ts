@@ -256,10 +256,6 @@ const sortTrips = (trips: FormattedTrip[], config: Config): FormattedTrip[] => {
     sortedTrips = sortTripsByStoptimeAtStop(trips, lastStopId);
   }
 
-  if (config.showDuplicateTrips === false) {
-    return deduplicateTrips(sortedTrips ?? []);
-  }
-
   return sortedTrips ?? [];
 };
 
@@ -1195,7 +1191,7 @@ const addTripContinuation = (trip: FormattedTrip, timetable: Timetable) => {
  * Apply time range filters to trips and remove trips with less than two stoptimes for stops used in this timetable.
  * Stops can be excluded by using `timetable_stop_order.txt`. Additionally, remove trip stoptimes for unused stops.
  */
-const filterTrips = (timetable: Timetable) => {
+const filterTrips = (timetable: FormattedTimetable, config: Config) => {
   let filteredTrips = timetable.orderedTrips;
 
   // Combine adjacent stoptimes with the same `stop_id`
@@ -1233,6 +1229,10 @@ const filterTrips = (timetable: Timetable) => {
     (trip: Trip) => trip.stoptimes.length > 1,
   );
 
+  if (config.showDuplicateTrips === false) {
+    filteredTrips = deduplicateTrips(filteredTrips);
+  }
+
   return filteredTrips;
 };
 
@@ -1242,7 +1242,7 @@ const filterTrips = (timetable: Timetable) => {
 
 /* eslint-disable complexity */
 const getTripsForTimetable = (
-  timetable: Timetable,
+  timetable: FormattedTimetable,
   calendars: Calendar[],
   config: Config,
 ) => {
@@ -1432,8 +1432,12 @@ const formatTimetables = (timetables: Timetable[], config: Config) => {
       timetable.geojson = getTimetableGeoJSON(timetable, config);
     }
 
+    timetable.trip_ids = uniq(
+      timetable.orderedTrips.map((trip: Trip) => trip.trip_id),
+    );
+
     // Filter trips after all timetable properties are assigned
-    timetable.orderedTrips = filterTrips(timetable);
+    timetable.orderedTrips = filterTrips(timetable, config);
 
     // Format stops after all timetable properties are assigned
     timetable.stops = formatStops(timetable, config);
