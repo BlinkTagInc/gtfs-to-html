@@ -104,7 +104,9 @@ docker-compose up
 
 Generated files will appear in the folder `html` next to docker files.
 
-## Development Server
+## Development
+
+### Development Server
 
 For local development and testing, we provide an Express.js application:
 
@@ -117,6 +119,60 @@ node ./dist/app --configPath ./custom-config.json
 ```
 
 Access the development server at [localhost:3000](http://localhost:3000).
+
+### Setup With Devcontainer In VSCode
+
+For using a devcontainer in VSCode for local development and debugging, you can use the following basic setup. At first, create a task configuration for running the `tsup` build in `.vscode/tasks.json`:
+
+```json
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build-gtfs-to-html",
+      "type": "shell",
+      "command": "npx tsup",
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    }
+  ]
+}
+```
+
+Then create a launch configuration for running `gtfs-to-html` in `.vscode/launch.json`:
+
+```json
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "gtfs-to-html",
+            "program": "${workspaceFolder}/dist/bin/gtfs-to-html",
+            "args": ["--configPath", "config-dev.json"],
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal",
+            "runtimeArgs": ["--inspect-brk"],
+            "sourceMaps": true,
+            "outFiles": ["${workspaceFolder}/dist/**/*.js"],
+            "skipFiles": ["<node_internals>/**"],
+            "preLaunchTask": "build-gtfs-to-html"
+        }
+    ]
+}
+```
+
+Please also note the config file `config-dev.json` which is used in this launch configuration. You can create this file based on `config-sample.json`, it will be ignored by Git by default.
+
+When you run this configuration, it will trigger the `tsup` build by using the former created task `build-gtfs-to-html` at first. After the build succeeded, Node waits until the debugger attaches and then runs `gtfs-to-html` with the debugger attached.
+
+#### Using Local Input Data In Devcontainer
+
+Using local unzipped GTFS data makes local development and debugging more easy, especially if you need to modify GTFS files for testing. If you use a Devcontainer you need to keep in mind, that the Devcontainer can only see files in your project directory, as only this directory is mounted to your Devcontainer. Hence, you can create a directory `input` at project level, which will be ignored by Git but is visible inside the container.
 
 ## Next Steps
 
