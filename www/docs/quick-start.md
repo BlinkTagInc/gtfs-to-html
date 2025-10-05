@@ -172,7 +172,7 @@ When you run this configuration, it will trigger the `tsup` build by using the f
 
 #### Using Local Input Data In Devcontainer
 
-Using local unzipped GTFS data makes local development and debugging more easy, especially if you need to modify GTFS files for testing. If you use a Devcontainer you need to keep in mind, that the Devcontainer can only see files in your project directory, as only this directory is mounted to your Devcontainer. Hence, you can create a directory `input` at project level, which will be ignored by Git but is visible inside the container.
+Using local unzipped GTFS data makes local development and debugging more easy, especially if you need to modify GTFS files for testing. If you use a devcontainer you need to keep in mind, that the devcontainer can only see files in your project directory, as only this directory is mounted to your devcontainer. Hence, you can create a directory `input` at project level, which will be ignored by Git but is visible inside the container.
 
 ## Next Steps
 
