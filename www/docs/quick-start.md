@@ -122,6 +122,8 @@ Access the development server at [localhost:3000](http://localhost:3000).
 
 ### Setup With Devcontainer In VSCode
 
+[Devcontainers](https://code.visualstudio.com/docs/devcontainers/containers) in VSCode provide a consistent and isolated development environment by packaging tools, dependencies, and configurations like Node.js inside a container instead of installing it on your development machine directly. This avoids "works on my machine" issues and can make developing projects much easier.
+
 For using a devcontainer in VSCode for local development and debugging, you can use the following basic setup. At first, create a task configuration for running the `tsup` build in `.vscode/tasks.json`:
 
 ```json
