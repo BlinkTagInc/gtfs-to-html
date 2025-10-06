@@ -120,6 +120,8 @@ node ./dist/app --configPath ./custom-config.json
 
 Access the development server at [localhost:3000](http://localhost:3000).
 
+__Note: The development server does not load or import any data, but requires a local SQLite database with loaded data. See [configuration](configuration.md) for how to set the SQLite path in order to generate a local SQLite database. Use the same `config-*.json` for the development server to load the generate SQLite database.__
+
 ### Setup With Devcontainer In VSCode
 
 [Devcontainers](https://code.visualstudio.com/docs/devcontainers/containers) in VSCode provide a consistent and isolated development environment by packaging tools, dependencies, and configurations like Node.js inside a container instead of installing it on your development machine directly. This avoids "works on my machine" issues and can make developing projects much easier.
