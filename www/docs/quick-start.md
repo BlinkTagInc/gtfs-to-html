@@ -135,6 +135,25 @@ For using a devcontainer in VSCode for local development and debugging, you can 
       "type": "shell",
       "command": "npx tsup",
       "problemMatcher": [],
+      "group": "build",
+    },
+    {
+      "label": "load-sqlite-data",
+      "type": "shell",
+      "command": "/bin/bash",
+      "args": [
+        "-l",
+        "-c",
+        "node ${workspaceFolder}/dist/bin/gtfs-to-html --configPath ${workspaceFolder}/config-dev.json"
+      ],
+      "problemMatcher": [],
+      "group": "build"
+    },
+    {
+      "label": "prelaunch-gtfs-to-html",
+      "dependsOn": ["build-gtfs-to-html", "load-sqlite-data"],
+      "dependsOrder": "sequence",
+      "problemMatcher": [],
       "group": {
         "kind": "build",
         "isDefault": true
@@ -153,8 +172,8 @@ Then create a launch configuration for running `gtfs-to-html` in `.vscode/launch
         {
             "type": "node",
             "request": "launch",
-            "name": "gtfs-to-html",
-            "program": "${workspaceFolder}/dist/bin/gtfs-to-html",
+            "name": "development-server",
+            "program": "${workspaceFolder}/dist/app",
             "args": ["--configPath", "config-dev.json"],
             "cwd": "${workspaceFolder}",
             "console": "integratedTerminal",
@@ -162,15 +181,17 @@ Then create a launch configuration for running `gtfs-to-html` in `.vscode/launch
             "sourceMaps": true,
             "outFiles": ["${workspaceFolder}/dist/**/*.js"],
             "skipFiles": ["<node_internals>/**"],
-            "preLaunchTask": "build-gtfs-to-html"
+            "preLaunchTask": "prelaunch-gtfs-to-html"
         }
     ]
 }
 ```
 
-Please also note the config file `config-dev.json` which is used in this launch configuration. You can create this file based on `config-sample.json`, it will be ignored by Git by default.
+Please also note the config file `config-dev.json` which is used in this launch configuration. You can create this file based on `config-sample.json`, it will be ignored by Git by default. Be aware to set the `sqlitePath` to a valid file path (e.g. `./input/agency.sqlite`) in order to use this setup.
 
-When you run this configuration, it will trigger the `tsup` build by using the former created task `build-gtfs-to-html` at first. After the build succeeded, Node waits until the debugger attaches and then runs `gtfs-to-html` with the debugger attached.
+When you run this configuration, it will trigger the `tsup` build by using the former created task `build-gtfs-to-html` at first. After the build succeeded, `load-gtfs-to-html` is executed to import the data into the local SQLite database for the development server.
+
+Once the development server is running, you can access it as described above. Additionally, you can set your breakpoints in the TypeScript code for debugging.
 
 #### Using Local Input Data In Devcontainer
 
