@@ -120,7 +120,7 @@ node ./dist/app --configPath ./custom-config.json
 
 Access the development server at [localhost:3000](http://localhost:3000).
 
-__Note: The development server does not load or import any data, but requires a local SQLite database with loaded data. See [configuration](configuration.md) for how to set the SQLite path in order to generate a local SQLite database. Use the same `config-*.json` for the development server to load the generate SQLite database.__
+_Note: The development server does not load or import any data, but requires a local SQLite database with loaded data. See [Configuration Options](configuration.md) for how to set the SQLite path in order to generate a local SQLite database. Use the same `config-*.json` for the development server to load the generate SQLite database._
 
 ### Setup With Devcontainer In VSCode
 
