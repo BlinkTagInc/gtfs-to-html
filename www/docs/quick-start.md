@@ -104,7 +104,9 @@ docker-compose up
 
 Generated files will appear in the folder `html` next to docker files.
 
-## Development Server
+## Development
+
+### Development Server
 
 For local development and testing, we provide an Express.js application:
 
@@ -117,6 +119,85 @@ node ./dist/app --configPath ./custom-config.json
 ```
 
 Access the development server at [localhost:3000](http://localhost:3000).
+
+_Note: The development server does not load or import any data, but requires a local SQLite database with loaded data. See [Configuration Options](configuration.md) for how to set the SQLite path in order to generate a local SQLite database. Use the same `config-*.json` for the development server to load the generate SQLite database._
+
+### Setup With Devcontainer In VSCode
+
+[Devcontainers](https://code.visualstudio.com/docs/devcontainers/containers) in VSCode provide a consistent and isolated development environment by packaging tools, dependencies, and configurations like Node.js inside a container instead of installing it on your development machine directly. This avoids "works on my machine" issues and can make developing projects much easier.
+
+For using a devcontainer in VSCode for local development and debugging, you can use the following basic setup. At first, create a task configuration for running the `tsup` build in `.vscode/tasks.json`:
+
+```json
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build-gtfs-to-html",
+      "type": "shell",
+      "command": "npx tsup",
+      "problemMatcher": [],
+      "group": "build",
+    },
+    {
+      "label": "load-sqlite-data",
+      "type": "shell",
+      "command": "/bin/bash",
+      "args": [
+        "-l",
+        "-c",
+        "node ${workspaceFolder}/dist/bin/gtfs-to-html --configPath ${workspaceFolder}/config-dev.json"
+      ],
+      "problemMatcher": [],
+      "group": "build"
+    },
+    {
+      "label": "prelaunch-gtfs-to-html",
+      "dependsOn": ["build-gtfs-to-html", "load-sqlite-data"],
+      "dependsOrder": "sequence",
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    }
+  ]
+}
+```
+
+Then create a launch configuration for running `gtfs-to-html` in `.vscode/launch.json`:
+
+```json
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "development-server",
+            "program": "${workspaceFolder}/dist/app",
+            "args": ["--configPath", "config-dev.json"],
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal",
+            "runtimeArgs": ["--inspect-brk"],
+            "sourceMaps": true,
+            "outFiles": ["${workspaceFolder}/dist/**/*.js"],
+            "skipFiles": ["<node_internals>/**"],
+            "preLaunchTask": "prelaunch-gtfs-to-html"
+        }
+    ]
+}
+```
+
+Please also note the config file `config-dev.json` which is used in this launch configuration. You can create this file based on `config-sample.json`, it will be ignored by Git by default. Be aware to set the `sqlitePath` to a valid file path (e.g. `./input/agency.sqlite`) in order to use this setup.
+
+When you run this configuration, it will trigger the `tsup` build by using the former created task `build-gtfs-to-html` at first. After the build succeeded, `load-gtfs-to-html` is executed to import the data into the local SQLite database for the development server.
+
+Once the development server is running, you can access it as described above. Additionally, you can set your breakpoints in the TypeScript code for debugging.
+
+#### Using Local Input Data In Devcontainer
+
+Using local unzipped GTFS data makes local development and debugging more easy, especially if you need to modify GTFS files for testing. If you use a devcontainer you need to keep in mind, that the devcontainer can only see files in your project directory, as only this directory is mounted to your devcontainer. Hence, you can create a directory `input` at project level, which will be ignored by Git but is visible inside the container.
 
 ## Next Steps
 
