@@ -289,7 +289,12 @@ const getCalendarDatesForTimetable = (
 
   for (const calendarDate of calendarDates) {
     if (
-      moment(calendarDate.date, 'YYYYMMDD').isBetween(start, end, 'day', '[]')
+      moment(calendarDate.date, 'YYYYMMDD').isBetween(
+        start,
+        end,
+        undefined,
+        '[]',
+      )
     ) {
       if (calendarDate.exception_type === 1) {
         includedDates.add(formatDate(calendarDate, config.dateFormat));
