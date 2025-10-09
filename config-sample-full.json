@@ -14,7 +14,7 @@
       }
     }
   ],
-  "sqlitePath": "/tmp/gtfs",
+  "sqlitePath": "/tmp/gtfs.sqlite",
   "allowEmptyTimetables": false,
   "beautify": false,
   "coordinatePrecision": 5,

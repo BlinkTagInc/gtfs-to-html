@@ -60,7 +60,7 @@ All files starting with `config*.json` are .gitignored - so you can create multi
 | [`showStoptimesForRequestStops`](#showstoptimesforrequeststops) | Boolean          | Whether to show times for stops that require a request for pickup or dropoff.             |
 | [`skipImport`](#skipimport)                                     | Boolean          | Whether to skip importing GTFS data into SQLite.                                          |
 | [`sortingAlgorithm`](#sortingalgorithm)                         | String           | Defines the trip-sorting algorithm.                                                              |
-| [`sqlitePath`](#sqlitepath)                                     | String           | A path to an SQLite database. Optional, defaults to using an in-memory database.                 |
+| [`sqlitePath`](#sqlitepath)                                     | String           | A path to a SQLite database. Optional, defaults to using an in-memory database.                 |
 | [`startDate`](#startdate)                                     | String           | A date in ISO 8601 format to control which calendars are used for the timetables.                |
 | [`templatePath`](#templatepath)                                 | String           | Path to custom pug template for rendering timetable.                                             |
 | [`timeFormat`](#timeformat)                                     | String           | A string defining time format in moment.js style.                                                |
@@ -578,10 +578,10 @@ If you'd rather just get all stops and route info as GeoJSON, see [gtfs-to-geojs
 
 ## sqlitePath
 
-{String} A path to an SQLite database. **Optional.** Defaults to using an in-memory database with a value of `:memory:`. If you want the data imported to persist, you need to specify a value for `sqlitePath`. Supports tilde as part of the path, like `~/Documents/gtfs`.
+{String} A path to a SQLite database. **Optional.** Defaults to using an in-memory database with a value of `:memory:`. If you want the data imported to persist, you need to specify a value for `sqlitePath`. Supports tilde as part of the path, like `~/Documents/gtfs.sqlite`.
 
 ```json
-"sqlitePath": "/tmp/gtfs"
+"sqlitePath": "/tmp/gtfs.sqlite"
 ```
 
 ## startDate
