@@ -1763,6 +1763,7 @@ export function setDefaultConfig(initialConfig: Config) {
     requestPickupText: 'Request stop - call for pickup',
     serviceNotProvidedOnText: 'Service not provided on',
     serviceProvidedOnText: 'Service provided on',
+    noRegularServiceDaysText: 'No regular service days',
     showArrivalOnDifference: 0.2,
     showCalendarExceptions: true,
     showDuplicateTrips: false,
