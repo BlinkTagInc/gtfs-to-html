@@ -35,6 +35,7 @@ export interface Config {
   requestPickupText?: string;
   serviceNotProvidedOnText?: string;
   serviceProvidedOnText?: string;
+  noRegularServiceDaysText?: string;
   showArrivalOnDifference?: number;
   showCalendarExceptions?: boolean;
   showDuplicateTrips?: boolean;
