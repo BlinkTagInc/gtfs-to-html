@@ -9,9 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Added configuration option `noRegularServiceDaysText`
+- Added Docs for using a Devcontainer 
 
 ### Fixed
 - Correction for calendar dates inclusion
+- Improved warning logging
+- Fix for system map hiding when no spatial data
+
+### Updated
+- Dependency updates
 
 ## [2.11.3] - 2025-10-03
 
