@@ -213,7 +213,7 @@ export function formatDays(calendar, config) {
   }
 
   if (dayString.length === 0) {
-    dayString = 'No regular service days';
+    dayString = config.noRegularServiceDaysText;
   }
 
   return dayString;

@@ -48,7 +48,8 @@ All files starting with `config*.json` are .gitignored - so you can create multi
 | [`requestPickupSymbol`](#requestpickupsymbol)                   | String           | The symbol used to indicate a stop where riders must request a pickup.                           |
 | [`requestPickupText`](#requestpickuptext)                       | String           | The text used to describe a stop where riders must request a pickup.                             |
 | [`serviceNotProvidedOnText`](#servicenotprovidedontext)         | String           | The text used to label days where service is not provided.                                       |
-| [`serviceProvidedOnText`](#serviceprovidedontext)               | String           | The text used to label days where service is provided.                                           |
+| [`serviceProvidedOnText`](#serviceprovidedontext)               | String           | The text used to label days where service is provided. |        
+| [`noRegularServiceDaysText`](#noregularservicedaystext)         | String            | The text used to inform that a timetable has no regular service das (like Mon-Fri, Sat, Sun). |
 | [`showArrivalOnDifference`](#showarrivalondifference)           | Number            | Defines a difference between departure and arrival on which arrival column/row will be shown.   |
 | [`showCalendarExceptions`](#showcalendarexceptions)             | Boolean          | Whether to show a list of calendar exceptions below each timetable. |
 | [`showDuplicateTrips`](#showduplicatetrips)                     | Boolean          | Whether to show duplicate trips with identical stops and times.                                  |
@@ -478,6 +479,14 @@ gtfsToHtml(config);
 
 ```json
 "serviceProvidedOnText": "Service provided on"
+```
+
+## noRegularServiceDaysText
+
+{String} The text used to inform that a timetable has no regular service das (like Mon-Fri, Sat, Sun). This message is also shown in automatically generated timetables, when no calendar pattern has been found. **Optional.** Defaults to `No regular service days`.
+
+```json
+"noRegularServiceDaysText": "No regular service days"
 ```
 
 ## showArrivalOnDifference
