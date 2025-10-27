@@ -24,6 +24,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added configuration option `noRegularServiceDaysText`
 - Added Docs for using a Devcontainer
 
+### Added
+- Added configuration option `noRegularServiceDaysText`
+
 ### Fixed
 - Correction for calendar dates inclusion
 - Improved warning logging
