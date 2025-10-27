@@ -116,7 +116,7 @@ const gtfsToHtml = async (initialConfig: Config) => {
         config,
       );
 
-      for (const timetable of timetablePage.timetables) {
+      for (const timetable of timetablePage.consolidatedTimetables) {
         if (timetable.warnings) {
           for (const warning of timetable.warnings) {
             stats.warnings.push(warning);
