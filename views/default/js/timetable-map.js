@@ -954,7 +954,7 @@ function unHighlightStop(map, id) {
 }
 
 function highlightTimetableStops(id, stopIds) {
-  const table = jQuery(`#timetable_id_${id} table`);
+  const table = jQuery('#' + CSS.escape(`timetable_id_${id} table`));
   const isVertical = table.data('orientation') === 'vertical';
 
   if (isVertical) {
@@ -965,18 +965,23 @@ function highlightTimetableStops(id, stopIds) {
 }
 
 function highlightVerticalTimetableStops(id, stopIds) {
-  const table = jQuery(`#timetable_id_${id} table`);
+  const table = jQuery('#' + CSS.escape(`timetable_id_${id} table`));
   const columnIndexes = [];
   const stopIdSelectors = stopIds
     .map(
       (stopId) =>
-        `#timetable_id_${id} table colgroup col[data-stop-id="${stopId}"]`,
+        '#' +
+        CSS.escape(
+          `timetable_id_${id} table colgroup col[data-stop-id="${stopId}"]`,
+        ),
     )
     .join(',');
 
   jQuery(stopIdSelectors).each((index, col) => {
     columnIndexes.push(
-      jQuery(`#timetable_id_${id} table colgroup col`).index(col),
+      jQuery('#' + CSS.escape(`timetable_id_${id} table colgroup col`)).index(
+        col,
+      ),
     );
   });
 
@@ -999,16 +1004,19 @@ function highlightVerticalTimetableStops(id, stopIds) {
 }
 
 function highlightHorizontalTimetableStops(id, stopIds) {
-  const table = jQuery(`#timetable_id_${id} table`);
+  const table = jQuery('#' + CSS.escape(`timetable_id_${id} table`));
   table.find('.stop-row').removeClass('highlighted');
   const stopIdSelectors = stopIds
-    .map((stopId) => `#timetable_id_${id} table #stop_id_${stopId}`)
+    .map(
+      (stopId) =>
+        '#' + CSS.escape(`timetable_id_${id} table #stop_id_${stopId}`),
+    )
     .join(',');
   jQuery(stopIdSelectors).addClass('highlighted');
 }
 
 function unHighlightTimetableStops(id) {
-  const table = jQuery(`#timetable_id_${id} table`);
+  const table = jQuery('#' + CSS.escape(`timetable_id_${id} table`));
   const isVertical = table.data('orientation') === 'vertical';
 
   if (isVertical) {
@@ -1019,7 +1027,7 @@ function unHighlightTimetableStops(id) {
 }
 
 function setupTableHoverListeners(id, map) {
-  jQuery('th, td', jQuery(`#timetable_id_${id} table`)).hover(
+  jQuery('th, td', jQuery('#' + CSS.escape(`timetable_id_${id} table`))).hover(
     (event) => {
       const stopId = getStopIdFromTableCell(event.target);
       if (stopId !== undefined) {
