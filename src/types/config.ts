@@ -24,6 +24,7 @@ export interface Config {
   noHead?: boolean;
   noPickupSymbol?: string;
   noPickupText?: string;
+  noRegularServiceDaysText?: string;
   noServiceSymbol?: string;
   noServiceText?: string;
   outputFormat?: 'html' | 'pdf' | 'csv';

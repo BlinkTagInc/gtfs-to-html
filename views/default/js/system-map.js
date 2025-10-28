@@ -121,7 +121,7 @@ function createSystemMap() {
   };
 
   if (!geojson || geojson.features.length === 0) {
-    jQuery('#' + id).hide();
+    jQuery('#system_map').hide();
     return false;
   }
 
