@@ -258,12 +258,12 @@ function formatMovingText(vehiclePosition) {
 
 function getVehiclePopupHtml(vehiclePosition, vehicleTripUpdate) {
   const html = jQuery('<div>', {
-    id: `vehicle-popup-${CSS.escape(vehiclePosition.vehicle.vehicle.id)}`,
+    id: CSS.escape(`vehicle-popup-${vehiclePosition.vehicle.vehicle.id}`),
   });
 
   const lastUpdated = new Date(vehiclePosition.vehicle.timestamp * 1000);
   const directionName = jQuery(
-    `.timetable #trip_id_${CSS.escape(vehiclePosition.vehicle.trip.trip_id)}`,
+    `.timetable #${CSS.escape(`trip_id_${vehiclePosition.vehicle.trip.trip_id}`)}`,
   )
     .parents('.timetable')
     .data('direction-name');
@@ -495,7 +495,9 @@ function animateVehicleMarker(vehicleMarker, vehiclePosition) {
 
     // Check if vehiclePopup element exists and is for this vehicle
     const popupElement = vehiclePopup.getElement();
-    const vehiclePopupContentId = `vehicle-popup-${CSS.escape(vehiclePosition.vehicle.vehicle.id)}`;
+    const vehiclePopupContentId = CSS.escape(
+      `vehicle-popup-${vehiclePosition.vehicle.vehicle.id}`,
+    );
     const markerPopupIsOpenForThisVehicle =
       popupElement && popupElement.querySelector(`#${vehiclePopupContentId}`);
 
@@ -647,6 +649,7 @@ async function updateArrivals() {
 
       const visibleTimetableId =
         jQuery('.timetable:visible').data('timetable-id');
+
       attachVehicleMarkerClickHandler(
         vehiclePosition,
         vehicleTripUpdate,
@@ -706,7 +709,7 @@ function createMap(id) {
 
   const geojson = geojsons[id];
 
-  const timetableMapContentId = `map_timetable_id_${CSS.escape(id)}`
+  const timetableMapContentId = CSS.escape(`map_timetable_id_${id}`);
 
   if (!geojson || geojson.features.length === 0) {
     jQuery(`#${timetableMapContentId}`).hide();
@@ -956,7 +959,8 @@ function unHighlightStop(map, id) {
 }
 
 function highlightTimetableStops(id, stopIds) {
-  const table = jQuery(`#timetable_id_${CSS.escape(id)} table`);
+  const timetabletableContentId = CSS.escape(`timetable_id_${id}`);
+  const table = jQuery(`#${timetabletableContentId} table`);
   const isVertical = table.data('orientation') === 'vertical';
 
   if (isVertical) {
@@ -967,19 +971,19 @@ function highlightTimetableStops(id, stopIds) {
 }
 
 function highlightVerticalTimetableStops(id, stopIds) {
-  const table = jQuery(`#timetable_id_${CSS.escape(id)} table`));
+  const timetabletableContentId = CSS.escape(`timetable_id_${id}`);
+  const table = jQuery(`#${timetabletableContentId} table`);
   const columnIndexes = [];
   const stopIdSelectors = stopIds
     .map(
-      (stopId) => `#timetable_id_${CSS.escape(id)} table colgroup col[data-stop-id="${stopId}"]`,
+      (stopId) =>
+        `#${timetabletableContentId} table colgroup col[data-stop-id="${stopId}"]`,
     )
     .join(',');
 
   jQuery(stopIdSelectors).each((index, col) => {
     columnIndexes.push(
-      jQuery(`#timetable_id_${CSS.escape(id)} table colgroup col`).index(
-        col,
-      ),
+      jQuery(`#${timetabletableContentId} table colgroup col`).index(col),
     );
   });
 
@@ -1002,19 +1006,21 @@ function highlightVerticalTimetableStops(id, stopIds) {
 }
 
 function highlightHorizontalTimetableStops(id, stopIds) {
-  const table = jQuery(`#timetable_id_${CSS.escape(id)} table`);
+  const timetabletableContentId = CSS.escape(`timetable_id_${id}`);
+  const table = jQuery(`#${timetabletableContentId} table`);
   table.find('.stop-row').removeClass('highlighted');
   const stopIdSelectors = stopIds
     .map(
       (stopId) =>
-        `#timetable_id_${CSS.escape(id)} table #stop_id_${CSS.escape(stopId)}`,
+        `#${timetabletableContentId} table #${CSS.escape(`stop_id_${stopId}`)}`,
     )
     .join(',');
   jQuery(stopIdSelectors).addClass('highlighted');
 }
 
 function unHighlightTimetableStops(id) {
-  const table = jQuery(`#timetable_id_${CSS.escape(id)} table`);
+  const timetabletableContentId = CSS.escape(`timetable_id_${id}`);
+  const table = jQuery(`#${timetabletableContentId} table`);
   const isVertical = table.data('orientation') === 'vertical';
 
   if (isVertical) {
@@ -1025,7 +1031,8 @@ function unHighlightTimetableStops(id) {
 }
 
 function setupTableHoverListeners(id, map) {
-  jQuery('th, td', jQuery(`#timetable_id_${CSS.escape(id)} table`))).hover(
+  const timetabletableContentId = CSS.escape(`timetable_id_${id}`);
+  jQuery('th, td', jQuery(`#${timetabletableContentId} table`)).hover(
     (event) => {
       const stopId = getStopIdFromTableCell(event.target);
       if (stopId !== undefined) {

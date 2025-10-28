@@ -45,7 +45,8 @@ function showSelectedTimetable() {
 }
 
 function showTimetable(id) {
-  jQuery('#' + CSS.escape(`timetable_id_${id}`)).show();
+  const timetableContentId = CSS.escape(`timetable_id_${id}`);
+  jQuery(`#${timetableContentId}`).show();
   toggleMap(id);
 }
 

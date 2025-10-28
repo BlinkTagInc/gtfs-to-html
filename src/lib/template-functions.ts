@@ -1,13 +1,6 @@
 import { every } from 'lodash-es';
 
 /*
- * Format an id to be used as an HTML attribute.
- */
-export function formatHtmlId(id) {
-  return id.replace(/([^\w[\]{}.:-])\s?/g, '');
-}
-
-/*
  * Discern if a day list should be shown for a specific timetable (if some
  * trips happen on different days).
  */
