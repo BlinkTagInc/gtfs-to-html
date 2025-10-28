@@ -24,6 +24,7 @@ export interface Config {
   noHead?: boolean;
   noPickupSymbol?: string;
   noPickupText?: string;
+  noRegularServiceDaysText?: string;
   noServiceSymbol?: string;
   noServiceText?: string;
   outputFormat?: 'html' | 'pdf' | 'csv';
@@ -35,7 +36,6 @@ export interface Config {
   requestPickupText?: string;
   serviceNotProvidedOnText?: string;
   serviceProvidedOnText?: string;
-  noRegularServiceDaysText?: string;
   showArrivalOnDifference?: number;
   showCalendarExceptions?: boolean;
   showDuplicateTrips?: boolean;
