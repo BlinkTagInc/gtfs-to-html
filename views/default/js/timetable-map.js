@@ -707,7 +707,7 @@ function createMap(id) {
   const geojson = geojsons[id];
 
   if (!geojson || geojson.features.length === 0) {
-    jQuery(`#map_timetable_id_${id}`).hide();
+    jQuery('#' + CSS.escape(`map_timetable_id_${id}`)).hide();
     return false;
   }
 
