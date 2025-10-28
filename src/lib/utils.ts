@@ -1753,7 +1753,6 @@ export function setDefaultConfig(initialConfig: Config) {
     noHead: false,
     noPickupSymbol: '**',
     noPickupText: 'No pickup available',
-    noRegularServiceDaysText: 'No regular service days',
     noServiceSymbol: '-',
     noServiceText: 'No service at this stop',
     outputFormat: 'html',
