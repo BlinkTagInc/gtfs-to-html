@@ -258,12 +258,12 @@ function formatMovingText(vehiclePosition) {
 
 function getVehiclePopupHtml(vehiclePosition, vehicleTripUpdate) {
   const html = jQuery('<div>', {
-    id: `vehicle-popup-${vehiclePosition.vehicle.vehicle.id}`,
+    id: `vehicle-popup-${CSS.escape(vehiclePosition.vehicle.vehicle.id)}`,
   });
 
   const lastUpdated = new Date(vehiclePosition.vehicle.timestamp * 1000);
   const directionName = jQuery(
-    '.timetable #trip_id_' + vehiclePosition.vehicle.trip.trip_id,
+    `.timetable #trip_id_${CSS.escape(vehiclePosition.vehicle.trip.trip_id)}`,
   )
     .parents('.timetable')
     .data('direction-name');
@@ -495,7 +495,7 @@ function animateVehicleMarker(vehicleMarker, vehiclePosition) {
 
     // Check if vehiclePopup element exists and is for this vehicle
     const popupElement = vehiclePopup.getElement();
-    const vehiclePopupContentId = `vehicle-popup-${vehiclePosition.vehicle.vehicle.id}`;
+    const vehiclePopupContentId = `vehicle-popup-${CSS.escape(vehiclePosition.vehicle.vehicle.id)}`;
     const markerPopupIsOpenForThisVehicle =
       popupElement && popupElement.querySelector(`#${vehiclePopupContentId}`);
 
@@ -706,14 +706,16 @@ function createMap(id) {
 
   const geojson = geojsons[id];
 
+  const timetableMapContentId = `map_timetable_id_${CSS.escape(id)}`
+
   if (!geojson || geojson.features.length === 0) {
-    jQuery('#' + CSS.escape(`map_timetable_id_${id}`)).hide();
+    jQuery(`#${timetableMapContentId}`).hide();
     return false;
   }
 
   const bounds = getBounds(geojson);
   const map = new maplibregl.Map({
-    container: `map_timetable_id_${id}`,
+    container: timetableMapContentId,
     style: mapStyleUrl,
     center: bounds.getCenter(),
     zoom: 12,
@@ -954,7 +956,7 @@ function unHighlightStop(map, id) {
 }
 
 function highlightTimetableStops(id, stopIds) {
-  const table = jQuery('#' + CSS.escape(`timetable_id_${id} table`));
+  const table = jQuery(`#timetable_id_${CSS.escape(id)} table`);
   const isVertical = table.data('orientation') === 'vertical';
 
   if (isVertical) {
@@ -965,21 +967,17 @@ function highlightTimetableStops(id, stopIds) {
 }
 
 function highlightVerticalTimetableStops(id, stopIds) {
-  const table = jQuery('#' + CSS.escape(`timetable_id_${id} table`));
+  const table = jQuery(`#timetable_id_${CSS.escape(id)} table`));
   const columnIndexes = [];
   const stopIdSelectors = stopIds
     .map(
-      (stopId) =>
-        '#' +
-        CSS.escape(
-          `timetable_id_${id} table colgroup col[data-stop-id="${stopId}"]`,
-        ),
+      (stopId) => `#timetable_id_${CSS.escape(id)} table colgroup col[data-stop-id="${stopId}"]`,
     )
     .join(',');
 
   jQuery(stopIdSelectors).each((index, col) => {
     columnIndexes.push(
-      jQuery('#' + CSS.escape(`timetable_id_${id} table colgroup col`)).index(
+      jQuery(`#timetable_id_${CSS.escape(id)} table colgroup col`).index(
         col,
       ),
     );
@@ -1004,19 +1002,19 @@ function highlightVerticalTimetableStops(id, stopIds) {
 }
 
 function highlightHorizontalTimetableStops(id, stopIds) {
-  const table = jQuery('#' + CSS.escape(`timetable_id_${id} table`));
+  const table = jQuery(`#timetable_id_${CSS.escape(id)} table`);
   table.find('.stop-row').removeClass('highlighted');
   const stopIdSelectors = stopIds
     .map(
       (stopId) =>
-        '#' + CSS.escape(`timetable_id_${id} table #stop_id_${stopId}`),
+        `#timetable_id_${CSS.escape(id)} table #stop_id_${CSS.escape(stopId)}`,
     )
     .join(',');
   jQuery(stopIdSelectors).addClass('highlighted');
 }
 
 function unHighlightTimetableStops(id) {
-  const table = jQuery('#' + CSS.escape(`timetable_id_${id} table`));
+  const table = jQuery(`#timetable_id_${CSS.escape(id)} table`);
   const isVertical = table.data('orientation') === 'vertical';
 
   if (isVertical) {
@@ -1027,7 +1025,7 @@ function unHighlightTimetableStops(id) {
 }
 
 function setupTableHoverListeners(id, map) {
-  jQuery('th, td', jQuery('#' + CSS.escape(`timetable_id_${id} table`))).hover(
+  jQuery('th, td', jQuery(`#timetable_id_${CSS.escape(id)} table`))).hover(
     (event) => {
       const stopId = getStopIdFromTableCell(event.target);
       if (stopId !== undefined) {
