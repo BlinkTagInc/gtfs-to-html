@@ -5,7 +5,7 @@ if timetablePage.consolidatedTimetables.length > 1
       - const showDayList = timetablePageHasDifferentDays(timetablePage);
       each timetable in timetablePage.consolidatedTimetables
         li
-          a(href=`#timetable_id_${timetable.timetable_id}`)
+          a(href=`#timetable_id_${formatHtmlId(timetable.timetable_id)}`)
             if showTimetableLabel
               span= timetable.timetable_label
             if showTimetableLabel && showDayList
@@ -27,7 +27,7 @@ if timetablePage.consolidatedTimetables.length > 1
         div
           h3= dayList
           each timetable in group
-            a.btn-blue(href=`#timetable_id_${timetable.timetable_id}`)= timetable.timetable_label
+            a.btn-blue(href=`#timetable_id_${formatHtmlId(timetable.timetable_id)}`)= timetable.timetable_label
 
   if config.menuType === 'radio'
     .timetable-radio-menu
