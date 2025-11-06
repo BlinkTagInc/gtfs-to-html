@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Updated
+- Dependency updates
+
 ### Fixed
 - Formatting of ids for `simple` and `jump` menus
 

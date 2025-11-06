@@ -11,27 +11,27 @@ module.exports = {
       title: 'GTFS-to-HTML',
       logo: {
         alt: 'GTFS-to-HTML Logo',
-        src: 'img/gtfs-to-html-logo.svg'
+        src: 'img/gtfs-to-html-logo.svg',
       },
       items: [
         {
           to: 'docs/',
           activeBasePath: 'docs',
           label: 'Documentation',
-          position: 'left'
+          position: 'left',
         },
         { to: 'blog', label: 'Blog', position: 'left' },
         {
           href: 'https://www.npmjs.com/package/gtfs-to-html',
           label: 'NPM',
-          position: 'right'
+          position: 'right',
         },
         {
           href: 'https://github.com/blinktaginc/gtfs-to-html',
           label: 'GitHub',
-          position: 'right'
-        }
-      ]
+          position: 'right',
+        },
+      ],
     },
     footer: {
       style: 'dark',
@@ -41,43 +41,43 @@ module.exports = {
           items: [
             {
               label: 'Documentation',
-              to: 'docs/'
+              to: 'docs/',
             },
             {
               label: 'Blog',
-              to: 'blog'
-            }
-          ]
+              to: 'blog',
+            },
+          ],
         },
         {
           title: 'Download',
           items: [
             {
               label: 'GitHub',
-              href: 'https://github.com/blinktaginc/gtfs-to-html'
+              href: 'https://github.com/blinktaginc/gtfs-to-html',
             },
             {
               label: 'NPM',
-              href: 'https://www.npmjs.com/package/gtfs-to-html'
-            }
-          ]
+              href: 'https://www.npmjs.com/package/gtfs-to-html',
+            },
+          ],
         },
         {
           title: 'Acknowledgements',
           items: [
             {
               label: 'Docusaurus',
-              href: 'https://docusaurus.io'
+              href: 'https://docusaurus.io',
             },
             {
               label: 'Contributors',
-              href: 'https://github.com/BlinkTagInc/gtfs-to-html/blob/master/package.json#L13'
-            }
-          ]
-        }
+              href: 'https://github.com/BlinkTagInc/gtfs-to-html/blob/master/package.json#L13',
+            },
+          ],
+        },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} BlinkTag, Inc. Built with Docusaurus.`
-    }
+      copyright: `Copyright © ${new Date().getFullYear()} BlinkTag, Inc. Built with Docusaurus.`,
+    },
   },
   presets: [
     [
@@ -87,18 +87,19 @@ module.exports = {
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
           editUrl:
-            'https://github.com/blinktaginc/gtfs-to-html/edit/master/www/'
+            'https://github.com/blinktaginc/gtfs-to-html/edit/master/www/',
         },
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
           editUrl:
-            'https://github.com/blinktaginc/gtfs-to-html/edit/master/www/blog/'
+            'https://github.com/blinktaginc/gtfs-to-html/edit/master/www/blog/',
+          onUntruncatedBlogPosts: 'ignore',
         },
         theme: {
-          customCss: require.resolve('./src/css/custom.css')
-        }
-      }
-    ]
-  ]
+          customCss: require.resolve('./src/css/custom.css'),
+        },
+      },
+    ],
+  ],
 };

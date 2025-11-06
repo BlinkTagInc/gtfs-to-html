@@ -1,9 +1,7 @@
 ---
 slug: new_documentation
 title: New Documentation
-author: Brendan Nee
-author_url: https://github.com/brendannee
-author_image_url: https://avatars3.githubusercontent.com/u/96217?s=400&v=4
+authors: brendannee
 tags: [docusaurus]
 ---
 
