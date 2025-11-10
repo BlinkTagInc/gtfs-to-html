@@ -94,7 +94,7 @@
         minifiedGeojson.features.push(feature)
       }
 
-      geojsons[formatHtmlId(timetable.timetable_id)] = optimizeGeojsonProperties(minifiedGeojson)
+      geojsons[timetable.timetable_id] = optimizeGeojsonProperties(minifiedGeojson)
     }
 
     const gtfsRealtimeUrls = {}

@@ -21,7 +21,7 @@ include formatting_functions.pug
           | There are no service alerts at this time.
 
   each timetable in timetablePage.consolidatedTimetables
-    .timetable(id=`timetable_id_${formatHtmlId(timetable.timetable_id)}` data-day-list=timetable.dayList data-direction-name=timetable.direction_name || timetable.timetable_label data-timetable-id=`${formatHtmlId(timetable.timetable_id)}` data-direction-id=timetable.direction_id data-route-id=timetable.route_ids.join('_'))
+    .timetable(id=cssEscape(`timetable_id_${timetable.timetable_id}`) data-day-list=timetable.dayList data-direction-name=timetable.direction_name || timetable.timetable_label data-timetable-id=timetable.timetable_id data-direction-id=timetable.direction_id data-route-id=timetable.route_ids.join('_'))
       if config.showRouteTitle
         .timetable-label
           h2= `${timetable.timetable_label} | ${timetable.dayListLong}`

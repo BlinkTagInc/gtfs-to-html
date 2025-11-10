@@ -4,7 +4,7 @@
     colgroup
       col
       each trip, idx in timetable.orderedTrips
-        col(id=`trip_id_${formatHtmlId(trip.trip_id)}` class=`run_${idx} ${(trip.trip_short_name) ? 'trip_short_name_' + trip.trip_short_name : ''}`)
+        col(class=`run_${idx} ${(trip.trip_short_name) ? 'trip_short_name_' + trip.trip_short_name : ''}` data-trip-id=trip.trip_id)
     thead
       tr
         th.stop-header(scope="col") Stop
@@ -29,7 +29,7 @@
             th(scope="row" colspan=`${stop.trips.length + 1}`)= stop.stop_city
           - previousCity = stop.stop_city
 
-        tr.stop-row(id=`stop_id_${formatHtmlId(stop.stop_id)}` data-stop-id=`${stop.stop_id}` data-is-timepoint=`${stop.is_timepoint}`)
+        tr.stop-row(data-stop-id=`${stop.stop_id}` data-is-timepoint=`${stop.is_timepoint}`)
           th.stop-name-container(scope="row")
             include timetable_stop_name.pug
 

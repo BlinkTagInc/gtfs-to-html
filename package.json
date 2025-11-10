@@ -52,6 +52,7 @@
     "anchorme": "^3.0.8",
     "archiver": "^7.0.1",
     "cli-table": "^0.3.11",
+    "css.escape": "^1.5.1",
     "csv-stringify": "^6.6.0",
     "express": "^5.1.0",
     "gtfs": "^4.18.1",
