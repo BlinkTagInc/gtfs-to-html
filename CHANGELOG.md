@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Updated
 - Improved map legend styles
 - Dependency updates
+- Improved route color swatch styles
 
 ### Fixed
 - Fixed frontend layouts for working with IFOPT IDs (IDs containing `:`)

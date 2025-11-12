@@ -422,11 +422,12 @@ a:hover {
   align-items: center;
   justify-content: center;
   font-size: 0.75rem;
-  letter-spacing: -0.5px;
+  letter-spacing: -0.1px;
   padding: 0 2px;
   flex-shrink: 0;
   font-weight: bold;
   color: white;
+  text-shadow: 0 0 2px rgba(0,0,0,0.5);
 }
 
 .timetable-page .route-color-swatch-large {
@@ -438,11 +439,12 @@ a:hover {
   justify-content: center;
   font-size: 1.25rem;
   font-weight: bold;
-  letter-spacing: -1px;
+  letter-spacing: -0.2px;
   padding: 0 6px;
   flex-shrink: 0;
   font-weight: bold;
   color: white;
+  text-shadow: 0 0 4px rgba(0,0,0,0.5);
 }
 
 /* Map Styles */
@@ -671,11 +673,12 @@ a:hover {
   align-items: center;
   justify-content: center;
   font-size: 0.75rem;
-  letter-spacing: -0.5px;
+  letter-spacing: -0.1px;
   padding: 0 2px;
   flex-shrink: 0;
   font-weight: bold;
   color: white;
+  text-shadow: 0 0 2px rgba(0,0,0,0.5);
 }
 
 .timetable-page .timetable-alerts .alert-header .alert-title {
