@@ -190,6 +190,7 @@ function addGeocoder(map, bounds) {
       },
       {
         maplibregl,
+        debounceSearch: 800,
         proximity: {
           latitude: bounds.getCenter()[0],
           longitude: bounds.getCenter()[1],
