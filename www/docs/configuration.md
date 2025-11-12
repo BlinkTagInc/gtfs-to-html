@@ -61,8 +61,8 @@ All files starting with `config*.json` are .gitignored - so you can create multi
 | [`showStoptimesForRequestStops`](#showstoptimesforrequeststops) | Boolean          | Whether to show times for stops that require a request for pickup or dropoff.             |
 | [`skipImport`](#skipimport)                                     | Boolean          | Whether to skip importing GTFS data into SQLite.                                          |
 | [`sortingAlgorithm`](#sortingalgorithm)                         | String           | Defines the trip-sorting algorithm.                                                              |
-| [`sqlitePath`](#sqlitepath)                                     | String           | A path to a SQLite database. Optional, defaults to using an in-memory database.                 |
-| [`startDate`](#startdate)                                     | String           | A date in ISO 8601 format to control which calendars are used for the timetables.                |
+| [`sqlitePath`](#sqlitepath)                                     | String           | A path to an SQLite database. Optional, defaults to using an in-memory database.                 |
+| [`startDate`](#startdate)                                       | String           | A date in ISO 8601 format to control which calendars are used for the timetables.                |
 | [`templatePath`](#templatepath)                                 | String           | Path to custom pug template for rendering timetable.                                             |
 | [`timeFormat`](#timeformat)                                     | String           | A string defining time format in moment.js style.                                                |
 | [`useParentStation`](#useparentstation)                         | Boolean          | Whether to use a stop's `parent_station`.                                                 |

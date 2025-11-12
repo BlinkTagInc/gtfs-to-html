@@ -1,4 +1,5 @@
 import { dirname, join, resolve } from 'node:path';
+import cssEscape from 'css.escape';
 import { createWriteStream } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import {
@@ -318,6 +319,7 @@ export async function renderTemplate(
   // Make template functions, lodash and marked available inside pug templates.
   const html = await renderFile(templatePath, {
     _,
+    cssEscape,
     md: (text: string) => sanitizeHtml(marked.parseInline(text) as string),
     ...templateFunctions,
     formatRouteColor,
