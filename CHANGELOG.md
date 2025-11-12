@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improved route color swatch styles
 - Remove lodash frontend dependency
 - Use maplibre-gl from npm
+- Remove jQuery use from system map
 
 ### Fixed
 - Fixed frontend layouts for working with IFOPT IDs (IDs containing `:`)
