@@ -43,19 +43,19 @@ include formatting_functions.pug
         if hasNotesOrNotices(timetable)
           .notes
             if timetable.requestPickupSymbolUsed
-              .note(id=`note-${timetable.timetable_id}-request-pickup`)= `${config.requestPickupSymbol} = ${config.requestPickupText}`
+              .note(id=cssEscape(`note-${timetable.timetable_id}-request-pickup`))= `${config.requestPickupSymbol} = ${config.requestPickupText}`
             if timetable.noPickupSymbolUsed
-              .note(id=`note-${timetable.timetable_id}-no-pickup`)= `${config.noPickupSymbol} = ${config.noPickupText}`
+              .note(id=cssEscape(`note-${timetable.timetable_id}-no-pickup`))= `${config.noPickupSymbol} = ${config.noPickupText}`
             if timetable.requestDropoffSymbolUsed
-              .note(id=`note-${timetable.timetable_id}-request-dropoff`)= `${config.requestDropoffSymbol} = ${config.requestDropoffText}`
+              .note(id=cssEscape(`note-${timetable.timetable_id}-request-dropoff`))= `${config.requestDropoffSymbol} = ${config.requestDropoffText}`
             if timetable.noDropoffSymbolUsed
-              .note(id=`note-${timetable.timetable_id}-no-dropoff`)= `${config.noDropoffSymbol} = ${config.noDropoffText}`
+              .note(id=cssEscape(`note-${timetable.timetable_id}-no-dropoff`))= `${config.noDropoffSymbol} = ${config.noDropoffText}`
             if timetable.noServiceSymbolUsed
-              .note(id=`note-${timetable.timetable_id}-no-service`)= `${config.noServiceSymbol} = ${config.noServiceText}`
+              .note(id=cssEscape(`note-${timetable.timetable_id}-no-service`))= `${config.noServiceSymbol} = ${config.noServiceText}`
             if timetable.interpolatedStopSymbolUsed
-              .note(id=`note-${timetable.timetable_id}-interpolated-stop`)= `${config.interpolatedStopSymbol} = ${config.interpolatedStopText}`
+              .note(id=cssEscape(`note-${timetable.timetable_id}-interpolated-stop`))= `${config.interpolatedStopSymbol} = ${config.interpolatedStopText}`
             each note in _.uniqBy(timetable.notes, 'note_id')
-              .note(id=`note-${timetable.timetable_id}-${note.note_id}`)
+              .note(id=cssEscape(`note-${timetable.timetable_id}-${note.note_id}`))
                 span= note.symbol 
                 span &nbsp;=&nbsp;
                 span!= md(note.note)

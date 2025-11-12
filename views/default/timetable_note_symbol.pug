@@ -1,4 +1,4 @@
-a(href=`#note-${timetable.timetable_id}-${note.note_id}` class=`timetable-note-${note.note_id}`).symbol
+a(href=`#${cssEscape(`note-${timetable.timetable_id}-${note.note_id}`)}` data-note-id=note.note_id).symbol
   if timetable.routes.length <= 1 && timetable.orientation === 'vertical'
     span= note.symbol
   else

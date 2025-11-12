@@ -2,16 +2,16 @@ td.stop-time(class=stoptime.classes.join(' '))
   if config.showStoptimesForRequestStops || (!stoptime.requestDropoff && !stoptime.requestPickup)
     span.stop-time-text!= stoptime.formatted_time
   if stoptime.skipped && timetable.noServiceSymbol !== null
-    a(href=`#note-${timetable.timetable_id}-no-service`).symbol= timetable.noServiceSymbol
+    a(href=`#${cssEscape(`note-${timetable.timetable_id}-no-service`)}`).symbol= timetable.noServiceSymbol
   if stoptime.interpolated && timetable.interpolatedStopSymbol !== null
-    a(href=`#note-${timetable.timetable_id}-interpolated-stop`).symbol= timetable.interpolatedStopSymbol
+    a(href=`#${cssEscape(`note-${timetable.timetable_id}-interpolated-stop`)}`).symbol= timetable.interpolatedStopSymbol
   if stoptime.requestPickup && timetable.requestPickupSymbol !== null
-    a(href=`#note-${timetable.timetable_id}-request-pickup`).symbol= timetable.requestPickupSymbol
+    a(href=`#${cssEscape(`note-${timetable.timetable_id}-request-pickup`)}`).symbol= timetable.requestPickupSymbol
   if stoptime.noPickup && timetable.noPickupSymbol !== null
-    a(href=`#note-${timetable.timetable_id}-no-pickup`).symbol= timetable.noPickupSymbol
+    a(href=`#${cssEscape(`note-${timetable.timetable_id}-no-pickup`)}`).symbol= timetable.noPickupSymbol
   if stoptime.requestDropoff && timetable.requestDropoffSymbol !== null
-    a(href=`#note-${timetable.timetable_id}-request-dropoff`).symbol= timetable.requestDropoffSymbol
+    a(href=`#${cssEscape(`note-${timetable.timetable_id}-request-dropoff`)}`).symbol= timetable.requestDropoffSymbol
   if stoptime.noDropoff && timetable.noDropoffSymbol !== null
-    a(href=`#note-${timetable.timetable_id}-no-dropoff`).symbol= timetable.noDropoffSymbol
+    a(href=`#${cssEscape(`note-${timetable.timetable_id}-no-dropoff`)}`).symbol= timetable.noDropoffSymbol
   each note in getNotesForStoptime(timetable.notes, stoptime)
     include timetable_note_symbol.pug
