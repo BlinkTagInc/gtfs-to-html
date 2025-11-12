@@ -690,6 +690,15 @@ a:hover {
   margin-top: 0.5rem;
 }
 
+.timetable-page .timetable-alerts .alert-body .alert-label {
+  margin-top: 0.5rem;
+  font-weight: bold;
+}
+
+.timetable-page .timetable-alerts .alert-body ul {
+  margin: 0.5rem 0;
+}
+
 .timetable-page .timetable-alerts .alert-more-info {
   margin-top: 0.75rem;
 }

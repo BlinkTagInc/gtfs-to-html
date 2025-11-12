@@ -1,4 +1,4 @@
-/* global jQuery, anchorme, Pbf, stopData, routeData, routeIds, tripIds, stopIds, gtfsRealtimeUrls */
+/* global anchorme, Pbf, FeedMessage, stopData, routeData, routeIds, tripIds, stopIds, gtfsRealtimeUrls */
 /* eslint no-var: "off", prefer-arrow-callback: "off", no-unused-vars: "off" */
 
 let gtfsRealtimeAlertsInterval;
@@ -27,9 +27,11 @@ function formatAlertAsHtml(
   affectedRouteIdsInTimetable,
   affectedStopsIdsInTimetable,
 ) {
-  const $alert = jQuery('<div>').addClass('timetable-alert');
+  const alertElement = document.createElement('div');
+  alertElement.classList.add('timetable-alert');
 
-  const $routeList = jQuery('<div>').addClass('route-list');
+  const routeList = document.createElement('div');
+  routeList.classList.add('route-list');
 
   for (const routeId of affectedRouteIdsInTimetable) {
     const route = routeData[routeId];
@@ -38,44 +40,41 @@ function formatAlertAsHtml(
       continue;
     }
 
-    jQuery('<div>')
-      .addClass('route-color-swatch')
-      .css('background-color', route.route_color || '#000000')
-      .css('color', route.route_text_color || '#FFFFFF')
-      .text(route.route_short_name)
-      .appendTo($routeList);
+    const routeSwatch = document.createElement('div');
+    routeSwatch.classList.add('route-color-swatch');
+    routeSwatch.style.backgroundColor = route.route_color || '#000000';
+    routeSwatch.style.color = route.route_text_color || '#FFFFFF';
+    routeSwatch.textContent = route.route_short_name;
+    routeList.appendChild(routeSwatch);
   }
 
-  const $alertHeader = jQuery('<div>')
-    .addClass('alert-header')
-    .append($routeList)
-    .append(
-      jQuery('<div>')
-        .addClass('alert-title')
-        .text(alert.alert.header_text.translation[0].text),
-    );
+  const alertHeader = document.createElement('div');
+  alertHeader.classList.add('alert-header');
+  alertHeader.appendChild(routeList);
 
-  // Use anchorme to convert URLs to clickable links while using jQuery .text to prevent XSS
-  const $alertBody = jQuery('<div>')
-    .addClass('alert-body')
-    .append(
-      anchorme(
-        jQuery('<div>')
-          .text(alert.alert.description_text.translation[0].text)
-          .html(),
-      ),
-    );
+  const alertTitle = document.createElement('div');
+  alertTitle.classList.add('alert-title');
+  alertTitle.textContent = alert.alert.header_text.translation[0].text;
+  alertHeader.appendChild(alertTitle);
+
+  // Use anchorme to convert URLs to clickable links while using textContent to prevent XSS
+  const alertBody = document.createElement('div');
+  alertBody.classList.add('alert-body');
+
+  const tempDiv = document.createElement('div');
+  tempDiv.textContent = alert.alert.description_text.translation[0].text;
+  alertBody.innerHTML = anchorme(tempDiv.innerHTML);
 
   if (alert.alert.url?.translation?.[0].text) {
-    jQuery('<a>')
-      .attr('href', alert.alert.url.translation[0].text)
-      .addClass('btn-blue btn-sm alert-more-info')
-      .text('More Info')
-      .appendTo($alertBody);
+    const moreInfoLink = document.createElement('a');
+    moreInfoLink.href = alert.alert.url.translation[0].text;
+    moreInfoLink.classList.add('btn-blue', 'btn-sm', 'alert-more-info');
+    moreInfoLink.textContent = 'More Info';
+    alertBody.appendChild(moreInfoLink);
   }
 
   if (affectedStopsIdsInTimetable.length > 0) {
-    const $stopList = jQuery('<ul>');
+    const stopList = document.createElement('ul');
 
     for (const stopId of affectedStopsIdsInTimetable) {
       const stop = stopData[stopId];
@@ -84,23 +83,26 @@ function formatAlertAsHtml(
         continue;
       }
 
-      jQuery('<li>')
-        .append(jQuery('<div>').addClass('stop-name').text(stop.stop_name))
-        .appendTo($stopList);
+      const listItem = document.createElement('li');
+      const stopName = document.createElement('div');
+      stopName.classList.add('stop-name');
+      stopName.textContent = stop.stop_name;
+      listItem.appendChild(stopName);
+      stopList.appendChild(listItem);
     }
 
-    jQuery('<div>')
-      .text('Stops Affected:')
-      .append($stopList)
-      .appendTo($alertBody);
+    const stopsAffectedText = document.createElement('div');
+    stopsAffectedText.classList.add('alert-label');
+    stopsAffectedText.textContent = 'Stops Affected:';
 
-    $stopList.prependTo($alertBody);
+    alertBody.appendChild(stopsAffectedText);
+    alertBody.appendChild(stopList);
   }
 
-  $alertHeader.appendTo($alert);
-  $alertBody.appendTo($alert);
+  alertElement.appendChild(alertHeader);
+  alertElement.appendChild(alertBody);
 
-  return $alert;
+  return alertElement;
 }
 
 async function updateAlerts() {
@@ -172,25 +174,41 @@ async function updateAlerts() {
     }
 
     // Remove previously posted GTFS-RT alerts
-    jQuery('.timetable-alerts-list .timetable-alert').remove();
+    const existingAlerts = document.querySelectorAll(
+      '.timetable-alerts-list .timetable-alert',
+    );
+    existingAlerts.forEach((alert) => alert.remove());
 
     if (formattedAlerts.length > 0) {
       // Remove the empty message if present
-      jQuery('.timetable-alert-empty').hide();
+      const emptyMessage = document.querySelector('.timetable-alert-empty');
+      if (emptyMessage) {
+        emptyMessage.style.display = 'none';
+      }
 
+      const alertsList = document.querySelector('.timetable-alerts-list');
       for (const alert of formattedAlerts) {
-        jQuery('.timetable-alerts-list').append(alert);
+        alertsList.appendChild(alert);
       }
     } else {
       // Replace the empty message if present
-      jQuery('.timetable-alert-empty').show();
+      const emptyMessage = document.querySelector('.timetable-alert-empty');
+      if (emptyMessage) {
+        emptyMessage.style.display = '';
+      }
     }
   } catch (error) {
     console.error(error);
   }
 }
 
-jQuery(() => {
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initializeAlerts);
+} else {
+  initializeAlerts();
+}
+
+function initializeAlerts() {
   if (!gtfsRealtimeAlertsInterval && gtfsRealtimeUrls?.realtimeAlerts?.url) {
     const alertUpdateInterval = 60 * 1000; // Every Minute
     updateAlerts();
@@ -198,4 +216,4 @@ jQuery(() => {
       updateAlerts();
     }, alertUpdateInterval);
   }
-});
+}
