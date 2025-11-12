@@ -3,8 +3,6 @@ block content
   include timetablepage.pug
 
 block extraHeader
-  script(src="https://unpkg.com/jquery@3.7.1/dist/jquery.min.js" crossorigin="anonymous")
-
   if config.menuType === 'radio'
     script(src=`${config.assetPath}js/timetable-menu.js`)
 

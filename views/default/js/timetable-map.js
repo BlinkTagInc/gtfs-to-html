@@ -1,4 +1,4 @@
-/* global document, jQuery, maplibregl, Pbf, mapStyleUrl, stopData, routeData, routeIds, tripIds, geojsons, gtfsRealtimeUrls */
+/* global maplibregl, Pbf, FeedMessage, mapStyleUrl, stopData, routeData, routeIds, tripIds, geojsons, gtfsRealtimeUrls */
 /* eslint prefer-arrow-callback: "off", no-unused-vars: "off" */
 
 const maps = {};
@@ -18,8 +18,8 @@ function formatRouteTextColor(route) {
 }
 
 function degToCompass(num) {
-  var val = Math.floor(num / 22.5 + 0.5);
-  var arr = [
+  const val = Math.floor(num / 22.5 + 0.5);
+  const arr = [
     'N',
     'NNE',
     'NE',
@@ -56,47 +56,56 @@ function formatSeconds(seconds) {
 
 function formatRoute(route) {
   const html = route.route_url
-    ? jQuery('<a>').attr('href', route.route_url)
-    : jQuery('<div>');
+    ? document.createElement('a')
+    : document.createElement('div');
 
-  html.addClass('map-route-item');
+  if (route.route_url) {
+    html.href = route.route_url;
+  }
+
+  html.className = 'map-route-item';
 
   // Only add color swatch if route has a color
-  const routeItemDivs = [];
-
   if (route.route_color) {
-    routeItemDivs.push(
-      jQuery('<div>')
-        .addClass('route-color-swatch')
-        .css('backgroundColor', formatRouteColor(route))
-        .css('color', formatRouteTextColor(route))
-        .text(route.route_short_name ?? ''),
-    );
+    const swatch = document.createElement('div');
+    swatch.className = 'route-color-swatch';
+    swatch.style.backgroundColor = formatRouteColor(route);
+    swatch.style.color = formatRouteTextColor(route);
+    swatch.textContent = route.route_short_name ?? '';
+    html.appendChild(swatch);
   }
-  routeItemDivs.push(
-    jQuery('<div>')
-      .addClass('underline-hover')
-      .text(route.route_long_name ?? `Route ${route.route_short_name}`),
-  );
 
-  html.append(routeItemDivs);
+  const textDiv = document.createElement('div');
+  textDiv.className = 'underline-hover';
+  textDiv.textContent =
+    route.route_long_name ?? `Route ${route.route_short_name}`;
+  html.appendChild(textDiv);
 
-  return html.prop('outerHTML');
+  return html.outerHTML;
 }
 
 function getStopPopupHtml(feature, stop) {
   const routeIds = JSON.parse(feature.properties.route_ids);
-  const html = jQuery('<div>');
+  const html = document.createElement('div');
 
-  jQuery('<div>').addClass('popup-title').text(stop.stop_name).appendTo(html);
+  const title = document.createElement('div');
+  title.className = 'popup-title';
+  title.textContent = stop.stop_name;
+  html.appendChild(title);
 
   if (stop.stop_code ?? false) {
-    jQuery('<div>')
-      .html([
-        jQuery('<div>').addClass('popup-label').text('Stop Code:'),
-        jQuery('<strong>').text(stop.stop_code),
-      ])
-      .appendTo(html);
+    const stopCodeContainer = document.createElement('div');
+
+    const label = document.createElement('div');
+    label.className = 'popup-label';
+    label.textContent = 'Stop Code:';
+    stopCodeContainer.appendChild(label);
+
+    const code = document.createElement('strong');
+    code.textContent = stop.stop_code;
+    stopCodeContainer.appendChild(code);
+
+    html.appendChild(stopCodeContainer);
   }
 
   if (tripUpdates) {
@@ -134,16 +143,19 @@ function getStopPopupHtml(feature, stop) {
     });
 
     if (stopTimeUpdates['0'].length > 0 || stopTimeUpdates['1'].length > 0) {
-      jQuery('<div>')
-        .addClass('popup-label')
-        .text('Upcoming Departures:')
-        .appendTo(html);
+      const departuresLabel = document.createElement('div');
+      departuresLabel.className = 'popup-label';
+      departuresLabel.textContent = 'Upcoming Departures:';
+      html.appendChild(departuresLabel);
 
       for (const direction of ['0', '1']) {
         if (stopTimeUpdates[direction].length > 0) {
-          const directionName = jQuery(
+          const timetableElement = document.querySelector(
             `.timetable[data-direction-id="${direction}"]`,
-          ).data('direction-name');
+          );
+          const directionName = timetableElement
+            ? timetableElement.dataset.directionName
+            : '';
           const departureTimes = stopTimeUpdates[direction].map(
             (stopTimeUpdate) =>
               Math.round(
@@ -161,34 +173,35 @@ function getStopPopupHtml(feature, stop) {
             type: 'conjunction',
           }).format(departureTimes.slice(0, 4).map((time) => `<b>${time}</b>`));
 
-          jQuery('<div>')
-            .html(`<b>${directionName}</b> in ${formattedDepartures} min`)
-            .appendTo(html);
+          const departureDiv = document.createElement('div');
+          departureDiv.innerHTML = `<b>${directionName}</b> in ${formattedDepartures} min`;
+          html.appendChild(departureDiv);
         }
       }
     }
   }
 
-  jQuery('<div>').addClass('popup-label').text('Routes Served:').appendTo(html);
+  const routesLabel = document.createElement('div');
+  routesLabel.className = 'popup-label';
+  routesLabel.textContent = 'Routes Served:';
+  html.appendChild(routesLabel);
 
-  jQuery(html).append(
-    jQuery('<div>')
-      .addClass('route-list')
-      .html(routeIds.map((routeId) => formatRoute(routeData[routeId]))),
-  );
+  const routeList = document.createElement('div');
+  routeList.className = 'route-list';
+  routeList.innerHTML = routeIds
+    .map((routeId) => formatRoute(routeData[routeId]))
+    .join('');
+  html.appendChild(routeList);
 
-  jQuery('<a>')
-    .addClass('btn-blue btn-sm')
-    .prop(
-      'href',
-      `https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${feature.geometry.coordinates[1]},${feature.geometry.coordinates[0]}&heading=0&pitch=0&fov=90`,
-    )
-    .prop('target', '_blank')
-    .prop('rel', 'noopener noreferrer')
-    .html('View on Streetview')
-    .appendTo(html);
+  const streetviewLink = document.createElement('a');
+  streetviewLink.className = 'btn-blue btn-sm';
+  streetviewLink.href = `https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${feature.geometry.coordinates[1]},${feature.geometry.coordinates[0]}&heading=0&pitch=0&fov=90`;
+  streetviewLink.target = '_blank';
+  streetviewLink.rel = 'noopener noreferrer';
+  streetviewLink.textContent = 'View on Streetview';
+  html.appendChild(streetviewLink);
 
-  return html.prop('outerHTML');
+  return html.outerHTML;
 }
 
 function getBounds(geojson) {
@@ -213,7 +226,7 @@ function getBounds(geojson) {
 }
 
 function secondsInFuture(dateString) {
-  // Takes a dateString in the format of "YYYYMMDD HH:mm:ss" and returns true if the date is more than 15 minutes in the future
+  // Takes a dateString in the format of "YYYYMMDD HH:mm:ss" and returns number of seconds in the future or 0 if the date is in the past
 
   const inputDate = new Date(
     dateString.substring(0, 4), // Year
@@ -257,29 +270,33 @@ function formatMovingText(vehiclePosition) {
 }
 
 function getVehiclePopupHtml(vehiclePosition, vehicleTripUpdate) {
-  const html = jQuery('<div>').data(
-    'vehicle-id',
-    vehiclePosition.vehicle.vehicle.id,
-  );
+  const html = document.createElement('div');
+  html.dataset.vehicleId = vehiclePosition.vehicle.vehicle.id;
 
   const lastUpdated = new Date(vehiclePosition.vehicle.timestamp * 1000);
-  const directionName = jQuery(
+  const tripElement = document.querySelector(
     `.timetable [data-trip-id="${vehiclePosition.vehicle.trip.trip_id}"]`,
-  )
-    .parents('.timetable')
-    .data('direction-name');
+  );
+  const timetableElement = tripElement
+    ? tripElement.closest('.timetable')
+    : null;
+  const directionName = timetableElement
+    ? timetableElement.dataset.directionName
+    : null;
 
   if (directionName) {
-    jQuery('<div>')
-      .addClass('popup-title')
-      .text(`Vehicle: ${directionName}`)
-      .appendTo(html);
+    const title = document.createElement('div');
+    title.className = 'popup-title';
+    title.textContent = `Vehicle: ${directionName}`;
+    html.appendChild(title);
   }
 
   const movingText = formatMovingText(vehiclePosition);
 
   if (movingText) {
-    jQuery('<div>').text(movingText).appendTo(html);
+    const movingDiv = document.createElement('div');
+    movingDiv.textContent = movingText;
+    html.appendChild(movingDiv);
   }
 
   const numberOfArrivalsToShow = 5;
@@ -309,37 +326,44 @@ function getVehiclePopupHtml(vehiclePosition, vehicleTripUpdate) {
   }
 
   if (nextArrivals.length > 0) {
-    jQuery('<div>')
-      .addClass('upcoming-stops')
-      .append([
-        jQuery('<div>').text('Time'),
-        jQuery('<div>').text('Upcoming Stop'),
-      ])
-      .append(
-        nextArrivals.flatMap((arrival) => {
-          let delay = '';
+    const upcomingStops = document.createElement('div');
+    upcomingStops.className = 'upcoming-stops';
 
-          if (arrival.delay > 0) {
-            delay = `(${formatSeconds(arrival.delay)} behind schedule)`;
-          } else if (arrival.delay < 0) {
-            delay = `(${formatSeconds(arrival.delay)} ahead of schedule)`;
-          }
+    const timeHeader = document.createElement('div');
+    timeHeader.textContent = 'Time';
+    upcomingStops.appendChild(timeHeader);
 
-          return [
-            jQuery('<div>').text(formatSeconds(arrival.secondsToArrival)),
-            jQuery('<div>').text(`${arrival.stopName} ${delay}`),
-          ];
-        }),
-      )
-      .appendTo(html);
+    const stopHeader = document.createElement('div');
+    stopHeader.textContent = 'Upcoming Stop';
+    upcomingStops.appendChild(stopHeader);
+
+    for (const arrival of nextArrivals) {
+      let delay = '';
+
+      if (arrival.delay > 0) {
+        delay = `(${formatSeconds(arrival.delay)} behind schedule)`;
+      } else if (arrival.delay < 0) {
+        delay = `(${formatSeconds(arrival.delay)} ahead of schedule)`;
+      }
+
+      const timeDiv = document.createElement('div');
+      timeDiv.textContent = formatSeconds(arrival.secondsToArrival);
+      upcomingStops.appendChild(timeDiv);
+
+      const stopDiv = document.createElement('div');
+      stopDiv.textContent = `${arrival.stopName} ${delay}`;
+      upcomingStops.appendChild(stopDiv);
+    }
+
+    html.appendChild(upcomingStops);
   }
 
-  jQuery('<div>')
-    .addClass('vehicle-updated')
-    .text(`Updated: ${lastUpdated.toLocaleTimeString()}`)
-    .appendTo(html);
+  const updatedDiv = document.createElement('div');
+  updatedDiv.className = 'vehicle-updated';
+  updatedDiv.textContent = `Updated: ${lastUpdated.toLocaleTimeString()}`;
+  html.appendChild(updatedDiv);
 
-  return html.prop('outerHTML');
+  return html.outerHTML;
 }
 
 function getVehicleBearing(vehiclePosition, vehicleTripUpdate) {
@@ -352,10 +376,7 @@ function getVehicleBearing(vehiclePosition, vehicleTripUpdate) {
   }
 
   // Else try to calculate bearing from next stop
-  if (
-    vehicleTripUpdate &&
-    vehicleTripUpdate?.trip_update?.stop_time_update?.length > 0
-  ) {
+  if (vehicleTripUpdate?.trip_update?.stop_time_update?.length > 0) {
     const nextStopTimeUpdate =
       vehicleTripUpdate.trip_update.stop_time_update[0];
     const nextStop = stopData[nextStopTimeUpdate.stop_id];
@@ -437,7 +458,16 @@ function addVehicleMarker(vehiclePosition, vehicleTripUpdate) {
     return;
   }
 
-  const visibleTimetableId = jQuery('.timetable:visible').data('timetable-id');
+  const visibleTimetable = document.querySelector(
+    '.timetable:not([style*="display: none"])',
+  );
+  const visibleTimetableId = visibleTimetable
+    ? visibleTimetable.dataset.timetableId
+    : null;
+
+  if (!visibleTimetableId) {
+    return;
+  }
 
   const vehicleDirectionArrow = getVehicleDirectionArrow(
     vehiclePosition,
@@ -508,7 +538,7 @@ function animateVehicleMarker(vehicleMarker, vehiclePosition) {
       vehiclePopup.setLngLat([newLongitude, newLatitude]);
     }
 
-    if (safeProgress != 1) {
+    if (safeProgress !== 1) {
       requestAnimationFrame(animation);
     }
   };
@@ -572,11 +602,13 @@ async function updateArrivals() {
     ]);
 
     if (!latestVehiclePositions?.length) {
-      jQuery('.vehicle-legend-item').hide();
+      const legendItems = document.querySelectorAll('.vehicle-legend-item');
+      legendItems.forEach((item) => (item.style.display = 'none'));
       return;
     }
 
-    jQuery('.vehicle-legend-item').show();
+    const legendItems = document.querySelectorAll('.vehicle-legend-item');
+    legendItems.forEach((item) => (item.style.display = ''));
 
     vehiclePositions = latestVehiclePositions.filter((vehiclePosition) => {
       if (
@@ -607,7 +639,7 @@ async function updateArrivals() {
       return tripIds.includes(vehiclePosition.vehicle.trip.trip_id);
     });
 
-    tripUpdates = latestTripUpdates.filter((tripUpdate) => {
+    tripUpdates = latestTripUpdates?.filter((tripUpdate) => {
       if (
         !tripUpdate ||
         !tripUpdate.trip_update ||
@@ -648,14 +680,20 @@ async function updateArrivals() {
         );
       }
 
-      const visibleTimetableId =
-        jQuery('.timetable:visible').data('timetable-id');
-
-      attachVehicleMarkerClickHandler(
-        vehiclePosition,
-        vehicleTripUpdate,
-        maps[visibleTimetableId],
+      const visibleTimetable = document.querySelector(
+        '.timetable:not([style*="display: none"])',
       );
+      const visibleTimetableId = visibleTimetable
+        ? visibleTimetable.dataset.timetableId
+        : null;
+
+      if (visibleTimetableId) {
+        attachVehicleMarkerClickHandler(
+          vehiclePosition,
+          vehicleTripUpdate,
+          maps[visibleTimetableId],
+        );
+      }
     }
 
     // Remove vehicles not in the feed
@@ -681,11 +719,11 @@ function toggleMap(id) {
 
     // Update vehicle markers to use the current visible map
     for (const [vehicleId, vehicleMarker] of Object.entries(vehicleMarkers)) {
-      const vehiclePosition = vehiclePositions.find(
+      const vehiclePosition = vehiclePositions?.find(
         (vehiclePosition) => vehiclePosition.vehicle.vehicle.id === vehicleId,
       );
 
-      const vehicleTripUpdate = tripUpdates.find(
+      const vehicleTripUpdate = tripUpdates?.find(
         (tripUpdate) => tripUpdate.trip_update.vehicle.id === vehicleId,
       );
 
@@ -711,7 +749,12 @@ function createMap(id) {
   const geojson = geojsons[id];
 
   if (!geojson || geojson.features.length === 0) {
-    jQuery(`.map[data-timetable-id="${id}"]`).hide();
+    const mapElement = document.querySelector(
+      `.map[data-timetable-id="${id}"]`,
+    );
+    if (mapElement) {
+      mapElement.style.display = 'none';
+    }
     return false;
   }
 
@@ -958,8 +1001,12 @@ function unHighlightStop(map, id) {
 }
 
 function highlightTimetableStops(id, stopIds) {
-  const table = jQuery(`.timetable[data-timetable-id="${id}"] table`);
-  const isVertical = table.data('orientation') === 'vertical';
+  const table = document.querySelector(
+    `.timetable[data-timetable-id="${id}"] table`,
+  );
+  if (!table) return;
+
+  const isVertical = table.dataset.orientation === 'vertical';
 
   if (isVertical) {
     highlightVerticalTimetableStops(id, stopIds);
@@ -969,84 +1016,128 @@ function highlightTimetableStops(id, stopIds) {
 }
 
 function highlightVerticalTimetableStops(id, stopIds) {
-  const table = jQuery(`.timetable[data-timetable-id="${id}"] table`);
+  const table = document.querySelector(
+    `.timetable[data-timetable-id="${id}"] table`,
+  );
+  if (!table) return;
+
   const columnIndexes = [];
-  const stopIdSelectors = stopIds
-    .map(
-      (stopId) =>
-        `.timetable[data-timetable-id="${id}"] table colgroup col[data-stop-id="${stopId}"]`,
-    )
-    .join(',');
+  const allCols = Array.from(table.querySelectorAll('colgroup col'));
 
-  jQuery(stopIdSelectors).each((index, col) => {
-    columnIndexes.push(
-      jQuery(`.timetable[data-timetable-id="${id}"] table colgroup col`).index(
-        col,
-      ),
-    );
-  });
+  for (const stopId of stopIds) {
+    const col = table.querySelector(`colgroup col[data-stop-id="${stopId}"]`);
+    if (col) {
+      const index = allCols.indexOf(col);
+      if (index !== -1) {
+        columnIndexes.push(index);
+      }
+    }
+  }
 
-  table.find('td, thead th').removeClass('highlighted');
-  table.find('.trip-row').each((index, row) => {
-    jQuery('td', row).each((index, el) => {
+  // Remove highlighted class from all cells
+  table
+    .querySelectorAll('td, thead th')
+    .forEach((el) => el.classList.remove('highlighted'));
+
+  // Add highlighted class to cells in matching columns
+  table.querySelectorAll('.trip-row').forEach((row) => {
+    const cells = row.querySelectorAll('td');
+    cells.forEach((cell, index) => {
       if (columnIndexes.includes(index)) {
-        jQuery(el).addClass('highlighted');
+        cell.classList.add('highlighted');
       }
     });
   });
 
-  table.find('thead').each((index, thead) => {
-    jQuery('th', thead).each((index, el) => {
+  table.querySelectorAll('thead').forEach((thead) => {
+    const headers = thead.querySelectorAll('th');
+    headers.forEach((header, index) => {
       if (columnIndexes.includes(index)) {
-        jQuery(el).addClass('highlighted');
+        header.classList.add('highlighted');
       }
     });
   });
 }
 
 function highlightHorizontalTimetableStops(id, stopIds) {
-  const table = jQuery(`.timetable[data-timetable-id="${id}"] table`);
-  table.find('.stop-row').removeClass('highlighted');
-  const stopIdSelectors = stopIds
-    .map(
-      (stopId) =>
-        `.timetable[data-timetable-id="${id}"] table [data-stop-id="${stopId}"]`,
-    )
-    .join(',');
-  jQuery(stopIdSelectors).addClass('highlighted');
+  const table = document.querySelector(
+    `.timetable[data-timetable-id="${id}"] table`,
+  );
+  if (!table) return;
+
+  // Remove highlighted class from all stop rows
+  table
+    .querySelectorAll('.stop-row')
+    .forEach((row) => row.classList.remove('highlighted'));
+
+  // Add highlighted class to matching stop rows
+  for (const stopId of stopIds) {
+    const stopRow = table.querySelector(`[data-stop-id="${stopId}"]`);
+    if (stopRow) {
+      stopRow.classList.add('highlighted');
+    }
+  }
 }
 
 function unHighlightTimetableStops(id) {
-  const table = jQuery(`.timetable[data-timetable-id="${id}"] table`);
-  const isVertical = table.data('orientation') === 'vertical';
+  const table = document.querySelector(
+    `.timetable[data-timetable-id="${id}"] table`,
+  );
+  if (!table) return;
+
+  const isVertical = table.dataset.orientation === 'vertical';
 
   if (isVertical) {
-    table.find('td, thead th').removeClass('highlighted');
+    table
+      .querySelectorAll('td, thead th')
+      .forEach((el) => el.classList.remove('highlighted'));
   } else {
-    table.find('.stop-row').removeClass('highlighted');
+    table
+      .querySelectorAll('.stop-row')
+      .forEach((row) => row.classList.remove('highlighted'));
   }
 }
 
 function setupTableHoverListeners(id, map) {
-  jQuery('th, td', jQuery(`.timetable[data-timetable-id="${id}"] table`)).hover(
-    (event) => {
+  const table = document.querySelector(
+    `.timetable[data-timetable-id="${id}"] table`,
+  );
+  if (!table) return;
+
+  const cells = table.querySelectorAll('th, td');
+  cells.forEach((cell) => {
+    cell.addEventListener('mouseenter', (event) => {
       const stopId = getStopIdFromTableCell(event.target);
       if (stopId !== undefined) {
         highlightStop(map, id, [stopId.toString()]);
       }
-    },
-    () => unHighlightStop(map, id),
-  );
+    });
+
+    cell.addEventListener('mouseleave', () => {
+      unHighlightStop(map, id);
+    });
+  });
 }
 
 function getStopIdFromTableCell(cell) {
-  const table = jQuery(cell).closest('table');
-  if (table.data('orientation') === 'vertical') {
-    const index = jQuery(cell).index();
-    return jQuery('colgroup col', table).eq(index).data('stop-id');
+  const table = cell.closest('table');
+  if (!table) return undefined;
+
+  if (table.dataset.orientation === 'vertical') {
+    const row = cell.parentElement;
+    const cellIndex = Array.from(row.children).indexOf(cell);
+    const cols = table.querySelectorAll('colgroup col');
+    if (cols[cellIndex]) {
+      return cols[cellIndex].dataset.stopId;
+    }
   } else {
-    return jQuery(cell).closest('tr').data('stop-id');
+    const row = cell.closest('tr');
+    if (row) {
+      return row.dataset.stopId;
+    }
   }
+
+  return undefined;
 }
 
 function createMaps() {
