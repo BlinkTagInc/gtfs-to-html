@@ -1,62 +1,86 @@
-/* global jQuery */
-/* eslint no-unused-vars: "off" */
+/* global toggleMap */
 
 function showSelectedTimetable() {
-  if (jQuery('.timetable').length === 1) {
-    showTimetable(jQuery('.timetable').data('timetable-id'));
-    return false;
+  const timetables = document.querySelectorAll('.timetable');
+
+  if (timetables.length === 1) {
+    showTimetable(timetables[0].dataset.timetableId);
+    return;
   }
 
-  jQuery('#day_list_selector input[name="dayList"]').each((index, element) => {
-    jQuery(element)
-      .parents('label')
-      .toggleClass('btn-blue', jQuery(element).is(':checked'));
-    jQuery(element)
-      .parents('label')
-      .toggleClass('btn-gray', jQuery(element).is(':not(:checked)'));
+  document
+    .querySelectorAll('#day_list_selector input[name="dayList"]')
+    .forEach((element) => {
+      const label = element.closest('label');
+      if (label) {
+        label.classList.toggle('btn-blue', element.checked);
+        label.classList.toggle('btn-gray', !element.checked);
+      }
+    });
+
+  document
+    .querySelectorAll('#direction_name_selector input[name="directionId"]')
+    .forEach((element) => {
+      const label = element.closest('label');
+      if (label) {
+        label.classList.toggle('btn-blue', element.checked);
+        label.classList.toggle('btn-gray', !element.checked);
+      }
+    });
+
+  const dayListInput = document.querySelector(
+    '#day_list_selector input[name="dayList"]:checked',
+  );
+  const dayList = dayListInput ? dayListInput.value : null;
+
+  const directionIdInput = document.querySelector(
+    '#direction_name_selector input[name="directionId"]:checked',
+  );
+  const directionId = directionIdInput ? directionIdInput.value : null;
+
+  timetables.forEach((timetable) => {
+    timetable.style.display = 'none';
   });
 
-  jQuery('#direction_name_selector input[name="directionId"]').each(
-    (index, element) => {
-      jQuery(element)
-        .parents('label')
-        .toggleClass('btn-blue', jQuery(element).is(':checked'));
-      jQuery(element)
-        .parents('label')
-        .toggleClass('btn-gray', jQuery(element).is(':not(:checked)'));
-    },
+  const selectedTimetable = document.querySelector(
+    `.timetable[data-day-list="${dayList}"][data-direction-id="${directionId}"]`,
   );
 
-  const dayList = jQuery(
-    '#day_list_selector input[name="dayList"]:checked',
-  ).val();
-
-  const directionId = jQuery(
-    '#direction_name_selector input[name="directionId"]:checked',
-  ).val();
-
-  jQuery('.timetable').hide();
-
-  const id = jQuery(
-    `.timetable[data-day-list="${dayList}"][data-direction-id="${directionId}"]`,
-  ).data('timetable-id');
-
-  showTimetable(id);
+  if (selectedTimetable) {
+    const id = selectedTimetable.dataset.timetableId;
+    showTimetable(id);
+  }
 }
 
 function showTimetable(id) {
-  jQuery(`.timetable[data-timetable-id="${id}"]`).show();
-  toggleMap(id);
+  const timetable = document.querySelector(
+    `.timetable[data-timetable-id="${id}"]`,
+  );
+  if (timetable) {
+    timetable.style.display = 'block';
+  }
+  // Check if toggleMap is defined
+  if (typeof toggleMap === 'function') {
+    toggleMap(id);
+  }
 }
 
-jQuery(() => {
+document.addEventListener('DOMContentLoaded', () => {
   showSelectedTimetable();
 
-  jQuery('#day_list_selector input[name="dayList"]').change(() => {
-    showSelectedTimetable();
-  });
+  document
+    .querySelectorAll('#day_list_selector input[name="dayList"]')
+    .forEach((input) => {
+      input.addEventListener('change', () => {
+        showSelectedTimetable();
+      });
+    });
 
-  jQuery('#direction_name_selector input[name="directionId"]').change(() => {
-    showSelectedTimetable();
-  });
+  document
+    .querySelectorAll('#direction_name_selector input[name="directionId"]')
+    .forEach((input) => {
+      input.addEventListener('change', () => {
+        showSelectedTimetable();
+      });
+    });
 });

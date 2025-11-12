@@ -1,4 +1,4 @@
-/* global document, maplibregl, geojson, mapStyleUrl, MaplibreGeocoder */
+/* global maplibregl, geojson, mapStyleUrl, MaplibreGeocoder */
 /* eslint prefer-arrow-callback: "off", no-unused-vars: "off" */
 
 function formatRouteColor(route) {
