@@ -83,6 +83,40 @@ app.use(
     ),
   ),
 );
+app.use(
+  '/js',
+  express.static(
+    join(dirname(fileURLToPath(import.meta.resolve('maplibre-gl'))), '../dist'),
+  ),
+);
+app.use(
+  '/js',
+  express.static(
+    join(
+      dirname(
+        fileURLToPath(import.meta.resolve('@maplibre/maplibre-gl-geocoder')),
+      ),
+      '../dist',
+    ),
+  ),
+);
+app.use(
+  '/css',
+  express.static(
+    join(dirname(fileURLToPath(import.meta.resolve('maplibre-gl'))), '../dist'),
+  ),
+);
+app.use(
+  '/css',
+  express.static(
+    join(
+      dirname(
+        fileURLToPath(import.meta.resolve('@maplibre/maplibre-gl-geocoder')),
+      ),
+      '../dist',
+    ),
+  ),
+);
 
 // Show all timetable pages
 app.get('/', async (req, res, next) => {

@@ -205,6 +205,50 @@ export async function copyStaticAssets(config: Config, outputPath: string) {
       join(outputPath, 'js/anchorme.min.js'),
     );
   }
+
+  if (config.showMap) {
+    await copyFile(
+      join(
+        dirname(findPackageJSON('maplibre-gl', import.meta.url) as string),
+        'dist/maplibre-gl.js',
+      ),
+      join(outputPath, 'js/maplibre-gl.js'),
+    );
+
+    await copyFile(
+      join(
+        dirname(findPackageJSON('maplibre-gl', import.meta.url) as string),
+        'dist/maplibre-gl.css',
+      ),
+      join(outputPath, 'css/maplibre-gl.css'),
+    );
+
+    await copyFile(
+      join(
+        dirname(
+          findPackageJSON(
+            '@maplibre/maplibre-gl-geocoder',
+            import.meta.url,
+          ) as string,
+        ),
+        'dist/maplibre-gl-geocoder.js',
+      ),
+      join(outputPath, 'js/maplibre-gl-geocoder.js'),
+    );
+
+    await copyFile(
+      join(
+        dirname(
+          findPackageJSON(
+            '@maplibre/maplibre-gl-geocoder',
+            import.meta.url,
+          ) as string,
+        ),
+        'dist/maplibre-gl-geocoder.css',
+      ),
+      join(outputPath, 'css/maplibre-gl-geocoder.css'),
+    );
+  }
 }
 
 /*

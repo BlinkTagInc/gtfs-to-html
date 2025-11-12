@@ -5,11 +5,11 @@ block content
 block extraHeader
   if config.showMap
     script(src="https://unpkg.com/jquery@3.7.1/dist/jquery.min.js" crossorigin="anonymous")
-    script(src="https://unpkg.com/maplibre-gl@5.12.0/dist/maplibre-gl.js")
-    script(src="https://unpkg.com/@maplibre/maplibre-gl-geocoder@1.9.1/dist/maplibre-gl-geocoder.js")
+    script(src=`${config.assetPath}js/maplibre-gl.js`)
+    script(src=`${config.assetPath}js/maplibre-gl-geocoder.js`)
     script(src=`${config.assetPath}js/system-map.js`)
 
-    link(href="https://unpkg.com/maplibre-gl@^5.12.0/dist/maplibre-gl.css" rel="stylesheet")
-    link(href="https://unpkg.com/@maplibre/maplibre-gl-geocoder@1.9.1/dist/maplibre-gl-geocoder.css" rel="stylesheet")
+    link(href=`${config.assetPath}css/maplibre-gl.css` rel="stylesheet")
+    link(href=`${config.assetPath}css/maplibre-gl-geocoder.css` rel="stylesheet")
 
   link(rel="stylesheet" href=`${config.assetPath}css/overview_styles.css`)
