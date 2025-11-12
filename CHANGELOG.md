@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improved map legend styles
 - Dependency updates
 - Improved route color swatch styles
+- Remove lodash frontend dependency
 
 ### Fixed
 - Fixed frontend layouts for working with IFOPT IDs (IDs containing `:`)

@@ -1,4 +1,4 @@
-/* global document, jQuery, _, maplibregl, geojson, mapStyleUrl */
+/* global document, jQuery, maplibregl, geojson, mapStyleUrl */
 /* eslint prefer-arrow-callback: "off", no-unused-vars: "off" */
 
 function formatRouteColor(route) {
@@ -132,11 +132,6 @@ function createSystemMap() {
     center: bounds.getCenter(),
     zoom: 12,
   });
-  const routes = {};
-
-  for (const feature of geojson.features) {
-    routes[feature.properties.route_id] = feature.properties;
-  }
 
   map.scrollZoom.disable();
   map.addControl(new maplibregl.NavigationControl());
@@ -148,7 +143,7 @@ function createSystemMap() {
     fitMapToBounds(map, bounds);
     disablePointsOfInterest(map);
     addMapLayers(map, geojson, defaultRouteColor, lineLayout);
-    setupEventListeners(map, routes);
+    setupEventListeners(map);
   });
 }
 
@@ -513,22 +508,23 @@ function addRouteLabels(map, geojson) {
   });
 }
 
-function setupEventListeners(map, routes) {
-  map.on('mousemove', (event) => handleMouseMove(event, map, routes));
+function setupEventListeners(map) {
+  map.on('mousemove', (event) => handleMouseMove(event, map));
   map.on('click', (event) => handleClick(event, map));
   setupTableHoverListeners(map);
 }
 
-function handleMouseMove(event, map, routes) {
+function handleMouseMove(event, map) {
   const features = map.queryRenderedFeatures(event.point, {
     layers: ['routes', 'route-outlines', 'stops-highlighted', 'stops'],
   });
   if (features.length > 0) {
     map.getCanvas().style.cursor = 'pointer';
-    highlightRoutes(
-      map,
-      _.compact(_.uniq(features.map((feature) => feature.properties.route_id))),
-    );
+    // Get unique route IDs
+    const routeIds = features
+      .map((feature) => feature.properties.route_id)
+      .filter((value, index, self) => value && self.indexOf(value) === index);
+    highlightRoutes(map, routeIds);
 
     if (features.some((feature) => feature.layer.id === 'stops')) {
       highlightStop(
@@ -574,10 +570,23 @@ function showStopPopup(map, feature) {
 }
 
 function showRoutePopup(map, features, lngLat) {
-  const routes = _.orderBy(
-    _.uniqBy(features, (feature) => feature.properties.route_short_name),
-    (feature) => Number.parseInt(feature.properties.route_short_name, 10),
-  );
+  // Get list of unique routes, using route_short_name as the key
+  const seen = {};
+  const uniqueRoutes = [];
+  for (const feature of features) {
+    const routeShortName = feature.properties.route_short_name;
+    if (!seen[routeShortName]) {
+      seen[routeShortName] = true;
+      uniqueRoutes.push(feature);
+    }
+  }
+
+  // Sort by route_short_name as number
+  const routes = uniqueRoutes.sort((a, b) => {
+    const aNum = Number.parseInt(a.properties.route_short_name, 10);
+    const bNum = Number.parseInt(b.properties.route_short_name, 10);
+    return aNum - bNum;
+  });
 
   new maplibregl.Popup()
     .setLngLat(lngLat)
