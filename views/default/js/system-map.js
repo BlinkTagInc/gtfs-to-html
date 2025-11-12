@@ -600,9 +600,18 @@ function showRoutePopup(map, features, lngLat) {
     }
   }
 
-  // Sort by route_short_name as number
+  // Sort by route_short_name as number, then alphabetically
   const routes = uniqueRoutes.sort((a, b) => {
     const aNum = Number.parseInt(a.properties.route_short_name, 10);
+
+    if (Number.isNaN(aNum) && Number.isNaN(bNum)) {
+      return a.properties.route_short_name.localeCompare(
+        b.properties.route_short_name,
+      );
+    }
+    if (Number.isNaN(aNum)) return 1;
+    if (Number.isNaN(bNum)) return -1;
+
     const bNum = Number.parseInt(b.properties.route_short_name, 10);
     return aNum - bNum;
   });

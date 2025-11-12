@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fixed frontend layouts for working with IFOPT IDs (IDs containing `:`)
 - Handle special characters in note ids
+- Improved route sorting in system map popups
 
 ## [2.11.5] - 2025-11-05
 
