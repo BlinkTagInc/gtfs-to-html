@@ -10,7 +10,7 @@ include formatting_functions.pug
         each timetablePage in sortTimetablePages(timetablePageGroup.timetablePages)
           if config.allowEmptyTimetables || timetablePage.consolidatedTimetables.length > 0
             - const timetableRoutes = _.uniqBy(_.flatMap(timetablePage.consolidatedTimetables, timetable => timetable.routes), 'route_id')
-            a.timetable-page-link(href=`${timetablePage.relativePath}` data-route-ids=`${timetableRoutes.map((route) => route.route_id).join(',')}`)
+            a.timetable-page-link(href=timetablePage.relativePath data-route-ids=timetableRoutes.map((route) => route.route_id).join(','))
               each route in timetableRoutes
                 .route-color-swatch-large(style=`background-color: ${formatRouteColor(route)}; color: ${formatRouteTextColor(route)};`)= route.route_short_name || ''
               div

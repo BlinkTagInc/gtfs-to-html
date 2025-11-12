@@ -1,7 +1,7 @@
 - const stopName = `${stop.stop_name}${stop.type === 'arrival' ? ' (Arrival)' : stop.type === 'departure' ? ' (Departure)' : ''}`;
 
 if config.linkStopUrls && stop.stop_url
-  a.stop-name(href=`${stop.stop_url}`)= stopName
+  a.stop-name(href=stop.stop_url)= stopName
     each note in getNotesForStop(timetable.notes, stop)
       include timetable_note_symbol.pug
 else

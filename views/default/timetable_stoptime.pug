@@ -1,4 +1,4 @@
-td.stop-time(class=`${stoptime.classes.join(' ')}`)
+td.stop-time(class=stoptime.classes.join(' '))
   if config.showStoptimesForRequestStops || (!stoptime.requestDropoff && !stoptime.requestPickup)
     span.stop-time-text!= stoptime.formatted_time
   if stoptime.skipped && timetable.noServiceSymbol !== null

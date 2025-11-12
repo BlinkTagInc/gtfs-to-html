@@ -2,6 +2,6 @@
 td.run-footer(style=routeColorCss)
   if trip.continues_as_route
     if trip.continues_as_route.route.route_url
-      a.continues-as-route(href=`${trip.continues_as_route.route.route_url}` style=routeColorCss data-trip-id=trip.continues_as_route.trip_id)= trip.continues_as_route.route.route_short_name
+      a.continues-as-route(href=trip.continues_as_route.route.route_url style=routeColorCss data-trip-id=trip.continues_as_route.trip_id)= trip.continues_as_route.route.route_short_name
     else
       .continues-as-route(data-trip-id=trip.continues_as_route.trip_id)= trip.continues_as_route.route.route_short_name

@@ -15,7 +15,7 @@
       if timetable.has_continues_from_route
         col
       each stop, idx in timetable.stops
-        col(class=`stop-${idx}` data-stop-id=stop.stop_id data-is-timepoint=`${stop.is_timepoint}`)
+        col(class=`stop-${idx}` data-stop-id=stop.stop_id data-is-timepoint=stop.is_timepoint.toString())
       if timetable.has_continues_as_route
         col
     thead
@@ -45,7 +45,7 @@
           if timetable.has_continues_from_route
             td
 
-          td.trip-frequency(colspan=`${columnCount}`)!= formatFrequencyWarning(timetable.frequencies)
+          td.trip-frequency(colspan=columnCount)!= formatFrequencyWarning(timetable.frequencies)
             
           if timetable.has_continues_as_route
             td
