@@ -194,7 +194,7 @@ async function updateAlerts() {
       // Replace the empty message if present
       const emptyMessage = document.querySelector('.timetable-alert-empty');
       if (emptyMessage) {
-        emptyMessage.style.display = '';
+        emptyMessage.style.display = 'block';
       }
     }
   } catch (error) {
