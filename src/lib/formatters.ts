@@ -526,11 +526,11 @@ export function formatTimetableLabel(timetable) {
  * Format a route name.
  */
 export const formatRouteName = (route: Route) => {
-  if (route.route_long_name) {
-    return `Route ${route.route_long_name}`;
+  if (route.route_long_name === null || route.route_long_name === '') {
+    return `Route ${route.route_short_name}`;
   }
 
-  return route.route_short_name ?? 'Unknown';
+  return route.route_long_name ?? 'Unknown';
 };
 
 /*
