@@ -427,7 +427,6 @@ a:hover {
   flex-shrink: 0;
   font-weight: bold;
   color: white;
-  text-shadow: 0 0 2px rgba(0,0,0,0.5);
 }
 
 .timetable-page .route-color-swatch-large {
@@ -444,7 +443,6 @@ a:hover {
   flex-shrink: 0;
   font-weight: bold;
   color: white;
-  text-shadow: 0 0 4px rgba(0,0,0,0.5);
 }
 
 /* Map Styles */
@@ -678,7 +676,6 @@ a:hover {
   flex-shrink: 0;
   font-weight: bold;
   color: white;
-  text-shadow: 0 0 2px rgba(0,0,0,0.5);
 }
 
 .timetable-page .timetable-alerts .alert-header .alert-title {
