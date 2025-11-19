@@ -13,8 +13,8 @@ function showSelectedTimetable() {
     .forEach((element) => {
       const label = element.closest('label');
       if (label) {
-        label.classList.toggle('btn-blue', element.checked);
-        label.classList.toggle('btn-gray', !element.checked);
+        label.classList.toggle('btn-active', element.checked);
+        label.classList.toggle('btn-inactive', !element.checked);
       }
     });
 
@@ -23,8 +23,8 @@ function showSelectedTimetable() {
     .forEach((element) => {
       const label = element.closest('label');
       if (label) {
-        label.classList.toggle('btn-blue', element.checked);
-        label.classList.toggle('btn-gray', !element.checked);
+        label.classList.toggle('btn-active', element.checked);
+        label.classList.toggle('btn-inactive', !element.checked);
       }
     });
 

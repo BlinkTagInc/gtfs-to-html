@@ -121,8 +121,8 @@ a:hover {
   color: white;
 }
 
-.timetable-overview .btn-blue {
-  color: rgb(255 255 255);
+.timetable-overview .btn-active {
+  color: rgb(255, 255, 255);
   padding: 0.75rem 1.5rem;
   background-color: rgb(37 99 235);
   border-radius: 0.375rem;
@@ -133,7 +133,7 @@ a:hover {
   text-decoration: none;
 }
 
-.timetable-overview .btn-blue:hover {
+.timetable-overview .btn-active:hover {
   background-color: rgb(29 78 216);
   text-decoration: none;
 }

@@ -201,8 +201,8 @@ a:hover {
   display: none;
 }
 
-.timetable-page .btn-blue {
-  color: rgb(255 255 255);
+.timetable-page .btn-active {
+  color: rgb(255, 255, 255);
   padding: 0.75rem 1.5rem;
   background-color: rgb(37 99 235);
   border-radius: 0.375rem;
@@ -213,12 +213,12 @@ a:hover {
   text-decoration: none;
 }
 
-.timetable-page .btn-blue:hover {
+.timetable-page .btn-active:hover {
   background-color: rgb(29 78 216);
   text-decoration: none;
 }
 
-.timetable-page .btn-gray {
+.timetable-page .btn-inactive {
   color: rgb(75 85 99);
   padding: 0.75rem 1.5rem;
   background-color: rgb(209 213 219);
@@ -230,7 +230,7 @@ a:hover {
   text-decoration: none;
 }
 
-.timetable-page .btn-gray:hover {
+.timetable-page .btn-inactive:hover {
   background-color: rgb(201, 206, 213);
   text-decoration: none;
 }

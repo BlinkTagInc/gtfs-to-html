@@ -68,7 +68,7 @@ function formatAlertAsHtml(
   if (alert.alert.url?.translation?.[0].text) {
     const moreInfoLink = document.createElement('a');
     moreInfoLink.href = alert.alert.url.translation[0].text;
-    moreInfoLink.classList.add('btn-blue', 'btn-sm', 'alert-more-info');
+    moreInfoLink.classList.add('btn-active', 'btn-sm', 'alert-more-info');
     moreInfoLink.textContent = 'More Info';
     alertBody.appendChild(moreInfoLink);
   }

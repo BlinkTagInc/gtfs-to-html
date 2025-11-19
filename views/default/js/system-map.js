@@ -99,7 +99,7 @@ function formatStopPopup(feature) {
   container.appendChild(routeList);
 
   const streetviewLink = document.createElement('a');
-  streetviewLink.className = 'btn-blue btn-sm';
+  streetviewLink.className = 'btn-active btn-sm';
   streetviewLink.href = `https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${feature.geometry.coordinates[1]},${feature.geometry.coordinates[0]}&heading=0&pitch=0&fov=90`;
   streetviewLink.target = '_blank';
   streetviewLink.rel = 'noopener noreferrer';
