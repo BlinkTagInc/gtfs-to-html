@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Updated
 - Styles for route color swatches
 - Better button class names and styles
+- Dependency updates
 
 ### Fixed
 - Fix for route name formatting
