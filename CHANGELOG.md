@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fixed package resolution for frontend libraries (pbf, gtfs-realtime, maplibre-gl, anchorme) when using as a dependency by pre-copying files to `dist/frontend_libraries` during postinstall
 
+### Updated
+- Dependency updates
+
 ## [2.12.1] - 2025-11-19
 
 ### Updated
