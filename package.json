@@ -35,6 +35,7 @@
     "dist",
     "docker",
     "examples",
+    "scripts",
     "views/default",
     "config-sample.json"
   ],
@@ -43,8 +44,10 @@
   },
   "scripts": {
     "build": "tsup",
+    "postbuild": "node scripts/postinstall.js",
     "start": "node ./dist/app",
-    "prepare": "husky"
+    "prepare": "husky && npm run build",
+    "postinstall": "node scripts/postinstall.js"
   },
   "dependencies": {
     "@maplibre/maplibre-gl-geocoder": "^1.9.1",

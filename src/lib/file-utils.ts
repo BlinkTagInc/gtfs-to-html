@@ -76,6 +76,28 @@ export async function getConfig(argv) {
 }
 
 /*
+ * Get the full path to this module's folder.
+ */
+export function getPathToThisModuleFolder() {
+  const __dirname = dirname(fileURLToPath(import.meta.url));
+
+  // Dynamically calculate the path to this module's folder
+  let distFolderPath;
+  if (__dirname.endsWith('/dist/bin') || __dirname.endsWith('/dist/app')) {
+    // When the file is in 'dist/bin' or 'dist/app'
+    distFolderPath = resolve(__dirname, '../../');
+  } else if (__dirname.endsWith('/dist')) {
+    // When the file is in 'dist'
+    distFolderPath = resolve(__dirname, '../');
+  } else {
+    // In case it's neither, fallback to project root
+    distFolderPath = resolve(__dirname, '../../');
+  }
+
+  return distFolderPath;
+}
+
+/*
  * Get the full path to the views folder.
  */
 export function getPathToViewsFolder(config: Config) {
@@ -83,22 +105,7 @@ export function getPathToViewsFolder(config: Config) {
     return untildify(config.templatePath);
   }
 
-  const __dirname = dirname(fileURLToPath(import.meta.url));
-
-  // Dynamically calculate the path to the views directory
-  let viewsFolderPath;
-  if (__dirname.endsWith('/dist/bin') || __dirname.endsWith('/dist/app')) {
-    // When the file is in 'dist/bin' or 'dist/app'
-    viewsFolderPath = resolve(__dirname, '../../views/default');
-  } else if (__dirname.endsWith('/dist')) {
-    // When the file is in 'dist'
-    viewsFolderPath = resolve(__dirname, '../views/default');
-  } else {
-    // In case it's neither, fallback to project root
-    viewsFolderPath = resolve(__dirname, '../../views/default');
-  }
-
-  return viewsFolderPath;
+  return join(getPathToThisModuleFolder(), 'views/default');
 }
 
 /*
@@ -153,6 +160,7 @@ export async function prepDirectory(outputPath: string, config: Config) {
  */
 export async function copyStaticAssets(config: Config, outputPath: string) {
   const viewsFolderPath = getPathToViewsFolder(config);
+  const thisModuleFolderPath = getPathToThisModuleFolder();
 
   const foldersToCopy = ['css', 'js', 'img'];
 
@@ -175,22 +183,14 @@ export async function copyStaticAssets(config: Config, outputPath: string) {
     config.hasGtfsRealtimeAlerts
   ) {
     await copyFile(
-      join(
-        dirname(findPackageJSON('pbf', import.meta.url) as string),
-        'dist/pbf.js',
-      ),
+      join(thisModuleFolderPath, 'dist/frontend_libraries/pbf.js'),
       join(outputPath, 'js/pbf.js'),
     );
 
     await copyFile(
       join(
-        dirname(
-          findPackageJSON(
-            'gtfs-realtime-pbf-js-module',
-            import.meta.url,
-          ) as string,
-        ),
-        'gtfs-realtime.browser.proto.js',
+        thisModuleFolderPath,
+        'dist/frontend_libraries/gtfs-realtime.browser.proto.js',
       ),
       join(outputPath, 'js/gtfs-realtime.browser.proto.js'),
     );
@@ -198,53 +198,34 @@ export async function copyStaticAssets(config: Config, outputPath: string) {
 
   if (config.hasGtfsRealtimeAlerts) {
     await copyFile(
-      join(
-        dirname(findPackageJSON('anchorme', import.meta.url) as string),
-        'dist/browser/anchorme.min.js',
-      ),
+      join(thisModuleFolderPath, 'dist/frontend_libraries/anchorme.min.js'),
       join(outputPath, 'js/anchorme.min.js'),
     );
   }
 
   if (config.showMap) {
     await copyFile(
-      join(
-        dirname(findPackageJSON('maplibre-gl', import.meta.url) as string),
-        'dist/maplibre-gl.js',
-      ),
+      join(thisModuleFolderPath, 'dist/frontend_libraries/maplibre-gl.js'),
       join(outputPath, 'js/maplibre-gl.js'),
     );
 
     await copyFile(
-      join(
-        dirname(findPackageJSON('maplibre-gl', import.meta.url) as string),
-        'dist/maplibre-gl.css',
-      ),
+      join(thisModuleFolderPath, 'dist/frontend_libraries/maplibre-gl.css'),
       join(outputPath, 'css/maplibre-gl.css'),
     );
 
     await copyFile(
       join(
-        dirname(
-          findPackageJSON(
-            '@maplibre/maplibre-gl-geocoder',
-            import.meta.url,
-          ) as string,
-        ),
-        'dist/maplibre-gl-geocoder.js',
+        thisModuleFolderPath,
+        'dist/frontend_libraries/maplibre-gl-geocoder.js',
       ),
       join(outputPath, 'js/maplibre-gl-geocoder.js'),
     );
 
     await copyFile(
       join(
-        dirname(
-          findPackageJSON(
-            '@maplibre/maplibre-gl-geocoder',
-            import.meta.url,
-          ) as string,
-        ),
-        'dist/maplibre-gl-geocoder.css',
+        thisModuleFolderPath,
+        'dist/frontend_libraries/maplibre-gl-geocoder.css',
       ),
       join(outputPath, 'css/maplibre-gl-geocoder.css'),
     );
