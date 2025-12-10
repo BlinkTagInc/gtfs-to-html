@@ -1,5 +1,9 @@
 import moment from 'moment';
 
+type CalendarBit = '0' | '1';
+export type CalendarCode =
+  `${CalendarBit}${CalendarBit}${CalendarBit}${CalendarBit}${CalendarBit}${CalendarBit}${CalendarBit}`;
+
 /*
  * Convert a GTFS formatted time string into a moment less than 24 hours.
  */
@@ -23,7 +27,7 @@ export function toGTFSTime(time) {
 /*
  * Convert a object of weekdays into a a string containing 1s and 0s.
  */
-export function calendarToCalendarCode(c: {
+export function calendarToCalendarCode(calendar: {
   monday?: null | 0 | 1;
   tuesday?: null | 0 | 1;
   wednesday?: null | 0 | 1;
@@ -31,18 +35,18 @@ export function calendarToCalendarCode(c: {
   friday?: null | 0 | 1;
   saturday?: null | 0 | 1;
   sunday?: null | 0 | 1;
-}) {
-  if (Object.values(c).every((value) => value === null)) {
+}): CalendarCode | '' {
+  if (Object.values(calendar).every((value) => value === null)) {
     return '';
   }
 
-  return `${c.monday}${c.tuesday}${c.wednesday}${c.thursday}${c.friday}${c.saturday}${c.sunday}`;
+  return `${calendar.monday ?? '0'}${calendar.tuesday ?? '0'}${calendar.wednesday ?? '0'}${calendar.thursday ?? '0'}${calendar.friday ?? '0'}${calendar.saturday ?? '0'}${calendar.sunday ?? '0'}`;
 }
 
 /*
  * Convert a string of 1s and 0s representing a weekday to an object.
  */
-export function calendarCodeToCalendar(code) {
+export function calendarCodeToCalendar(code: CalendarCode) {
   const days = [
     'monday',
     'tuesday',
@@ -52,13 +56,69 @@ export function calendarCodeToCalendar(code) {
     'saturday',
     'sunday',
   ];
-  const calendar = {};
+  const calendar: {
+    monday?: null | 0 | 1;
+    tuesday?: null | 0 | 1;
+    wednesday?: null | 0 | 1;
+    thursday?: null | 0 | 1;
+    friday?: null | 0 | 1;
+    saturday?: null | 0 | 1;
+    sunday?: null | 0 | 1;
+  } = {};
 
   for (const [index, day] of days.entries()) {
     calendar[day] = code[index];
   }
 
   return calendar;
+}
+
+/* Concert an object of weekdays and a date range into a list of dates. */
+export function calendarToDateList(
+  calendar: {
+    monday?: null | 0 | 1;
+    tuesday?: null | 0 | 1;
+    wednesday?: null | 0 | 1;
+    thursday?: null | 0 | 1;
+    friday?: null | 0 | 1;
+    saturday?: null | 0 | 1;
+    sunday?: null | 0 | 1;
+  },
+  startDate: number,
+  endDate: number | null,
+) {
+  if (!startDate || !endDate) {
+    return [];
+  }
+
+  const activeWeekdays = [
+    calendar.monday === 1 ? 1 : null,
+    calendar.tuesday === 1 ? 2 : null,
+    calendar.wednesday === 1 ? 3 : null,
+    calendar.thursday === 1 ? 4 : null,
+    calendar.friday === 1 ? 5 : null,
+    calendar.saturday === 1 ? 6 : null,
+    calendar.sunday === 1 ? 7 : null,
+  ].filter((weekday): weekday is number => weekday !== null);
+
+  if (activeWeekdays.length === 0) {
+    return [];
+  }
+
+  const activeWeekdaySet = new Set(activeWeekdays);
+  const dates = new Set<number>();
+  const date = moment(startDate.toString(), 'YYYYMMDD');
+  const endDateMoment = moment(endDate.toString(), 'YYYYMMDD');
+
+  while (date.isSameOrBefore(endDateMoment)) {
+    const isoWeekday = date.isoWeekday();
+    if (activeWeekdaySet.has(isoWeekday)) {
+      dates.add(parseInt(date.format('YYYYMMDD'), 10));
+    }
+    date.add(1, 'day');
+  }
+
+  return Array.from(dates);
 }
 
 /*

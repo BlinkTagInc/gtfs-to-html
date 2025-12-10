@@ -80,6 +80,7 @@ import {
   secondsAfterMidnight,
   fromGTFSTime,
   calendarCodeToCalendar,
+  calendarToDateList,
 } from './time-utils.js';
 import { formatTripNameForCSV } from './template-functions.js';
 
@@ -1022,14 +1023,14 @@ const getCalendarsFromTimetable = (timetable: Timetable) => {
 };
 
 /*
- * Get all calendar date service ids for an agency between two dates.
+ * Get all calendar dates for an agency between two dates.
  */
-const getCalendarDatesServiceIds = (
+const getCalendarDatesForDateRange = (
   startDate?: number | null,
   endDate?: number | null,
 ) => {
   const db = openDb();
-  const whereClauses = ['exception_type = 1'];
+  const whereClauses = [];
 
   if (endDate) {
     whereClauses.push(`date <= ${sqlString.escape(endDate)}`);
@@ -1041,12 +1042,12 @@ const getCalendarDatesServiceIds = (
 
   const calendarDates: CalendarDate[] = db
     .prepare(
-      `SELECT DISTINCT service_id FROM calendar_dates WHERE ${whereClauses.join(
+      `SELECT service_id, date, exception_type FROM calendar_dates WHERE ${whereClauses.join(
         ' AND ',
       )}`,
     )
     .all();
-  return calendarDates.map((calendarDate) => calendarDate.service_id);
+  return calendarDates;
 };
 
 /*
@@ -1398,14 +1399,73 @@ const formatTimetables = (timetables: Timetable[], config: Config) => {
     timetable.warnings = [];
     const dayList = formatDays(timetable, config);
     const calendars = getCalendarsFromTimetable(timetable);
-    let serviceIds = calendars.map((calendar: Calendar) => calendar.service_id);
+    const serviceIds = new Set();
+
+    // Add all service IDs from calendars
+    for (const calendar of calendars) {
+      serviceIds.add(calendar.service_id);
+    }
 
     if (timetable.include_exceptions === 1) {
-      const calendarDatesServiceIds = getCalendarDatesServiceIds(
+      const calendarDates = getCalendarDatesForDateRange(
         timetable.start_date,
         timetable.end_date,
       );
-      serviceIds = uniq([...serviceIds, ...calendarDatesServiceIds]);
+
+      const calendarDateGroups = groupBy(calendarDates, 'service_id');
+
+      for (const [serviceId, calendarDateGroup] of Object.entries(
+        calendarDateGroups,
+      )) {
+        // Check if there is a corresponding calendar.txt entry for this service_id
+        const calendar = calendars.find(
+          (c: Calendar) => c.service_id === serviceId,
+        );
+
+        // Add service_id if any dates are added
+        if (
+          calendarDateGroup.some(
+            (calendarDate) => calendarDate.exception_type === 1,
+          )
+        ) {
+          serviceIds.add(serviceId);
+        }
+
+        const calendarDateGroupExceptionType2 = calendarDateGroup.filter(
+          (calendarDate) => calendarDate.exception_type === 2,
+        );
+
+        // Check if ALL dates are excluded
+        if (
+          timetable.start_date &&
+          timetable.end_date &&
+          calendar &&
+          calendarDateGroupExceptionType2.length > 0
+        ) {
+          const datesDuringDateRange = calendarToDateList(
+            calendar,
+            timetable.start_date,
+            timetable.end_date,
+          );
+
+          // If no dates are are within the date range, remove service_id
+          if (datesDuringDateRange.length === 0) {
+            serviceIds.delete(serviceId);
+          }
+
+          // Check if every date is excluded and remove service_id if so
+          const everyDateIsExcluded = datesDuringDateRange.every(
+            (dateDuringDateRange) =>
+              calendarDateGroupExceptionType2.some(
+                (calendarDate) => calendarDate.date === dateDuringDateRange,
+              ),
+          );
+
+          if (everyDateIsExcluded) {
+            serviceIds.delete(serviceId);
+          }
+        }
+      }
     }
 
     Object.assign(timetable, {
@@ -1424,7 +1484,7 @@ const formatTimetables = (timetables: Timetable[], config: Config) => {
       noPickupSymbol: config.noPickupSymbol,
       interpolatedStopSymbol: config.interpolatedStopSymbol,
       orientation: timetable.orientation || config.defaultOrientation,
-      service_ids: serviceIds,
+      service_ids: Array.from(serviceIds),
       dayList,
       dayListLong: formatDaysLong(dayList, config),
     });
