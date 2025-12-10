@@ -134,7 +134,7 @@
   }
 
   function formatTripName(trip, index, timetable) {
-    let tripName;
+    let tripName = '';
     if (timetable.routes.length > 1) {
       tripName = trip.route_short_name;
     } else if (timetable.orientation === 'horizontal') {
