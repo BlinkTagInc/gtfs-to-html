@@ -65,7 +65,6 @@ import {
   formatStops,
   formatTimetableId,
   formatTimetableLabel,
-  formatTrip,
   formatTripContinuesAs,
   formatTripContinuesFrom,
   isNullOrEmpty,
@@ -77,6 +76,7 @@ import {
 import { getTimetableGeoJSON, getAgencyGeoJSON } from './geojson-utils.js';
 import {
   calendarToCalendarCode,
+  combineCalendars,
   secondsAfterMidnight,
   fromGTFSTime,
   calendarCodeToCalendar,
@@ -97,6 +97,7 @@ type FormattedTrip = Trip & {
   firstStoptime: number;
   lastStoptime: number;
   stoptimes: StopTime[];
+  additional_service_ids?: string[];
 };
 
 /*
@@ -186,6 +187,19 @@ const deduplicateTrips = (trips: FormattedTrip[]) => {
 
     if (!uniqueTrips.has(tripSignature)) {
       uniqueTrips.set(tripSignature, trip);
+    } else {
+      // Duplicate trip found. Add additional service_id to trip for duplicate trip.
+      const existingTrip = uniqueTrips.get(tripSignature);
+      if (!existingTrip) {
+        continue;
+      }
+
+      if (!existingTrip.additional_service_ids) {
+        existingTrip.additional_service_ids = [];
+      }
+
+      existingTrip.additional_service_ids.push(trip.service_id);
+      uniqueTrips.set(tripSignature, existingTrip);
     }
   }
 
@@ -1199,7 +1213,11 @@ const addTripContinuation = (trip: FormattedTrip, timetable: Timetable) => {
  * Apply time range filters to trips and remove trips with less than two stoptimes for stops used in this timetable.
  * Stops can be excluded by using `timetable_stop_order.txt`. Additionally, remove trip stoptimes for unused stops.
  */
-const filterTrips = (timetable: FormattedTimetable, config: Config) => {
+const filterTrips = (
+  timetable: FormattedTimetable,
+  calendars: Calendar[],
+  config: Config,
+) => {
   let filteredTrips = timetable.orderedTrips;
 
   // Combine adjacent stoptimes with the same `stop_id`
@@ -1241,7 +1259,31 @@ const filterTrips = (timetable: FormattedTimetable, config: Config) => {
     filteredTrips = deduplicateTrips(filteredTrips);
   }
 
-  return filteredTrips;
+  // Add day list and route short name to trips
+  const formattedTrips = filteredTrips.map((trip) => {
+    const tripCalendars =
+      calendars.filter((calendar) => {
+        return [
+          trip.service_id,
+          ...(trip.additional_service_ids || []),
+        ].includes(calendar.service_id);
+      }) ?? [];
+    trip.dayList = formatDays(combineCalendars(tripCalendars), config);
+    trip.dayListLong = formatDaysLong(trip.dayList, config);
+
+    if (timetable.routes.length === 1) {
+      trip.route_short_name = timetable.routes[0].route_short_name;
+    } else {
+      const route = timetable.routes.find(
+        (route) => route.route_id === trip.route_id,
+      );
+      trip.route_short_name = route?.route_short_name;
+    }
+
+    return trip;
+  });
+
+  return formattedTrips;
 };
 
 /*
@@ -1289,7 +1331,7 @@ const getTripsForTimetable = (
   const formattedTrips = [];
 
   for (const trip of trips) {
-    const formattedTrip = formatTrip(trip, timetable, calendars, config);
+    const formattedTrip = trip;
     formattedTrip.stoptimes = getStoptimes(
       {
         trip_id: formattedTrip.trip_id,
@@ -1504,7 +1546,7 @@ const formatTimetables = (timetables: Timetable[], config: Config) => {
     );
 
     // Filter trips after all timetable properties are assigned
-    timetable.orderedTrips = filterTrips(timetable, config);
+    timetable.orderedTrips = filterTrips(timetable, calendars, config);
 
     // Format stops after all timetable properties are assigned
     timetable.stops = formatStops(timetable, config);

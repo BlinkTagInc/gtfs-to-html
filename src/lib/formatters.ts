@@ -229,28 +229,6 @@ export function formatDaysLong(dayList, config) {
 }
 
 /*
- * Format a trip.
- */
-export function formatTrip(trip, timetable, calendars, config) {
-  trip.calendar = find(calendars, {
-    service_id: trip.service_id,
-  });
-  trip.dayList = formatDays(trip.calendar, config);
-  trip.dayListLong = formatDaysLong(trip.dayList, config);
-
-  if (timetable.routes.length === 1) {
-    trip.route_short_name = timetable.routes[0].route_short_name;
-  } else {
-    const route = timetable.routes.find(
-      (route) => route.route_id === trip.route_id,
-    );
-    trip.route_short_name = route.route_short_name;
-  }
-
-  return trip;
-}
-
-/*
  * Format a frequency.
  */
 export function formatFrequency(frequency, config) {
