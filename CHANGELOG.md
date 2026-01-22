@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Handle identical trips with different service_ids when generating days of the week labels
 
+### Updated
+- Dependency updates
+
 ## [2.12.3] - 2025-12-10
 
 ### Updated
