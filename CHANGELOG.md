@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Updated
 - Dependency updates
+- Adjusting styles for alerts
 
 ## [2.12.3] - 2025-12-10
 

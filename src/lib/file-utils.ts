@@ -12,7 +12,6 @@ import {
   rm,
 } from 'node:fs/promises';
 import { homedir } from 'node:os';
-import { findPackageJSON } from 'node:module';
 
 import * as _ from 'lodash-es';
 import { uniqBy } from 'lodash-es';
