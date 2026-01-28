@@ -63,7 +63,9 @@ function formatAlertAsHtml(
 
   const tempDiv = document.createElement('div');
   tempDiv.textContent = alert.alert.description_text.translation[0].text;
-  alertBody.innerHTML = anchorme(tempDiv.innerHTML);
+  const alertBodyDiv = document.createElement('div');
+  alertBodyDiv.innerHTML = anchorme(tempDiv.innerHTML);
+  alertBody.appendChild(alertBodyDiv);
 
   if (alert.alert.url?.translation?.[0].text) {
     const moreInfoLink = document.createElement('a');

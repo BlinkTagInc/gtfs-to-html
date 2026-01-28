@@ -685,6 +685,7 @@ a:hover {
 
 .timetable-page .timetable-alerts .alert-body {
   margin-top: 0.5rem;
+  line-height: 1.2;
 }
 
 .timetable-page .timetable-alerts .alert-body .alert-label {
@@ -697,7 +698,8 @@ a:hover {
 }
 
 .timetable-page .timetable-alerts .alert-more-info {
-  margin-top: 0.75rem;
+  margin-top: 0.5rem;
+  line-height: 1.5;
 }
 
 .timetable-page .timetable-alert-empty {
