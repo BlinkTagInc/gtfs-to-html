@@ -308,6 +308,8 @@ a:hover {
 .timetable-page .timetable .table-container {
   overflow-x: scroll;
   margin: 20px 0;
+  --scroll-fade: 1;
+  mask-image: linear-gradient(to right, rgb(0, 0, 0) calc(100% - 3rem), rgba(0, 0, 0, calc(1 - var(--scroll-fade))) 100%);
 }
 
 .timetable-page .timetable .table-container::-webkit-scrollbar {
@@ -747,6 +749,7 @@ a:hover {
   .timetable-page .timetable .table-container {
     overflow: auto;
     margin-bottom: 0;
+    mask-image: none;
   }
 
   .timetable-page .timetable table > thead > tr > th,
