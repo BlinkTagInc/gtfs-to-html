@@ -95,7 +95,7 @@ Many transit agencies use `gtfs-to-html` to generate the schedule pages used on 
 | [Tahoe Transportation District](https://www.tahoetransportation.org)          | Lake Tahoe, California              |
 | [Tahoe Truckee Area Regional Transit](https://tahoetruckeetransit.com)        | Truckee, California                 |
 | [Transcollines](https://transcollines.ca)                                     | Les Collines-de-l'Outaouais, Quebec |
-| [Tulare County Area Transit](https://ridetcat.org)                            | Tulare County, California           |
+| [Tulare County Area Transit](https://gotcrta.org)                             | Tulare County, California           |
 | [Victor Valley Transit](https://vvta.org)                                     | Victory Valley, California          |
 | [Worcester Regional Transit Authority](https://therta.com)                    | Worcester, Massachusetts            |
 

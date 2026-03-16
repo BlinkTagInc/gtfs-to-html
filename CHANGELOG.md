@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Horizontal scroll indicator fade on timetables
 
+### Updated
+- Dependency updates
+
 ## [2.12.4] - 2026-01-21
 
 ### Fixed
