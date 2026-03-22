@@ -15,6 +15,12 @@ import {
   generateOverviewHTML,
   generateTimetableHTML,
 } from '../lib/utils.js';
+import {
+  GtfsToHtmlError,
+  GtfsToHtmlErrorCategory,
+  GtfsToHtmlErrorCode,
+  isGtfsToHtmlError,
+} from '../lib/errors.js';
 
 const argv = yargs(hideBin(process.argv))
   .option('c', {
@@ -43,7 +49,15 @@ try {
   console.error(
     `Unable to open sqlite database "${config.sqlitePath}" defined as \`sqlitePath\` config.json. Ensure the parent directory exists and run gtfs-to-html to import GTFS before running this app.`,
   );
-  throw error;
+  throw new GtfsToHtmlError(
+    `Unable to open sqlite database "${config.sqlitePath}"`,
+    {
+      code: GtfsToHtmlErrorCode.DATABASE_OPEN_FAILED,
+      category: GtfsToHtmlErrorCategory.DATABASE,
+      details: { sqlitePath: config.sqlitePath, dbCode: error?.code },
+      cause: error,
+    },
+  );
 }
 
 app.set('views', getPathToViewsFolder(config));
@@ -162,7 +176,10 @@ app.get('/timetables/:timetablePageId', async (req, res, next) => {
     const html = await generateTimetableHTML(timetablePage, config);
     res.send(html);
   } catch (error: any) {
-    if (error?.message.startsWith('No timetable found')) {
+    if (
+      isGtfsToHtmlError(error) &&
+      error.code === GtfsToHtmlErrorCode.QUERY_RESULT_NOT_FOUND
+    ) {
       res.status(404).send('Timetable page not found');
       return;
     }

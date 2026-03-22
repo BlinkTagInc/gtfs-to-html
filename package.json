@@ -59,7 +59,7 @@
     "css.escape": "^1.5.1",
     "csv-stringify": "^6.6.0",
     "express": "^5.2.1",
-    "gtfs": "^4.18.3",
+    "gtfs": "^4.18.4",
     "gtfs-realtime-pbf-js-module": "^1.0.0",
     "js-beautify": "^1.15.4",
     "lodash-es": "^4.17.23",

@@ -31,6 +31,11 @@ import {
   formatRouteNameForFilename,
 } from './formatters.js';
 import * as templateFunctions from './template-functions.js';
+import {
+  GtfsToHtmlError,
+  GtfsToHtmlErrorCategory,
+  GtfsToHtmlErrorCode,
+} from './errors.js';
 
 import type {
   Config,
@@ -50,16 +55,28 @@ export async function getConfig(argv) {
   try {
     data = await readFile(resolve(untildify(argv.configPath)), 'utf8');
   } catch (error) {
-    throw new Error(
+    throw new GtfsToHtmlError(
       `Cannot find configuration file at \`${argv.configPath}\`. Use config-sample.json as a starting point, pass --configPath option`,
+      {
+        code: GtfsToHtmlErrorCode.CONFIG_FILE_NOT_FOUND,
+        category: GtfsToHtmlErrorCategory.CONFIG,
+        details: { configPath: argv.configPath },
+        cause: error,
+      },
     );
   }
 
   try {
     config = JSON.parse(data);
   } catch (error) {
-    throw new Error(
+    throw new GtfsToHtmlError(
       `Cannot parse configuration file at \`${argv.configPath}\`. Check to ensure that it is valid JSON.`,
+      {
+        code: GtfsToHtmlErrorCode.CONFIG_PARSE_FAILED,
+        category: GtfsToHtmlErrorCategory.CONFIG,
+        details: { configPath: argv.configPath },
+        cause: error,
+      },
     );
   }
 
@@ -131,8 +148,14 @@ export async function prepDirectory(outputPath: string, config: Config) {
       await mkdir(outputPath, { recursive: true });
     } catch (error: any) {
       if (error?.code === 'ENOENT') {
-        throw new Error(
+        throw new GtfsToHtmlError(
           `Unable to write to ${outputPath}. Try running this command from a writable directory.`,
+          {
+            code: GtfsToHtmlErrorCode.FILE_SYSTEM_WRITE_FAILED,
+            category: GtfsToHtmlErrorCategory.FILE_SYSTEM,
+            details: { outputPath, fsCode: error.code },
+            cause: error,
+          },
         );
       }
 
@@ -143,8 +166,13 @@ export async function prepDirectory(outputPath: string, config: Config) {
   // Check if outputPath is empty
   const files = await readdir(outputPath);
   if (config.overwriteExistingFiles === false && files.length > 0) {
-    throw new Error(
+    throw new GtfsToHtmlError(
       `Output directory ${outputPath} is not empty. Please specify an empty directory.`,
+      {
+        code: GtfsToHtmlErrorCode.OUTPUT_DIRECTORY_NOT_EMPTY,
+        category: GtfsToHtmlErrorCategory.FILE_SYSTEM,
+        details: { outputPath, fileCount: files.length },
+      },
     );
   }
 

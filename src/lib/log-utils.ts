@@ -1,9 +1,16 @@
 import { clearLine, cursorTo } from 'node:readline';
 import { noop } from 'lodash-es';
 import * as colors from 'yoctocolors';
-import { getAgencies, getFeedInfo } from 'gtfs';
+import { getAgencies, getFeedInfo, isGtfsError, formatGtfsError } from 'gtfs';
 import Table from 'cli-table';
 import { Config } from '../types/index.ts';
+import {
+  GtfsToHtmlError,
+  GtfsToHtmlErrorCategory,
+  GtfsToHtmlErrorCode,
+  formatGtfsToHtmlError,
+  isGtfsToHtmlError,
+} from './errors.js';
 
 /*
  * Creates text for a log of output details.
@@ -106,7 +113,13 @@ export function formatWarning(text: string) {
  * Format console error text
  */
 export function formatError(error: any) {
-  const messageText = error instanceof Error ? error.message : error;
+  const messageText = isGtfsToHtmlError(error)
+    ? formatGtfsToHtmlError(error)
+    : isGtfsError(error)
+      ? formatGtfsError(error)
+      : error instanceof Error
+        ? error.message
+        : error;
   const errorMessage = `${colors.underline('Error')}: ${messageText.replace(
     'Error: ',
     '',
@@ -150,23 +163,46 @@ const generateProgressBarString = (barTotal, barProgress, size = 40) => {
   const line = '-';
   const slider = '=';
   if (!barTotal) {
-    throw new Error('Total value is either not provided or invalid');
+    throw new GtfsToHtmlError('Total value is either not provided or invalid', {
+      code: GtfsToHtmlErrorCode.QUERY_INVALID,
+      category: GtfsToHtmlErrorCategory.VALIDATION,
+      details: { field: 'barTotal', value: barTotal },
+    });
   }
 
   if (!barProgress && barProgress !== 0) {
-    throw new Error('Current value is either not provided or invalid');
+    throw new GtfsToHtmlError(
+      'Current value is either not provided or invalid',
+      {
+        code: GtfsToHtmlErrorCode.QUERY_INVALID,
+        category: GtfsToHtmlErrorCategory.VALIDATION,
+        details: { field: 'barProgress', value: barProgress },
+      },
+    );
   }
 
   if (isNaN(barTotal)) {
-    throw new Error('Total value is not an integer');
+    throw new GtfsToHtmlError('Total value is not an integer', {
+      code: GtfsToHtmlErrorCode.QUERY_INVALID,
+      category: GtfsToHtmlErrorCategory.VALIDATION,
+      details: { field: 'barTotal', value: barTotal },
+    });
   }
 
   if (isNaN(barProgress)) {
-    throw new Error('Current value is not an integer');
+    throw new GtfsToHtmlError('Current value is not an integer', {
+      code: GtfsToHtmlErrorCode.QUERY_INVALID,
+      category: GtfsToHtmlErrorCategory.VALIDATION,
+      details: { field: 'barProgress', value: barProgress },
+    });
   }
 
   if (isNaN(size)) {
-    throw new Error('Size is not an integer');
+    throw new GtfsToHtmlError('Size is not an integer', {
+      code: GtfsToHtmlErrorCode.QUERY_INVALID,
+      category: GtfsToHtmlErrorCategory.VALIDATION,
+      details: { field: 'size', value: size },
+    });
   }
 
   if (barProgress > barTotal) {

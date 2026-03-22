@@ -83,6 +83,11 @@ import {
   calendarToDateList,
 } from './time-utils.js';
 import { formatTripNameForCSV } from './template-functions.js';
+import {
+  GtfsToHtmlError,
+  GtfsToHtmlErrorCategory,
+  GtfsToHtmlErrorCode,
+} from './errors.js';
 
 import type {
   Config,
@@ -888,8 +893,17 @@ const getStopsForTimetable = (timetable: Timetable, config: Config) => {
     });
 
     if (stops.length === 0) {
-      throw new Error(
+      throw new GtfsToHtmlError(
         `No stop found found for stop_id=${stopId} in timetable_id=${timetable.timetable_id}`,
+        {
+          code: GtfsToHtmlErrorCode.QUERY_RESULT_NOT_FOUND,
+          category: GtfsToHtmlErrorCategory.QUERY,
+          details: {
+            entity: 'stop',
+            stopId,
+            timetableId: timetable.timetable_id,
+          },
+        },
       );
     }
 
@@ -938,7 +952,14 @@ const getCalendarsFromConfig = (config: Config) => {
   if (config.endDate) {
     // Validate config.endDate is a valid date
     if (!moment(config.endDate).isValid()) {
-      throw new Error(`Invalid endDate=${config.endDate} in config.json`);
+      throw new GtfsToHtmlError(
+        `Invalid endDate=${config.endDate} in config.json`,
+        {
+          code: GtfsToHtmlErrorCode.CONFIG_DATE_INVALID,
+          category: GtfsToHtmlErrorCategory.CONFIG,
+          details: { field: 'endDate', value: config.endDate },
+        },
+      );
     }
 
     whereClauses.push(
@@ -949,7 +970,14 @@ const getCalendarsFromConfig = (config: Config) => {
   if (config.startDate) {
     // Validate config.startDate is a valid date
     if (!moment(config.startDate).isValid()) {
-      throw new Error(`Invalid startDate=${config.startDate} in config.json`);
+      throw new GtfsToHtmlError(
+        `Invalid startDate=${config.startDate} in config.json`,
+        {
+          code: GtfsToHtmlErrorCode.CONFIG_DATE_INVALID,
+          category: GtfsToHtmlErrorCategory.CONFIG,
+          details: { field: 'startDate', value: config.startDate },
+        },
+      );
     }
 
     whereClauses.push(
@@ -992,8 +1020,17 @@ const getCalendarsFromTimetable = (timetable: Timetable) => {
   if (timetable.end_date) {
     // Validate timetable.end_date is a valid date
     if (!moment(timetable.end_date, 'YYYYMMDD', true).isValid()) {
-      throw new Error(
+      throw new GtfsToHtmlError(
         `Invalid end_date=${timetable.end_date} for timetable_id=${timetable.timetable_id}`,
+        {
+          code: GtfsToHtmlErrorCode.QUERY_INVALID,
+          category: GtfsToHtmlErrorCategory.VALIDATION,
+          details: {
+            field: 'end_date',
+            value: timetable.end_date,
+            timetableId: timetable.timetable_id,
+          },
+        },
       );
     }
 
@@ -1003,8 +1040,17 @@ const getCalendarsFromTimetable = (timetable: Timetable) => {
   if (timetable.start_date) {
     // Validate timetable.start_date is a valid date
     if (!moment(timetable.start_date, 'YYYYMMDD', true).isValid()) {
-      throw new Error(
+      throw new GtfsToHtmlError(
         `Invalid start_date=${timetable.start_date} for timetable_id=${timetable.timetable_id}`,
+        {
+          code: GtfsToHtmlErrorCode.QUERY_INVALID,
+          category: GtfsToHtmlErrorCategory.VALIDATION,
+          details: {
+            field: 'start_date',
+            value: timetable.start_date,
+            timetableId: timetable.timetable_id,
+          },
+        },
       );
     }
 
@@ -1075,7 +1121,11 @@ const getAllStationStopIds = (stopId: string) => {
   });
 
   if (stops.length === 0) {
-    throw new Error(`No stop found for stop_id=${stopId}`);
+    throw new GtfsToHtmlError(`No stop found for stop_id=${stopId}`, {
+      code: GtfsToHtmlErrorCode.QUERY_RESULT_NOT_FOUND,
+      category: GtfsToHtmlErrorCategory.QUERY,
+      details: { entity: 'stop', stopId },
+    });
   }
 
   const stop = stops[0];
@@ -1119,8 +1169,13 @@ const getTripsWithSameBlock = (trip: FormattedTrip, timetable: Timetable) => {
     );
 
     if (stopTimes.length === 0) {
-      throw new Error(
+      throw new GtfsToHtmlError(
         `No stoptimes found found for trip_id=${blockTrip.trip_id}`,
+        {
+          code: GtfsToHtmlErrorCode.QUERY_RESULT_NOT_FOUND,
+          category: GtfsToHtmlErrorCategory.QUERY,
+          details: { entity: 'stoptime', tripId: blockTrip.trip_id },
+        },
       );
     }
 
@@ -1649,8 +1704,18 @@ const getDataForTimetablePageById = (timetablePageId: string) => {
   const uniqueTripDirections = uniqBy(trips, (trip) => trip.direction_id);
 
   if (uniqueTripDirections.length === 0) {
-    throw new Error(
+    throw new GtfsToHtmlError(
       `No trips found for timetable_page_id=${timetablePageId} route_id=${routeId} direction_id=${directionId}`,
+      {
+        code: GtfsToHtmlErrorCode.QUERY_RESULT_NOT_FOUND,
+        category: GtfsToHtmlErrorCategory.QUERY,
+        details: {
+          entity: 'trip',
+          timetablePageId,
+          routeId,
+          directionId,
+        },
+      },
     );
   }
 
@@ -1689,8 +1754,13 @@ const getTimetablePageById = (timetablePageId: string, config: Config) => {
   ) as FormattedTimetable[];
 
   if (timetablePages.length > 1) {
-    throw new Error(
+    throw new GtfsToHtmlError(
       `Multiple timetable_pages found for timetable_page_id=${timetablePageId}`,
+      {
+        code: GtfsToHtmlErrorCode.QUERY_RESULT_AMBIGUOUS,
+        category: GtfsToHtmlErrorCategory.QUERY,
+        details: { entity: 'timetable_page', timetablePageId },
+      },
     );
   }
 
@@ -1721,8 +1791,13 @@ const getTimetablePageById = (timetablePageId: string, config: Config) => {
     );
 
     if (timetablePageTimetables.length === 0) {
-      throw new Error(
+      throw new GtfsToHtmlError(
         `No timetable found for timetable_page_id=${timetablePageId}`,
+        {
+          code: GtfsToHtmlErrorCode.QUERY_RESULT_NOT_FOUND,
+          category: GtfsToHtmlErrorCategory.QUERY,
+          details: { entity: 'timetable', timetablePageId },
+        },
       );
     }
 
@@ -1740,8 +1815,13 @@ const getTimetablePageById = (timetablePageId: string, config: Config) => {
     });
 
     if (routes.length === 0) {
-      throw new Error(
+      throw new GtfsToHtmlError(
         `No route found for timetable_page_id=${timetablePageId}`,
+        {
+          code: GtfsToHtmlErrorCode.QUERY_RESULT_NOT_FOUND,
+          category: GtfsToHtmlErrorCategory.QUERY,
+          details: { entity: 'route', timetablePageId },
+        },
       );
     }
 
@@ -2059,7 +2139,11 @@ export function generateOverviewHTML(
 ) {
   const agencies = getAgencies() as { agency_name: string }[];
   if (agencies.length === 0) {
-    throw new Error('No agencies found');
+    throw new GtfsToHtmlError('No agencies found', {
+      code: GtfsToHtmlErrorCode.QUERY_RESULT_NOT_FOUND,
+      category: GtfsToHtmlErrorCategory.QUERY,
+      details: { entity: 'agency' },
+    });
   }
 
   const geojson = config.showMap ? getAgencyGeoJSON(config) : undefined;

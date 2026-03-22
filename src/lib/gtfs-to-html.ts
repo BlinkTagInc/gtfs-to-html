@@ -1,7 +1,7 @@
 import path from 'node:path';
 import { mkdir, writeFile } from 'node:fs/promises';
 
-import { openDb, importGtfs, ConfigAgency } from 'gtfs';
+import { openDb, importGtfs, ConfigAgency, isGtfsError } from 'gtfs';
 import sanitize from 'sanitize-filename';
 
 import {
@@ -29,6 +29,12 @@ import {
   generateOverviewHTML,
   generateStats,
 } from './utils.js';
+import {
+  GtfsToHtmlError,
+  GtfsToHtmlErrorCategory,
+  GtfsToHtmlErrorCode,
+  toGtfsToHtmlError,
+} from './errors.js';
 
 import type { Config } from '../types/index.ts';
 
@@ -58,20 +64,53 @@ const gtfsToHtml = async (initialConfig: Config) => {
     openDb(config);
   } catch (error: any) {
     if (error?.code === 'SQLITE_CANTOPEN') {
-      logError(config)(
+      const dbOpenError = new GtfsToHtmlError(
         `Unable to open sqlite database "${config.sqlitePath}" defined as \`sqlitePath\` config.json. Ensure the parent directory exists or remove \`sqlitePath\` from config.json.`,
+        {
+          code: GtfsToHtmlErrorCode.DATABASE_OPEN_FAILED,
+          category: GtfsToHtmlErrorCategory.DATABASE,
+          details: { sqlitePath: config.sqlitePath, dbCode: error.code },
+          cause: error,
+        },
       );
+
+      logError(config)(dbOpenError.message);
+      throw dbOpenError;
     }
 
-    throw error;
+    throw toGtfsToHtmlError(error, {
+      message:
+        error instanceof Error
+          ? error.message
+          : 'Unable to open sqlite database',
+      code: GtfsToHtmlErrorCode.DATABASE_OPEN_FAILED,
+      category: GtfsToHtmlErrorCategory.DATABASE,
+      details: { sqlitePath: config.sqlitePath },
+    });
   }
 
   if (!config.agencies || config.agencies.length === 0) {
-    throw new Error('No agencies defined in `config.json`');
+    throw new GtfsToHtmlError('No agencies defined in `config.json`', {
+      code: GtfsToHtmlErrorCode.CONFIG_MISSING_AGENCIES,
+      category: GtfsToHtmlErrorCategory.CONFIG,
+      details: { field: 'agencies' },
+    });
   }
 
   if (!config.skipImport) {
-    await importGtfs(config);
+    try {
+      await importGtfs(config);
+    } catch (error: unknown) {
+      if (isGtfsError(error)) {
+        throw error;
+      }
+
+      throw toGtfsToHtmlError(error, {
+        message: error instanceof Error ? error.message : 'GTFS import failed',
+        code: GtfsToHtmlErrorCode.GTFS_IMPORT_FAILED,
+        category: GtfsToHtmlErrorCategory.GTFS,
+      });
+    }
   }
 
   const stats: {
@@ -126,8 +165,13 @@ const gtfsToHtml = async (initialConfig: Config) => {
       }
 
       if (timetablePage.consolidatedTimetables.length === 0) {
-        throw new Error(
+        throw new GtfsToHtmlError(
           `No timetables found for timetable_page_id=${timetablePage.timetable_page_id}`,
+          {
+            code: GtfsToHtmlErrorCode.TIMETABLE_GENERATION_FAILED,
+            category: GtfsToHtmlErrorCategory.QUERY,
+            details: { timetablePageId: timetablePage.timetable_page_id },
+          },
         );
       }
 
