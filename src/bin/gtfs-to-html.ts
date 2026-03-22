@@ -3,10 +3,11 @@
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import PrettyError from 'pretty-error';
+import { isGtfsError } from 'gtfs';
 
 import { getConfig } from '../lib/file-utils.js';
 import { formatError } from '../lib/log-utils.js';
-import gtfsToHtml from '../index.js';
+import gtfsToHtml, { isGtfsToHtmlError } from '../index.js';
 
 const pe = new PrettyError();
 
@@ -34,8 +35,17 @@ const { argv } = yargs(hideBin(process.argv))
 
 const handleError = (error: any) => {
   const text = error || 'Unknown Error';
-  process.stdout.write(`\n${formatError(text)}\n`);
-  console.error(pe.render(error));
+  const isKnownOperationalError =
+    isGtfsToHtmlError(error) || isGtfsError(error);
+
+  process.stdout.write(
+    `\n${formatError(text, { verbosity: isKnownOperationalError ? 'user' : 'developer' })}\n`,
+  );
+
+  if (!isKnownOperationalError) {
+    console.error(pe.render(error));
+  }
+
   process.exit(1);
 };
 

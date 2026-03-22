@@ -112,15 +112,30 @@ export function formatWarning(text: string) {
 /*
  * Format console error text
  */
-export function formatError(error: any) {
-  const messageText = isGtfsToHtmlError(error)
-    ? formatGtfsToHtmlError(error)
+export function formatError(
+  error: any,
+  options: { verbosity?: 'user' | 'developer' } = {},
+) {
+  const verbosity = options.verbosity ?? 'developer';
+  const sourceLabel = isGtfsToHtmlError(error)
+    ? 'GTFS-to-HTML'
     : isGtfsError(error)
-      ? formatGtfsError(error)
+      ? 'GTFS'
+      : null;
+
+  const messageText = isGtfsToHtmlError(error)
+    ? formatGtfsToHtmlError(error, { verbosity })
+    : isGtfsError(error)
+      ? formatGtfsError(error, { verbosity })
       : error instanceof Error
         ? error.message
-        : error;
-  const errorMessage = `${colors.underline('Error')}: ${messageText.replace(
+        : String(error);
+
+  const labeledMessage = sourceLabel
+    ? `[${sourceLabel}] ${messageText}`
+    : messageText;
+
+  const errorMessage = `${colors.underline('Error')}: ${labeledMessage.replace(
     'Error: ',
     '',
   )}`;
