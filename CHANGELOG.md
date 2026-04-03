@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Updated
 - trip-frequency styles
 - Improvement for map hiding when no geojson available
+- Dependency updates and typescript config updates
 
 ## [2.12.6] - 2026-03-22
 
