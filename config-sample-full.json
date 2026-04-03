@@ -11,7 +11,8 @@
       },
       "realtimeVehiclePositions": {
         "url": "https://api.marintransit.org/vehiclepositions"
-      }
+      },
+      "exclude": ["rider_categories"]
     }
   ],
   "sqlitePath": "/tmp/gtfs.sqlite",
