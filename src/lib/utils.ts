@@ -676,7 +676,7 @@ const convertRoutesToTimetablePages = (config: Config) => {
     if (config.groupTimetablesIntoPages === true) {
       timetablePages.push(
         createTimetablePage({
-          timetablePageId: `route_${route.route_short_name ?? route.route_long_name}`,
+          timetablePageId: `route_${route.route_id}`,
           timetables,
           config,
         }),
@@ -1811,7 +1811,7 @@ const getTimetablePageById = (timetablePageId: string, config: Config) => {
   // If no `timetables.txt` in GTFS and timetable_page_id starts with "route_", build the route into a timetable page using all calendars and directions.
   if (timetablePageId.startsWith('route_')) {
     const routes = getRoutes({
-      route_short_name: timetablePageId.split('_')[1],
+      route_id: timetablePageId.split('_')[1],
     });
 
     if (routes.length === 0) {
