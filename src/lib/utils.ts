@@ -74,6 +74,7 @@ import {
   updateStoptimesByOffset,
 } from './formatters.js';
 import { getTimetableGeoJSON, getAgencyGeoJSON } from './geojson-utils.js';
+import { getBaseTripIds } from './trip-id-utils.js';
 import {
   calendarToCalendarCode,
   combineCalendars,
@@ -410,7 +411,7 @@ const getTimetableNotesForTimetable = (
 
     // Get all notes for all trips in this timetable.
     ...getTimetableNotesReferences({
-      trip_id: timetable.orderedTrips.map((trip) => trip.trip_id),
+      trip_id: getBaseTripIds(timetable.orderedTrips),
     }),
 
     // Get all notes for all stops in this timetable.
@@ -1596,9 +1597,7 @@ const formatTimetables = (timetables: Timetable[], config: Config) => {
       timetable.geojson = getTimetableGeoJSON(timetable, config);
     }
 
-    timetable.trip_ids = uniq(
-      timetable.orderedTrips.map((trip: Trip) => trip.trip_id),
-    );
+    timetable.trip_ids = uniq(getBaseTripIds(timetable.orderedTrips));
 
     // Filter trips after all timetable properties are assigned
     timetable.orderedTrips = filterTrips(timetable, calendars, config);

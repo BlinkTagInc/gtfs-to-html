@@ -2,6 +2,7 @@ import { getShapesAsGeoJSON, getStopsAsGeoJSON } from 'gtfs';
 import simplify from '@turf/simplify';
 import { featureCollection, round } from '@turf/helpers';
 import { logWarning } from './log-utils.js';
+import { getBaseTripIds } from './trip-id-utils.js';
 
 /*
  * Merge any number of geojson objects into one. Only works for `FeatureCollection`.
@@ -46,11 +47,13 @@ const truncateGeoJSONDecimals = (geojson, config) => {
  * Get the geoJSON for a timetable.
  */
 export function getTimetableGeoJSON(timetable, config) {
+  const tripIds = getBaseTripIds(timetable.orderedTrips);
+
   const shapesGeojsons = timetable.route_ids.map((routeId) =>
     getShapesAsGeoJSON({
       route_id: routeId,
       direction_id: timetable.direction_id,
-      trip_id: timetable.orderedTrips.map((trip) => trip.trip_id),
+      trip_id: tripIds,
     }),
   );
 
@@ -58,7 +61,7 @@ export function getTimetableGeoJSON(timetable, config) {
     getStopsAsGeoJSON({
       route_id: routeId,
       direction_id: timetable.direction_id,
-      trip_id: timetable.orderedTrips.map((trip) => trip.trip_id),
+      trip_id: tripIds,
     }),
   );
 
