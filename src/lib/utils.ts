@@ -996,13 +996,13 @@ const getCalendarsFromConfig = (config: Config) => {
 
   // Find all calendar dates with service_ids not present in `calendar.txt`.
   const serviceIds = calendars.map((calendar) => calendar.service_id);
-  const calendarDates = db
-    .prepare(
-      `SELECT * FROM calendar_dates WHERE exception_type = 1 AND service_id NOT IN (${serviceIds
-        .map((serviceId) => `'${serviceId}'`)
-        .join(', ')})`,
-    )
-    .all();
+  const calendarDatesQuery =
+    serviceIds.length > 0
+      ? `SELECT * FROM calendar_dates WHERE exception_type = 1 AND service_id NOT IN (${serviceIds
+          .map((serviceId) => sqlString.escape(serviceId))
+          .join(', ')})`
+      : 'SELECT * FROM calendar_dates WHERE exception_type = 1';
+  const calendarDates = db.prepare(calendarDatesQuery).all();
 
   return {
     calendars,
@@ -1101,11 +1101,11 @@ const getCalendarDatesForDateRange = (
     whereClauses.push(`date >= ${sqlString.escape(startDate)}`);
   }
 
+  const whereClause =
+    whereClauses.length > 0 ? ` WHERE ${whereClauses.join(' AND ')}` : '';
   const calendarDates: CalendarDate[] = db
     .prepare(
-      `SELECT service_id, date, exception_type FROM calendar_dates WHERE ${whereClauses.join(
-        ' AND ',
-      )}`,
+      `SELECT service_id, date, exception_type FROM calendar_dates${whereClause}`,
     )
     .all();
   return calendarDates;
