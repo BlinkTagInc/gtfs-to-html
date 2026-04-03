@@ -752,8 +752,9 @@ function createMap(id) {
     const mapElement = document.querySelector(
       `.map[data-timetable-id="${id}"]`,
     );
-    if (mapElement) {
-      mapElement.style.display = 'none';
+    const mapContainerElement = mapElement?.closest('.map-container');
+    if (mapContainerElement) {
+      mapContainerElement.style.display = 'none';
     }
     return false;
   }
