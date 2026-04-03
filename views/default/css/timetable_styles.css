@@ -291,8 +291,7 @@ a:hover {
 }
 
 .timetable-page .timetable .trip-frequency {
-  text-align: center;
-  font-weight: bold;
+  font-weight: semibold;
 }
 
 .timetable-page .timetable .city-row {
