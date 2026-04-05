@@ -66,6 +66,7 @@ Many transit agencies use `gtfs-to-html` to generate the schedule pages used on 
 | [Brockton Area Transit Authority](https://ridebat.com)                        | Brockton, Massachusetts             |
 | [Cape Ann Transportation Authority](https://canntran.com)                     | Gloucester, Massachusetts           |
 | [Capital Transit](https://juneaucapitaltransit.org)                           | Juneau, Alaska                      |
+| [Cascades East Transit](https://cascadeseasttransit.com)                      | Bend, Oregon                        |
 | [Central Transit](https://centraltransit.org)                                 | Ellensburg, Washington              |
 | [Citibus](https://citibus.com)                                                | Lubbock, Texas                      |
 | [Commute.org](https://commute.org)                                            | San Mateo County, California        |
@@ -77,7 +78,7 @@ Many transit agencies use `gtfs-to-html` to generate the schedule pages used on 
 | [Kings Area Rural Transit (KART)](https://www.kartbus.org)                    | Kings County, California            |
 | [Lowell Regional Transit Authority](https://lrta.com)                         | Lowell, Massachusetts               |
 | [Madera County Connection](https://mcctransit.com)                            | Madera County, California           |
-| [Marin Transit](https://marintransit.org)                                     | Marin County, California            |
+| [Marin Transit](https://marintransit.gov)                                     | Marin County, California            |
 | [Morongo Basin Transit Authority](https://mbtabus.com)                        | Morongo Basin, California           |
 | [Mountain Transit](https://mountaintransit.org)                               | Big Bear Valley, California         |
 | [Mountain View Community Shuttle](https://mvcommunityshuttle.com)             | Mountain View, California           |

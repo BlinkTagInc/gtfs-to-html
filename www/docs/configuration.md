@@ -123,21 +123,21 @@ Add GTFS-Realtime URLs to enable vehicle positions on the route map. Each GTFS-R
   "agencies": [
     {
       "agencyKey": "marintransit",
-      "url": "https://marintransit.org/data/google_transit.zip",
+      "url": "https://marintransit.gov/data/google_transit.zip",
       "realtimeAlerts": {
-        "url": "https://api.marintransit.org/alerts",
+        "url": "https://api.marintransit.gov/alerts",
         "headers": {
           "Authorization": "bearer 123456780"
         }
       },
       "realtimeTripUpdates": {
-        "url": "https://api.marintransit.org/tripupdates",
+        "url": "https://api.marintransit.gov/tripupdates",
         "headers": {
           "Authorization": "bearer 123456780"
         }
       },
       "realtimeVehiclePositions": {
-        "url": "https://api.marintransit.org/vehiclepositions",
+        "url": "https://api.marintransit.gov/vehiclepositions",
         "headers": {
           "Authorization": "bearer 123456780"
         }
