@@ -36,6 +36,7 @@ import {
   GtfsToHtmlErrorCategory,
   GtfsToHtmlErrorCode,
 } from './errors.js';
+import { logWarning } from './log-utils.js';
 
 import type {
   Config,
@@ -203,18 +204,33 @@ export async function copyStaticAssets(config: Config, outputPath: string) {
     }
   }
 
+  const copyOptionalAsset = async (source: string, destination: string) => {
+    try {
+      await copyFile(source, destination);
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException)?.code === 'ENOENT') {
+        logWarning(config)(
+          `Skipping frontend library asset: ${source}. Try running 'npm run postinstall' to regenerate bundled assets.`,
+        );
+        return;
+      }
+
+      throw error;
+    }
+  };
+
   // Copy js libraries from node_modules if needed for GTFS-Realtime
   if (
     config.hasGtfsRealtimeVehiclePositions ||
     config.hasGtfsRealtimeTripUpdates ||
     config.hasGtfsRealtimeAlerts
   ) {
-    await copyFile(
+    await copyOptionalAsset(
       join(thisModuleFolderPath, 'dist/frontend_libraries/pbf.js'),
       join(outputPath, 'js/pbf.js'),
     );
 
-    await copyFile(
+    await copyOptionalAsset(
       join(
         thisModuleFolderPath,
         'dist/frontend_libraries/gtfs-realtime.browser.proto.js',
@@ -224,24 +240,24 @@ export async function copyStaticAssets(config: Config, outputPath: string) {
   }
 
   if (config.hasGtfsRealtimeAlerts) {
-    await copyFile(
+    await copyOptionalAsset(
       join(thisModuleFolderPath, 'dist/frontend_libraries/anchorme.min.js'),
       join(outputPath, 'js/anchorme.min.js'),
     );
   }
 
   if (config.showMap) {
-    await copyFile(
+    await copyOptionalAsset(
       join(thisModuleFolderPath, 'dist/frontend_libraries/maplibre-gl.js'),
       join(outputPath, 'js/maplibre-gl.js'),
     );
 
-    await copyFile(
+    await copyOptionalAsset(
       join(thisModuleFolderPath, 'dist/frontend_libraries/maplibre-gl.css'),
       join(outputPath, 'css/maplibre-gl.css'),
     );
 
-    await copyFile(
+    await copyOptionalAsset(
       join(
         thisModuleFolderPath,
         'dist/frontend_libraries/maplibre-gl-geocoder.js',
@@ -249,7 +265,7 @@ export async function copyStaticAssets(config: Config, outputPath: string) {
       join(outputPath, 'js/maplibre-gl-geocoder.js'),
     );
 
-    await copyFile(
+    await copyOptionalAsset(
       join(
         thisModuleFolderPath,
         'dist/frontend_libraries/maplibre-gl-geocoder.css',
