@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Handle GTFS that doesn't use calendar.txt
+- Fix for route_ids with underscores
 
 ## [2.12.7] - 2026-04-02
 

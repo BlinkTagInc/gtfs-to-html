@@ -1810,7 +1810,7 @@ const getTimetablePageById = (timetablePageId: string, config: Config) => {
   // If no `timetables.txt` in GTFS and timetable_page_id starts with "route_", build the route into a timetable page using all calendars and directions.
   if (timetablePageId.startsWith('route_')) {
     const routes = getRoutes({
-      route_id: timetablePageId.split('_')[1],
+      route_id: timetablePageId.slice('route_'.length),
     });
 
     if (routes.length === 0) {
