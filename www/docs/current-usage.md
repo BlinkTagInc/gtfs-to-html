@@ -9,6 +9,7 @@ Many transit agencies use GTFS-to-HTML to generate the schedule pages used on th
 
 | Agency                                                                        | Location                            |
 | ----------------------------------------------------------------------------- | ----------------------------------- |
+| [Asheville Rides Transit (ART)](https://www.ridetheart.com)                   | Asheville, North Carolina           |
 | [Basin Transit](https://basin-transit.com)                                    | Morongo Basin, California           |
 | [Bayway Transit](https://www.baywaytransit.org)                               | Panama City, Florida                |
 | [Brockton Area Transit Authority](https://ridebat.com)                        | Brockton, Massachusetts             |
