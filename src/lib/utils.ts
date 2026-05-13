@@ -1315,6 +1315,57 @@ const filterTrips = (
     filteredTrips = deduplicateTrips(filteredTrips);
   }
 
+  // Warn about any trip that doesn't run on every day of the week that the
+  // timetable covers. This catches cases like a Sat+Sun timetable where
+  // some trips only run on Saturday, a Mon-Fri timetable where a trip
+  // skips Wednesday, or a Sat+Sun timetable where trips run differently on
+  // each day.
+  const dayNames = [
+    'monday',
+    'tuesday',
+    'wednesday',
+    'thursday',
+    'friday',
+    'saturday',
+    'sunday',
+  ] as const;
+  const timetableDays = dayNames.filter((day) => timetable[day] === 1);
+
+  if (timetableDays.length > 1) {
+    const warnedServiceIds = new Set<string>();
+
+    for (const trip of filteredTrips) {
+      const tripServiceIds = [
+        trip.service_id,
+        ...(trip.additional_service_ids ?? []),
+      ];
+      const tripCalendars = calendars.filter((c) =>
+        tripServiceIds.includes(c.service_id),
+      );
+
+      if (tripCalendars.length === 0) {
+        continue;
+      }
+
+      const tripDays = getDaysFromCalendars(tripCalendars);
+      const missingDays = timetableDays.filter(
+        (day) => (tripDays[day] ?? 0) !== 1,
+      );
+
+      if (missingDays.length > 0) {
+        const serviceIdKey = tripServiceIds.sort().join('|');
+        if (!warnedServiceIds.has(serviceIdKey)) {
+          warnedServiceIds.add(serviceIdKey);
+          const tripDayList = formatDays(tripDays, config);
+          const timetableDayList = formatDays(timetable, config);
+          timetable.warnings!.push(
+            `Timetable ${timetable.timetable_id} (Routes: ${timetable.routes.map((route) => route.route_short_name).join(', ')}) covers ${timetableDayList} but some trips (service_id=${tripServiceIds.join(', ')}) only run on ${tripDayList}. This may indicate a data issue in the GTFS or that you should generate separate timetables for different days of the week.`,
+          );
+        }
+      }
+    }
+  }
+
   // Add day list and route short name to trips
   const formattedTrips = filteredTrips.map((trip) => {
     const tripCalendars =
