@@ -15,7 +15,7 @@ import { homedir } from 'node:os';
 
 import * as _ from 'lodash-es';
 import { uniqBy } from 'lodash-es';
-import archiver from 'archiver';
+import { ZipArchive } from 'archiver';
 import beautify from 'js-beautify';
 import sanitizeHtml from 'sanitize-html';
 import { renderFile } from 'pug';
@@ -280,7 +280,7 @@ export async function copyStaticAssets(config: Config, outputPath: string) {
  */
 export function zipFolder(outputPath) {
   const output = createWriteStream(join(outputPath, 'timetables.zip'));
-  const archive = archiver('zip');
+  const archive = new ZipArchive();
 
   return new Promise((resolve, reject) => {
     output.on('close', resolve);

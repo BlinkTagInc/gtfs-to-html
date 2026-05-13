@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Warning about inconsistent trips across days of the week
 
+### Updated
+- Dependency updates
+
 ## [2.12.8] - 2026-04-20
 
 ### Fixed
