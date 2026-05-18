@@ -77,34 +77,13 @@ const staticAssetPath =
 
 app.use(express.static(staticAssetPath));
 
-const frontendLibraryPaths = [
-  { route: '/js', package: 'pbf', subPath: 'dist' },
-  { route: '/js', package: 'gtfs-realtime-pbf-js-module', subPath: '' },
-  { route: '/js', package: 'anchorme', subPath: '../../dist/browser' },
-  { route: '/js', package: 'maplibre-gl', subPath: '../dist' },
-  {
-    route: '/js',
-    package: '@maplibre/maplibre-gl-geocoder',
-    subPath: '../dist',
-  },
-  { route: '/css', package: 'maplibre-gl', subPath: '../dist' },
-  {
-    route: '/css',
-    package: '@maplibre/maplibre-gl-geocoder',
-    subPath: '../dist',
-  },
-];
+const browserAssetsPath = join(
+  dirname(fileURLToPath(import.meta.url)),
+  '../browser',
+);
 
-// Helper function to resolve package path
-const resolvePackagePath = (packageName: string, subPath: string): string => {
-  const packagePath = dirname(fileURLToPath(import.meta.resolve(packageName)));
-  return subPath ? join(packagePath, subPath) : packagePath;
-};
-
-// Register all frontend library package routes
-for (const { route, package: pkg, subPath } of frontendLibraryPaths) {
-  app.use(route, express.static(resolvePackagePath(pkg, subPath)));
-}
+app.use('/js', express.static(browserAssetsPath));
+app.use('/css', express.static(browserAssetsPath));
 
 // Show all timetable pages
 app.get('/', async (req, res, next) => {

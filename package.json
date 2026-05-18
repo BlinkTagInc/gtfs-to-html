@@ -43,30 +43,24 @@
     "gtfs-to-html": "dist/bin/gtfs-to-html.js"
   },
   "scripts": {
-    "build": "tsup",
-    "postbuild": "node scripts/postinstall.js",
+    "build": "tsup && node scripts/copy-browser-assets.js",
     "start": "node ./dist/app",
     "prepare": "husky && pnpm run build",
-    "postinstall": "node scripts/postinstall.js"
+    "prepack": "husky && pnpm run build"
   },
   "dependencies": {
-    "@maplibre/maplibre-gl-geocoder": "^1.9.4",
     "@turf/helpers": "^7.3.5",
     "@turf/simplify": "^7.3.5",
-    "anchorme": "^3.0.8",
     "archiver": "^8.0.0",
     "cli-table": "^0.3.11",
     "css.escape": "^1.5.1",
     "csv-stringify": "^6.7.0",
     "express": "^5.2.1",
     "gtfs": "^4.18.5",
-    "gtfs-realtime-pbf-js-module": "^1.0.0",
     "js-beautify": "^1.15.4",
     "lodash-es": "^4.18.1",
-    "maplibre-gl": "^5.24.0",
     "marked": "^18.0.3",
     "moment": "^2.30.1",
-    "pbf": "^4.0.1",
     "pretty-error": "^4.0.0",
     "pug": "^3.0.4",
     "puppeteer": "^24.43.1",
@@ -78,6 +72,7 @@
     "yoctocolors": "^2.1.2"
   },
   "devDependencies": {
+    "@maplibre/maplibre-gl-geocoder": "^1.9.4",
     "@types/archiver": "^7.0.0",
     "@types/cli-table": "^0.3.4",
     "@types/express": "^5.0.6",
@@ -89,8 +84,12 @@
     "@types/sqlstring": "^2.3.2",
     "@types/toposort": "^2.0.7",
     "@types/yargs": "^17.0.35",
+    "anchorme": "^3.0.8",
+    "gtfs-realtime-pbf-js-module": "^1.0.0",
     "husky": "^9.1.7",
     "lint-staged": "^17.0.4",
+    "maplibre-gl": "^5.24.0",
+    "pbf": "^4.0.1",
     "prettier": "^3.8.3",
     "tsup": "^8.5.1",
     "typescript": "^6.0.3"

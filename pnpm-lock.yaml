@@ -8,18 +8,12 @@ importers:
 
   .:
     dependencies:
-      '@maplibre/maplibre-gl-geocoder':
-        specifier: ^1.9.4
-        version: 1.9.4(maplibre-gl@5.24.0)
       '@turf/helpers':
         specifier: ^7.3.5
         version: 7.3.5
       '@turf/simplify':
         specifier: ^7.3.5
         version: 7.3.5
-      anchorme:
-        specifier: ^3.0.8
-        version: 3.0.8
       archiver:
         specifier: ^8.0.0
         version: 8.0.0
@@ -38,27 +32,18 @@ importers:
       gtfs:
         specifier: ^4.18.5
         version: 4.18.5
-      gtfs-realtime-pbf-js-module:
-        specifier: ^1.0.0
-        version: 1.0.0
       js-beautify:
         specifier: ^1.15.4
         version: 1.15.4
       lodash-es:
         specifier: ^4.18.1
         version: 4.18.1
-      maplibre-gl:
-        specifier: ^5.24.0
-        version: 5.24.0
       marked:
         specifier: ^18.0.3
         version: 18.0.3
       moment:
         specifier: ^2.30.1
         version: 2.30.1
-      pbf:
-        specifier: ^4.0.1
-        version: 4.0.1
       pretty-error:
         specifier: ^4.0.0
         version: 4.0.0
@@ -87,6 +72,9 @@ importers:
         specifier: ^2.1.2
         version: 2.1.2
     devDependencies:
+      '@maplibre/maplibre-gl-geocoder':
+        specifier: ^1.9.4
+        version: 1.9.4(maplibre-gl@5.24.0)
       '@types/archiver':
         specifier: ^7.0.0
         version: 7.0.0
@@ -120,12 +108,24 @@ importers:
       '@types/yargs':
         specifier: ^17.0.35
         version: 17.0.35
+      anchorme:
+        specifier: ^3.0.8
+        version: 3.0.8
+      gtfs-realtime-pbf-js-module:
+        specifier: ^1.0.0
+        version: 1.0.0
       husky:
         specifier: ^9.1.7
         version: 9.1.7
       lint-staged:
         specifier: ^17.0.4
         version: 17.0.4
+      maplibre-gl:
+        specifier: ^5.24.0
+        version: 5.24.0
+      pbf:
+        specifier: ^4.0.1
+        version: 4.0.1
       prettier:
         specifier: ^3.8.3
         version: 3.8.3

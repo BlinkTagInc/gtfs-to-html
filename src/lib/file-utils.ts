@@ -36,7 +36,6 @@ import {
   GtfsToHtmlErrorCategory,
   GtfsToHtmlErrorCode,
 } from './errors.js';
-import { logWarning } from './log-utils.js';
 
 import type {
   Config,
@@ -204,72 +203,53 @@ export async function copyStaticAssets(config: Config, outputPath: string) {
     }
   }
 
-  const copyOptionalAsset = async (source: string, destination: string) => {
-    try {
-      await copyFile(source, destination);
-    } catch (error) {
-      if ((error as NodeJS.ErrnoException)?.code === 'ENOENT') {
-        logWarning(config)(
-          `Skipping frontend library asset: ${source}. Try running 'npm run postinstall' to regenerate bundled assets.`,
-        );
-        return;
-      }
-
-      throw error;
-    }
-  };
-
   // Copy js libraries from node_modules if needed for GTFS-Realtime
   if (
     config.hasGtfsRealtimeVehiclePositions ||
     config.hasGtfsRealtimeTripUpdates ||
     config.hasGtfsRealtimeAlerts
   ) {
-    await copyOptionalAsset(
-      join(thisModuleFolderPath, 'dist/frontend_libraries/pbf.js'),
+    await copyFile(
+      join(thisModuleFolderPath, 'dist/browser/pbf.js'),
       join(outputPath, 'js/pbf.js'),
     );
 
-    await copyOptionalAsset(
-      join(
-        thisModuleFolderPath,
-        'dist/frontend_libraries/gtfs-realtime.browser.proto.js',
-      ),
+    await copyFile(
+      join(thisModuleFolderPath, 'dist/browser/gtfs-realtime.browser.proto.js'),
       join(outputPath, 'js/gtfs-realtime.browser.proto.js'),
     );
   }
 
   if (config.hasGtfsRealtimeAlerts) {
-    await copyOptionalAsset(
-      join(thisModuleFolderPath, 'dist/frontend_libraries/anchorme.min.js'),
+    await copyFile(
+      join(thisModuleFolderPath, 'dist/browser/anchorme.min.js'),
       join(outputPath, 'js/anchorme.min.js'),
     );
   }
 
   if (config.showMap) {
-    await copyOptionalAsset(
-      join(thisModuleFolderPath, 'dist/frontend_libraries/maplibre-gl.js'),
+    await copyFile(
+      join(thisModuleFolderPath, 'dist/browser/maplibre-gl.js'),
       join(outputPath, 'js/maplibre-gl.js'),
     );
 
-    await copyOptionalAsset(
-      join(thisModuleFolderPath, 'dist/frontend_libraries/maplibre-gl.css'),
+    await copyFile(
+      join(thisModuleFolderPath, 'dist/browser/maplibre-gl.js.map'),
+      join(outputPath, 'js/maplibre-gl.js.map'),
+    );
+
+    await copyFile(
+      join(thisModuleFolderPath, 'dist/browser/maplibre-gl.css'),
       join(outputPath, 'css/maplibre-gl.css'),
     );
 
-    await copyOptionalAsset(
-      join(
-        thisModuleFolderPath,
-        'dist/frontend_libraries/maplibre-gl-geocoder.js',
-      ),
+    await copyFile(
+      join(thisModuleFolderPath, 'dist/browser/maplibre-gl-geocoder.js'),
       join(outputPath, 'js/maplibre-gl-geocoder.js'),
     );
 
-    await copyOptionalAsset(
-      join(
-        thisModuleFolderPath,
-        'dist/frontend_libraries/maplibre-gl-geocoder.css',
-      ),
+    await copyFile(
+      join(thisModuleFolderPath, 'dist/browser/maplibre-gl-geocoder.css'),
       join(outputPath, 'css/maplibre-gl-geocoder.css'),
     );
   }
