@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Updated
 - Change to how frontend libraries are vendored
+- Dependency updates
 
 ## [2.12.9] - 2026-05-13
 
