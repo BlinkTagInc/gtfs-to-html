@@ -4,6 +4,4 @@ allowBuilds:
   protobufjs: true
   puppeteer: true
 minimumReleaseAgeExclude:
-  - '@puppeteer/browsers@3.0.3'
-  - puppeteer-core@25.0.4
-  - puppeteer@25.0.4
+  - gtfs@4.18.6
