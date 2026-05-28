@@ -579,8 +579,8 @@ async function fetchGtfsRealtime(url, headers) {
   }
 
   const bufferRes = await response.arrayBuffer();
-  const pdf = new Pbf(new Uint8Array(bufferRes));
-  const obj = FeedMessage.read(pdf);
+  const pbf = new Pbf.PbfReader(new Uint8Array(bufferRes));
+  const obj = FeedMessage.read(pbf);
   return obj.entity;
 }
 

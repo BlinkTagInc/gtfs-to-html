@@ -56,14 +56,14 @@
     "css.escape": "^1.5.1",
     "csv-stringify": "^6.7.0",
     "express": "^5.2.1",
-    "gtfs": "^4.18.6",
+    "gtfs": "^4.18.7",
     "js-beautify": "^1.15.4",
     "lodash-es": "^4.18.1",
     "marked": "^18.0.4",
     "moment": "^2.30.1",
     "pretty-error": "^4.0.0",
     "pug": "^3.0.4",
-    "puppeteer": "^25.0.4",
+    "puppeteer": "^25.1.0",
     "sanitize-filename": "^1.6.4",
     "sanitize-html": "^2.17.4",
     "sqlstring": "^2.3.3",
@@ -89,7 +89,7 @@
     "husky": "^9.1.7",
     "lint-staged": "^17.0.5",
     "maplibre-gl": "^5.24.0",
-    "pbf": "^4.0.2",
+    "pbf": "^5.0.0",
     "prettier": "^3.8.3",
     "tsup": "^8.5.1",
     "typescript": "^6.0.3"
@@ -97,7 +97,7 @@
   "engines": {
     "node": ">= 22"
   },
-  "packageManager": "pnpm@11.3.0",
+  "packageManager": "pnpm@11.4.0",
   "release-it": {
     "github": {
       "release": true

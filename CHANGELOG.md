@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Updated
 - Update to browser file copy script
+- Dependency updates
 
 ## [2.12.11] - 2026-05-24
 
