@@ -1,6 +1,7 @@
 import { dirname, join, resolve } from 'node:path';
 import cssEscape from 'css.escape';
 import { createWriteStream } from 'node:fs';
+import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import {
   access,
@@ -44,6 +45,8 @@ import type {
 } from '../types/index.ts';
 
 const homeDirectory = homedir();
+
+const localRequire = createRequire(import.meta.url);
 
 /*
  * Attempt to parse the specified config JSON file.
@@ -92,25 +95,30 @@ export async function getConfig(argv) {
 }
 
 /*
- * Get the full path to this module's folder.
+ * Get the full path to this module's folder. Resolve via the package name
+ * (`gtfs-to-html/package.json`) so that bundlers and static-analysis tools
+ * can statically determine the package root. The fallback handles local
+ * development where the package isn't installed under `node_modules/gtfs-to-html`.
  */
 export function getPathToThisModuleFolder() {
-  const __dirname = dirname(fileURLToPath(import.meta.url));
+  try {
+    return dirname(localRequire.resolve('gtfs-to-html/package.json'));
+  } catch {
+    const moduleDirectory = dirname(fileURLToPath(import.meta.url));
 
-  // Dynamically calculate the path to this module's folder
-  let distFolderPath;
-  if (__dirname.endsWith('/dist/bin') || __dirname.endsWith('/dist/app')) {
-    // When the file is in 'dist/bin' or 'dist/app'
-    distFolderPath = resolve(__dirname, '../../');
-  } else if (__dirname.endsWith('/dist')) {
-    // When the file is in 'dist'
-    distFolderPath = resolve(__dirname, '../');
-  } else {
-    // In case it's neither, fallback to project root
-    distFolderPath = resolve(__dirname, '../../');
+    if (
+      moduleDirectory.endsWith('/dist/bin') ||
+      moduleDirectory.endsWith('/dist/app')
+    ) {
+      return resolve(moduleDirectory, '../../');
+    }
+
+    if (moduleDirectory.endsWith('/dist')) {
+      return resolve(moduleDirectory, '../');
+    }
+
+    return resolve(moduleDirectory, '../../');
   }
-
-  return distFolderPath;
 }
 
 /*
