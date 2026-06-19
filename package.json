@@ -43,7 +43,7 @@
     "gtfs-to-html": "dist/bin/gtfs-to-html.js"
   },
   "scripts": {
-    "build": "tsup && node scripts/copy-browser-assets.js",
+    "build": "tsdown && node scripts/copy-browser-assets.js",
     "start": "node ./dist/app",
     "prepare": "husky && pnpm run build",
     "prepack": "husky && pnpm run build"
@@ -56,16 +56,16 @@
     "css.escape": "^1.5.1",
     "csv-stringify": "^6.7.0",
     "express": "^5.2.1",
-    "gtfs": "^4.18.7",
+    "gtfs": "^4.19.1",
     "js-beautify": "^1.15.4",
     "lodash-es": "^4.18.1",
-    "marked": "^18.0.4",
+    "marked": "^18.0.5",
     "moment": "^2.30.1",
     "pretty-error": "^4.0.0",
     "pug": "^3.0.4",
     "puppeteer": "^25.1.0",
     "sanitize-filename": "^1.6.4",
-    "sanitize-html": "^2.17.4",
+    "sanitize-html": "^2.17.5",
     "sqlstring": "^2.3.3",
     "toposort": "^2.0.2",
     "yargs": "^18.0.0",
@@ -73,7 +73,7 @@
   },
   "devDependencies": {
     "@maplibre/maplibre-gl-geocoder": "^1.9.4",
-    "@types/archiver": "^7.0.0",
+    "@types/archiver": "^8.0.0",
     "@types/cli-table": "^0.3.4",
     "@types/express": "^5.0.6",
     "@types/js-beautify": "^1.14.3",
@@ -87,17 +87,17 @@
     "anchorme": "^3.0.8",
     "gtfs-realtime-pbf-js-module": "^1.0.0",
     "husky": "^9.1.7",
-    "lint-staged": "^17.0.5",
+    "lint-staged": "^17.0.7",
     "maplibre-gl": "^5.24.0",
-    "pbf": "^5.0.0",
-    "prettier": "^3.8.3",
-    "tsup": "^8.5.1",
+    "pbf": "^5.1.0",
+    "prettier": "^3.8.4",
+    "tsdown": "^0.22.2",
     "typescript": "^6.0.3"
   },
   "engines": {
     "node": ">= 22"
   },
-  "packageManager": "pnpm@11.4.0",
+  "packageManager": "pnpm@11.6.0",
   "release-it": {
     "github": {
       "release": true
