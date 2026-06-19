@@ -356,7 +356,6 @@ const getDaysFromCalendars = (calendars: Calendar[]) => {
 
   for (const calendar of calendars) {
     for (const day of Object.keys(days) as (keyof typeof days)[]) {
-      /* eslint-disable-next-line no-bitwise */
       days[day] = days[day] | calendar[day];
     }
   }
@@ -1397,7 +1396,6 @@ const filterTrips = (
  * Get all trips from a timetable.
  */
 
-/* eslint-disable complexity */
 const getTripsForTimetable = (
   timetable: FormattedTimetable,
   calendars: Calendar[],
@@ -1538,7 +1536,6 @@ const getTripsForTimetable = (
 
   return sortTrips(formattedTrips, config);
 };
-/* eslint-enable complexity */
 
 /*
  * Format timetables for display.

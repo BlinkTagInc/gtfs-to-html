@@ -1,5 +1,4 @@
 /* global maplibregl, Pbf, FeedMessage, mapStyleUrl, stopData, routeData, routeIds, tripIds, geojsons, gtfsRealtimeUrls */
-/* eslint prefer-arrow-callback: "off", no-unused-vars: "off" */
 
 const maps = {};
 const vehicleMarkers = {};

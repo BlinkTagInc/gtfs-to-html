@@ -41,7 +41,6 @@ import type { Config } from '../types/index.ts';
 /*
  * Generate HTML timetables from GTFS.
  */
-/* eslint-disable complexity */
 const gtfsToHtml = async (initialConfig: Config) => {
   const config = setDefaultConfig(initialConfig);
 
@@ -147,7 +146,6 @@ const gtfsToHtml = async (initialConfig: Config) => {
     config,
   );
 
-  /* eslint-disable no-await-in-loop */
   for (const timetablePageId of timetablePageIds) {
     try {
       const timetablePage = await getFormattedTimetablePage(
@@ -227,7 +225,6 @@ const gtfsToHtml = async (initialConfig: Config) => {
 
     bar?.increment();
   }
-  /* eslint-enable no-await-in-loop */
 
   if (config.outputFormat === 'html') {
     // Generate overview HTML
@@ -266,6 +263,5 @@ const gtfsToHtml = async (initialConfig: Config) => {
 
   return fullOutputPath;
 };
-/* eslint-enable complexity */
 
 export default gtfsToHtml;

@@ -1,5 +1,4 @@
 /* global anchorme, Pbf, FeedMessage, stopData, routeData, routeIds, tripIds, stopIds, gtfsRealtimeUrls */
-/* eslint no-var: "off", prefer-arrow-callback: "off", no-unused-vars: "off" */
 
 let gtfsRealtimeAlertsInterval;
 

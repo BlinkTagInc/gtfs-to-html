@@ -57,7 +57,6 @@ export function timeToSeconds(time) {
 /*
  * Format a single stoptime.
  */
-/* eslint-disable complexity */
 function formatStopTime(stoptime, timetable, config) {
   stoptime.classes = [];
 
@@ -125,7 +124,6 @@ function formatStopTime(stoptime, timetable, config) {
 
   return stoptime;
 }
-/* eslint-enable complexity */
 
 /*
  * Find hourly times for each stop for hourly schedules.
