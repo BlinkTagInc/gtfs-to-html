@@ -115,9 +115,9 @@
       gtfsRealtimeUrls,
       mapStyleUrl: config.mapStyleUrl,
       pageData: {
-        routeIds: _.uniq(_.flatMap(timetablePage.consolidatedTimetables, timetable => timetable.routes.map(route => route.route_id))),
-        tripIds: _.uniq(_.flatMap(timetablePage.consolidatedTimetables, timetable => timetable.trip_ids)),
-        stopIds: Object.keys(stopData),
+        routeIds: Array.from(new Set(_.flatMap(timetablePage.consolidatedTimetables, timetable => timetable.routes.map(route => route.route_id)))).sort(),
+        tripIds: Array.from(new Set(_.flatMap(timetablePage.consolidatedTimetables, timetable => timetable.trip_ids))).sort(),
+        stopIds: Object.keys(stopData).sort(),
         geojsons,
       },
       routeData,
