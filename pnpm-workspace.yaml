@@ -3,4 +3,4 @@ allowBuilds:
   protobufjs: true
   puppeteer: true
 minimumReleaseAgeExclude:
-  - gtfs@4.19.1
+  - gtfs@4.19.3
