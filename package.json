@@ -44,9 +44,11 @@
   },
   "scripts": {
     "build": "tsdown && node scripts/copy-browser-assets.js",
+    "typecheck": "tsc --noEmit",
     "start": "node ./dist/app",
-    "prepare": "husky && pnpm run build",
-    "prepack": "husky && pnpm run build"
+    "prepare": "husky && pnpm run typecheck && pnpm run build",
+    "prepack": "husky && pnpm run typecheck && pnpm run build",
+    "prepublishOnly": "pnpm run typecheck"
   },
   "dependencies": {
     "@turf/helpers": "^7.3.5",
