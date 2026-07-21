@@ -1463,7 +1463,7 @@ const getTripsForTimetable = (
       timetable.start_timestamp !== undefined &&
       trip.stoptimes[0].arrival_timestamp < timetable.start_timestamp
     ) {
-      return;
+      continue;
     }
 
     // Exclude trips after timetable `end_timestamp`
@@ -1473,7 +1473,7 @@ const getTripsForTimetable = (
       timetable.end_timestamp !== undefined &&
       trip.stoptimes[0].arrival_timestamp >= timetable.end_timestamp
     ) {
-      return;
+      continue;
     }
 
     if (timetable.show_trip_continuation) {
