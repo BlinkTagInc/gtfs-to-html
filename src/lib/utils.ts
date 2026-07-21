@@ -1496,7 +1496,7 @@ const getTripsForTimetable = (
     } else {
       const frequencyTrips = generateTripsByFrequencies(
         formattedTrip,
-        frequencies,
+        tripFrequencies,
         config,
       );
       formattedTrips.push(...frequencyTrips);
