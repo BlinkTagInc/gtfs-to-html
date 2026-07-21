@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Updated
 - Optimized overview page timetablepage memory usage
+- Dependency updates
 
 ### Fixed
 - Fix for inefficient frequencies query

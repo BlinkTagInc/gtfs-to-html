@@ -56,16 +56,16 @@
     "css.escape": "^1.5.1",
     "csv-stringify": "^6.8.1",
     "express": "^5.2.1",
-    "gtfs": "^4.19.3",
+    "gtfs": "^4.19.4",
     "js-beautify": "^2.0.3",
     "lodash-es": "^4.18.1",
-    "marked": "^18.0.5",
+    "marked": "^18.0.7",
     "moment": "^2.30.1",
     "pretty-error": "^4.0.0",
     "pug": "^3.0.4",
     "puppeteer": "^25.3.0",
     "sanitize-filename": "^1.6.4",
-    "sanitize-html": "^2.17.5",
+    "sanitize-html": "^2.17.6",
     "sqlstring": "^2.3.3",
     "toposort": "^2.0.2",
     "yargs": "^18.0.0",
@@ -87,17 +87,17 @@
     "anchorme": "^3.0.8",
     "gtfs-realtime-pbf-js-module": "^1.0.0",
     "husky": "^9.1.7",
-    "lint-staged": "^17.0.8",
+    "lint-staged": "^17.1.0",
     "maplibre-gl": "^5.24.0",
-    "pbf": "^5.1.0",
-    "prettier": "^3.9.4",
-    "tsdown": "^0.22.3",
+    "pbf": "^5.1.2",
+    "prettier": "^3.9.5",
+    "tsdown": "^0.22.12",
     "typescript": "^6.0.3"
   },
   "engines": {
     "node": ">= 22"
   },
-  "packageManager": "pnpm@11.10.0",
+  "packageManager": "pnpm@11.15.1",
   "release-it": {
     "github": {
       "release": true
@@ -115,6 +115,8 @@
     "singleQuote": true
   },
   "lint-staged": {
-    "*.{js,ts,json}": "prettier --write"
+    "*.js": "prettier --write",
+    "*.ts": "prettier --write",
+    "*.json": "prettier --write"
   }
 }

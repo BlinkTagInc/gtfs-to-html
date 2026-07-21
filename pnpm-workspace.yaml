@@ -4,3 +4,4 @@ allowBuilds:
   puppeteer: true
 minimumReleaseAgeExclude:
   - gtfs@4.19.3
+  - marked@18.0.7
