@@ -75,6 +75,7 @@
     "@maplibre/maplibre-gl-geocoder": "^1.9.4",
     "@types/archiver": "^8.0.0",
     "@types/cli-table": "^0.3.4",
+    "@types/css.escape": "^1.5.2",
     "@types/express": "^5.0.6",
     "@types/js-beautify": "^1.14.3",
     "@types/lodash-es": "^4.17.12",

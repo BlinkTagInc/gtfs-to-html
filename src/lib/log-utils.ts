@@ -12,10 +12,20 @@ import {
   isGtfsToHtmlError,
 } from './errors.js';
 
+export interface GenerationStats {
+  timetablePages: number;
+  timetables: number;
+  calendars: number;
+  routes: number;
+  trips: number;
+  stops: number;
+  warnings: string[];
+}
+
 /*
  * Creates text for a log of output details.
  */
-export function generateLogText(outputStats, config: Config) {
+export function generateLogText(outputStats: GenerationStats, config: Config) {
   const feedInfo = getFeedInfo();
   const agencies = getAgencies();
   const feedVersion =
@@ -37,9 +47,9 @@ export function generateLogText(outputStats, config: Config) {
   ];
 
   for (const agency of config.agencies) {
-    if (agency.url) {
+    if ('url' in agency) {
       logText.push(`Source: ${agency.url}`);
-    } else if (agency.path) {
+    } else if ('path' in agency) {
       logText.push(`Source: ${agency.path}`);
     }
   }
@@ -151,20 +161,20 @@ export function logStats(config: Config) {
     return noop;
   }
 
-  return (stats: any) => {
+  return (stats: GenerationStats) => {
     const table = new Table({
       colWidths: [40, 20],
       head: ['Item', 'Count'],
     });
 
     table.push(
-      ['📄 Timetable Pages', stats.timetablePages],
-      ['🕑 Timetables', stats.timetables],
-      ['📅 Calendar Service IDs', stats.calendars],
-      ['🔄 Routes', stats.routes],
-      ['🚍 Trips', stats.trips],
-      ['🛑 Stops', stats.stops],
-      ['⛔️ Warnings', stats.warnings.length],
+      ['📄 Timetable Pages', String(stats.timetablePages)],
+      ['🕑 Timetables', String(stats.timetables)],
+      ['📅 Calendar Service IDs', String(stats.calendars)],
+      ['🔄 Routes', String(stats.routes)],
+      ['🚍 Trips', String(stats.trips)],
+      ['🛑 Stops', String(stats.stops)],
+      ['⛔️ Warnings', String(stats.warnings.length)],
     );
 
     log(config)(table.toString());
@@ -174,7 +184,11 @@ export function logStats(config: Config) {
 /*
  * Create progress bar text string
  */
-const generateProgressBarString = (barTotal, barProgress, size = 40) => {
+const generateProgressBarString = (
+  barTotal: number,
+  barProgress: number,
+  size = 40,
+) => {
   const line = '-';
   const slider = '=';
   if (!barTotal) {
@@ -255,8 +269,8 @@ export function progressBar(
 
   const renderProgressString = () =>
     formatString
-      .replace('{value}', barProgress)
-      .replace('{total}', barTotal)
+      .replace('{value}', String(barProgress))
+      .replace('{total}', String(barTotal))
       .replace('{bar}', generateProgressBarString(barTotal, barProgress));
 
   log(config)(renderProgressString(), true);

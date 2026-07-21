@@ -4,39 +4,44 @@ import { featureCollection, round } from '@turf/helpers';
 import { logWarning } from './log-utils.js';
 import { getBaseTripIds } from './trip-id-utils.js';
 
+import type { Config, FormattedTimetable } from '../types/index.ts';
+
+type GeoJSONFeatureCollection = ReturnType<typeof getShapesAsGeoJSON>;
+
 /*
  * Merge any number of geojson objects into one. Only works for `FeatureCollection`.
  */
-const mergeGeojson = (...geojsons) =>
+const mergeGeojson = (...geojsons: GeoJSONFeatureCollection[]) =>
   featureCollection(geojsons.flatMap((geojson) => geojson.features));
 
 /*
  * Truncate a geojson coordinates to a specific number of decimal places.
  */
-const truncateGeoJSONDecimals = (geojson, config) => {
+const truncateGeoJSONDecimals = (
+  geojson: GeoJSONFeatureCollection,
+  config: Config,
+) => {
   for (const feature of geojson.features) {
-    if (feature.geometry.coordinates) {
-      if (feature.geometry.type.toLowerCase() === 'point') {
-        feature.geometry.coordinates = feature.geometry.coordinates.map(
-          (number) => round(number, config.coordinatePrecision),
-        );
-      } else if (feature.geometry.type.toLowerCase() === 'linestring') {
-        feature.geometry.coordinates = feature.geometry.coordinates.map(
-          (coordinate) =>
-            coordinate.map((number) =>
-              round(number, config.coordinatePrecision),
+    if (feature.geometry.type === 'Point') {
+      feature.geometry.coordinates = feature.geometry.coordinates.map(
+        (number: number) => round(number, config.coordinatePrecision ?? 5),
+      );
+    } else if (feature.geometry.type === 'LineString') {
+      feature.geometry.coordinates = feature.geometry.coordinates.map(
+        (coordinate: number[]) =>
+          coordinate.map((number: number) =>
+            round(number, config.coordinatePrecision ?? 5),
+          ),
+      );
+    } else if (feature.geometry.type === 'MultiLineString') {
+      feature.geometry.coordinates = feature.geometry.coordinates.map(
+        (linestring: number[][]) =>
+          linestring.map((coordinate: number[]) =>
+            coordinate.map((number: number) =>
+              round(number, config.coordinatePrecision ?? 5),
             ),
-        );
-      } else if (feature.geometry.type.toLowerCase() === 'multilinestring') {
-        feature.geometry.coordinates = feature.geometry.coordinates.map(
-          (linestring) =>
-            linestring.map((coordinate) =>
-              coordinate.map((number) =>
-                round(number, config.coordinatePrecision),
-              ),
-            ),
-        );
-      }
+          ),
+      );
     }
   }
 
@@ -46,10 +51,13 @@ const truncateGeoJSONDecimals = (geojson, config) => {
 /*
  * Get the geoJSON for a timetable.
  */
-export function getTimetableGeoJSON(timetable, config) {
+export function getTimetableGeoJSON(
+  timetable: FormattedTimetable,
+  config: Config,
+) {
   const tripIds = getBaseTripIds(timetable.orderedTrips);
 
-  const shapesGeojsons = timetable.route_ids.map((routeId) =>
+  const shapesGeojsons = timetable.route_ids.map((routeId: string) =>
     getShapesAsGeoJSON({
       route_id: routeId,
       direction_id: timetable.direction_id,
@@ -57,7 +65,7 @@ export function getTimetableGeoJSON(timetable, config) {
     }),
   );
 
-  const stopsGeojsons = timetable.route_ids.map((routeId) =>
+  const stopsGeojsons = timetable.route_ids.map((routeId: string) =>
     getStopsAsGeoJSON({
       route_id: routeId,
       direction_id: timetable.direction_id,
@@ -70,11 +78,11 @@ export function getTimetableGeoJSON(timetable, config) {
   let simplifiedGeojson;
   try {
     simplifiedGeojson = simplify(geojson, {
-      tolerance: 1 / 10 ** config.coordinatePrecision,
+      tolerance: 1 / 10 ** (config.coordinatePrecision ?? 5),
       highQuality: true,
     });
   } catch {
-    timetable.warnings.push(
+    timetable.warnings?.push(
       `Timetable ${timetable.timetable_id} - Unable to simplify geojson`,
     );
     simplifiedGeojson = geojson;
@@ -86,7 +94,7 @@ export function getTimetableGeoJSON(timetable, config) {
 /*
  * Get the geoJSON for an agency (all routes and stops).
  */
-export function getAgencyGeoJSON(config) {
+export function getAgencyGeoJSON(config: Config) {
   const shapesGeojsons = getShapesAsGeoJSON();
   const stopsGeojsons = getStopsAsGeoJSON();
 
@@ -95,7 +103,7 @@ export function getAgencyGeoJSON(config) {
   let simplifiedGeojson;
   try {
     simplifiedGeojson = simplify(geojson, {
-      tolerance: 1 / 10 ** config.coordinatePrecision,
+      tolerance: 1 / 10 ** (config.coordinatePrecision ?? 5),
       highQuality: true,
     });
   } catch {

@@ -48,10 +48,16 @@ const homeDirectory = homedir();
 
 const localRequire = createRequire(import.meta.url);
 
+interface ConfigArgv {
+  configPath: string;
+  skipImport?: boolean;
+  showOnlyTimepoint?: boolean;
+}
+
 /*
  * Attempt to parse the specified config JSON file.
  */
-export async function getConfig(argv) {
+export async function getConfig(argv: ConfigArgv) {
   let data;
   let config;
 
@@ -266,7 +272,7 @@ export async function copyStaticAssets(config: Config, outputPath: string) {
 /*
  * Zips the content of the specified folder.
  */
-export function zipFolder(outputPath) {
+export function zipFolder(outputPath: string) {
   const output = createWriteStream(join(outputPath, 'timetables.zip'));
   const archive = new ZipArchive();
 
@@ -352,7 +358,9 @@ export function generateCSVFileName(
 /*
  * Generates the folder name for a timetable page based on the date.
  */
-export function generateFolderName(timetablePage) {
+export function generateFolderName(timetablePage: {
+  consolidatedTimetables: Pick<FormattedTimetable, 'start_date' | 'end_date'>[];
+}) {
   // Use first timetable in timetable page for start date and end date
   const timetable = timetablePage.consolidatedTimetables[0];
   if (!timetable.start_date || !timetable.end_date) {
@@ -367,7 +375,7 @@ export function generateFolderName(timetablePage) {
  */
 export async function renderTemplate(
   templateFileName: string,
-  templateVars,
+  templateVars: Record<string, unknown>,
   config: Config,
 ) {
   const templatePath = getPathToTemplateFile(templateFileName, config);

@@ -7,7 +7,7 @@ export type CalendarCode =
 /*
  * Convert a GTFS formatted time string into a moment less than 24 hours.
  */
-export function fromGTFSTime(timeString) {
+export function fromGTFSTime(timeString: string | null) {
   const duration = moment.duration(timeString);
 
   return moment({
@@ -20,7 +20,7 @@ export function fromGTFSTime(timeString) {
 /*
  * Convert a moment into a GTFS formatted time string.
  */
-export function toGTFSTime(time) {
+export function toGTFSTime(time: moment.Moment) {
   return time.format('HH:mm:ss');
 }
 
@@ -55,7 +55,7 @@ export function calendarCodeToCalendar(code: CalendarCode) {
     'friday',
     'saturday',
     'sunday',
-  ];
+  ] as const;
   const calendar: {
     monday?: null | 0 | 1;
     tuesday?: null | 0 | 1;
@@ -67,7 +67,7 @@ export function calendarCodeToCalendar(code: CalendarCode) {
   } = {};
 
   for (const [index, day] of days.entries()) {
-    calendar[day] = code[index];
+    calendar[day] = code[index] === '1' ? 1 : 0;
   }
 
   return calendar;
@@ -169,21 +169,24 @@ export function combineCalendars(
 /*
  * Get number of seconds after midnight of a GTFS formatted time string.
  */
-export function secondsAfterMidnight(timeString) {
+export function secondsAfterMidnight(timeString: string | null) {
   return moment.duration(timeString).asSeconds();
 }
 
 /*
  * Get number of minutes after midnight of a GTFS formatted time string.
  */
-export function minutesAfterMidnight(timeString) {
+export function minutesAfterMidnight(timeString: string | null) {
   return moment.duration(timeString).asMinutes();
 }
 
 /*
  * Add specified number of seconds to a GTFS formatted time string.
  */
-export function updateTimeByOffset(timeString, offsetSeconds) {
+export function updateTimeByOffset(
+  timeString: string | null,
+  offsetSeconds: number,
+) {
   const newTime = fromGTFSTime(timeString);
   return toGTFSTime(newTime.add(offsetSeconds, 'seconds'));
 }

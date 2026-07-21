@@ -14,6 +14,10 @@ export interface Config {
   effectiveDate?: string;
   endDate?: string;
   groupTimetablesIntoPages?: boolean;
+  gtfsToHtmlVersion?: string;
+  hasGtfsRealtimeVehiclePositions?: boolean;
+  hasGtfsRealtimeTripUpdates?: boolean;
+  hasGtfsRealtimeAlerts?: boolean;
   interpolatedStopSymbol?: string;
   interpolatedStopText?: string;
   linkStopUrls?: boolean;

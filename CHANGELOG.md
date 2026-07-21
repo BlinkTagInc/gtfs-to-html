@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Fix for inefficient frequencies query
+- Fix for timetable time filters
+- Fixed type errors
 
 ## [2.12.14] - 2026-07-07
 

@@ -50,7 +50,12 @@ const handleError = (error: any) => {
 };
 
 const setupImport = async () => {
-  const config = await getConfig(argv);
+  const resolvedArgv = await argv;
+  const config = await getConfig({
+    configPath: resolvedArgv.c,
+    skipImport: resolvedArgv.s,
+    showOnlyTimepoint: resolvedArgv.t,
+  });
   await gtfsToHtml(config);
   process.exit();
 };

@@ -44,9 +44,6 @@ import {
   CalendarDate,
   Frequency,
   Route,
-  Trip,
-  StopTime,
-  Stop,
 } from 'gtfs';
 import { stringify } from 'csv-stringify';
 import moment from 'moment';
@@ -83,6 +80,7 @@ import {
   calendarCodeToCalendar,
   calendarToDateList,
 } from './time-utils.js';
+import type { CalendarCode } from './time-utils.js';
 import { formatTripNameForCSV } from './template-functions.js';
 import {
   GtfsToHtmlError,
@@ -91,26 +89,26 @@ import {
 } from './errors.js';
 
 import type {
+  BlockTrip,
   Config,
+  FormattedStop,
   FormattedTimetable,
   FormattedTimetablePage,
+  FormattedTrip,
   TimetablePageSummary,
 } from '../types/index.ts';
 
 import packageJson from '../../package.json' with { type: 'json' };
 const { version } = packageJson;
 
-type FormattedTrip = Trip & {
-  firstStoptime: number;
-  lastStoptime: number;
-  stoptimes: StopTime[];
-  additional_service_ids?: string[];
-};
-
 /*
  * Determine if a stoptime is a timepoint.
  */
-export const isTimepoint = (stoptime: StopTime) => {
+export const isTimepoint = (stoptime: {
+  timepoint: 0 | 1 | null;
+  arrival_time: string | null;
+  departure_time: string | null;
+}) => {
   if (isNullOrEmpty(stoptime.timepoint)) {
     return (
       !isNullOrEmpty(stoptime.arrival_time) &&
@@ -268,13 +266,13 @@ const sortTrips = (trips: FormattedTrip[], config: Config): FormattedTrip[] => {
     // Sort trips chronologically using the stoptime of a the first stop of the longest trip.
 
     const longestTripStoptimes = getLongestTripStoptimes(trips, config);
-    const firstStopId = first(longestTripStoptimes).stop_id;
+    const firstStopId = first(longestTripStoptimes)?.stop_id ?? '';
     sortedTrips = sortTripsByStoptimeAtStop(trips, firstStopId);
   } else if (config.sortingAlgorithm === 'last') {
     // Sort trips chronologically using the stoptime of a the last stop of the longest trip.
 
     const longestTripStoptimes = getLongestTripStoptimes(trips, config);
-    const lastStopId = last(longestTripStoptimes).stop_id;
+    const lastStopId = last(longestTripStoptimes)?.stop_id ?? '';
     sortedTrips = sortTripsByStoptimeAtStop(trips, lastStopId);
   }
 
@@ -306,8 +304,8 @@ const getCalendarDatesForTimetable = (
   );
   const start = moment(timetable.start_date, 'YYYYMMDD');
   const end = moment(timetable.end_date, 'YYYYMMDD');
-  const excludedDates = new Set();
-  const includedDates = new Set();
+  const excludedDates = new Set<string>();
+  const includedDates = new Set<string>();
 
   for (const calendarDate of calendarDates) {
     if (
@@ -344,8 +342,20 @@ const getCalendarDatesForTimetable = (
 /*
  * Get days of the week from calendars.
  */
-const getDaysFromCalendars = (calendars: Calendar[]) => {
-  const days = {
+interface WeekdayFlagsRequired {
+  monday: 0 | 1;
+  tuesday: 0 | 1;
+  wednesday: 0 | 1;
+  thursday: 0 | 1;
+  friday: 0 | 1;
+  saturday: 0 | 1;
+  sunday: 0 | 1;
+}
+
+const getDaysFromCalendars = (
+  calendars: WeekdayFlagsRequired[],
+): WeekdayFlagsRequired => {
+  const days: WeekdayFlagsRequired = {
     monday: 0,
     tuesday: 0,
     wednesday: 0,
@@ -357,7 +367,7 @@ const getDaysFromCalendars = (calendars: Calendar[]) => {
 
   for (const calendar of calendars) {
     for (const day of Object.keys(days) as (keyof typeof days)[]) {
-      days[day] = days[day] | calendar[day];
+      days[day] = (days[day] | calendar[day]) as 0 | 1;
     }
   }
 
@@ -387,7 +397,7 @@ const getDirectionHeadsignFromTimetable = (timetable: FormattedTimetable) => {
     head,
   )(compact(trips.map((trip) => trip.trip_headsign)));
 
-  return mostCommonHeadsign;
+  return mostCommonHeadsign as string;
 };
 
 /*
@@ -426,17 +436,14 @@ const getTimetableNotesForTimetable = (
   const usedNoteReferences = [];
   // Check if stop_sequence matches any trip.
   for (const noteReference of noteReferences) {
-    if (
-      noteReference.stop_sequence === '' ||
-      noteReference.stop_sequence === null
-    ) {
+    if (noteReference.stop_sequence === null) {
       usedNoteReferences.push(noteReference);
       continue;
     }
 
     // Note references with stop_sequence must also have stop_id.
     if (noteReference.stop_id === '' || noteReference.stop_id === null) {
-      timetable.warnings.push(
+      timetable.warnings?.push(
         `Timetable Note Reference for note_id=${noteReference.note_id} has a \`stop_sequence\` but no \`stop_id\` - ignoring`,
       );
       continue;
@@ -471,7 +478,7 @@ const getTimetableNotesForTimetable = (
       note.symbol =
         symbolIndex < symbols.length - 1
           ? symbols[symbolIndex]
-          : symbolIndex - symbols.length;
+          : String(symbolIndex - symbols.length);
       symbolIndex += 1;
     }
   }
@@ -532,11 +539,11 @@ const createTimetable = ({
   calendarDates,
 }: {
   route: Route;
-  directionId?: 0 | 1;
-  tripHeadsign?: string;
+  directionId?: 0 | 1 | null;
+  tripHeadsign?: string | null;
   calendars?: Calendar[];
   calendarDates?: CalendarDate[];
-}): FormattedTimetable => {
+}) => {
   const serviceIds = uniq([
     ...(calendars?.map((calendar) => calendar.service_id) ?? []),
     ...(calendarDates?.map((calendarDate) => calendarDate.service_id) ?? []),
@@ -592,8 +599,8 @@ const createTimetable = ({
   return {
     timetable_id: timetableId,
     route_ids: [route.route_id],
-    direction_id: directionId === null ? null : directionId,
-    direction_name: tripHeadsign === null ? null : tripHeadsign,
+    direction_id: directionId ?? null,
+    direction_name: tripHeadsign ?? null,
     routes: [route],
     include_exceptions: calendarDates && calendarDates.length > 0 ? 1 : 0,
     service_ids: serviceIds,
@@ -607,7 +614,7 @@ const createTimetable = ({
     start_date: startDate,
     end_date: endDate,
     ...days,
-  };
+  } as FormattedTimetable;
 };
 
 /*
@@ -634,7 +641,7 @@ const convertRoutesToTimetablePages = (config: Config) => {
     const calendarGroups = groupBy(sortedCalendars, calendarToCalendarCode);
     const calendarDateGroups = groupBy(calendarDates, 'service_id');
 
-    const timetables: Timetable[] = [];
+    const timetables: FormattedTimetable[] = [];
 
     for (const uniqueTripDirection of uniqueTripDirections) {
       for (const calendars of Object.values(calendarGroups)) {
@@ -739,7 +746,7 @@ const generateTripsByFrequencies = (
  */
 const duplicateStopsForDifferentArrivalDeparture = (
   stopIds: string[],
-  timetable: Timetable,
+  timetable: FormattedTimetable,
   config: Config,
 ) => {
   if (
@@ -760,19 +767,17 @@ const duplicateStopsForDifferentArrivalDeparture = (
         continue;
       }
 
-      const index = stopIds.indexOf(stoptime.stop_id);
+      const stopId = stoptime.stop_id ?? '';
+      const index = stopIds.indexOf(stopId);
       if (index === 0 || index === stopIds.length - 1) {
         continue;
       }
 
-      if (
-        stoptime.stop_id === stopIds[index + 1] ||
-        stoptime.stop_id === stopIds[index - 1]
-      ) {
+      if (stopId === stopIds[index + 1] || stopId === stopIds[index - 1]) {
         continue;
       }
 
-      stopIds.splice(index, 0, stoptime.stop_id);
+      stopIds.splice(index, 0, stopId);
     }
   }
 
@@ -782,7 +787,7 @@ const duplicateStopsForDifferentArrivalDeparture = (
 /*
  * Get a sorted array of stop_ids for a specific timetable.
  */
-const getStopOrder = (timetable: Timetable, config: Config) => {
+const getStopOrder = (timetable: FormattedTimetable, config: Config) => {
   // First, check if `timetable_stop_order.txt` for route exists
   const timetableStopOrders = getTimetableStopOrders(
     {
@@ -800,14 +805,14 @@ const getStopOrder = (timetable: Timetable, config: Config) => {
 
   // Next, try using a directed graph to determine stop order.
   try {
-    const stopGraph = [];
+    const stopGraph: [string, string][] = [];
 
     // If a stop is marked as a timepoint in any trips, treat it as a timepoint in all trips for sorting purposes.
     const timepointStopIds = new Set(
       timetable.orderedTrips.flatMap((trip) =>
         trip.stoptimes
           .filter((stoptime) => isTimepoint(stoptime))
-          .map((stoptime) => stoptime.stop_id),
+          .map((stoptime) => stoptime.stop_id ?? ''),
       ),
     );
 
@@ -816,11 +821,11 @@ const getStopOrder = (timetable: Timetable, config: Config) => {
         .filter((stoptime) => {
           // If `showOnlyTimepoint` is true, then filter out all non-timepoints.
           if (config.showOnlyTimepoint === true) {
-            return timepointStopIds.has(stoptime.stop_id);
+            return timepointStopIds.has(stoptime.stop_id ?? '');
           }
           return true;
         })
-        .map((stoptime) => stoptime.stop_id);
+        .map((stoptime) => stoptime.stop_id ?? '');
 
       for (const [index, stopId] of sortedStopIds.entries()) {
         if (index === sortedStopIds.length - 1) {
@@ -832,7 +837,7 @@ const getStopOrder = (timetable: Timetable, config: Config) => {
     }
 
     if (stopGraph.length === 0 && config.showOnlyTimepoint === true) {
-      timetable.warnings.push(
+      timetable.warnings?.push(
         `Timetable ${timetable.timetable_id}'s trips have stoptimes with timepoints but \`showOnlyTimepoint\` is true. Try setting \`showOnlyTimepoint\` to false.`,
       );
     }
@@ -852,21 +857,23 @@ const getStopOrder = (timetable: Timetable, config: Config) => {
       timetable.orderedTrips,
       config,
     );
-    const stopIds = longestTripStoptimes.map(
+    const stopIds = (longestTripStoptimes ?? []).map(
       (stoptime) => stoptime.stop_id,
     ) as string[];
 
     const missingStopIds = difference(
-      new Set(
-        timetable.orderedTrips.flatMap((trip: Trip) =>
-          trip.stoptimes.map((stoptime: StopTime) => stoptime.stop_id),
+      Array.from(
+        new Set(
+          timetable.orderedTrips.flatMap((trip) =>
+            trip.stoptimes.map((stoptime) => stoptime.stop_id),
+          ),
         ),
       ),
-      new Set(stopIds),
+      Array.from(new Set(stopIds)),
     ) as string[];
 
     if (missingStopIds.length > 0) {
-      timetable.warnings.push(
+      timetable.warnings?.push(
         `Timetable ${timetable.timetable_id} stops are unable to be topologically sorted and has no \`timetable_stop_order.txt\`. Falling back to using the using the stop order from trip with most stoptimes, but this does not include stop_ids ${formatListForDisplay(missingStopIds)}. Try manually specifying stops with \`timetable_stop_order.txt\`. Read more at https://gtfstohtml.com/docs/timetable-stop-order`,
       );
     }
@@ -882,7 +889,10 @@ const getStopOrder = (timetable: Timetable, config: Config) => {
 /*
  * Get an array of stops for a specific timetable.
  */
-const getStopsForTimetable = (timetable: Timetable, config: Config) => {
+const getStopsForTimetable = (
+  timetable: FormattedTimetable,
+  config: Config,
+) => {
   if (timetable.orderedTrips.length === 0) {
     return [];
   }
@@ -908,7 +918,7 @@ const getStopsForTimetable = (timetable: Timetable, config: Config) => {
       );
     }
 
-    const stop = {
+    const stop: FormattedStop = {
       ...stops[0],
       trips: [],
     };
@@ -1013,7 +1023,7 @@ const getCalendarsFromConfig = (config: Config) => {
 /*
  * Get all calendars from a specific timetable.
  */
-const getCalendarsFromTimetable = (timetable: Timetable) => {
+const getCalendarsFromTimetable = (timetable: FormattedTimetable) => {
   const db = openDb();
   let whereClause = '';
   const whereClauses = [];
@@ -1151,14 +1161,17 @@ const getAllStationStopIds = (stopId: string) => {
 /*
  * Get trips with the same `block_id`.
  */
-const getTripsWithSameBlock = (trip: FormattedTrip, timetable: Timetable) => {
+const getTripsWithSameBlock = (
+  trip: FormattedTrip,
+  timetable: FormattedTimetable,
+): BlockTrip[] => {
   const trips = getTrips(
     {
       block_id: trip.block_id,
       service_id: timetable.service_ids,
     },
     ['trip_id', 'route_id'],
-  );
+  ) as BlockTrip[];
 
   for (const blockTrip of trips) {
     const stopTimes = getStoptimes(
@@ -1184,14 +1197,17 @@ const getTripsWithSameBlock = (trip: FormattedTrip, timetable: Timetable) => {
     blockTrip.lastStoptime = last(stopTimes);
   }
 
-  return sortBy(trips, (trip) => trip.firstStoptime.departure_timestamp);
+  return sortBy(trips, (trip) => trip.firstStoptime?.departure_timestamp ?? 0);
 };
 
 /*
  * Get next trip and previous trip with the same `block_id` if it arrives or
  * departs from the same stop and is a different route.
  */
-const addTripContinuation = (trip: FormattedTrip, timetable: Timetable) => {
+const addTripContinuation = (
+  trip: FormattedTrip,
+  timetable: FormattedTimetable,
+) => {
   if (!trip.block_id || trip.stoptimes.length === 0) {
     return;
   }
@@ -1199,17 +1215,22 @@ const addTripContinuation = (trip: FormattedTrip, timetable: Timetable) => {
   const maxContinuesAsWaitingTimeSeconds = 60 * 60;
 
   const firstStoptime = first(trip.stoptimes);
-  const firstStopIds = getAllStationStopIds(firstStoptime.stop_id);
   const lastStoptime = last(trip.stoptimes);
-  const lastStopIds = getAllStationStopIds(lastStoptime.stop_id);
+
+  if (!firstStoptime || !lastStoptime) {
+    return;
+  }
+
+  const firstStopIds = getAllStationStopIds(firstStoptime.stop_id ?? '');
+  const lastStopIds = getAllStationStopIds(lastStoptime.stop_id ?? '');
   const blockTrips = getTripsWithSameBlock(trip, timetable);
 
   // "Continues From" trips must be the previous trip chronologically.
   const previousTrip = findLast(
     blockTrips,
     (blockTrip) =>
-      blockTrip.lastStoptime.arrival_timestamp <=
-      firstStoptime.departure_timestamp,
+      (blockTrip.lastStoptime?.arrival_timestamp ?? 0) <=
+      (firstStoptime.departure_timestamp ?? 0),
   );
 
   /*
@@ -1221,9 +1242,10 @@ const addTripContinuation = (trip: FormattedTrip, timetable: Timetable) => {
   if (
     previousTrip &&
     previousTrip.route_id !== trip.route_id &&
-    previousTrip.lastStoptime.arrival_timestamp >=
-      firstStoptime.departure_timestamp - maxContinuesAsWaitingTimeSeconds &&
-    firstStopIds.includes(previousTrip.lastStoptime.stop_id)
+    (previousTrip.lastStoptime?.arrival_timestamp ?? 0) >=
+      (firstStoptime.departure_timestamp ?? 0) -
+        maxContinuesAsWaitingTimeSeconds &&
+    firstStopIds.includes(previousTrip.lastStoptime?.stop_id ?? '')
   ) {
     const routes = getRoutes({
       route_id: previousTrip.route_id,
@@ -1238,8 +1260,8 @@ const addTripContinuation = (trip: FormattedTrip, timetable: Timetable) => {
   const nextTrip = find(
     blockTrips,
     (blockTrip) =>
-      blockTrip.firstStoptime.departure_timestamp >=
-      lastStoptime.arrival_timestamp,
+      (blockTrip.firstStoptime?.departure_timestamp ?? 0) >=
+      (lastStoptime.arrival_timestamp ?? 0),
   );
 
   // "Continues As" trips must be a different route_id.
@@ -1252,9 +1274,10 @@ const addTripContinuation = (trip: FormattedTrip, timetable: Timetable) => {
   if (
     nextTrip &&
     nextTrip.route_id !== trip.route_id &&
-    nextTrip.firstStoptime.departure_timestamp <=
-      lastStoptime.arrival_timestamp + maxContinuesAsWaitingTimeSeconds &&
-    lastStopIds.includes(nextTrip.firstStoptime.stop_id)
+    (nextTrip.firstStoptime?.departure_timestamp ?? 0) <=
+      (lastStoptime.arrival_timestamp ?? 0) +
+        maxContinuesAsWaitingTimeSeconds &&
+    lastStopIds.includes(nextTrip.firstStoptime?.stop_id ?? '')
   ) {
     const routes = getRoutes({
       route_id: nextTrip.route_id,
@@ -1297,19 +1320,15 @@ const filterTrips = (
   }
 
   // Remove stoptimes for stops not used in timetable
-  const timetableStopIds = new Set(
-    timetable.stops.map((stop: Stop) => stop.stop_id),
-  );
+  const timetableStopIds = new Set(timetable.stops.map((stop) => stop.stop_id));
   for (const trip of filteredTrips) {
-    trip.stoptimes = trip.stoptimes.filter((stoptime: StopTime) =>
-      timetableStopIds.has(stoptime.stop_id),
+    trip.stoptimes = trip.stoptimes.filter((stoptime) =>
+      timetableStopIds.has(stoptime.stop_id ?? ''),
     );
   }
 
   // Exclude trips with less than two stops
-  filteredTrips = filteredTrips.filter(
-    (trip: Trip) => trip.stoptimes.length > 1,
-  );
+  filteredTrips = filteredTrips.filter((trip) => trip.stoptimes.length > 1);
 
   if (config.showDuplicateTrips === false) {
     filteredTrips = deduplicateTrips(filteredTrips);
@@ -1358,7 +1377,7 @@ const filterTrips = (
           warnedServiceIds.add(serviceIdKey);
           const tripDayList = formatDays(tripDays, config);
           const timetableDayList = formatDays(timetable, config);
-          timetable.warnings!.push(
+          timetable.warnings?.push(
             `Timetable ${timetable.timetable_id} (Routes: ${timetable.routes.map((route) => route.route_short_name).join(', ')}) covers ${timetableDayList} but some trips (service_id=${tripServiceIds.join(', ')}) only run on ${tripDayList}. This may indicate a data issue in the GTFS or that you should generate separate timetables for different days of the week.`,
           );
         }
@@ -1415,10 +1434,10 @@ const getTripsForTimetable = (
     tripQuery.direction_id = timetable.direction_id;
   }
 
-  const trips = getTrips(tripQuery);
+  const trips = getTrips(tripQuery) as FormattedTrip[];
 
   if (trips.length === 0) {
-    timetable.warnings.push(
+    timetable.warnings?.push(
       `No trips found for route_id=${timetable.route_ids.join(
         '_',
       )}, direction_id=${timetable.direction_id}, service_ids=${JSON.stringify(
@@ -1434,7 +1453,7 @@ const getTripsForTimetable = (
   // Updated timetable.serviceIds with only the service IDs actually used in one or more trip.
   timetable.service_ids = uniq(trips.map((trip) => trip.service_id));
 
-  const formattedTrips = [];
+  const formattedTrips: FormattedTrip[] = [];
 
   for (const trip of trips) {
     const formattedTrip = trip;
@@ -1447,7 +1466,7 @@ const getTripsForTimetable = (
     );
 
     if (formattedTrip.stoptimes.length === 0) {
-      timetable.warnings.push(
+      timetable.warnings?.push(
         `No stoptimes found for trip_id=${
           formattedTrip.trip_id
         }, route_id=${timetable.route_ids.join('_')}, timetable_id=${
@@ -1458,20 +1477,16 @@ const getTripsForTimetable = (
 
     // Exclude trips before timetable `start_timestamp`
     if (
-      timetable.start_timestamp !== '' &&
       timetable.start_timestamp !== null &&
-      timetable.start_timestamp !== undefined &&
-      trip.stoptimes[0].arrival_timestamp < timetable.start_timestamp
+      (trip.stoptimes[0].arrival_timestamp ?? 0) < timetable.start_timestamp
     ) {
       continue;
     }
 
     // Exclude trips after timetable `end_timestamp`
     if (
-      timetable.end_timestamp !== '' &&
       timetable.end_timestamp !== null &&
-      timetable.end_timestamp !== undefined &&
-      trip.stoptimes[0].arrival_timestamp >= timetable.end_timestamp
+      (trip.stoptimes[0].arrival_timestamp ?? 0) >= timetable.end_timestamp
     ) {
       continue;
     }
@@ -1541,7 +1556,7 @@ const getTripsForTimetable = (
 /*
  * Format timetables for display.
  */
-const formatTimetables = (timetables: Timetable[], config: Config) => {
+const formatTimetables = (timetables: FormattedTimetable[], config: Config) => {
   const formattedTimetables = timetables.map((timetable) => {
     timetable.warnings = [];
     const dayList = formatDays(timetable, config);
@@ -1729,7 +1744,7 @@ const getDataForTimetablePageById = (timetablePageId: string) => {
   let directionId: number | string | null = '';
   const parts = timetablePageId?.split('|') ?? [];
   if (parts.length > 2) {
-    directionId = Number.parseInt(parts.pop(), 10);
+    directionId = Number.parseInt(parts.pop() ?? '', 10);
     calendarCode = parts.pop();
   } else if (parts.length > 1) {
     directionId = null;
@@ -1769,7 +1784,7 @@ const getDataForTimetablePageById = (timetablePageId: string) => {
 
   if (/^[01]*$/.test(calendarCode ?? '')) {
     calendars = getCalendars({
-      ...calendarCodeToCalendar(calendarCode),
+      ...calendarCodeToCalendar(calendarCode as CalendarCode),
     });
   } else {
     serviceId = calendarCode;
@@ -1814,7 +1829,7 @@ const getTimetablePageById = (timetablePageId: string, config: Config) => {
 
   if (timetablePages.length === 1) {
     // Use timetablePage defined in `timetable_pages.txt`.
-    const timetablePage = timetablePages[0];
+    const timetablePage = timetablePages[0] as FormattedTimetablePage;
     timetablePage.timetables = sortBy(
       timetables.filter(
         (timetable) => timetable.timetable_page_id === timetablePageId,
@@ -2102,10 +2117,10 @@ export const generateStats = (timetablePage: FormattedTimetablePage) => {
     calendars: 0,
   };
 
-  for (const timetable of timetablePage.consolidatedTimetables) {
+  for (const timetable of timetablePage.consolidatedTimetables ?? []) {
     stats.stops += timetable.stops.length;
     stats.trips += timetable.orderedTrips.length;
-    for (const serviceId of timetable.service_ids) {
+    for (const serviceId of timetable.service_ids ?? []) {
       serviceIds[serviceId] = true;
     }
 
@@ -2139,7 +2154,7 @@ export function generateTimetableHTML(
 /*
  * Generate the CSV timetable for a timetable page.
  */
-export function generateTimetableCSV(timetable) {
+export function generateTimetableCSV(timetable: FormattedTimetable) {
   // Generate horizontal orientation, then transpose if vertical is needed.
   const lines = [];
 

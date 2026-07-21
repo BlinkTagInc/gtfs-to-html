@@ -9,7 +9,7 @@ import {
   zipObject,
 } from 'lodash-es';
 import moment from 'moment';
-import { Route } from 'gtfs';
+import { CalendarDate, Frequency, Route, Timetable } from 'gtfs';
 
 import {
   fromGTFSTime,
@@ -21,10 +21,45 @@ import {
 } from './time-utils.js';
 import { isTimepoint } from './utils.js';
 
+import type {
+  Config,
+  FormattedStop,
+  FormattedStopTime,
+  FormattedTrip,
+} from '../types/index.ts';
+
+interface SymbolTimetable {
+  noPickupSymbol?: string | null;
+  noPickupSymbolUsed?: boolean;
+  requestPickupSymbol?: string | null;
+  requestPickupSymbolUsed?: boolean;
+  noDropoffSymbol?: string | null;
+  noDropoffSymbolUsed?: boolean;
+  requestDropoffSymbol?: string | null;
+  requestDropoffSymbolUsed?: boolean;
+  interpolatedStopSymbol?: string | null;
+  interpolatedStopSymbolUsed?: boolean;
+  noServiceSymbol?: string | null;
+  noServiceSymbolUsed?: boolean;
+}
+
+interface StopsFormattingTimetable extends SymbolTimetable {
+  orderedTrips: FormattedTrip[];
+  stops: FormattedStop[];
+  orientation?: string | null;
+}
+
+interface TimetableLabelTimetable {
+  timetable_label?: string | null;
+  routes?: Route[];
+  stops?: { stop_name: string | null }[];
+  direction_name?: string | null;
+}
+
 /*
  * Replace all instances in a string with items from an object.
  */
-function replaceAll(string, mapObject) {
+function replaceAll(string: string, mapObject: Record<string, string>) {
   const re = new RegExp(Object.keys(mapObject).join('|'), 'gi');
   return string.replace(re, (matched) => mapObject[matched]);
 }
@@ -32,14 +67,14 @@ function replaceAll(string, mapObject) {
 /*
  * Determine if value is null or empty string.
  */
-export function isNullOrEmpty(value) {
+export function isNullOrEmpty(value: unknown) {
   return value === null || value === '';
 }
 
 /*
  * Format a date for display.
  */
-export function formatDate(date, dateFormat) {
+export function formatDate(date: CalendarDate, dateFormat: string | undefined) {
   if (date.holiday_name) {
     return date.holiday_name;
   }
@@ -50,14 +85,18 @@ export function formatDate(date, dateFormat) {
 /*
  * Convert time to seconds.
  */
-export function timeToSeconds(time) {
+export function timeToSeconds(time: string | null) {
   return moment.duration(time).asSeconds();
 }
 
 /*
  * Format a single stoptime.
  */
-function formatStopTime(stoptime, timetable, config) {
+function formatStopTime(
+  stoptime: FormattedStopTime,
+  timetable: SymbolTimetable,
+  config: Config,
+) {
   stoptime.classes = [];
 
   if (stoptime.type === 'arrival' && stoptime.arrival_time) {
@@ -128,7 +167,7 @@ function formatStopTime(stoptime, timetable, config) {
 /*
  * Find hourly times for each stop for hourly schedules.
  */
-function filterHourlyTimes(stops) {
+function filterHourlyTimes(stops: FormattedStop[]) {
   // Find all stoptimes within the first 60 minutes.
   const firstStopTimes = [];
   const firstTripMinutes = minutesAfterMidnight(stops[0].trips[0].arrival_time);
@@ -160,6 +199,16 @@ function filterHourlyTimes(stops) {
   });
 }
 
+interface WeekdayFlags {
+  monday?: 0 | 1 | null;
+  tuesday?: 0 | 1 | null;
+  wednesday?: 0 | 1 | null;
+  thursday?: 0 | 1 | null;
+  friday?: 0 | 1 | null;
+  saturday?: 0 | 1 | null;
+  sunday?: 0 | 1 | null;
+}
+
 /*
  * Format a calendar's list of days for display using abbreviated day names.
  */
@@ -171,9 +220,12 @@ const days = [
   'friday',
   'saturday',
   'sunday',
-];
-export function formatDays(calendar, config) {
-  const daysShort = config.daysShortStrings;
+] as const;
+export function formatDays(
+  calendar: WeekdayFlags | null | undefined,
+  config: Config,
+) {
+  const daysShort = config.daysShortStrings ?? [];
   let daysInARow = 0;
   let dayString = '';
 
@@ -211,7 +263,7 @@ export function formatDays(calendar, config) {
   }
 
   if (dayString.length === 0) {
-    dayString = config.noRegularServiceDaysText;
+    dayString = config.noRegularServiceDaysText ?? '';
   }
 
   return dayString;
@@ -220,8 +272,11 @@ export function formatDays(calendar, config) {
 /*
  * Format a list of days for display using full names of days.
  */
-export function formatDaysLong(dayList, config) {
-  const mapObject = zipObject(config.daysShortStrings, config.daysStrings);
+export function formatDaysLong(dayList: string, config: Config) {
+  const mapObject = zipObject(
+    config.daysShortStrings ?? [],
+    config.daysStrings ?? [],
+  );
 
   return replaceAll(dayList, mapObject);
 }
@@ -229,7 +284,14 @@ export function formatDaysLong(dayList, config) {
 /*
  * Format a frequency.
  */
-export function formatFrequency(frequency, config) {
+export function formatFrequency(
+  frequency: Frequency & {
+    start_formatted_time?: string;
+    end_formatted_time?: string;
+    headway_min?: number;
+  },
+  config: Config,
+) {
   const startTime = fromGTFSTime(frequency.start_time);
   const endTime = fromGTFSTime(frequency.end_time);
   const headway = moment.duration(frequency.headway_secs, 'seconds');
@@ -249,7 +311,7 @@ export function formatTimetableId({
   dates,
 }: {
   routeIds: string[];
-  directionId?: 0 | 1;
+  directionId?: 0 | 1 | null;
   days: {
     monday?: null | 0 | 1;
     tuesday?: null | 0 | 1;
@@ -276,28 +338,42 @@ export function formatTimetableId({
   return timetableId;
 }
 
-function createEmptyStoptime(stopId, tripId) {
+function createEmptyStoptime(
+  stopId: string | null,
+  tripId: string,
+): FormattedStopTime {
   return {
     id: null,
     trip_id: tripId,
     arrival_time: null,
+    arrival_timestamp: null,
     departure_time: null,
+    departure_timestamp: null,
+    location_group_id: null,
+    location_id: null,
     stop_id: stopId,
     stop_sequence: null,
     stop_headsign: null,
+    start_pickup_drop_off_window: null,
+    start_pickup_drop_off_window_timestamp: null,
     pickup_type: null,
     drop_off_type: null,
     continuous_pickup: null,
     continuous_drop_off: null,
     shape_dist_traveled: null,
     timepoint: null,
+    pickup_booking_rule_id: null,
+    drop_off_booking_rule_id: null,
   };
 }
 
 /*
  * Format stops.
  */
-export function formatStops(timetable, config) {
+export function formatStops(
+  timetable: StopsFormattingTimetable,
+  config: Config,
+) {
   for (const trip of timetable.orderedTrips) {
     let stopIndex = -1;
     for (const [idx, stoptime] of trip.stoptimes.entries()) {
@@ -371,7 +447,7 @@ export function formatStops(timetable, config) {
 /*
  * Formats a stop name.
  */
-export function formatStopName(stop) {
+export function formatStopName(stop: FormattedStop) {
   return `${stop.stop_name}${
     stop.type === 'arrival'
       ? ' (Arrival)'
@@ -384,18 +460,18 @@ export function formatStopName(stop) {
 /*
  * Formats trip "Continues from".
  */
-export function formatTripContinuesFrom(trip) {
+export function formatTripContinuesFrom(trip: FormattedTrip) {
   return trip.continues_from_route
-    ? trip.continues_from_route.route.route_short_name
+    ? trip.continues_from_route.route?.route_short_name
     : '';
 }
 
 /*
  * Formats trip "Continues as".
  */
-export function formatTripContinuesAs(trip) {
+export function formatTripContinuesAs(trip: FormattedTrip) {
   return trip.continues_as_route
-    ? trip.continues_as_route.route.route_short_name
+    ? trip.continues_as_route.route?.route_short_name
     : '';
 }
 
@@ -403,9 +479,9 @@ export function formatTripContinuesAs(trip) {
  * Change all stoptimes of a trip so the first trip starts at midnight. Useful
  * for hourly schedules.
  */
-export function resetStoptimesToMidnight(trip) {
+export function resetStoptimesToMidnight(trip: FormattedTrip) {
   const offsetSeconds = secondsAfterMidnight(
-    first(trip.stoptimes).departure_time,
+    first(trip.stoptimes)?.departure_time ?? null,
   );
   if (offsetSeconds > 0) {
     for (const stoptime of trip.stoptimes) {
@@ -428,7 +504,10 @@ export function resetStoptimesToMidnight(trip) {
  * Change all stoptimes of a trip by a specified number of seconds. Useful for
  * hourly schedules.
  */
-export function updateStoptimesByOffset(trip, offsetSeconds) {
+export function updateStoptimesByOffset(
+  trip: FormattedTrip,
+  offsetSeconds: number,
+) {
   return trip.stoptimes.map((stoptime) => {
     delete stoptime._id;
     stoptime.departure_time = updateTimeByOffset(
@@ -447,7 +526,7 @@ export function updateStoptimesByOffset(trip, offsetSeconds) {
 /*
  * Format a route color as a hex color.
  */
-export function formatRouteColor(route) {
+export function formatRouteColor(route: Route) {
   // Defaults to #000000 (black) if no color is provided.
   return route.route_color ? `#${route.route_color}` : '#000000';
 }
@@ -455,7 +534,7 @@ export function formatRouteColor(route) {
 /*
  * Format a route text color as a hex color.
  */
-export function formatRouteTextColor(route) {
+export function formatRouteTextColor(route: Route) {
   // Defaults to #FFFFFF (white) if no color is provided.
   return route.route_text_color ? `#${route.route_text_color}` : '#FFFFFF';
 }
@@ -463,9 +542,9 @@ export function formatRouteTextColor(route) {
 /*
  * Format a label for a timetable.
  */
-export function formatTimetableLabel(timetable) {
+export function formatTimetableLabel(timetable: TimetableLabelTimetable) {
   if (!isNullOrEmpty(timetable.timetable_label)) {
-    return timetable.timetable_label;
+    return timetable.timetable_label ?? '';
   }
 
   let timetableLabel = '';
@@ -483,8 +562,8 @@ export function formatTimetableLabel(timetable) {
     const firstStop = timetable.stops[0].stop_name;
     const lastStop = timetable.stops[timetable.stops.length - 1].stop_name;
     if (firstStop === lastStop) {
-      if (!isNullOrEmpty(timetable.routes[0].route_long_name)) {
-        timetableLabel += ` - ${timetable.routes[0].route_long_name}`;
+      if (!isNullOrEmpty(timetable.routes?.[0].route_long_name)) {
+        timetableLabel += ` - ${timetable.routes?.[0].route_long_name}`;
       }
 
       timetableLabel += ' - Loop';
@@ -535,20 +614,15 @@ export const formatListForDisplay = (list: string[]) => {
 /*
  * Merge timetables with same `timetable_id`.
  */
-export function mergeTimetablesWithSameId(timetables) {
+export function mergeTimetablesWithSameId(timetables: Timetable[]) {
   if (timetables.length === 0) {
     return [];
   }
 
   const mergedTimetables = groupBy(timetables, 'timetable_id');
 
-  return Object.values(mergedTimetables).map((timetableGroup) => {
-    const mergedTimetable = omit(timetableGroup[0], 'route_id');
-
-    mergedTimetable.route_ids = timetableGroup.map(
-      (timetable) => timetable.route_id,
-    );
-
-    return mergedTimetable;
-  });
+  return Object.values(mergedTimetables).map((timetableGroup) => ({
+    ...omit(timetableGroup[0], 'route_id'),
+    route_ids: timetableGroup.map((timetable) => timetable.route_id),
+  }));
 }

@@ -1,10 +1,78 @@
 import { every } from 'lodash-es';
 
+interface DayListTrip {
+  dayList?: string;
+}
+
+interface TimetableWithDayList {
+  orderedTrips: DayListTrip[];
+}
+
+interface TimetableWithDayListLong {
+  dayListLong?: string;
+}
+
+interface TimetablePageWithDayListLong {
+  consolidatedTimetables: TimetableWithDayListLong[];
+}
+
+interface TimetableWithLabel {
+  timetable_label?: string | null;
+}
+
+interface TimetablePageWithLabel {
+  consolidatedTimetables: TimetableWithLabel[];
+}
+
+interface TimetableWithNotices {
+  requestPickupSymbolUsed?: boolean;
+  noPickupSymbolUsed?: boolean;
+  requestDropoffSymbolUsed?: boolean;
+  noDropoffSymbolUsed?: boolean;
+  noServiceSymbolUsed?: boolean;
+  interpolatedStopSymbolUsed?: boolean;
+  notes: unknown[];
+}
+
+interface TimetableNoteLike {
+  stop_id?: string | null;
+  trip_id?: string | null;
+  stop_sequence?: number | null;
+  show_on_stoptime?: 0 | 1 | null;
+}
+
+interface StopWithTrips {
+  stop_id: string;
+  trips: { stop_sequence?: number | null }[];
+}
+
+interface TripLike {
+  trip_id: string;
+}
+
+interface StoptimeLike {
+  stop_id: string;
+  trip_id: string;
+}
+
+interface TripNameTrip {
+  route_short_name?: string | null;
+  trip_short_name?: string | null;
+  trip_headsign?: string | null;
+  trip_id: string;
+  dayList?: string;
+}
+
+interface TripNameTimetable extends TimetableWithDayList {
+  routes: unknown[];
+  orientation?: string | null;
+}
+
 /*
  * Discern if a day list should be shown for a specific timetable (if some
  * trips happen on different days).
  */
-export function timetableHasDifferentDays(timetable) {
+export function timetableHasDifferentDays(timetable: TimetableWithDayList) {
   return !every(timetable.orderedTrips, (trip, idx) => {
     if (idx === 0) {
       return true;
@@ -18,7 +86,9 @@ export function timetableHasDifferentDays(timetable) {
  * Discern if a day list should be shown for a specific timetable page's menu (if some
  * timetables are for different days).
  */
-export function timetablePageHasDifferentDays(timetablePage) {
+export function timetablePageHasDifferentDays(
+  timetablePage: TimetablePageWithDayListLong,
+) {
   return !every(timetablePage.consolidatedTimetables, (timetable, idx) => {
     if (idx === 0) {
       return true;
@@ -35,7 +105,9 @@ export function timetablePageHasDifferentDays(timetablePage) {
  * Discern if individual timetable labels should be shown (if some
  * timetables have different labels).
  */
-export function timetablePageHasDifferentLabels(timetablePage) {
+export function timetablePageHasDifferentLabels(
+  timetablePage: TimetablePageWithLabel,
+) {
   return !every(timetablePage.consolidatedTimetables, (timetable, idx) => {
     if (idx === 0) {
       return true;
@@ -51,7 +123,7 @@ export function timetablePageHasDifferentLabels(timetablePage) {
 /*
  * Discern if a timetable has any notes or notices to display.
  */
-export function hasNotesOrNotices(timetable) {
+export function hasNotesOrNotices(timetable: TimetableWithNotices) {
   return (
     timetable.requestPickupSymbolUsed ||
     timetable.noPickupSymbolUsed ||
@@ -66,14 +138,17 @@ export function hasNotesOrNotices(timetable) {
 /*
  * Return an array of all timetable notes that relate to the entire timetable or route.
  */
-export function getNotesForTimetableLabel(notes) {
+export function getNotesForTimetableLabel(notes: TimetableNoteLike[]) {
   return notes.filter((note) => !note.stop_id && !note.trip_id);
 }
 
 /*
  * Return an array of all timetable notes for a specific stop and stop_sequence.
  */
-export function getNotesForStop(notes, stop) {
+export function getNotesForStop(
+  notes: TimetableNoteLike[],
+  stop: StopWithTrips,
+) {
   return notes.filter((note) => {
     // Don't show if note applies only to a specific trip.
     if (note.trip_id) {
@@ -95,7 +170,7 @@ export function getNotesForStop(notes, stop) {
 /*
  * Return an array of all timetable notes for a specific trip.
  */
-export function getNotesForTrip(notes, trip) {
+export function getNotesForTrip(notes: TimetableNoteLike[], trip: TripLike) {
   return notes.filter((note) => {
     // Don't show if note applies only to a specific stop.
     if (note.stop_id) {
@@ -109,7 +184,10 @@ export function getNotesForTrip(notes, trip) {
 /*
  * Return an array of all timetable notes for a specific stoptime.
  */
-export function getNotesForStoptime(notes, stoptime) {
+export function getNotesForStoptime(
+  notes: TimetableNoteLike[],
+  stoptime: StoptimeLike,
+) {
   return notes.filter((note) => {
     // Show notes that apply to all trips at this stop if `show_on_stoptime` is true.
     if (
@@ -139,7 +217,11 @@ export function getNotesForStoptime(notes, stoptime) {
  * Formats a trip name for HTML timetable.
  * Deprecated, use `formatTripName` in formatting_functions.pug instead.
  */
-export function formatTripName(trip, index, timetable) {
+export function formatTripName(
+  trip: TripNameTrip,
+  index: number,
+  timetable: TripNameTimetable,
+) {
   let tripName;
   if (timetable.routes.length > 1) {
     tripName = trip.route_short_name;
@@ -162,7 +244,10 @@ export function formatTripName(trip, index, timetable) {
 /*
  * Formats a trip name for CSV export.
  */
-export function formatTripNameForCSV(trip, timetable) {
+export function formatTripNameForCSV(
+  trip: TripNameTrip,
+  timetable: TripNameTimetable,
+) {
   let tripName = '';
   if (timetable.routes.length > 1) {
     tripName += `${trip.route_short_name} - `;

@@ -81,6 +81,9 @@ importers:
       '@types/cli-table':
         specifier: ^0.3.4
         version: 0.3.4
+      '@types/css.escape':
+        specifier: ^1.5.2
+        version: 1.5.2
       '@types/express':
         specifier: ^5.0.6
         version: 5.0.6
@@ -371,6 +374,9 @@ packages:
 
   '@types/connect@3.4.38':
     resolution: {integrity: sha512-K6uROf1LD88uDQqJCktA4yzL1YYAK6NgfsI0v/mTgyPKWsX1CnJ0XPSDhViejru1GcRkLWb8RlzFYJRqGUbaug==}
+
+  '@types/css.escape@1.5.2':
+    resolution: {integrity: sha512-sq0h0y8i83T20MB434AZWgK3byezbBG48jllitFpVXlPOjHc5RNs3bg6rUen/EtMUjM4ZJjD4x+0aik9AXqLdQ==}
 
   '@types/express-serve-static-core@5.1.2':
     resolution: {integrity: sha512-d3KvEXBSo/lOAMc2u6fkyDHBvetBHeqD7wm/AcXfLpSOQwlmG9D/aQ0SFswVjv05p7ullQS7Mjohj6/VdbZuTg==}
@@ -2239,6 +2245,8 @@ snapshots:
   '@types/connect@3.4.38':
     dependencies:
       '@types/node': 26.1.1
+
+  '@types/css.escape@1.5.2': {}
 
   '@types/express-serve-static-core@5.1.2':
     dependencies:
