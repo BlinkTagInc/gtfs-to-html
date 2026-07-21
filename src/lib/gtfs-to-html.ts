@@ -36,7 +36,7 @@ import {
   toGtfsToHtmlError,
 } from './errors.js';
 
-import type { Config } from '../types/index.ts';
+import type { Config, TimetablePageSummary } from '../types/index.ts';
 
 /*
  * Generate HTML timetables from GTFS.
@@ -131,7 +131,7 @@ const gtfsToHtml = async (initialConfig: Config) => {
     warnings: [],
   };
 
-  const timetablePages = [];
+  const timetablePageSummaries: TimetablePageSummary[] = [];
   const timetablePageIds = getTimetablePagesForAgency(config).map(
     (timetablePage) => timetablePage.timetable_page_id,
   );
@@ -211,7 +211,19 @@ const gtfsToHtml = async (initialConfig: Config) => {
         }
       }
 
-      timetablePages.push(timetablePage);
+      // Only keep the fields the overview page template actually needs.
+      timetablePageSummaries.push({
+        timetable_page_id: timetablePage.timetable_page_id,
+        relativePath: timetablePage.relativePath,
+        filename: timetablePage.filename,
+        timetable_page_label: timetablePage.timetable_page_label,
+        dayList: timetablePage.dayList,
+        route_ids: timetablePage.route_ids,
+        agency_ids: timetablePage.agency_ids,
+        consolidatedTimetables: timetablePage.consolidatedTimetables.map(
+          (timetable) => ({ routes: timetable.routes }),
+        ),
+      });
       const timetableStats = generateStats(timetablePage);
 
       stats.stops += timetableStats.stops;
@@ -229,7 +241,7 @@ const gtfsToHtml = async (initialConfig: Config) => {
   if (config.outputFormat === 'html') {
     // Generate overview HTML
     config.assetPath = '';
-    const html = await generateOverviewHTML(timetablePages, config);
+    const html = await generateOverviewHTML(timetablePageSummaries, config);
     await writeFile(path.join(outputPath, 'index.html'), html);
   }
 

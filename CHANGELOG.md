@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Updated
+- Optimized overview page timetablepage memory usage
+
 ### Fixed
 - Fix for inefficient frequencies query
 

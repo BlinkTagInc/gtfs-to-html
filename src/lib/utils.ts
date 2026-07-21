@@ -94,6 +94,7 @@ import type {
   Config,
   FormattedTimetable,
   FormattedTimetablePage,
+  TimetablePageSummary,
 } from '../types/index.ts';
 
 import packageJson from '../../package.json' with { type: 'json' };
@@ -2181,7 +2182,7 @@ export function generateTimetableCSV(timetable) {
  * Generate the HTML for the agency overview page.
  */
 export function generateOverviewHTML(
-  timetablePages: FormattedTimetablePage[],
+  timetablePages: TimetablePageSummary[],
   config: Config,
 ) {
   const agencies = getAgencies() as { agency_name: string }[];
