@@ -6,7 +6,7 @@ import { getBaseTripIds } from './trip-id-utils.js';
 
 import type { Config, FormattedTimetable } from '../types/index.ts';
 
-type GeoJSONFeatureCollection = ReturnType<typeof getShapesAsGeoJSON>;
+type GeoJSONFeatureCollection = GeoJSON.FeatureCollection;
 
 /*
  * Merge any number of geojson objects into one. Only works for `FeatureCollection`.
