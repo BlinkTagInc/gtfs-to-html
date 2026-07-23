@@ -5,3 +5,4 @@ allowBuilds:
 minimumReleaseAgeExclude:
   - gtfs@4.19.3
   - marked@18.0.7
+  - maplibre-gl@6.0.0
