@@ -18,7 +18,7 @@ import * as _ from 'lodash-es';
 import { uniqBy } from 'lodash-es';
 import { ZipArchive } from 'archiver';
 import beautify from 'js-beautify';
-import sanitizeHtml from 'sanitize-html';
+import xss from 'xss';
 import { renderFile } from 'pug';
 import puppeteer from 'puppeteer';
 import sanitize from 'sanitize-filename';
@@ -384,7 +384,7 @@ export async function renderTemplate(
   const html = await renderFile(templatePath, {
     _,
     cssEscape,
-    md: (text: string) => sanitizeHtml(marked.parseInline(text) as string),
+    md: (text: string) => xss(marked.parseInline(text) as string),
     ...templateFunctions,
     formatRouteColor,
     formatRouteTextColor,

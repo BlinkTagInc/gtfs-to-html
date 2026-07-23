@@ -3,6 +3,6 @@ allowBuilds:
   protobufjs: true
   puppeteer: true
 minimumReleaseAgeExclude:
-  - gtfs@4.19.3
-  - marked@18.0.7
-  - maplibre-gl@6.0.0
+  - lint-staged@17.2.0
+  - tsdown@0.22.14
+  - verkit@0.3.0
