@@ -19,7 +19,5 @@
   "noHead": false,
   "outputFormat": "html",
   "showMap": true,
-  "showOnlyTimepoint": true,
-  "useParentStation": true,
-  "verbose": true
+  "showOnlyTimepoint": true
 }
