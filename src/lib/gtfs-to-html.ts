@@ -1,7 +1,7 @@
 import path from 'node:path';
 import { mkdir, writeFile } from 'node:fs/promises';
 
-import { openDb, importGtfs, ConfigAgency, isGtfsError } from 'gtfs';
+import { openDb, closeDb, importGtfs, ConfigAgency, isGtfsError } from 'gtfs';
 import sanitize from 'sanitize-filename';
 
 import {
@@ -59,8 +59,10 @@ const gtfsToHtml = async (initialConfig: Config) => {
 
   await prepDirectory(outputPath, config);
 
+  let db: ReturnType<typeof openDb>;
+
   try {
-    openDb(config);
+    db = openDb(config);
   } catch (error: any) {
     if (error?.code === 'SQLITE_CANTOPEN') {
       const dbOpenError = new GtfsToHtmlError(
@@ -88,192 +90,200 @@ const gtfsToHtml = async (initialConfig: Config) => {
     });
   }
 
-  if (!config.agencies || config.agencies.length === 0) {
-    throw new GtfsToHtmlError('No agencies defined in `config.json`', {
-      code: GtfsToHtmlErrorCode.CONFIG_MISSING_AGENCIES,
-      category: GtfsToHtmlErrorCategory.CONFIG,
-      details: { field: 'agencies' },
-    });
-  }
-
-  if (!config.skipImport) {
-    try {
-      await importGtfs(config);
-    } catch (error: unknown) {
-      if (isGtfsError(error)) {
-        throw error;
-      }
-
-      throw toGtfsToHtmlError(error, {
-        message: error instanceof Error ? error.message : 'GTFS import failed',
-        code: GtfsToHtmlErrorCode.GTFS_IMPORT_FAILED,
-        category: GtfsToHtmlErrorCategory.GTFS,
+  try {
+    if (!config.agencies || config.agencies.length === 0) {
+      throw new GtfsToHtmlError('No agencies defined in `config.json`', {
+        code: GtfsToHtmlErrorCode.CONFIG_MISSING_AGENCIES,
+        category: GtfsToHtmlErrorCategory.CONFIG,
+        details: { field: 'agencies' },
       });
     }
-  }
 
-  const stats: {
-    timetables: number;
-    timetablePages: number;
-    calendars: number;
-    routes: number;
-    trips: number;
-    stops: number;
-    warnings: string[];
-    [key: string]: number | string[];
-  } = {
-    timetables: 0,
-    timetablePages: 0,
-    calendars: 0,
-    routes: 0,
-    trips: 0,
-    stops: 0,
-    warnings: [],
-  };
+    if (!config.skipImport) {
+      try {
+        await importGtfs(config);
+      } catch (error: unknown) {
+        if (isGtfsError(error)) {
+          throw error;
+        }
 
-  const timetablePageSummaries: TimetablePageSummary[] = [];
-  const timetablePageIds = getTimetablePagesForAgency(config).map(
-    (timetablePage) => timetablePage.timetable_page_id,
-  );
+        throw toGtfsToHtmlError(error, {
+          message:
+            error instanceof Error ? error.message : 'GTFS import failed',
+          code: GtfsToHtmlErrorCode.GTFS_IMPORT_FAILED,
+          category: GtfsToHtmlErrorCategory.GTFS,
+        });
+      }
+    }
 
-  if (config.noHead !== true && ['html', 'pdf'].includes(config.outputFormat)) {
-    await copyStaticAssets(config, outputPath);
-  }
+    const stats: {
+      timetables: number;
+      timetablePages: number;
+      calendars: number;
+      routes: number;
+      trips: number;
+      stops: number;
+      warnings: string[];
+      [key: string]: number | string[];
+    } = {
+      timetables: 0,
+      timetablePages: 0,
+      calendars: 0,
+      routes: 0,
+      trips: 0,
+      stops: 0,
+      warnings: [],
+    };
 
-  const bar = progressBar(
-    `${agencyKey}: Generating ${config.outputFormat.toUpperCase()} timetables {bar} {value}/{total}`,
-    timetablePageIds.length,
-    config,
-  );
+    const timetablePageSummaries: TimetablePageSummary[] = [];
+    const timetablePageIds = getTimetablePagesForAgency(config).map(
+      (timetablePage) => timetablePage.timetable_page_id,
+    );
 
-  for (const timetablePageId of timetablePageIds) {
-    try {
-      const timetablePage = await getFormattedTimetablePage(
-        timetablePageId as string,
-        config,
-      );
+    if (
+      config.noHead !== true &&
+      ['html', 'pdf'].includes(config.outputFormat)
+    ) {
+      await copyStaticAssets(config, outputPath);
+    }
 
-      for (const timetable of timetablePage.consolidatedTimetables) {
-        if (timetable.warnings) {
-          for (const warning of timetable.warnings) {
-            stats.warnings.push(warning);
-            bar?.interrupt(warning);
+    const bar = progressBar(
+      `${agencyKey}: Generating ${config.outputFormat.toUpperCase()} timetables {bar} {value}/{total}`,
+      timetablePageIds.length,
+      config,
+    );
+
+    for (const timetablePageId of timetablePageIds) {
+      try {
+        const timetablePage = await getFormattedTimetablePage(
+          timetablePageId as string,
+          config,
+        );
+
+        for (const timetable of timetablePage.consolidatedTimetables) {
+          if (timetable.warnings) {
+            for (const warning of timetable.warnings) {
+              stats.warnings.push(warning);
+              bar?.interrupt(warning);
+            }
           }
         }
-      }
 
-      if (timetablePage.consolidatedTimetables.length === 0) {
-        throw new GtfsToHtmlError(
-          `No timetables found for timetable_page_id=${timetablePage.timetable_page_id}`,
-          {
-            code: GtfsToHtmlErrorCode.TIMETABLE_GENERATION_FAILED,
-            category: GtfsToHtmlErrorCategory.QUERY,
-            details: { timetablePageId: timetablePage.timetable_page_id },
-          },
-        );
-      }
-
-      stats.timetables += timetablePage.consolidatedTimetables.length;
-      stats.timetablePages += 1;
-
-      const datePath = generateFolderName(timetablePage);
-
-      // Make directory if it doesn't exist
-      await mkdir(path.join(outputPath, datePath), { recursive: true });
-      config.assetPath = '../';
-
-      timetablePage.relativePath = path.join(
-        datePath,
-        sanitize(timetablePage.filename),
-      );
-
-      if (config.outputFormat === 'csv') {
-        for (const timetable of timetablePage.consolidatedTimetables) {
-          const csv = await generateTimetableCSV(timetable);
-          const csvPath = path.join(
-            outputPath,
-            datePath,
-            generateCSVFileName(timetable, config),
+        if (timetablePage.consolidatedTimetables.length === 0) {
+          throw new GtfsToHtmlError(
+            `No timetables found for timetable_page_id=${timetablePage.timetable_page_id}`,
+            {
+              code: GtfsToHtmlErrorCode.TIMETABLE_GENERATION_FAILED,
+              category: GtfsToHtmlErrorCategory.QUERY,
+              details: { timetablePageId: timetablePage.timetable_page_id },
+            },
           );
-          await writeFile(csvPath, csv);
         }
-      } else {
-        const html = await generateTimetableHTML(timetablePage, config);
-        const htmlPath = path.join(
-          outputPath,
+
+        stats.timetables += timetablePage.consolidatedTimetables.length;
+        stats.timetablePages += 1;
+
+        const datePath = generateFolderName(timetablePage);
+
+        // Make directory if it doesn't exist
+        await mkdir(path.join(outputPath, datePath), { recursive: true });
+        config.assetPath = '../';
+
+        timetablePage.relativePath = path.join(
           datePath,
           sanitize(timetablePage.filename),
         );
-        await writeFile(htmlPath, html);
 
-        if (config.outputFormat === 'pdf') {
-          await renderPdf(htmlPath);
+        if (config.outputFormat === 'csv') {
+          for (const timetable of timetablePage.consolidatedTimetables) {
+            const csv = await generateTimetableCSV(timetable);
+            const csvPath = path.join(
+              outputPath,
+              datePath,
+              generateCSVFileName(timetable, config),
+            );
+            await writeFile(csvPath, csv);
+          }
+        } else {
+          const html = await generateTimetableHTML(timetablePage, config);
+          const htmlPath = path.join(
+            outputPath,
+            datePath,
+            sanitize(timetablePage.filename),
+          );
+          await writeFile(htmlPath, html);
+
+          if (config.outputFormat === 'pdf') {
+            await renderPdf(htmlPath);
+          }
         }
+
+        // Only keep the fields the overview page template actually needs.
+        timetablePageSummaries.push({
+          timetable_page_id: timetablePage.timetable_page_id,
+          relativePath: timetablePage.relativePath,
+          filename: timetablePage.filename,
+          timetable_page_label: timetablePage.timetable_page_label,
+          dayList: timetablePage.dayList,
+          route_ids: timetablePage.route_ids,
+          agency_ids: timetablePage.agency_ids,
+          consolidatedTimetables: timetablePage.consolidatedTimetables.map(
+            (timetable) => ({ routes: timetable.routes }),
+          ),
+        });
+        const timetableStats = generateStats(timetablePage);
+
+        stats.stops += timetableStats.stops;
+        stats.routes += timetableStats.routes;
+        stats.trips += timetableStats.trips;
+        stats.calendars += timetableStats.calendars;
+      } catch (error: any) {
+        stats.warnings.push(error?.message);
+        bar?.interrupt(error.message);
       }
 
-      // Only keep the fields the overview page template actually needs.
-      timetablePageSummaries.push({
-        timetable_page_id: timetablePage.timetable_page_id,
-        relativePath: timetablePage.relativePath,
-        filename: timetablePage.filename,
-        timetable_page_label: timetablePage.timetable_page_label,
-        dayList: timetablePage.dayList,
-        route_ids: timetablePage.route_ids,
-        agency_ids: timetablePage.agency_ids,
-        consolidatedTimetables: timetablePage.consolidatedTimetables.map(
-          (timetable) => ({ routes: timetable.routes }),
-        ),
-      });
-      const timetableStats = generateStats(timetablePage);
-
-      stats.stops += timetableStats.stops;
-      stats.routes += timetableStats.routes;
-      stats.trips += timetableStats.trips;
-      stats.calendars += timetableStats.calendars;
-    } catch (error: any) {
-      stats.warnings.push(error?.message);
-      bar?.interrupt(error.message);
+      bar?.increment();
     }
 
-    bar?.increment();
+    if (config.outputFormat === 'html') {
+      // Generate overview HTML
+      config.assetPath = '';
+      const html = await generateOverviewHTML(timetablePageSummaries, config);
+      await writeFile(path.join(outputPath, 'index.html'), html);
+    }
+
+    // Generate log.txt
+    const logText = generateLogText(stats, config);
+    await writeFile(path.join(outputPath, 'log.txt'), logText);
+
+    // Zip output, if specified
+    if (config.zipOutput) {
+      await zipFolder(outputPath);
+    }
+
+    const fullOutputPath = path.join(
+      outputPath,
+      config.zipOutput ? '/timetables.zip' : '',
+    );
+
+    // Print stats
+    log(config)(
+      `${agencyKey}: ${config.outputFormat.toUpperCase()} timetables created at ${fullOutputPath}`,
+    );
+
+    logStats(config)(stats);
+
+    const endTime = process.hrtime.bigint();
+    const elapsedSeconds = Number(endTime - startTime) / 1_000_000_000;
+
+    log(config)(
+      `${agencyKey}: ${config.outputFormat.toUpperCase()} timetable generation required ${elapsedSeconds.toFixed(1)} seconds`,
+    );
+
+    return fullOutputPath;
+  } finally {
+    closeDb(db);
   }
-
-  if (config.outputFormat === 'html') {
-    // Generate overview HTML
-    config.assetPath = '';
-    const html = await generateOverviewHTML(timetablePageSummaries, config);
-    await writeFile(path.join(outputPath, 'index.html'), html);
-  }
-
-  // Generate log.txt
-  const logText = generateLogText(stats, config);
-  await writeFile(path.join(outputPath, 'log.txt'), logText);
-
-  // Zip output, if specified
-  if (config.zipOutput) {
-    await zipFolder(outputPath);
-  }
-
-  const fullOutputPath = path.join(
-    outputPath,
-    config.zipOutput ? '/timetables.zip' : '',
-  );
-
-  // Print stats
-  log(config)(
-    `${agencyKey}: ${config.outputFormat.toUpperCase()} timetables created at ${fullOutputPath}`,
-  );
-
-  logStats(config)(stats);
-
-  const endTime = process.hrtime.bigint();
-  const elapsedSeconds = Number(endTime - startTime) / 1_000_000_000;
-
-  log(config)(
-    `${agencyKey}: ${config.outputFormat.toUpperCase()} timetable generation required ${elapsedSeconds.toFixed(1)} seconds`,
-  );
-
-  return fullOutputPath;
 };
 
 export default gtfsToHtml;

@@ -956,7 +956,7 @@ const getStopsForTimetable = (
 };
 
 const getCalendarsFromConfig = (config: Config) => {
-  const db = openDb();
+  const db = openDb(config);
   let whereClause = '';
   const whereClauses = [];
 
@@ -1023,8 +1023,11 @@ const getCalendarsFromConfig = (config: Config) => {
 /*
  * Get all calendars from a specific timetable.
  */
-const getCalendarsFromTimetable = (timetable: FormattedTimetable) => {
-  const db = openDb();
+const getCalendarsFromTimetable = (
+  timetable: FormattedTimetable,
+  config: Config,
+) => {
+  const db = openDb(config);
   let whereClause = '';
   const whereClauses = [];
 
@@ -1097,10 +1100,11 @@ const getCalendarsFromTimetable = (timetable: FormattedTimetable) => {
  * Get all calendar dates for an agency between two dates.
  */
 const getCalendarDatesForDateRange = (
-  startDate?: number | null,
-  endDate?: number | null,
+  startDate: number | null | undefined,
+  endDate: number | null | undefined,
+  config: Config,
 ) => {
-  const db = openDb();
+  const db = openDb(config);
   const whereClauses = [];
 
   if (endDate) {
@@ -1560,7 +1564,7 @@ const formatTimetables = (timetables: FormattedTimetable[], config: Config) => {
   const formattedTimetables = timetables.map((timetable) => {
     timetable.warnings = [];
     const dayList = formatDays(timetable, config);
-    const calendars = getCalendarsFromTimetable(timetable);
+    const calendars = getCalendarsFromTimetable(timetable, config);
     const serviceIds = new Set();
 
     // Add all service IDs from calendars
@@ -1572,6 +1576,7 @@ const formatTimetables = (timetables: FormattedTimetable[], config: Config) => {
       const calendarDates = getCalendarDatesForDateRange(
         timetable.start_date,
         timetable.end_date,
+        config,
       );
 
       const calendarDateGroups = groupBy(calendarDates, 'service_id');
