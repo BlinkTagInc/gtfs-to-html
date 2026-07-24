@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Updated
 - Allow multiple gtfs-to-html processes at the same time
+- Readme updates
 
 ### Added
 - deleteDbAfter config option

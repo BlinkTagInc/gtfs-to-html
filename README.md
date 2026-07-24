@@ -128,7 +128,3 @@ Pull requests are welcome, as well as [feedback and reporting issues](https://gi
     pnpm run build
 
 `pnpm install` installs dependencies. `pnpm run build` compiles TypeScript and vendors browser-compatible libraries (maplibre-gl, pbf, anchorme, etc.) from devDependencies into `dist/browser` via `scripts/copy-browser-assets.js`. These vendored files are included in the published npm package so consumers don't need to run any postinstall steps.
-
-## Tests
-
-    npm test

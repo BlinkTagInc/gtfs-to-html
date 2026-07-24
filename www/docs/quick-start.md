@@ -32,10 +32,11 @@ gtfs-to-html
 
 #### Command Line Options
 
-| Option | Description |
-|--------|-------------|
-| `--configPath` | Specify a custom configuration file path |
-| `--skipImport` | Skip GTFS import (useful for repeated runs where the GTFS doesn't change) |
+| Option | Alias | Description |
+|--------|-------|-------------|
+| `--configPath` | `-c` | Specify a custom configuration file path |
+| `--skipImport` | `-s` | Skip GTFS import (useful for repeated runs where the GTFS doesn't change) |
+| `--showOnlyTimepoint` | `-t` | Show only stops with a `timepoint` value in `stops.txt` |
 
 Example usage:
 ```bash
@@ -126,7 +127,7 @@ _Note: The development server does not load or import any data, but requires a l
 
 [Devcontainers](https://code.visualstudio.com/docs/devcontainers/containers) in VSCode provide a consistent and isolated development environment by packaging tools, dependencies, and configurations like Node.js inside a container instead of installing it on your development machine directly. This avoids "works on my machine" issues and can make developing projects much easier.
 
-For using a devcontainer in VSCode for local development and debugging, you can use the following basic setup. At first, create a task configuration for running the `tsup` build in `.vscode/tasks.json`:
+For using a devcontainer in VSCode for local development and debugging, you can use the following basic setup. At first, create a task configuration for running the `tsdown` build in `.vscode/tasks.json`:
 
 ```json
 {
@@ -135,7 +136,7 @@ For using a devcontainer in VSCode for local development and debugging, you can 
     {
       "label": "build-gtfs-to-html",
       "type": "shell",
-      "command": "npx tsup",
+      "command": "npx tsdown",
       "problemMatcher": [],
       "group": "build",
     },
@@ -191,7 +192,7 @@ Then create a launch configuration for running `gtfs-to-html` in `.vscode/launch
 
 Please also note the config file `config-dev.json` which is used in this launch configuration. You can create this file based on `config-sample.json`, it will be ignored by Git by default. Be aware to set the `sqlitePath` to a valid file path (e.g. `./input/agency.sqlite`) in order to use this setup.
 
-When you run this configuration, it will trigger the `tsup` build by using the former created task `build-gtfs-to-html` at first. After the build succeeded, `load-gtfs-to-html` is executed to import the data into the local SQLite database for the development server.
+When you run this configuration, it will trigger the `tsdown` build by using the former created task `build-gtfs-to-html` at first. After the build succeeded, `load-gtfs-to-html` is executed to import the data into the local SQLite database for the development server.
 
 Once the development server is running, you can access it as described above. Additionally, you can set your breakpoints in the TypeScript code for debugging.
 

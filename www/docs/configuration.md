@@ -22,7 +22,6 @@ All files starting with `config*.json` are .gitignored - so you can create multi
 | [`dateFormat`](#dateformat)                                     | String           | A string defining date format in moment.js style.                                                |
 | [`daysShortStrings`](#daysshortstrings)                           | Array[String]    | An array defining contractions of weekday names from Monday to Sunday.                          |
 | [`daysStrings`](#daysstrings)                                     | Array[String]    | An array defining weekday names from Monday to Sunday.                                          |
-| [`debug`](#debug)                                               | Boolean          | Enable logging of SQL queries and other info.                                                    |
 | [`defaultOrientation`](#defaultorientation)                     | String           | Specify timetable orientation when not specified in `timetables.txt`.                           |
 | [`deleteDbAfter`](#deletedbafter)                               | Boolean          | Whether to delete the SQLite database after timetables are generated.                            |
 | [`effectiveDate`](#effectivedate)                               | String           | A date to print at the top of the timetable.                                                     |
@@ -248,14 +247,6 @@ Specify multiple agencies to be imported. Note that it is often better to have o
 
 ```json
 "daysStrings": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-```
-
-## debug
-
-{Boolean} Whether to enable logging of SQL queries and other info. **Optional.** Defaults to `false`.
-
-```json
-"debug": false
 ```
 
 ## defaultOrientation
