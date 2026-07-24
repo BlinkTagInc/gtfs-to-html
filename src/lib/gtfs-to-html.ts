@@ -1,7 +1,14 @@
 import path from 'node:path';
 import { mkdir, writeFile } from 'node:fs/promises';
 
-import { openDb, closeDb, importGtfs, ConfigAgency, isGtfsError } from 'gtfs';
+import {
+  openDb,
+  closeDb,
+  deleteDb,
+  importGtfs,
+  ConfigAgency,
+  isGtfsError,
+} from 'gtfs';
 import sanitize from 'sanitize-filename';
 
 import {
@@ -282,7 +289,11 @@ const gtfsToHtml = async (initialConfig: Config) => {
 
     return fullOutputPath;
   } finally {
-    closeDb(db);
+    if (config.deleteDbAfter) {
+      deleteDb(db);
+    } else {
+      closeDb(db);
+    }
   }
 };
 

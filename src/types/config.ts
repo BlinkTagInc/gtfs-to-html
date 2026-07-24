@@ -11,6 +11,7 @@ export interface Config {
   daysShortStrings?: string[];
   daysStrings?: string[];
   defaultOrientation?: string;
+  deleteDbAfter?: boolean;
   effectiveDate?: string;
   endDate?: string;
   groupTimetablesIntoPages?: boolean;

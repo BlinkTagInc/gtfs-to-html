@@ -24,6 +24,7 @@ All files starting with `config*.json` are .gitignored - so you can create multi
 | [`daysStrings`](#daysstrings)                                     | Array[String]    | An array defining weekday names from Monday to Sunday.                                          |
 | [`debug`](#debug)                                               | Boolean          | Enable logging of SQL queries and other info.                                                    |
 | [`defaultOrientation`](#defaultorientation)                     | String           | Specify timetable orientation when not specified in `timetables.txt`.                           |
+| [`deleteDbAfter`](#deletedbafter)                               | Boolean          | Whether to delete the SQLite database after timetables are generated.                            |
 | [`effectiveDate`](#effectivedate)                               | String           | A date to print at the top of the timetable.                                                     |
 | [`endDate`](#enddate)                                        | String           | A date in ISO 8601 format to control which calendars are used for the timetables.                |
 | [`groupTimetablesIntoPages`](#grouptimetablesintopages)         | Boolean          | Whether to group timetables for the same route onto one page.                                                 |
@@ -263,6 +264,14 @@ Specify multiple agencies to be imported. Note that it is often better to have o
 
 ```json
 "defaultOrientation": "vertical"
+```
+
+## deleteDbAfter
+
+{Boolean} Whether to delete the SQLite database after timetables are generated. Useful when using a file-backed database via [`sqlitePath`](#sqlitepath) that you don't need to persist between runs. **Optional.** Defaults to `false`.
+
+```json
+"deleteDbAfter": false
 ```
 
 ## effectiveDate

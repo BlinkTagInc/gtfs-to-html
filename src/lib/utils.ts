@@ -1991,6 +1991,7 @@ export function setDefaultConfig(initialConfig: Config) {
       'Sunday',
     ],
     defaultOrientation: 'vertical',
+    deleteDbAfter: false,
     interpolatedStopSymbol: '•',
     interpolatedStopText: 'Estimated time of arrival',
     groupTimetablesIntoPages: true,
