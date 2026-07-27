@@ -2,14 +2,11 @@
 
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
-import PrettyError from 'pretty-error';
 import { isGtfsError } from 'gtfs';
 
 import { getConfig } from '../lib/file-utils.js';
-import { formatError } from '../lib/log-utils.js';
+import { formatError, formatStackTrace } from '../lib/log-utils.ts';
 import gtfsToHtml, { isGtfsToHtmlError } from '../index.js';
-
-const pe = new PrettyError();
 
 const { argv } = yargs(hideBin(process.argv))
   .usage('Usage: $0 --configPath ./config.json')
@@ -33,17 +30,16 @@ const { argv } = yargs(hideBin(process.argv))
   })
   .default('showOnlyTimepoint', undefined);
 
-const handleError = (error: any) => {
-  const text = error || 'Unknown Error';
+const handleError = (error: Error | string = 'Unknown Error') => {
   const isKnownOperationalError =
     isGtfsToHtmlError(error) || isGtfsError(error);
 
   process.stdout.write(
-    `\n${formatError(text, { verbosity: isKnownOperationalError ? 'user' : 'developer' })}\n`,
+    `\n${formatError(error, { verbosity: isKnownOperationalError ? 'user' : 'developer' })}\n`,
   );
 
   if (!isKnownOperationalError) {
-    console.error(pe.render(error));
+    console.error(formatStackTrace(error));
   }
 
   process.exit(1);

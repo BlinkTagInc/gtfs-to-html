@@ -2,7 +2,3 @@ allowBuilds:
   better-sqlite3: true
   protobufjs: true
   puppeteer: true
-minimumReleaseAgeExclude:
-  - lint-staged@17.2.0
-  - tsdown@0.22.14
-  - verkit@0.3.0
