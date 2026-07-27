@@ -15,5 +15,5 @@
     "react": "^19.2.8",
     "react-dom": "^19.2.8"
   },
-  "packageManager": "pnpm@11.16.0"
+  "packageManager": "pnpm@11.17.0"
 }
