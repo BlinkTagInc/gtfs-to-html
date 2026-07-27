@@ -2,3 +2,7 @@ allowBuilds:
   better-sqlite3: true
   protobufjs: true
   puppeteer: true
+minimumReleaseAgeExclude:
+  - gtfs@4.20.0
+  - puppeteer-core@25.4.0
+  - puppeteer@25.4.0
