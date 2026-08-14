@@ -10,6 +10,8 @@ input
 
 # output
 html
+timetables
+assets
 
 # custom views
 views/custom
