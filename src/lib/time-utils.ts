@@ -28,19 +28,19 @@ export function toGTFSTime(time: moment.Moment) {
  * Convert a object of weekdays into a a string containing 1s and 0s.
  */
 export function calendarToCalendarCode(calendar: {
-  monday?: null | 0 | 1;
-  tuesday?: null | 0 | 1;
-  wednesday?: null | 0 | 1;
-  thursday?: null | 0 | 1;
-  friday?: null | 0 | 1;
-  saturday?: null | 0 | 1;
-  sunday?: null | 0 | 1;
+  monday?: number | null;
+  tuesday?: number | null;
+  wednesday?: number | null;
+  thursday?: number | null;
+  friday?: number | null;
+  saturday?: number | null;
+  sunday?: number | null;
 }): CalendarCode | '' {
   if (Object.values(calendar).every((value) => value === null)) {
     return '';
   }
 
-  return `${calendar.monday ?? '0'}${calendar.tuesday ?? '0'}${calendar.wednesday ?? '0'}${calendar.thursday ?? '0'}${calendar.friday ?? '0'}${calendar.saturday ?? '0'}${calendar.sunday ?? '0'}`;
+  return `${calendar.monday === 1 ? 1 : 0}${calendar.tuesday === 1 ? 1 : 0}${calendar.wednesday === 1 ? 1 : 0}${calendar.thursday === 1 ? 1 : 0}${calendar.friday === 1 ? 1 : 0}${calendar.saturday === 1 ? 1 : 0}${calendar.sunday === 1 ? 1 : 0}`;
 }
 
 /*
@@ -76,13 +76,13 @@ export function calendarCodeToCalendar(code: CalendarCode) {
 /* Concert an object of weekdays and a date range into a list of dates. */
 export function calendarToDateList(
   calendar: {
-    monday?: null | 0 | 1;
-    tuesday?: null | 0 | 1;
-    wednesday?: null | 0 | 1;
-    thursday?: null | 0 | 1;
-    friday?: null | 0 | 1;
-    saturday?: null | 0 | 1;
-    sunday?: null | 0 | 1;
+    monday?: number | null;
+    tuesday?: number | null;
+    wednesday?: number | null;
+    thursday?: number | null;
+    friday?: number | null;
+    saturday?: number | null;
+    sunday?: number | null;
   },
   startDate: number,
   endDate: number | null,
@@ -126,13 +126,13 @@ export function calendarToDateList(
  */
 export function combineCalendars(
   calendars: {
-    monday?: null | 0 | 1;
-    tuesday?: null | 0 | 1;
-    wednesday?: null | 0 | 1;
-    thursday?: null | 0 | 1;
-    friday?: null | 0 | 1;
-    saturday?: null | 0 | 1;
-    sunday?: null | 0 | 1;
+    monday?: number | null;
+    tuesday?: number | null;
+    wednesday?: number | null;
+    thursday?: number | null;
+    friday?: number | null;
+    saturday?: number | null;
+    sunday?: number | null;
   }[],
 ) {
   const combinedCalendar: {

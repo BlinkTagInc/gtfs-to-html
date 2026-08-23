@@ -1,14 +1,7 @@
 import path from 'node:path';
 import { mkdir, writeFile } from 'node:fs/promises';
 
-import {
-  openDb,
-  closeDb,
-  deleteDb,
-  importGtfs,
-  ConfigAgency,
-  isGtfsError,
-} from 'gtfs';
+import { openDb, closeDb, deleteDb, importGtfs, isGtfsError } from 'gtfs';
 import sanitize from 'sanitize-filename';
 
 import {
@@ -43,7 +36,11 @@ import {
   toGtfsToHtmlError,
 } from './errors.js';
 
-import type { Config, TimetablePageSummary } from '../types/index.ts';
+import type {
+  Config,
+  ConfigAgency,
+  TimetablePageSummary,
+} from '../types/index.ts';
 
 /*
  * Generate HTML timetables from GTFS.
@@ -56,7 +53,7 @@ const gtfsToHtml = async (initialConfig: Config) => {
 
   const agencyKey = config.agencies
     .map(
-      (agency: ConfigAgency & { agencyKey?: string; agency_key?: string }) =>
+      (agency: ConfigAgency) =>
         agency.agencyKey ?? agency.agency_key ?? 'unknown',
     )
     .join('-');

@@ -1,8 +1,9 @@
 import { Frequency, Route, Timetable } from 'gtfs';
 import type { FormattedTrip } from './trip.ts';
 import type { FormattedStop } from './stop.ts';
+import type { Mutable } from './mutable.ts';
 
-export interface FormattedTimetable extends Timetable {
+export interface FormattedTimetable extends Mutable<Timetable> {
   route_ids: string[];
   trip_ids: string[];
   routes: Route[];

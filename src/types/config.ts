@@ -1,4 +1,10 @@
-import { ConfigAgency } from 'gtfs';
+import type { GtfsFeedConfig } from 'gtfs';
+
+export type ConfigAgency = GtfsFeedConfig & {
+  agencyKey?: string;
+  /** @deprecated Use `agencyKey`. */
+  agency_key?: string;
+};
 
 export interface Config {
   agencies: ConfigAgency[];

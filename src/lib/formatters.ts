@@ -200,13 +200,13 @@ function filterHourlyTimes(stops: FormattedStop[]) {
 }
 
 interface WeekdayFlags {
-  monday?: 0 | 1 | null;
-  tuesday?: 0 | 1 | null;
-  wednesday?: 0 | 1 | null;
-  thursday?: 0 | 1 | null;
-  friday?: 0 | 1 | null;
-  saturday?: 0 | 1 | null;
-  sunday?: 0 | 1 | null;
+  monday?: number | null;
+  tuesday?: number | null;
+  wednesday?: number | null;
+  thursday?: number | null;
+  friday?: number | null;
+  saturday?: number | null;
+  sunday?: number | null;
 }
 
 /*
@@ -311,15 +311,15 @@ export function formatTimetableId({
   dates,
 }: {
   routeIds: string[];
-  directionId?: 0 | 1 | null;
+  directionId?: number | null;
   days: {
-    monday?: null | 0 | 1;
-    tuesday?: null | 0 | 1;
-    wednesday?: null | 0 | 1;
-    thursday?: null | 0 | 1;
-    friday?: null | 0 | 1;
-    saturday?: null | 0 | 1;
-    sunday?: null | 0 | 1;
+    monday?: number | null;
+    tuesday?: number | null;
+    wednesday?: number | null;
+    thursday?: number | null;
+    friday?: number | null;
+    saturday?: number | null;
+    sunday?: number | null;
   };
   dates?: number[];
 }) {
@@ -356,6 +356,8 @@ function createEmptyStoptime(
     stop_headsign: null,
     start_pickup_drop_off_window: null,
     start_pickup_drop_off_window_timestamp: null,
+    end_pickup_drop_off_window: null,
+    end_pickup_drop_off_window_timestamp: null,
     pickup_type: null,
     drop_off_type: null,
     continuous_pickup: null,

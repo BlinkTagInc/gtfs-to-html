@@ -105,7 +105,7 @@ const { version } = packageJson;
  * Determine if a stoptime is a timepoint.
  */
 export const isTimepoint = (stoptime: {
-  timepoint: 0 | 1 | null;
+  timepoint: number | null;
   arrival_time: string | null;
   departure_time: string | null;
 }) => {
@@ -343,13 +343,13 @@ const getCalendarDatesForTimetable = (
  * Get days of the week from calendars.
  */
 interface WeekdayFlagsRequired {
-  monday: 0 | 1;
-  tuesday: 0 | 1;
-  wednesday: 0 | 1;
-  thursday: 0 | 1;
-  friday: 0 | 1;
-  saturday: 0 | 1;
-  sunday: 0 | 1;
+  monday: number;
+  tuesday: number;
+  wednesday: number;
+  thursday: number;
+  friday: number;
+  saturday: number;
+  sunday: number;
 }
 
 const getDaysFromCalendars = (
@@ -367,7 +367,7 @@ const getDaysFromCalendars = (
 
   for (const calendar of calendars) {
     for (const day of Object.keys(days) as (keyof typeof days)[]) {
-      days[day] = (days[day] | calendar[day]) as 0 | 1;
+      days[day] = days[day] | calendar[day];
     }
   }
 
@@ -468,7 +468,7 @@ const getTimetableNotesForTimetable = (
 
   const notes = getTimetableNotes({
     note_id: usedNoteReferences.map((noteReference) => noteReference.note_id),
-  });
+  }).map((note) => ({ ...note }));
 
   // Assign symbols to each note if unassigned. Use a-z then default to integers.
   const symbols = 'abcdefghijklmnopqrstuvwxyz'.split('');
@@ -539,7 +539,7 @@ const createTimetable = ({
   calendarDates,
 }: {
   route: Route;
-  directionId?: 0 | 1 | null;
+  directionId?: number | null;
   tripHeadsign?: string | null;
   calendars?: Calendar[];
   calendarDates?: CalendarDate[];
@@ -1746,7 +1746,7 @@ const getDataForTimetablePageById = (timetablePageId: string) => {
   let calendars;
   let calendarDates;
   let serviceId;
-  let directionId: number | string | null = '';
+  let directionId: number | null = null;
   const parts = timetablePageId?.split('|') ?? [];
   if (parts.length > 2) {
     directionId = Number.parseInt(parts.pop() ?? '', 10);

@@ -51,20 +51,20 @@
     "prepublishOnly": "pnpm run typecheck"
   },
   "dependencies": {
-    "@turf/helpers": "^7.3.5",
-    "@turf/simplify": "^7.3.5",
+    "@turf/helpers": "^7.4.0",
+    "@turf/simplify": "^7.4.0",
     "archiver": "^8.0.0",
     "cli-table": "^0.3.11",
     "css.escape": "^1.5.1",
-    "csv-stringify": "^6.8.1",
+    "csv-stringify": "^6.8.3",
     "express": "^5.2.1",
-    "gtfs": "^4.20.0",
+    "gtfs": "^4.21.0",
     "js-beautify": "^2.0.3",
     "lodash-es": "^4.18.1",
-    "marked": "^18.0.7",
+    "marked": "^18.0.10",
     "moment": "^2.30.1",
     "pug": "^3.0.4",
-    "puppeteer": "^25.4.0",
+    "puppeteer": "^25.8.0",
     "sanitize-filename": "^1.6.4",
     "sqlstring": "^2.3.3",
     "toposort": "^2.0.2",
@@ -88,7 +88,7 @@
     "anchorme": "^3.0.8",
     "gtfs-realtime-pbf-js-module": "^1.0.0",
     "husky": "^9.1.7",
-    "lint-staged": "^17.2.0",
+    "lint-staged": "^17.3.0",
     "maplibre-gl": "^5.24.0",
     "pbf": "^5.1.2",
     "prettier": "^3.9.6",
@@ -98,7 +98,7 @@
   "engines": {
     "node": ">= 22"
   },
-  "packageManager": "pnpm@11.17.0",
+  "packageManager": "pnpm@11.22.0",
   "release-it": {
     "github": {
       "release": true

@@ -74,14 +74,13 @@ export function isGtfsToHtmlError(error: unknown): error is GtfsToHtmlError {
  * GTFS parsing failures can come from parsing, validation or GTFS zip structure checks.
  */
 export function isGtfsParsingError(error: unknown): boolean {
-  return (
-    isGtfsError(error) &&
-    [
-      GtfsErrorCategory.PARSE,
-      GtfsErrorCategory.VALIDATION,
-      GtfsErrorCategory.ZIP,
-    ].includes(error.category)
-  );
+  const parsingCategories: GtfsErrorCategory[] = [
+    GtfsErrorCategory.PARSE,
+    GtfsErrorCategory.VALIDATION,
+    GtfsErrorCategory.ZIP,
+  ];
+
+  return isGtfsError(error) && parsingCategories.includes(error.category);
 }
 
 export function toGtfsToHtmlError(

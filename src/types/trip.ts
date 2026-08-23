@@ -1,5 +1,6 @@
 import { Route, Trip } from 'gtfs';
 import type { FormattedStopTime } from './stoptime.ts';
+import type { Mutable } from './mutable.ts';
 
 /*
  * A trip with the same `block_id` as another trip, used to determine
@@ -12,7 +13,7 @@ export interface BlockTrip extends Pick<Trip, 'trip_id' | 'route_id'> {
   route?: Route;
 }
 
-export interface FormattedTrip extends Trip {
+export interface FormattedTrip extends Mutable<Trip> {
   stoptimes: FormattedStopTime[];
   firstStoptime?: number;
   lastStoptime?: number;
