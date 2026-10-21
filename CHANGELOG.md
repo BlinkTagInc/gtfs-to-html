@@ -5,44 +5,58 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Updated
+
+- Dependency updates
+
 ## [2.13.5] - 2026-09-25
 
 ### Updated
+
 - Dependency updates
 
 ## [2.13.4] - 2026-08-22
 
 ### Updated
+
 - Dependency updates
 
 ## [2.13.3] - 2026-07-27
 
 ### Updated
+
 - Dependency updates
 - Remove pretty-error
 
 ## [2.13.2] - 2026-07-23
 
 ### Updated
+
 - Allow multiple gtfs-to-html processes at the same time
 - Readme updates
 
 ### Added
+
 - deleteDbAfter config option
 
 ## [2.13.1] - 2026-07-23
 
 ### Updated
+
 - Use js-xss library instead of santize-html
 - Dependency updates
 
 ## [2.13.0] - 2026-07-23
 
 ### Updated
+
 - Optimized overview page timetablepage memory usage
 - Dependency updates
 
 ### Fixed
+
 - Fix for inefficient frequencies query
 - Fix for timetable time filters
 - Fixed type errors
@@ -50,58 +64,70 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.12.14] - 2026-07-07
 
 ### Updated
+
 - Dependency updates
 
 ### Fixed
+
 - Fix for geojson shapes bug
 
 ## [2.12.13] - 2026-06-18
 
 ### Updated
+
 - Dependency updates
 - Switch to tsdown
 
 ## [2.12.12] - 2026-05-27
 
 ### Updated
+
 - Update to browser file copy script
 - Dependency updates
 
 ## [2.12.11] - 2026-05-24
 
 ### Updated
+
 - Dependency updates
 
 ## [2.12.10] - 2026-05-18
 
 ### Updated
+
 - Change to how frontend libraries are vendored
 - Dependency updates
 
 ## [2.12.9] - 2026-05-13
 
 ### Added
+
 - Warning about inconsistent trips across days of the week
 
 ### Updated
+
 - Dependency updates
 
 ## [2.12.8] - 2026-04-20
 
 ### Fixed
+
 - Handle GTFS that doesn't use calendar.txt
 - Fix for route_ids with underscores
 
 ### Updated
+
 - Dependency updates
 
 ## [2.12.7] - 2026-04-02
 
 ### Fixed
+
 - Use route_id in timetable_page_id to fix issue with groupTimetableInfoPages
 - Fix for maps with frequency based trips
 
 ### Updated
+
 - trip-frequency styles
 - Improvement for map hiding when no geojson available
 - Dependency updates and typescript config updates
@@ -109,55 +135,67 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.12.6] - 2026-03-22
 
 ### Changed
+
 - Improved error messages
 
 ### Updated
+
 - Dependency updates
 
 ## [2.12.5] - 2026-03-16
 
 ### Added
+
 - Horizontal scroll indicator fade on timetables
 
 ### Updated
+
 - Dependency updates
 
 ## [2.12.4] - 2026-01-21
 
 ### Fixed
+
 - Handle identical trips with different service_ids when generating days of the week labels
 
 ### Updated
+
 - Dependency updates
 - Adjusting styles for alerts
 
 ## [2.12.3] - 2025-12-10
 
 ### Updated
+
 - Exclude calendar_dates.txt exception_type=2 if all dates within timetable are excluded
 
 ## [2.12.2] - 2025-12-04
 
 ### Fixed
+
 - Fixed package resolution for frontend libraries (pbf, gtfs-realtime, maplibre-gl, anchorme) when using as a dependency by pre-copying files to `dist/frontend_libraries` during postinstall
 
 ### Updated
+
 - Dependency updates
 
 ## [2.12.1] - 2025-11-19
 
 ### Updated
+
 - Styles for route color swatches
 - Better button class names and styles
 - Dependency updates
 
 ### Fixed
+
 - Fix for route name formatting
 - Fix for GTFS-realtime alerts box when no alerts
 
 ## [2.12.0] - 2025-11-11
 
 ### Updated
+
 - Improved map legend styles
 - Dependency updates
 - Improved route color swatch styles
@@ -166,6 +204,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Remove jQuery from all frontend template files
 
 ### Fixed
+
 - Fixed frontend layouts for working with IFOPT IDs (IDs containing `:`)
 - Handle special characters in note ids
 - Improved route sorting in system map popups
@@ -173,50 +212,61 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.11.5] - 2025-11-05
 
 ### Updated
+
 - Dependency updates
 
 ### Fixed
+
 - Formatting of ids for `simple` and `jump` menus
 
 ## [2.11.4] - 2025-10-27
 
 ### Added
+
 - Added configuration option `noRegularServiceDaysText`
 - Added Docs for using a Devcontainer
 
 ### Fixed
+
 - Correction for calendar dates inclusion
 - Improved warning logging
 - Fix for system map hiding when no spatial data
 
 ### Updated
+
 - Dependency updates
 
 ## [2.11.3] - 2025-10-03
 
 ### Fixed
+
 - Include trip_ids from duplicate trips
 
 ### Updated
+
 - Dependency updates
 
 ## [2.11.2] - 2025-09-30
 
 ### Updated
+
 - Update Dockerfile
 - Improved timetable filenames
 
 ### Fixed
+
 - Handle GTFS with no calendar.txt
 
 ## [2.11.1] - 2025-09-19
 
 ### Fixed
+
 - Better resolution to node_modules for copying js assets
 
 ## [2.11.0] - 2025-09-15
 
 ### Updated
+
 - Type fixes and improvements
 - Overview template improvements
 - `groupTimetablesIntoPages` configuation option
@@ -227,53 +277,64 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.10.17] - 2025-09-04
 
 ### Updated
+
 - Update maplibre version and style
 
 ## [2.10.16] - 2025-08-14
 
 ### Updated
+
 - Timetable styles update
 - Dependency updates
 
 ### Fixed
+
 - Fix for column highlighting with trip continuation columns
 
 ## [2.10.15] - 2025-07-26
 
 ### Updated
+
 - Dependency updates
 - Remove unneeded geojson properties
 
 ### Added
+
 - Log agency name
 - Added warning about missing timepoints
 
 ## [2.10.14] - 2025-07-16
 
 ### Updated
+
 - Dependency updates
 - Improved trip deduplication
 - Fixes in documentation
 
 ### Added
+
 - Add `showDuplicateTrips` config option
 
 ## [2.10.13] - 2025-05-28
 
 ### Updated
+
 - Dependency updates
 
 ## [2.10.12] - 2025-05-20
 
 ### Fixed
+
 - If a stop is marked as a timepoint in any trips, treat it as a timepoint in all trips for sorting purposes.
 
 ### Updated
+
 - Dependency updates
 
 ## [2.10.11] - 2025-04-17
 
 ### Updated
+
 - Dependency updates
 - Remove package-lock.json
 - Typescript updates
@@ -281,54 +342,66 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.10.10] - 2025-02-25
 
 ### Updated
+
 - Dependency updates
 
 ## [2.10.9] - 2025-01-29
 
 ### Fixed
+
 - Template path detection when installed globally
 
 ### Updated
+
 - Dependency updates
 
 ## [2.10.8] - 2025-01-11
 
 ### Updated
+
 - Move timetablepage sort logic to formatting_functions.pug
 - Dependency updates
 
 ## [2.10.7] - 2025-01-02
 
 ### Fixed
+
 - Better support for GTFS with multiple agencies
 
 ### Updated
+
 - Dependency updates
 
 ## [2.10.6] - 2025-01-01
 
 ### Fixed
+
 - Handle stoptimes with empty arrival/departure time
 
 ### Updated
+
 - Dependency updates
 
 ## [2.10.5] - 2024-12-09
 
 ### Fixed
+
 - Use sanitize-html for timetable notes
 
 ### Updated
+
 - Dependency updates
 
 ## [2.10.4] - 2024-11-18
 
 ### Updated
+
 - Dependency updates
 
 ## [2.10.3] - 2024-11-12
 
 ### Updated
+
 - Updated additional files documentation
 - Documentation site dependency updates
 - Better map legend on mobile
@@ -338,15 +411,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.10.2] - 2024-10-28
 
 ### Changed
+
 - Moved `formatTripName` to formatting_functions.pug
 - Added `trip-name` class to trip names to make it easier to hide
 
 ### Updated
+
 - Dependency updates
 
 ## [2.10.1] - 2024-10-24
 
 ### Updated
+
 - Improved non-topological sort warning
 - Log all warnings to logfile
 - Change to logging functions
@@ -355,6 +431,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.10.0] - 2024-10-18
 
 ### Updated
+
 - Fix for stop popup realtime trip updates
 - Use maplibregl
 - Add geocoder to system map
@@ -363,12 +440,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.9.15] - 2024-10-16
 
 ### Updated
+
 - Dependency Updates
 - Upgrade to Express 5.0 for demo app
 - Improved stop highlight styles on map
 - Better error handlers for demo app
 
 ### Added
+
 - Warning about toposort stop order failure
 - Add Realtime trip updates to stop popups
 - Add types for GTFS files
@@ -376,14 +455,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.9.14] - 2024-10-11
 
 ### Updated
+
 - Dependency Updates
 
 ### Added
--  `overwriteExistingFiles` config option
+
+- `overwriteExistingFiles` config option
 
 ## [2.9.13] - 2024-09-27
 
 ### Updated
+
 - Get a vehicle bearing based on next stop location
 - Better anchor position for vehicle marker popup
 - Better vehicle popup content
@@ -394,19 +476,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.9.12] - 2024-09-23
 
 ### Fixed
+
 - Deduplicate excluded/included calendar_dates
 
 ### Updated
+
 - Minor style change
 - Dependency Updates
 
 ## [2.9.11] - 2024-09-18
 
 ### Fixed
+
 - Fix for vehicle popups when toggling maps
 - Handle timetables with no direction_name in menu
 
 ### Updated
+
 - Dependency updates for documentation site
 - Use jQuery instead of $
 - Improvements to vehicle popups
@@ -414,120 +500,145 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.9.10] - 2024-09-17
 
 ### Updated
+
 - Handle only some GTFS-Realtime URLs
 - Dependency Updates
 
 ## [2.9.9] - 2024-09-14
 
 ### Updated
+
 - Route color swatch styles
 - Dependency Updates
 
 ### Added
+
 - Highlight stop row/column on map click
 - Use anchorme for links in service alerts
 
 ### Fixed
+
 - Service alert filtering by stop
 
 ## [2.9.8] - 2024-09-10
 
 ### Updated
+
 - Add release-it hook
 - Create config-sample-full.json example
 
 ## [2.9.7] - 2024-09-10
 
 ### Fixed
+
 - Fix for zipped CSV and PDF output
 
 ### Updated
+
 - Dependency updates
 
 ## [2.9.6] - 2024-09-09
 
 ### Added
+
 - Add html lang attribute
 - Add html title attributes to pages
 
 ### Updated
+
 - Service alert and timetable styles
 
 ## [2.9.5] - 2024-09-08
 
 ### Updated
+
 - Update to config types
 
 ## [2.9.4] - 2024-09-08
 
 ### Added
+
 - outputPath config option
 - Return path to timetable output
 - Support for GTFS-Realtime Alerts
 
 ### Fixed
+
 - Format timetable_id in template for HTML
 
 ### Updated
+
 - Update to map route/trip/stop data format
 - Move PDF styles to print styles
 
 ## [2.9.3] - 2024-09-07
 
 ### Fixed
+
 - Fix path to template folder
 - Update timetablepage template for maps
 
 ## [2.9.2] - 2024-09-06
 
 ### Fixed
+
 - Update files list in package.json
 
 ### Updated
+
 - Dependency updates
 
 ## [2.9.1] - 2024-09-05
 
 ### Fixed
+
 - Better checks for copying static assets
 - Emulate print for PDF creation in puppeteer
 
 ### Updated
+
 - Hide menu on PDF export
 - Improved styles for PDF export
 
 ## [2.9.0] - 2024-09-05
 
 ### Added
+
 - Add support for GTFS-Realtime
 
 ### Updated
+
 - Reorganize template formatting functions
 - Rename agency_key to agencyKey
 
 ## [2.8.1] - 2024-08-30
 
 ### Updated
+
 - Updates to demo app
 
 ## [2.8.0] - 2024-08-30
 
 ### Updated
+
 - Convert to Typescript
 - Dependency updates
 
 ## [2.7.2] - 2024-08-16
 
 ### Updated
+
 - Updated docker to node 20
 - Dependency updates
 
 ## [2.7.1] - 2024-08-13
 
 ### Fixed
+
 - Handle MultiLineString geojson
 
 ### Updated
+
 - Warning about invalid timetable start/end dates
 - Deduplicate timetablePage agency_ids
 - Don't show drop_off_type info for first stoptime of a trip, don't show pickup_type info for last stoptime of a trip.
@@ -536,9 +647,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.7.0] - 2024-07-27
 
 ### Fixed
+
 - Fixes for horizontal orientation labels
 
 ### Updated
+
 - Better date format documentation
 - Better default for timetable_page_label
 - Larger map on desktop
@@ -550,21 +663,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.6.12] - 2024-07-26
 
 ### Updated
+
 - Dependency updates
 - Improved styles for default template
 
 ## [2.6.11] - 2024-07-24
 
 ### Updated
+
 - Dependency updates
 - Default template timetable styles
 
 ### Fixed
+
 - Map route_text_color fix
 
 ## [2.6.10] - 2024-07-15
 
 ### Updated
+
 - Better date format in timetable comment
 - favicon
 - Improved timetable_page_name fallback
@@ -574,28 +691,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.6.9] - 2024-07-11
 
 ### Added
+
 - Stop popup window on map link to streetview
 
 ### Updated
+
 - Dependency updates
 
 ## [2.6.8] - 2024-06-21
 
 ### Updated
+
 - Dependency updates
 - Improved convertRoutesToTimetablePages function
 
 ## [2.6.7] - 2024-05-28
 
 ### Fixed
+
 - Handle config with no agency_key
 
 ### Updated
+
 - Dependency updates
 
 ## [2.6.6] - 2024-05-14
 
 ### Updated
+
 - Improved error formatting
 - Text-wrap for timetable notes for trips
 - Dependency updates
@@ -604,29 +727,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.6.5] - 2024-05-11
 
 ### Updated
+
 - Timetable trip notes on vertical
 - Use route_text_color in timetable continuations
 - Dependency updates
 
 ### Fixed
+
 - Handle trips with nostoptimes in overview
 
 ## [2.6.4] - 2024-04-30
 
 ### Updated
+
 - Upated Mapbox GL
 
 ### Added
+
 - `startDate` and `endDate` config.json parameters
 
 ## [2.6.3] - 2024-04-22
 
 ### Updated
+
 - Add trip headsign to CSV export
 
 ## [2.6.2] - 2024-04-19
 
 ### Updated
+
 - Dependency updates
 - Update to timetable page sorting
 
@@ -641,6 +770,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix for missing stops
 
 ### Updated
+
 - Dependency updates
 - Day List selector label wording
 - Updates to timetable map
