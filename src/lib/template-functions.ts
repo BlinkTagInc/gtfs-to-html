@@ -102,6 +102,8 @@ export function timetablePageHasDifferentDays(
 }
 
 /*
+ * Compatibility helper for existing templates using timetable_label.
+ * New templates use the helper in formatting_functions.pug.
  * Discern if individual timetable labels should be shown (if some
  * timetables have different labels).
  */

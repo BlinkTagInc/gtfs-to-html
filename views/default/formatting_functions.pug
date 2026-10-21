@@ -1,4 +1,42 @@
 -
+  function formatTimetableLabel(timetable) {
+    // Keep explicit labels, but rebuild generated labels so they can be translated here.
+    const labelOverride = timetable.timetableLabelOverride !== undefined
+      ? timetable.timetableLabelOverride
+      : timetable.timetable_label;
+    if (labelOverride) {
+      return labelOverride;
+    }
+
+    let timetableLabel = '';
+    const route = timetable.routes?.[0];
+    if (route) {
+      timetableLabel += `Route ${route.route_short_name || route.route_long_name || ''}`;
+    }
+
+    if (timetable.stops && timetable.stops.length > 0) {
+      const firstStop = timetable.stops[0].stop_name;
+      const lastStop = timetable.stops[timetable.stops.length - 1].stop_name;
+      if (firstStop === lastStop) {
+        if (route?.route_long_name) {
+          timetableLabel += ` - ${route.route_long_name}`;
+        }
+        timetableLabel += ' - Loop';
+      } else {
+        timetableLabel += ` - ${firstStop} to ${lastStop}`;
+      }
+    } else if (timetable.direction_name) {
+      timetableLabel += ` to ${timetable.direction_name}`;
+    }
+
+    return timetableLabel;
+  }
+
+  function timetablePageHasDifferentLabels(timetablePage) {
+    const labels = timetablePage.consolidatedTimetables.map(formatTimetableLabel);
+    return new Set(labels).size > 1;
+  }
+
   function formatFrequencyWarning(frequencies) {
     let warning = 'Trip times shown below are an example only. ';
     frequencies.forEach((frequency, idx) => {

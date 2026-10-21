@@ -31,6 +31,8 @@ Most transit agencies have schedule data in [GTFS ](https://developers.google.co
 
 `gtfs-to-html` has many options that configure how timetables are presented. It also allows using a completely custom template which makes it easy to build chunks of HTML that will fit perfectly into any website using any HTML structure and classes that you'd like. Or, create printable PDF versions or CSV exports of timetables using the `outputFormat` config option.
 
+To translate generated timetable labels, edit `formatTimetableLabel(timetable)` in your custom `formatting_functions.pug`. This helper controls words such as `Route`, `to`, and `Loop` in menus, headings, captions, and table summaries. Explicit `timetable_label` values from `timetables.txt` are used unchanged. Existing custom templates can continue displaying `timetable.timetable_label`. To adopt template-based label formatting, copy the `formatTimetableLabel` and `timetablePageHasDifferentLabels` helpers from the default template and replace direct display of `timetable.timetable_label` with `formatTimetableLabel(timetable)`.
+
 ### Accessibility for all
 
 `gtfs-to-html` properly formats timetables to ensure they are screen-reader accessible and WCAG 2.0 compliant.

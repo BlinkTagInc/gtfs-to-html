@@ -7,7 +7,7 @@ if timetablePage.consolidatedTimetables.length > 1
         li
           a(href=`#${cssEscape(`timetable_id_${timetable.timetable_id}`)}`)
             if showTimetableLabel
-              span= timetable.timetable_label
+              span= formatTimetableLabel(timetable)
             if showTimetableLabel && showDayList
               span &nbsp;|&nbsp;
             if showDayList
@@ -27,7 +27,7 @@ if timetablePage.consolidatedTimetables.length > 1
         div
           h3= dayList
           each timetable in group
-            a.btn-active(href=`#${cssEscape(`timetable_id_${timetable.timetable_id}`)}`)= timetable.timetable_label
+            a.btn-active(href=`#${cssEscape(`timetable_id_${timetable.timetable_id}`)}`)= formatTimetableLabel(timetable)
 
   if config.menuType === 'radio'
     .timetable-radio-menu
@@ -38,7 +38,7 @@ if timetablePage.consolidatedTimetables.length > 1
           each timetable, idx in uniqueDirectionTimetables
             label(class=idx === 0 ? 'btn-active' : 'btn-inactive')
               input.hidden(type="radio" name="directionId" autocomplete="off" value=timetable.direction_id checked=(idx === 0))
-              span= timetable.direction_name || timetable.timetable_label
+              span= timetable.direction_name || formatTimetableLabel(timetable)
       div(hidden=timetablePage.dayLists.length <= 1)
         #day_list_selector
           h3 Day of Week

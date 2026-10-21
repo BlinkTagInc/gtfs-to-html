@@ -542,7 +542,8 @@ export function formatRouteTextColor(route: Route) {
 }
 
 /*
- * Format a label for a timetable.
+ * Legacy: Format a label for existing templates that read timetable_label directly.
+ * New templates use formatTimetableLabel in formatting_functions.pug.
  */
 export function formatTimetableLabel(timetable: TimetableLabelTimetable) {
   if (!isNullOrEmpty(timetable.timetable_label)) {

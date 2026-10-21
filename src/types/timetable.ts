@@ -4,6 +4,8 @@ import type { FormattedStop } from './stop.ts';
 import type { Mutable } from './mutable.ts';
 
 export interface FormattedTimetable extends Mutable<Timetable> {
+  /** Original label from the feed; null when templates should generate a label. */
+  timetableLabelOverride?: string | null;
   route_ids: string[];
   trip_ids: string[];
   routes: Route[];

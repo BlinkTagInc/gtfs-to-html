@@ -1659,6 +1659,9 @@ const formatTimetables = (timetables: FormattedTimetable[], config: Config) => {
     timetable.orderedTrips = getTripsForTimetable(timetable, calendars, config);
     timetable.stops = getStopsForTimetable(timetable, config);
     timetable.calendarDates = getCalendarDatesForTimetable(timetable, config);
+    // Preserve the feed label for custom formatting, while keeping the generated
+    // label available to existing templates that read timetable_label directly.
+    timetable.timetableLabelOverride = timetable.timetable_label ?? null;
     timetable.timetable_label = formatTimetableLabel(timetable);
     timetable.notes = getTimetableNotesForTimetable(timetable, config);
 

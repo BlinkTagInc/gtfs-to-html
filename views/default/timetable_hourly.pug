@@ -1,6 +1,6 @@
 .table-container
-  table.table-hourly(summary=`This table shows schedules for a selection of key stops on the route for ${timetable.timetable_label} ${timetable.dayList}. Schedule times are listed in rows, starting with the stop name in the first cell of the row and the minutes after the hour in the second row.` data-orientation="hourly")
-    caption.sr-only= `${timetable.timetable_label} | ${timetable.dayList}`
+  table.table-hourly(summary=`This table shows schedules for a selection of key stops on the route for ${formatTimetableLabel(timetable)} ${timetable.dayList}. Schedule times are listed in rows, starting with the stop name in the first cell of the row and the minutes after the hour in the second row.` data-orientation="hourly")
+    caption.sr-only= `${formatTimetableLabel(timetable)} | ${timetable.dayList}`
     thead
       tr
         th.stop-header(scope="col") Stop

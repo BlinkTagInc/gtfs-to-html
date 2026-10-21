@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Updated
 
+- Add timetable label formatting to `formatting_functions.pug` so custom templates can translate `Route`, `to`, and `Loop`. Keep generated `timetable.timetable_label` values and the existing label-comparison helper available for compatibility with older templates.
 - Dependency updates
 
 ## [2.13.5] - 2026-09-25

@@ -1,6 +1,6 @@
 .table-container
-  table.table-horizontal(summary=`This table shows schedules for a selection of key stops on the route for ${timetable.timetable_label} ${timetable.dayList}. Schedule times are listed in rows, starting with the stop name in the first cell of the row.` data-orientation="horizontal")
-    caption.sr-only= `${timetable.timetable_label} | ${timetable.dayList}`
+  table.table-horizontal(summary=`This table shows schedules for a selection of key stops on the route for ${formatTimetableLabel(timetable)} ${timetable.dayList}. Schedule times are listed in rows, starting with the stop name in the first cell of the row.` data-orientation="horizontal")
+    caption.sr-only= `${formatTimetableLabel(timetable)} | ${timetable.dayList}`
     colgroup
       col
       each trip, idx in timetable.orderedTrips
