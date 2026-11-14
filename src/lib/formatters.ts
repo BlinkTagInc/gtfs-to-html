@@ -16,7 +16,6 @@ import {
   minutesAfterMidnight,
   calendarToCalendarCode,
   secondsAfterMidnight,
-  toGTFSTime,
   updateTimeByOffset,
 } from './time-utils.js';
 import { isTimepoint } from './utils.js';
@@ -486,17 +485,7 @@ export function resetStoptimesToMidnight(trip: FormattedTrip) {
     first(trip.stoptimes)?.departure_time ?? null,
   );
   if (offsetSeconds > 0) {
-    for (const stoptime of trip.stoptimes) {
-      stoptime.departure_time = toGTFSTime(
-        fromGTFSTime(stoptime.departure_time).subtract(
-          offsetSeconds,
-          'seconds',
-        ),
-      );
-      stoptime.arrival_time = toGTFSTime(
-        fromGTFSTime(stoptime.arrival_time).subtract(offsetSeconds, 'seconds'),
-      );
-    }
+    trip.stoptimes = updateStoptimesByOffset(trip, -offsetSeconds);
   }
 
   return trip;
@@ -520,6 +509,14 @@ export function updateStoptimesByOffset(
       stoptime.arrival_time,
       offsetSeconds,
     );
+    stoptime.departure_timestamp =
+      stoptime.departure_time === null
+        ? null
+        : secondsAfterMidnight(stoptime.departure_time);
+    stoptime.arrival_timestamp =
+      stoptime.arrival_time === null
+        ? null
+        : secondsAfterMidnight(stoptime.arrival_time);
     stoptime.trip_id = trip.trip_id;
     return stoptime;
   });

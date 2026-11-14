@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Keep exception-only timetables within the selected date range and preserve their date bounds so unrelated future service is not included.
+- Preserve times after midnight, such as `25:00:00`, when expanding frequency-based trips, and keep missing arrival and departure times empty.
 
 ## [2.13.6] - 2026-10-21
 

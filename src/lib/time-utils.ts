@@ -187,6 +187,20 @@ export function updateTimeByOffset(
   timeString: string | null,
   offsetSeconds: number,
 ) {
-  const newTime = fromGTFSTime(timeString);
-  return toGTFSTime(newTime.add(offsetSeconds, 'seconds'));
+  if (timeString === null) {
+    return null;
+  }
+  let seconds = secondsAfterMidnight(timeString) + offsetSeconds;
+  // Retain the existing previous-day wrap for negative offsets, while keeping
+  // extended GTFS hours (25:00, 26:00, ...) on the same service day.
+  if (seconds < 0) {
+    seconds = ((seconds % 86400) + 86400) % 86400;
+  }
+  return [
+    Math.floor(seconds / 3600),
+    Math.floor(seconds / 60) % 60,
+    seconds % 60,
+  ]
+    .map((value) => String(value).padStart(2, '0'))
+    .join(':');
 }
