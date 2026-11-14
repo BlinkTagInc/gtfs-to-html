@@ -1,3 +1,5 @@
+import { log } from './log-utils.js';
+import type { GtfsReader } from './gtfs-reader.js';
 import {
   cloneDeep,
   compact,
@@ -24,30 +26,10 @@ import {
   uniqBy,
   zip,
 } from 'lodash-es';
-import {
-  getCalendarDates,
-  getTrips,
-  getTimetableNotesReferences,
-  getTimetableNotes,
-  getRoutes,
-  getCalendars,
-  getTimetableStopOrders,
-  getStops,
-  getStopAttributes,
-  getStoptimes,
-  getFrequencies,
-  getTimetables,
-  getTimetablePages,
-  getAgencies,
-  openDb,
-  Calendar,
-  CalendarDate,
-  Frequency,
-  Route,
-} from 'gtfs';
+import type * as Gtfs from 'gtfs';
+import type { Row } from '../types/gtfs.js';
 import { stringify } from 'csv-stringify';
 import moment from 'moment';
-import sqlString from 'sqlstring';
 import toposort from 'toposort';
 
 import { generateTimetablePageFileName, renderTemplate } from './file-utils.js';
@@ -291,11 +273,12 @@ const sortTripsByStoptimeAtStop = (trips: FormattedTrip[], stopId: string) =>
 /*
  * Get all calendar dates for a specific timetable.
  */
-const getCalendarDatesForTimetable = (
+const getCalendarDatesForTimetable = async (
+  data: GtfsReader,
   timetable: FormattedTimetable,
   config: Config,
 ) => {
-  const calendarDates = getCalendarDates(
+  const calendarDates = await data.calendarDates(
     {
       service_id: timetable.service_ids,
     },
@@ -377,8 +360,11 @@ const getDaysFromCalendars = (
 /*
  * Get the `trip_headsign` for a specific timetable.
  */
-const getDirectionHeadsignFromTimetable = (timetable: FormattedTimetable) => {
-  const trips = getTrips(
+const getDirectionHeadsignFromTimetable = async (
+  data: GtfsReader,
+  timetable: FormattedTimetable,
+) => {
+  const trips = await data.trips(
     {
       direction_id: timetable.direction_id,
       route_id: timetable.route_ids,
@@ -403,34 +389,35 @@ const getDirectionHeadsignFromTimetable = (timetable: FormattedTimetable) => {
 /*
  * Get the notes for a specific timetable.
  */
-const getTimetableNotesForTimetable = (
+const getTimetableNotesForTimetable = async (
+  data: GtfsReader,
   timetable: FormattedTimetable,
   config: Config,
 ) => {
   const noteReferences = [
     // Get all notes for this timetable.
-    ...getTimetableNotesReferences({
+    ...(await data.timetableNotesReferences({
       timetable_id: timetable.timetable_id,
-    }),
+    })),
 
     // Get all notes for this route.
-    ...getTimetableNotesReferences({
+    ...(await data.timetableNotesReferences({
       route_id: timetable.routes.map((route) => route.route_id),
       timetable_id: null,
-    }),
+    })),
 
     // Get all notes for all trips in this timetable.
-    ...getTimetableNotesReferences({
+    ...(await data.timetableNotesReferences({
       trip_id: getBaseTripIds(timetable.orderedTrips),
-    }),
+    })),
 
     // Get all notes for all stops in this timetable.
-    ...getTimetableNotesReferences({
+    ...(await data.timetableNotesReferences({
       stop_id: timetable.stops.map((stop) => stop.stop_id),
       trip_id: null,
       route_id: null,
       timetable_id: null,
-    }),
+    })),
   ];
 
   const usedNoteReferences = [];
@@ -466,9 +453,11 @@ const getTimetableNotesForTimetable = (
     }
   }
 
-  const notes = getTimetableNotes({
-    note_id: usedNoteReferences.map((noteReference) => noteReference.note_id),
-  }).map((note) => ({ ...note }));
+  const notes = (
+    await data.timetableNotes({
+      note_id: usedNoteReferences.map((noteReference) => noteReference.note_id),
+    })
+  ).map((note) => ({ ...note }));
 
   // Assign symbols to each note if unassigned. Use a-z then default to integers.
   const symbols = 'abcdefghijklmnopqrstuvwxyz'.split('');
@@ -495,24 +484,29 @@ const getTimetableNotesForTimetable = (
  * Create a timetable page from timetables. Used if no
  * `timetable_pages.txt` is present.
  */
-const createTimetablePage = ({
-  timetablePageId,
-  timetables,
-  config,
-}: {
-  timetablePageId: string;
-  timetables: FormattedTimetable[];
-  config: Config;
-}) => {
-  const updatedTimetables = timetables.map((timetable) => {
-    if (!timetable.routes) {
-      timetable.routes = getRoutes({
-        route_id: timetable.route_ids,
-      });
-    }
+const createTimetablePage = async (
+  data: GtfsReader,
+  {
+    timetablePageId,
+    timetables,
+    config,
+  }: {
+    timetablePageId: string;
+    timetables: FormattedTimetable[];
+    config: Config;
+  },
+) => {
+  const updatedTimetables = await Promise.all(
+    timetables.map(async (timetable) => {
+      if (!timetable.routes) {
+        timetable.routes = await data.routes({
+          route_id: timetable.route_ids,
+        });
+      }
 
-    return timetable;
-  });
+      return timetable;
+    }),
+  );
 
   const timetablePage = {
     timetable_page_id: timetablePageId,
@@ -538,11 +532,11 @@ const createTimetable = ({
   calendars,
   calendarDates,
 }: {
-  route: Route;
+  route: Row<Gtfs.Routes>;
   directionId?: number | null;
   tripHeadsign?: string | null;
-  calendars?: Calendar[];
-  calendarDates?: CalendarDate[];
+  calendars?: Row<Gtfs.Calendar>[];
+  calendarDates?: Row<Gtfs.CalendarDates>[];
 }) => {
   const serviceIds = uniq([
     ...(calendars?.map((calendar) => calendar.service_id) ?? []),
@@ -626,13 +620,19 @@ const createTimetable = ({
  * Create timetable pages for all routes in an agency. Used if no
  * `timetables.txt` is present.
  */
-const convertRoutesToTimetablePages = (config: Config) => {
-  const routes = getRoutes();
+const convertRoutesToTimetablePages = async (
+  data: GtfsReader,
+  config: Config,
+) => {
+  const routes = await data.routes();
   const timetablePages: FormattedTimetablePage[] = [];
-  const { calendars, calendarDates } = getCalendarsFromConfig(config);
+  const { calendars, calendarDates } = await getCalendarsFromConfig(
+    data,
+    config,
+  );
 
   for (const route of routes) {
-    const trips = getTrips(
+    const trips = await data.trips(
       {
         route_id: route.route_id,
       },
@@ -688,7 +688,7 @@ const convertRoutesToTimetablePages = (config: Config) => {
 
     if (config.groupTimetablesIntoPages === true) {
       timetablePages.push(
-        createTimetablePage({
+        await createTimetablePage(data, {
           timetablePageId: `route_${route.route_id}`,
           timetables,
           config,
@@ -697,7 +697,7 @@ const convertRoutesToTimetablePages = (config: Config) => {
     } else {
       for (const timetable of timetables) {
         timetablePages.push(
-          createTimetablePage({
+          await createTimetablePage(data, {
             timetablePageId: timetable.timetable_id,
             timetables: [timetable],
             config,
@@ -715,7 +715,7 @@ const convertRoutesToTimetablePages = (config: Config) => {
  */
 const generateTripsByFrequencies = (
   trip: FormattedTrip,
-  frequencies: Frequency[],
+  frequencies: Row<Gtfs.Frequencies>[],
   config: Config,
 ) => {
   const formattedFrequencies = frequencies.map((frequency) =>
@@ -792,9 +792,13 @@ const duplicateStopsForDifferentArrivalDeparture = (
 /*
  * Get a sorted array of stop_ids for a specific timetable.
  */
-const getStopOrder = (timetable: FormattedTimetable, config: Config) => {
+const getStopOrder = async (
+  data: GtfsReader,
+  timetable: FormattedTimetable,
+  config: Config,
+) => {
   // First, check if `timetable_stop_order.txt` for route exists
-  const timetableStopOrders = getTimetableStopOrders(
+  const timetableStopOrders = await data.timetableStopOrders(
     {
       timetable_id: timetable.timetable_id,
     },
@@ -894,7 +898,8 @@ const getStopOrder = (timetable: FormattedTimetable, config: Config) => {
 /*
  * Get an array of stops for a specific timetable.
  */
-const getStopsForTimetable = (
+const getStopsForTimetable = async (
+  data: GtfsReader,
   timetable: FormattedTimetable,
   config: Config,
 ) => {
@@ -902,47 +907,49 @@ const getStopsForTimetable = (
     return [];
   }
 
-  const orderedStopIds = getStopOrder(timetable, config);
-  const orderedStops = orderedStopIds.map((stopId, index) => {
-    const stops = getStops({
-      stop_id: stopId,
-    });
+  const orderedStopIds = await getStopOrder(data, timetable, config);
+  const orderedStops = await Promise.all(
+    orderedStopIds.map(async (stopId, index) => {
+      const stops = await data.stops({
+        stop_id: stopId,
+      });
 
-    if (stops.length === 0) {
-      throw new GtfsToHtmlError(
-        `No stop found found for stop_id=${stopId} in timetable_id=${timetable.timetable_id}`,
-        {
-          code: GtfsToHtmlErrorCode.QUERY_RESULT_NOT_FOUND,
-          category: GtfsToHtmlErrorCategory.QUERY,
-          details: {
-            entity: 'stop',
-            stopId,
-            timetableId: timetable.timetable_id,
+      if (stops.length === 0) {
+        throw new GtfsToHtmlError(
+          `No stop found found for stop_id=${stopId} in timetable_id=${timetable.timetable_id}`,
+          {
+            code: GtfsToHtmlErrorCode.QUERY_RESULT_NOT_FOUND,
+            category: GtfsToHtmlErrorCategory.QUERY,
+            details: {
+              entity: 'stop',
+              stopId,
+              timetableId: timetable.timetable_id,
+            },
           },
-        },
-      );
-    }
+        );
+      }
 
-    const stop: FormattedStop = {
-      ...stops[0],
-      trips: [],
-    };
+      const stop: FormattedStop = {
+        ...stops[0],
+        trips: [],
+      };
 
-    if (
-      index < orderedStopIds.length - 1 &&
-      stopId === orderedStopIds[index + 1]
-    ) {
-      stop.type = 'arrival';
-    } else if (index > 0 && stopId === orderedStopIds[index - 1]) {
-      stop.type = 'departure';
-    }
+      if (
+        index < orderedStopIds.length - 1 &&
+        stopId === orderedStopIds[index + 1]
+      ) {
+        stop.type = 'arrival';
+      } else if (index > 0 && stopId === orderedStopIds[index - 1]) {
+        stop.type = 'departure';
+      }
 
-    return stop;
-  });
+      return stop;
+    }),
+  );
 
   // If `showStopCity` is true, look up stop attributes.
   if (config.showStopCity) {
-    const stopAttributes = getStopAttributes({
+    const stopAttributes = await data.stopAttributes({
       stop_id: orderedStopIds,
     });
 
@@ -960,27 +967,18 @@ const getStopsForTimetable = (
   return orderedStops;
 };
 
-const getCalendarsFromConfig = (config: Config) => {
-  const db = openDb(config);
-  let whereClause = '';
-  const whereClauses = [];
-
-  if (config.endDate) {
-    // Validate config.endDate is a valid date
-    if (!moment(config.endDate).isValid()) {
-      throw new GtfsToHtmlError(
-        `Invalid endDate=${config.endDate} in config.json`,
-        {
-          code: GtfsToHtmlErrorCode.CONFIG_DATE_INVALID,
-          category: GtfsToHtmlErrorCategory.CONFIG,
-          details: { field: 'endDate', value: config.endDate },
-        },
-      );
-    }
-
-    whereClauses.push(
-      `start_date <= ${sqlString.escape(moment(config.endDate).format('YYYYMMDD'))}`,
-    );
+const validateDate = (
+  value: string | number | null | undefined,
+  field: string,
+) => {
+  if (
+    value &&
+    !moment(value, typeof value === 'number' ? 'YYYYMMDD' : undefined).isValid()
+  ) {
+    throw new GtfsToHtmlError(`Invalid ${field}=${value}`, {
+      code: GtfsToHtmlErrorCode.CONFIG_DATE_INVALID,
+      category: GtfsToHtmlErrorCategory.CONFIG,
+    });
   }
 
   if (config.startDate) {
@@ -1031,109 +1029,61 @@ const getCalendarsFromConfig = (config: Config) => {
   };
 };
 
-/*
- * Get all calendars from a specific timetable.
- */
-const getCalendarsFromTimetable = (
+const getCalendarsFromConfig = async (data: GtfsReader, config: Config) => {
+  validateDate(config.startDate, 'startDate');
+  validateDate(config.endDate, 'endDate');
+  const start = config.startDate
+    ? Number(moment(config.startDate).format('YYYYMMDD'))
+    : null;
+  const end = config.endDate
+    ? Number(moment(config.endDate).format('YYYYMMDD'))
+    : null;
+  const calendars = (await data.calendars()).filter(
+    (row) =>
+      (!end || row.start_date <= end) && (!start || row.end_date >= start),
+  );
+  const serviceIds = new Set(calendars.map((row) => row.service_id));
+  const calendarDates = (
+    await data.calendarDates({ exception_type: 1 })
+  ).filter(
+    (row) =>
+      !serviceIds.has(row.service_id) &&
+      (!start || row.date >= start) &&
+      (!end || row.date <= end),
+  );
+  return { calendars, calendarDates };
+};
+
+const getCalendarsFromTimetable = async (
+  data: GtfsReader,
   timetable: FormattedTimetable,
   config: Config,
 ) => {
-  const db = openDb(config);
-  let whereClause = '';
-  const whereClauses = [];
-
-  if (timetable.end_date) {
-    // Validate timetable.end_date is a valid date
-    if (!moment(timetable.end_date, 'YYYYMMDD', true).isValid()) {
-      throw new GtfsToHtmlError(
-        `Invalid end_date=${timetable.end_date} for timetable_id=${timetable.timetable_id}`,
-        {
-          code: GtfsToHtmlErrorCode.QUERY_INVALID,
-          category: GtfsToHtmlErrorCategory.VALIDATION,
-          details: {
-            field: 'end_date',
-            value: timetable.end_date,
-            timetableId: timetable.timetable_id,
-          },
-        },
-      );
-    }
-
-    whereClauses.push(`start_date <= ${sqlString.escape(timetable.end_date)}`);
-  }
-
-  if (timetable.start_date) {
-    // Validate timetable.start_date is a valid date
-    if (!moment(timetable.start_date, 'YYYYMMDD', true).isValid()) {
-      throw new GtfsToHtmlError(
-        `Invalid start_date=${timetable.start_date} for timetable_id=${timetable.timetable_id}`,
-        {
-          code: GtfsToHtmlErrorCode.QUERY_INVALID,
-          category: GtfsToHtmlErrorCategory.VALIDATION,
-          details: {
-            field: 'start_date',
-            value: timetable.start_date,
-            timetableId: timetable.timetable_id,
-          },
-        },
-      );
-    }
-
-    whereClauses.push(`end_date >= ${sqlString.escape(timetable.start_date)}`);
-  }
-
+  validateDate(timetable.start_date, 'start_date');
+  validateDate(timetable.end_date, 'end_date');
   const days = getDaysFromCalendars([timetable]);
-  // Create an 'OR' query array of days based on calendars.
-  const dayQueries = reduce(
-    days,
-    (memo: string[], value: number, key: string) => {
-      if (value === 1) {
-        memo.push(`${key} = 1`);
-      }
-
-      return memo;
-    },
-    [],
+  const activeDays = Object.entries(days)
+    .filter(([, value]) => value === 1)
+    .map(([day]) => day as keyof typeof days);
+  return (await data.calendars()).filter(
+    (row) =>
+      (!timetable.end_date || row.start_date <= timetable.end_date) &&
+      (!timetable.start_date || row.end_date >= timetable.start_date) &&
+      (activeDays.length === 0 || activeDays.some((day) => row[day] === 1)),
   );
-
-  if (dayQueries.length > 0) {
-    whereClauses.push(`(${dayQueries.join(' OR ')})`);
-  }
-
-  if (whereClauses.length > 0) {
-    whereClause = `WHERE ${whereClauses.join(' AND ')}`;
-  }
-
-  return db.prepare(`SELECT * FROM calendar ${whereClause}`).all();
 };
 
-/*
- * Get all calendar dates for an agency between two dates.
- */
-const getCalendarDatesForDateRange = (
+const getCalendarDatesForDateRange = async (
+  data: GtfsReader,
   startDate: number | null | undefined,
   endDate: number | null | undefined,
   config: Config,
 ) => {
-  const db = openDb(config);
-  const whereClauses = [];
-
-  if (endDate) {
-    whereClauses.push(`date <= ${sqlString.escape(endDate)}`);
-  }
-
-  if (startDate) {
-    whereClauses.push(`date >= ${sqlString.escape(startDate)}`);
-  }
-
-  const whereClause =
-    whereClauses.length > 0 ? ` WHERE ${whereClauses.join(' AND ')}` : '';
-  const calendarDates: CalendarDate[] = db
-    .prepare(
-      `SELECT service_id, date, exception_type FROM calendar_dates${whereClause}`,
-    )
-    .all();
-  return calendarDates;
+  return (await data.calendarDates()).filter(
+    (row) =>
+      (!endDate || row.date <= endDate) &&
+      (!startDate || row.date >= startDate),
+  );
 };
 
 /*
@@ -1141,8 +1091,8 @@ const getCalendarDatesForDateRange = (
  * and the stop_id of parent station itself. If no parent station, it returns the
  * stop_id.
  */
-const getAllStationStopIds = (stopId: string) => {
-  const stops = getStops({
+const getAllStationStopIds = async (data: GtfsReader, stopId: string) => {
+  const stops = await data.stops({
     stop_id: stopId,
   });
 
@@ -1160,7 +1110,7 @@ const getAllStationStopIds = (stopId: string) => {
     return [stopId];
   }
 
-  const stopsInParentStation = getStops(
+  const stopsInParentStation = await data.stops(
     {
       parent_station: stop.parent_station,
     },
@@ -1176,20 +1126,21 @@ const getAllStationStopIds = (stopId: string) => {
 /*
  * Get trips with the same `block_id`.
  */
-const getTripsWithSameBlock = (
+const getTripsWithSameBlock = async (
+  data: GtfsReader,
   trip: FormattedTrip,
   timetable: FormattedTimetable,
-): BlockTrip[] => {
-  const trips = getTrips(
+): Promise<BlockTrip[]> => {
+  const trips = (await data.trips(
     {
       block_id: trip.block_id,
       service_id: timetable.service_ids,
     },
     ['trip_id', 'route_id'],
-  ) as BlockTrip[];
+  )) as BlockTrip[];
 
   for (const blockTrip of trips) {
-    const stopTimes = getStoptimes(
+    const stopTimes = await data.stoptimes(
       {
         trip_id: blockTrip.trip_id,
       },
@@ -1212,14 +1163,17 @@ const getTripsWithSameBlock = (
     blockTrip.lastStoptime = last(stopTimes);
   }
 
-  return sortBy(trips, (trip) => trip.firstStoptime?.departure_timestamp ?? 0);
+  return sortBy(trips, (trip) =>
+    secondsAfterMidnight(trip.firstStoptime?.departure_time ?? null),
+  );
 };
 
 /*
  * Get next trip and previous trip with the same `block_id` if it arrives or
  * departs from the same stop and is a different route.
  */
-const addTripContinuation = (
+const addTripContinuation = async (
+  data: GtfsReader,
   trip: FormattedTrip,
   timetable: FormattedTimetable,
 ) => {
@@ -1236,16 +1190,22 @@ const addTripContinuation = (
     return;
   }
 
-  const firstStopIds = getAllStationStopIds(firstStoptime.stop_id ?? '');
-  const lastStopIds = getAllStationStopIds(lastStoptime.stop_id ?? '');
-  const blockTrips = getTripsWithSameBlock(trip, timetable);
+  const firstStopIds = await getAllStationStopIds(
+    data,
+    firstStoptime.stop_id ?? '',
+  );
+  const lastStopIds = await getAllStationStopIds(
+    data,
+    lastStoptime.stop_id ?? '',
+  );
+  const blockTrips = await getTripsWithSameBlock(data, trip, timetable);
 
   // "Continues From" trips must be the previous trip chronologically.
   const previousTrip = findLast(
     blockTrips,
     (blockTrip) =>
-      (blockTrip.lastStoptime?.arrival_timestamp ?? 0) <=
-      (firstStoptime.departure_timestamp ?? 0),
+      secondsAfterMidnight(blockTrip.lastStoptime?.arrival_time ?? null) <=
+      secondsAfterMidnight(firstStoptime.departure_time ?? null),
   );
 
   /*
@@ -1257,12 +1217,12 @@ const addTripContinuation = (
   if (
     previousTrip &&
     previousTrip.route_id !== trip.route_id &&
-    (previousTrip.lastStoptime?.arrival_timestamp ?? 0) >=
-      (firstStoptime.departure_timestamp ?? 0) -
+    secondsAfterMidnight(previousTrip.lastStoptime?.arrival_time ?? null) >=
+      secondsAfterMidnight(firstStoptime.departure_time ?? null) -
         maxContinuesAsWaitingTimeSeconds &&
     firstStopIds.includes(previousTrip.lastStoptime?.stop_id ?? '')
   ) {
-    const routes = getRoutes({
+    const routes = await data.routes({
       route_id: previousTrip.route_id,
     });
 
@@ -1275,8 +1235,8 @@ const addTripContinuation = (
   const nextTrip = find(
     blockTrips,
     (blockTrip) =>
-      (blockTrip.firstStoptime?.departure_timestamp ?? 0) >=
-      (lastStoptime.arrival_timestamp ?? 0),
+      secondsAfterMidnight(blockTrip.firstStoptime?.departure_time ?? null) >=
+      secondsAfterMidnight(lastStoptime.arrival_time ?? null),
   );
 
   // "Continues As" trips must be a different route_id.
@@ -1289,12 +1249,12 @@ const addTripContinuation = (
   if (
     nextTrip &&
     nextTrip.route_id !== trip.route_id &&
-    (nextTrip.firstStoptime?.departure_timestamp ?? 0) <=
-      (lastStoptime.arrival_timestamp ?? 0) +
+    secondsAfterMidnight(nextTrip.firstStoptime?.departure_time ?? null) <=
+      secondsAfterMidnight(lastStoptime.arrival_time ?? null) +
         maxContinuesAsWaitingTimeSeconds &&
     lastStopIds.includes(nextTrip.firstStoptime?.stop_id ?? '')
   ) {
-    const routes = getRoutes({
+    const routes = await data.routes({
       route_id: nextTrip.route_id,
     });
 
@@ -1309,7 +1269,7 @@ const addTripContinuation = (
  */
 const filterTrips = (
   timetable: FormattedTimetable,
-  calendars: Calendar[],
+  calendars: Row<Gtfs.Calendar>[],
   config: Config,
 ) => {
   let filteredTrips = timetable.orderedTrips;
@@ -1344,6 +1304,10 @@ const filterTrips = (
 
   // Exclude trips with less than two stops
   filteredTrips = filteredTrips.filter((trip) => trip.stoptimes.length > 1);
+
+  // Keep every matching GTFS ID for realtime lookup, even when identical
+  // schedules are combined into a single displayed trip below.
+  timetable.trip_ids = getBaseTripIds(filteredTrips);
 
   if (config.showDuplicateTrips === false) {
     filteredTrips = deduplicateTrips(filteredTrips);
@@ -1431,9 +1395,10 @@ const filterTrips = (
  * Get all trips from a timetable.
  */
 
-const getTripsForTimetable = (
+const getTripsForTimetable = async (
+  data: GtfsReader,
   timetable: FormattedTimetable,
-  calendars: Calendar[],
+  calendars: Row<Gtfs.Calendar>[],
   config: Config,
 ) => {
   const tripQuery: {
@@ -1449,7 +1414,7 @@ const getTripsForTimetable = (
     tripQuery.direction_id = timetable.direction_id;
   }
 
-  const trips = getTrips(tripQuery) as FormattedTrip[];
+  const trips = (await data.trips(tripQuery)) as FormattedTrip[];
 
   if (trips.length === 0) {
     timetable.warnings?.push(
@@ -1461,7 +1426,7 @@ const getTripsForTimetable = (
     );
   }
 
-  const frequencies = getFrequencies({
+  const frequencies = await data.frequencies({
     trip_id: trips.map((trip) => trip.trip_id),
   });
 
@@ -1472,7 +1437,7 @@ const getTripsForTimetable = (
 
   for (const trip of trips) {
     const formattedTrip = trip;
-    formattedTrip.stoptimes = getStoptimes(
+    formattedTrip.stoptimes = await data.stoptimes(
       {
         trip_id: formattedTrip.trip_id,
       },
@@ -1490,24 +1455,26 @@ const getTripsForTimetable = (
       );
     }
 
-    // Exclude trips before timetable `start_timestamp`
+    // Exclude trips before timetable start_time
     if (
-      timetable.start_timestamp !== null &&
-      (trip.stoptimes[0].arrival_timestamp ?? 0) < timetable.start_timestamp
+      !isNullOrEmpty(timetable.start_time) &&
+      secondsAfterMidnight(trip.stoptimes[0].arrival_time ?? null) <
+        secondsAfterMidnight(timetable.start_time)
     ) {
       continue;
     }
 
-    // Exclude trips after timetable `end_timestamp`
+    // Exclude trips after timetable end_time
     if (
-      timetable.end_timestamp !== null &&
-      (trip.stoptimes[0].arrival_timestamp ?? 0) >= timetable.end_timestamp
+      !isNullOrEmpty(timetable.end_time) &&
+      secondsAfterMidnight(trip.stoptimes[0].arrival_time ?? null) >=
+        secondsAfterMidnight(timetable.end_time)
     ) {
       continue;
     }
 
     if (timetable.show_trip_continuation) {
-      addTripContinuation(formattedTrip, timetable);
+      await addTripContinuation(data, formattedTrip, timetable);
 
       if (formattedTrip.continues_as_route) {
         timetable.has_continues_as_route = true;
@@ -1547,7 +1514,7 @@ const getTripsForTimetable = (
       }
     }
 
-    const stops = getStops(
+    const stops = await data.stops(
       {
         stop_id: uniq(stopIds),
       },
@@ -1571,143 +1538,196 @@ const getTripsForTimetable = (
 /*
  * Format timetables for display.
  */
-const formatTimetables = (timetables: FormattedTimetable[], config: Config) => {
-  const formattedTimetables = timetables.map((timetable) => {
-    timetable.warnings = [];
-    const dayList = formatDays(timetable, config);
-    const calendars = getCalendarsFromTimetable(timetable, config);
-    const serviceIds = new Set();
-
-    // Add all service IDs from calendars
-    for (const calendar of calendars) {
-      serviceIds.add(calendar.service_id);
-    }
-
-    if (timetable.include_exceptions === 1) {
-      const calendarDates = getCalendarDatesForDateRange(
-        timetable.start_date,
-        timetable.end_date,
-        config,
-      );
-
-      const calendarDateGroups = groupBy(calendarDates, 'service_id');
-
-      for (const [serviceId, calendarDateGroup] of Object.entries(
-        calendarDateGroups,
-      )) {
-        // Check if there is a corresponding calendar.txt entry for this service_id
-        const calendar = calendars.find(
-          (c: Calendar) => c.service_id === serviceId,
+const formatTimetables = async (
+  data: GtfsReader,
+  timetables: FormattedTimetable[],
+  config: Config,
+  onWarning: (warning: string) => void,
+) => {
+  const failedTimetables = new Set<FormattedTimetable>();
+  const formattedTimetables = await Promise.all(
+    timetables.map(async (timetable) => {
+      try {
+        timetable.warnings = [];
+        const dayList = formatDays(timetable, config);
+        const calendars = await getCalendarsFromTimetable(
+          data,
+          timetable,
+          config,
         );
+        const serviceIds = new Set();
 
-        // Add service_id if any dates are added
-        if (
-          calendarDateGroup.some(
-            (calendarDate) => calendarDate.exception_type === 1,
-          )
-        ) {
-          serviceIds.add(serviceId);
+        // Add all service IDs from calendars
+        for (const calendar of calendars) {
+          serviceIds.add(calendar.service_id);
         }
 
-        const calendarDateGroupExceptionType2 = calendarDateGroup.filter(
-          (calendarDate) => calendarDate.exception_type === 2,
-        );
-
-        // Check if ALL dates are excluded
-        if (
-          timetable.start_date &&
-          timetable.end_date &&
-          calendar &&
-          calendarDateGroupExceptionType2.length > 0
-        ) {
-          const datesDuringDateRange = calendarToDateList(
-            calendar,
+        if (timetable.include_exceptions === 1) {
+          const calendarDates = await getCalendarDatesForDateRange(
+            data,
             timetable.start_date,
             timetable.end_date,
+            config,
           );
 
-          // If no dates are are within the date range, remove service_id
-          if (datesDuringDateRange.length === 0) {
-            serviceIds.delete(serviceId);
-          }
+          const calendarDateGroups = groupBy(calendarDates, 'service_id');
 
-          // Check if every date is excluded and remove service_id if so
-          const everyDateIsExcluded = datesDuringDateRange.every(
-            (dateDuringDateRange) =>
-              calendarDateGroupExceptionType2.some(
-                (calendarDate) => calendarDate.date === dateDuringDateRange,
-              ),
-          );
+          for (const [serviceId, calendarDateGroup] of Object.entries(
+            calendarDateGroups,
+          )) {
+            // Check if there is a corresponding calendar.txt entry for this service_id
+            const calendar = calendars.find(
+              (c: Row<Gtfs.Calendar>) => c.service_id === serviceId,
+            );
 
-          if (everyDateIsExcluded) {
-            serviceIds.delete(serviceId);
+            // Add service_id if any dates are added
+            if (
+              calendarDateGroup.some(
+                (calendarDate) => calendarDate.exception_type === 1,
+              )
+            ) {
+              serviceIds.add(serviceId);
+            }
+
+            const calendarDateGroupExceptionType2 = calendarDateGroup.filter(
+              (calendarDate) => calendarDate.exception_type === 2,
+            );
+
+            // Check if ALL dates are excluded
+            if (
+              timetable.start_date &&
+              timetable.end_date &&
+              calendar &&
+              calendarDateGroupExceptionType2.length > 0
+            ) {
+              const datesDuringDateRange = calendarToDateList(
+                calendar,
+                timetable.start_date,
+                timetable.end_date,
+              );
+
+              // If no dates are are within the date range, remove service_id
+              if (datesDuringDateRange.length === 0) {
+                serviceIds.delete(serviceId);
+              }
+
+              // Check if every date is excluded and remove service_id if so
+              const everyDateIsExcluded = datesDuringDateRange.every(
+                (dateDuringDateRange) =>
+                  calendarDateGroupExceptionType2.some(
+                    (calendarDate) => calendarDate.date === dateDuringDateRange,
+                  ),
+              );
+
+              if (everyDateIsExcluded) {
+                serviceIds.delete(serviceId);
+              }
+            }
           }
         }
+
+        Object.assign(timetable, {
+          noServiceSymbolUsed: false,
+          requestDropoffSymbolUsed: false,
+          noDropoffSymbolUsed: false,
+          requestPickupSymbolUsed: false,
+          noPickupSymbolUsed: false,
+          interpolatedStopSymbolUsed: false,
+          showStopCity: config.showStopCity,
+          showStopDescription: config.showStopDescription,
+          noServiceSymbol: config.noServiceSymbol,
+          requestDropoffSymbol: config.requestDropoffSymbol,
+          noDropoffSymbol: config.noDropoffSymbol,
+          requestPickupSymbol: config.requestPickupSymbol,
+          noPickupSymbol: config.noPickupSymbol,
+          interpolatedStopSymbol: config.interpolatedStopSymbol,
+          orientation: timetable.orientation || config.defaultOrientation,
+          service_ids: Array.from(serviceIds),
+          dayList,
+          dayListLong: formatDaysLong(dayList, config),
+        });
+
+        timetable.orderedTrips = await getTripsForTimetable(
+          data,
+          timetable,
+          calendars,
+          config,
+        );
+        timetable.stops = await getStopsForTimetable(data, timetable, config);
+        timetable.calendarDates = await getCalendarDatesForTimetable(
+          data,
+          timetable,
+          config,
+        );
+        // Preserve the feed label for custom formatting, while keeping the generated
+        // label available to existing templates that read timetable_label directly.
+        timetable.timetableLabelOverride = timetable.timetable_label ?? null;
+        timetable.timetable_label = formatTimetableLabel(timetable);
+        timetable.notes = await getTimetableNotesForTimetable(
+          data,
+          timetable,
+          config,
+        );
+
+        // Apply the final timetable filters before selecting map geometry.
+        timetable.orderedTrips = filterTrips(timetable, calendars, config);
+        if (config.showMap) {
+          timetable.geojson = await getTimetableGeoJSON(
+            data,
+            timetable,
+            config,
+          );
+        }
+
+        // Format stops after all timetable properties are assigned
+        timetable.stops = formatStops(timetable, config);
+
+        if (isNullOrEmpty(timetable.direction_name)) {
+          timetable.direction_name = await getDirectionHeadsignFromTimetable(
+            data,
+            timetable,
+          );
+        }
+        if (!timetable.routes) {
+          timetable.routes = await data.routes({
+            route_id: timetable.route_ids,
+          });
+        }
+
+        return timetable;
+      } catch (error: unknown) {
+        if (!config.ignoreErrors) {
+          throw error;
+        }
+        failedTimetables.add(timetable);
+        onWarning(
+          `Skipping timetable_id=${timetable.timetable_id}: ${error instanceof Error ? error.message : String(error)}`,
+        );
+        return null;
       }
-    }
-
-    Object.assign(timetable, {
-      noServiceSymbolUsed: false,
-      requestDropoffSymbolUsed: false,
-      noDropoffSymbolUsed: false,
-      requestPickupSymbolUsed: false,
-      noPickupSymbolUsed: false,
-      interpolatedStopSymbolUsed: false,
-      showStopCity: config.showStopCity,
-      showStopDescription: config.showStopDescription,
-      noServiceSymbol: config.noServiceSymbol,
-      requestDropoffSymbol: config.requestDropoffSymbol,
-      noDropoffSymbol: config.noDropoffSymbol,
-      requestPickupSymbol: config.requestPickupSymbol,
-      noPickupSymbol: config.noPickupSymbol,
-      interpolatedStopSymbol: config.interpolatedStopSymbol,
-      orientation: timetable.orientation || config.defaultOrientation,
-      service_ids: Array.from(serviceIds),
-      dayList,
-      dayListLong: formatDaysLong(dayList, config),
-    });
-
-    timetable.orderedTrips = getTripsForTimetable(timetable, calendars, config);
-    timetable.stops = getStopsForTimetable(timetable, config);
-    timetable.calendarDates = getCalendarDatesForTimetable(timetable, config);
-    // Preserve the feed label for custom formatting, while keeping the generated
-    // label available to existing templates that read timetable_label directly.
-    timetable.timetableLabelOverride = timetable.timetable_label ?? null;
-    timetable.timetable_label = formatTimetableLabel(timetable);
-    timetable.notes = getTimetableNotesForTimetable(timetable, config);
-
-    if (config.showMap) {
-      timetable.geojson = getTimetableGeoJSON(timetable, config);
-    }
-
-    timetable.trip_ids = uniq(getBaseTripIds(timetable.orderedTrips));
-
-    // Filter trips after all timetable properties are assigned
-    timetable.orderedTrips = filterTrips(timetable, calendars, config);
-
-    // Format stops after all timetable properties are assigned
-    timetable.stops = formatStops(timetable, config);
-
-    return timetable;
-  });
-
-  if (config.allowEmptyTimetables) {
-    return formattedTimetables;
-  }
-
-  return formattedTimetables.filter(
-    (timetable) => timetable.orderedTrips.length > 0,
+    }),
   );
+
+  return {
+    failedTimetables,
+    timetables: formattedTimetables.filter(
+      (timetable): timetable is FormattedTimetable =>
+        timetable !== null &&
+        (config.allowEmptyTimetables === true ||
+          timetable.orderedTrips.length > 0),
+    ),
+  };
 };
 
 /*
  * Get all timetable pages for an agency.
  */
-export function getTimetablePagesForAgency(
+export async function getTimetablePagesForAgency(
+  data: GtfsReader,
   config: Config,
-): FormattedTimetablePage[] {
-  const timetables = mergeTimetablesWithSameId(getTimetables());
-  const routes = getRoutes();
+): Promise<FormattedTimetablePage[]> {
+  const timetables = mergeTimetablesWithSameId(await data.timetables());
+  const routes = await data.routes();
   const formattedTimetables = timetables.map((timetable) => {
     return {
       ...timetable,
@@ -1719,10 +1739,10 @@ export function getTimetablePagesForAgency(
 
   // If no timetables, build each route and direction into a timetable.
   if (timetables.length === 0) {
-    return convertRoutesToTimetablePages(config);
+    return await convertRoutesToTimetablePages(data, config);
   }
 
-  const timetablePages = getTimetablePages(
+  const timetablePages = await data.timetablePages(
     {},
     [],
     [['timetable_page_id', 'ASC']],
@@ -1731,12 +1751,15 @@ export function getTimetablePagesForAgency(
   // Check if there are any timetable pages defined in `timetable_pages.txt`.
   if (timetablePages.length === 0) {
     // If no timetablepages, use timetables
-    return formattedTimetables.map((timetable) =>
-      createTimetablePage({
-        timetablePageId: timetable.timetable_id,
-        timetables: [timetable],
-        config,
-      }),
+    return await Promise.all(
+      formattedTimetables.map(
+        async (timetable) =>
+          await createTimetablePage(data, {
+            timetablePageId: timetable.timetable_id,
+            timetables: [timetable],
+            config,
+          }),
+      ),
     );
   }
 
@@ -1755,7 +1778,10 @@ export function getTimetablePagesForAgency(
   });
 }
 
-const getDataForTimetablePageById = (timetablePageId: string) => {
+const getDataForTimetablePageById = async (
+  data: GtfsReader,
+  timetablePageId: string,
+) => {
   let calendarCode;
   let calendars;
   let calendarDates;
@@ -1772,11 +1798,11 @@ const getDataForTimetablePageById = (timetablePageId: string) => {
 
   const routeId = parts.join('|');
 
-  const routes = getRoutes({
+  const routes = await data.routes({
     route_id: routeId,
   });
 
-  const trips = getTrips(
+  const trips = await data.trips(
     {
       route_id: routeId,
       direction_id: directionId,
@@ -1802,12 +1828,12 @@ const getDataForTimetablePageById = (timetablePageId: string) => {
   }
 
   if (/^[01]*$/.test(calendarCode ?? '')) {
-    calendars = getCalendars({
+    calendars = await data.calendars({
       ...calendarCodeToCalendar(calendarCode as CalendarCode),
     });
   } else {
     serviceId = calendarCode;
-    calendarDates = getCalendarDates({
+    calendarDates = await data.calendarDates({
       exception_type: 1,
       service_id: serviceId,
     });
@@ -1825,14 +1851,18 @@ const getDataForTimetablePageById = (timetablePageId: string) => {
 /*
  * Get a timetable_page by id.
  */
-const getTimetablePageById = (timetablePageId: string, config: Config) => {
+const getTimetablePageById = async (
+  data: GtfsReader,
+  timetablePageId: string,
+  config: Config,
+) => {
   // Check if there are any timetable pages defined in `timetable_pages.txt`.
-  const timetablePages = getTimetablePages({
+  const timetablePages = await data.timetablePages({
     timetable_page_id: timetablePageId,
   });
 
   const timetables = mergeTimetablesWithSameId(
-    getTimetables(),
+    await data.timetables(),
   ) as FormattedTimetable[];
 
   if (timetablePages.length > 1) {
@@ -1858,7 +1888,7 @@ const getTimetablePageById = (timetablePageId: string, config: Config) => {
 
     // Add routes for each timetable
     for (const timetable of timetablePage.timetables) {
-      timetable.routes = getRoutes({
+      timetable.routes = await data.routes({
         route_id: timetable.route_ids,
       });
     }
@@ -1883,7 +1913,7 @@ const getTimetablePageById = (timetablePageId: string, config: Config) => {
       );
     }
 
-    return createTimetablePage({
+    return await createTimetablePage(data, {
       timetablePageId: timetablePageId,
       timetables: [timetablePageTimetables[0]],
       config,
@@ -1892,7 +1922,7 @@ const getTimetablePageById = (timetablePageId: string, config: Config) => {
 
   // If no `timetables.txt` in GTFS and timetable_page_id starts with "route_", build the route into a timetable page using all calendars and directions.
   if (timetablePageId.startsWith('route_')) {
-    const routes = getRoutes({
+    const routes = await data.routes({
       route_id: timetablePageId.slice('route_'.length),
     });
 
@@ -1907,9 +1937,12 @@ const getTimetablePageById = (timetablePageId: string, config: Config) => {
       );
     }
 
-    const { calendars, calendarDates } = getCalendarsFromConfig(config);
+    const { calendars, calendarDates } = await getCalendarsFromConfig(
+      data,
+      config,
+    );
 
-    const trips = getTrips(
+    const trips = await data.trips(
       {
         route_id: routes[0].route_id,
       },
@@ -1959,7 +1992,7 @@ const getTimetablePageById = (timetablePageId: string, config: Config) => {
       }
     }
 
-    return createTimetablePage({
+    return await createTimetablePage(data, {
       timetablePageId,
       timetables,
       config,
@@ -1968,7 +2001,7 @@ const getTimetablePageById = (timetablePageId: string, config: Config) => {
 
   // If no `timetables.txt` in GTFS, try to parse the timetable_page_id and build the route and direction into a timetable.
   const { calendars, calendarDates, route, directionId, tripHeadsign } =
-    getDataForTimetablePageById(timetablePageId);
+    await getDataForTimetablePageById(data, timetablePageId);
 
   const timetable = createTimetable({
     route,
@@ -1978,7 +2011,7 @@ const getTimetablePageById = (timetablePageId: string, config: Config) => {
     calendarDates,
   });
 
-  return createTimetablePage({
+  return await createTimetablePage(data, {
     timetablePageId,
     timetables: [timetable],
     config,
@@ -1991,6 +2024,7 @@ const getTimetablePageById = (timetablePageId: string, config: Config) => {
 export function setDefaultConfig(initialConfig: Config) {
   const defaults = {
     allowEmptyTimetables: false,
+    ignoreErrors: false,
     beautify: false,
     coordinatePrecision: 5,
     dateFormat: 'MMM D, YYYY',
@@ -2073,32 +2107,23 @@ export function setDefaultConfig(initialConfig: Config) {
 /*
  * Get a timetable page by id.
  */
-export function getFormattedTimetablePage(
+export async function getFormattedTimetablePage(
+  data: GtfsReader,
   timetablePageId: string,
   config: Config,
+  onWarning: (warning: string) => void = (warning) => log(config)(warning),
 ) {
-  const timetablePage = getTimetablePageById(
+  const timetablePage = (await getTimetablePageById(
+    data,
     timetablePageId,
     config,
-  ) as FormattedTimetablePage;
+  )) as FormattedTimetablePage;
 
-  const consolidatedTimetables = formatTimetables(
-    timetablePage.timetables,
-    config,
+  const { timetables: consolidatedTimetables, failedTimetables } =
+    await formatTimetables(data, timetablePage.timetables, config, onWarning);
+  timetablePage.timetables = timetablePage.timetables.filter(
+    (timetable) => !failedTimetables.has(timetable),
   );
-
-  // Get `direction_name` for each timetable.
-  for (const timetable of consolidatedTimetables) {
-    if (isNullOrEmpty(timetable.direction_name)) {
-      timetable.direction_name = getDirectionHeadsignFromTimetable(timetable);
-    }
-
-    if (!timetable.routes) {
-      timetable.routes = getRoutes({
-        route_id: timetable.route_ids,
-      });
-    }
-  }
 
   const uniqueRoutes = uniqBy(
     flatMap(consolidatedTimetables, (timetable) => timetable.routes),
@@ -2158,11 +2183,12 @@ export const generateStats = (timetablePage: FormattedTimetablePage) => {
 /*
  * Generate the HTML timetable for a timetable page.
  */
-export function generateTimetableHTML(
+export async function generateTimetableHTML(
+  data: GtfsReader,
   timetablePage: FormattedTimetablePage,
   config: Config,
 ) {
-  const agencies = getAgencies() as { agency_name: string }[];
+  const agencies = (await data.agencies()) as { agency_name: string }[];
   const templateVars = {
     timetablePage,
     config,
@@ -2216,11 +2242,12 @@ export function generateTimetableCSV(timetable: FormattedTimetable) {
 /*
  * Generate the HTML for the agency overview page.
  */
-export function generateOverviewHTML(
+export async function generateOverviewHTML(
+  data: GtfsReader,
   timetablePages: TimetablePageSummary[],
   config: Config,
 ) {
-  const agencies = getAgencies() as { agency_name: string }[];
+  const agencies = (await data.agencies()) as { agency_name: string }[];
   if (agencies.length === 0) {
     throw new GtfsToHtmlError('No agencies found', {
       code: GtfsToHtmlErrorCode.QUERY_RESULT_NOT_FOUND,
@@ -2229,7 +2256,9 @@ export function generateOverviewHTML(
     });
   }
 
-  const geojson = config.showMap ? getAgencyGeoJSON(config) : undefined;
+  const geojson = config.showMap
+    ? await getAgencyGeoJSON(data, config)
+    : undefined;
 
   const templateVars = {
     agency: {

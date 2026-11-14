@@ -1,7 +1,11 @@
-import { StopTime } from 'gtfs';
+import type * as Gtfs from 'gtfs';
+import type { Row } from './gtfs.js';
 import type { Mutable } from './mutable.ts';
 
-export type FormattedStopTime = Omit<Mutable<StopTime>, 'stop_sequence'> & {
+export type FormattedStopTime = Omit<
+  Mutable<Row<Gtfs.StopTimes>>,
+  'stop_sequence'
+> & {
   // Overridden to allow `null`, used as a sentinel for a synthetic stoptime
   // representing a trip that doesn't stop at a given stop.
   stop_sequence: number | null;

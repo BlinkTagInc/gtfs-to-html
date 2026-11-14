@@ -1,4 +1,5 @@
-import { Route, Trip } from 'gtfs';
+import type * as Gtfs from 'gtfs';
+import type { Row } from './gtfs.js';
 import type { FormattedStopTime } from './stoptime.ts';
 import type { Mutable } from './mutable.ts';
 
@@ -7,13 +8,16 @@ import type { Mutable } from './mutable.ts';
  * "continues from"/"continues as" relationships between trips. Only the
  * fields actually read for that purpose are declared.
  */
-export interface BlockTrip extends Pick<Trip, 'trip_id' | 'route_id'> {
+export interface BlockTrip extends Pick<
+  Row<Gtfs.Trips>,
+  'trip_id' | 'route_id'
+> {
   firstStoptime?: FormattedStopTime;
   lastStoptime?: FormattedStopTime;
-  route?: Route;
+  route?: Row<Gtfs.Routes>;
 }
 
-export interface FormattedTrip extends Mutable<Trip> {
+export interface FormattedTrip extends Mutable<Row<Gtfs.Trips>> {
   stoptimes: FormattedStopTime[];
   firstStoptime?: number;
   lastStoptime?: number;

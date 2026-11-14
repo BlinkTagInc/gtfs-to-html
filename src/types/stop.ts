@@ -1,8 +1,9 @@
-import { Stop } from 'gtfs';
+import type * as Gtfs from 'gtfs';
+import type { Row } from './gtfs.js';
 import type { FormattedStopTime } from './stoptime.ts';
 import type { Mutable } from './mutable.ts';
 
-export interface FormattedStop extends Mutable<Stop> {
+export interface FormattedStop extends Mutable<Row<Gtfs.Stops>> {
   type?: 'arrival' | 'departure';
   trips: FormattedStopTime[];
   hourlyTimes?: string[];

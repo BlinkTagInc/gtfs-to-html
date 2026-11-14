@@ -9,7 +9,8 @@ import {
   zipObject,
 } from 'lodash-es';
 import moment from 'moment';
-import { CalendarDate, Frequency, Route, Timetable } from 'gtfs';
+import type * as Gtfs from 'gtfs';
+import type { Row } from '../types/gtfs.js';
 
 import {
   fromGTFSTime,
@@ -50,7 +51,7 @@ interface StopsFormattingTimetable extends SymbolTimetable {
 
 interface TimetableLabelTimetable {
   timetable_label?: string | null;
-  routes?: Route[];
+  routes?: Row<Gtfs.Routes>[];
   stops?: { stop_name: string | null }[];
   direction_name?: string | null;
 }
@@ -73,7 +74,10 @@ export function isNullOrEmpty(value: unknown) {
 /*
  * Format a date for display.
  */
-export function formatDate(date: CalendarDate, dateFormat: string | undefined) {
+export function formatDate(
+  date: Row<Gtfs.CalendarDates>,
+  dateFormat: string | undefined,
+) {
   if (date.holiday_name) {
     return date.holiday_name;
   }
@@ -284,7 +288,7 @@ export function formatDaysLong(dayList: string, config: Config) {
  * Format a frequency.
  */
 export function formatFrequency(
-  frequency: Frequency & {
+  frequency: Row<Gtfs.Frequencies> & {
     start_formatted_time?: string;
     end_formatted_time?: string;
     headway_min?: number;
@@ -345,18 +349,14 @@ function createEmptyStoptime(
     id: null,
     trip_id: tripId,
     arrival_time: null,
-    arrival_timestamp: null,
     departure_time: null,
-    departure_timestamp: null,
     location_group_id: null,
     location_id: null,
     stop_id: stopId,
     stop_sequence: null,
     stop_headsign: null,
     start_pickup_drop_off_window: null,
-    start_pickup_drop_off_window_timestamp: null,
     end_pickup_drop_off_window: null,
-    end_pickup_drop_off_window_timestamp: null,
     pickup_type: null,
     drop_off_type: null,
     continuous_pickup: null,
@@ -525,7 +525,7 @@ export function updateStoptimesByOffset(
 /*
  * Format a route color as a hex color.
  */
-export function formatRouteColor(route: Route) {
+export function formatRouteColor(route: Row<Gtfs.Routes>) {
   // Defaults to #000000 (black) if no color is provided.
   return route.route_color ? `#${route.route_color}` : '#000000';
 }
@@ -533,7 +533,7 @@ export function formatRouteColor(route: Route) {
 /*
  * Format a route text color as a hex color.
  */
-export function formatRouteTextColor(route: Route) {
+export function formatRouteTextColor(route: Row<Gtfs.Routes>) {
   // Defaults to #FFFFFF (white) if no color is provided.
   return route.route_text_color ? `#${route.route_text_color}` : '#FFFFFF';
 }
@@ -580,7 +580,7 @@ export function formatTimetableLabel(timetable: TimetableLabelTimetable) {
 /*
  * Format a route name.
  */
-export const formatRouteName = (route: Route) => {
+export const formatRouteName = (route: Row<Gtfs.Routes>) => {
   if (route.route_long_name === null || route.route_long_name === '') {
     return `Route ${route.route_short_name}`;
   }
@@ -591,7 +591,7 @@ export const formatRouteName = (route: Route) => {
 /*
  * Format a route name for use in a filename.
  */
-export const formatRouteNameForFilename = (route: Route) => {
+export const formatRouteNameForFilename = (route: Row<Gtfs.Routes>) => {
   if (route.route_short_name) {
     return route.route_short_name.replace(/\s/g, '-');
   } else if (route.route_long_name) {
@@ -614,7 +614,7 @@ export const formatListForDisplay = (list: string[]) => {
 /*
  * Merge timetables with same `timetable_id`.
  */
-export function mergeTimetablesWithSameId(timetables: Timetable[]) {
+export function mergeTimetablesWithSameId(timetables: Row<Gtfs.Timetables>[]) {
   if (timetables.length === 0) {
     return [];
   }

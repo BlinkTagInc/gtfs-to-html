@@ -1,7 +1,8 @@
+import type { GtfsReader } from './gtfs-reader.js';
 import { clearLine, cursorTo } from 'node:readline';
 import { noop } from 'lodash-es';
 import * as colors from 'yoctocolors';
-import { getAgencies, getFeedInfo, isGtfsError, formatGtfsError } from 'gtfs';
+import { isGtfsError, formatGtfsError } from 'gtfs';
 import Table from 'cli-table';
 import { Config } from '../types/index.ts';
 import {
@@ -25,9 +26,13 @@ export interface GenerationStats {
 /*
  * Creates text for a log of output details.
  */
-export function generateLogText(outputStats: GenerationStats, config: Config) {
-  const feedInfo = getFeedInfo();
-  const agencies = getAgencies();
+export async function generateLogText(
+  data: GtfsReader,
+  outputStats: GenerationStats,
+  config: Config,
+) {
+  const feedInfo = await data.feedInfo();
+  const agencies = await data.agencies();
   const feedVersion =
     feedInfo.length > 0 && feedInfo[0].feed_version
       ? feedInfo[0].feed_version
@@ -136,7 +141,7 @@ export function formatError(
   const messageText = isGtfsToHtmlError(error)
     ? formatGtfsToHtmlError(error, { verbosity })
     : isGtfsError(error)
-      ? formatGtfsError(error, { verbosity })
+      ? formatGtfsError(error, { audience: verbosity })
       : error instanceof Error
         ? error.message
         : String(error);

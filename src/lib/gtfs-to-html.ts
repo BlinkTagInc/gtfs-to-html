@@ -1,7 +1,9 @@
 import path from 'node:path';
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, writeFile, rm } from 'node:fs/promises';
 
-import { openDb, closeDb, deleteDb, importGtfs, isGtfsError } from 'gtfs';
+import { isGtfsError } from 'gtfs';
+import { openGtfs, normalizeAgencyKeys, sourceId } from './gtfs-config.js';
+import { createGtfsReader } from './gtfs-reader.js';
 import sanitize from 'sanitize-filename';
 
 import {
@@ -13,13 +15,7 @@ import {
   generateCSVFileName,
   untildify,
 } from './file-utils.js';
-import {
-  progressBar,
-  generateLogText,
-  logStats,
-  logError,
-  log,
-} from './log-utils.js';
+import { progressBar, generateLogText, logStats, log } from './log-utils.js';
 import {
   setDefaultConfig,
   getTimetablePagesForAgency,
@@ -45,54 +41,21 @@ import type {
 /*
  * Generate HTML timetables from GTFS.
  */
-const gtfsToHtml = async (initialConfig: Config) => {
+const generateSource = async (initialConfig: Config) => {
   const config = setDefaultConfig(initialConfig);
 
   // Start timer
   const startTime = process.hrtime.bigint();
 
   const agencyKey = config.agencies
-    .map(
-      (agency: ConfigAgency) =>
-        agency.agencyKey ?? agency.agency_key ?? 'unknown',
-    )
+    .map((agency: ConfigAgency) => sourceId(agency))
     .join('-');
   const outputPath = config.outputPath
     ? untildify(config.outputPath)
     : path.join(process.cwd(), 'html', sanitize(agencyKey));
 
-  await prepDirectory(outputPath, config);
-
-  let db: ReturnType<typeof openDb>;
-
-  try {
-    db = openDb(config);
-  } catch (error: any) {
-    if (error?.code === 'SQLITE_CANTOPEN') {
-      const dbOpenError = new GtfsToHtmlError(
-        `Unable to open sqlite database "${config.sqlitePath}" defined as \`sqlitePath\` config.json. Ensure the parent directory exists or remove \`sqlitePath\` from config.json.`,
-        {
-          code: GtfsToHtmlErrorCode.DATABASE_OPEN_FAILED,
-          category: GtfsToHtmlErrorCategory.DATABASE,
-          details: { sqlitePath: config.sqlitePath, dbCode: error.code },
-          cause: error,
-        },
-      );
-
-      logError(config)(dbOpenError.message);
-      throw dbOpenError;
-    }
-
-    throw toGtfsToHtmlError(error, {
-      message:
-        error instanceof Error
-          ? error.message
-          : 'Unable to open sqlite database',
-      code: GtfsToHtmlErrorCode.DATABASE_OPEN_FAILED,
-      category: GtfsToHtmlErrorCategory.DATABASE,
-      details: { sqlitePath: config.sqlitePath },
-    });
-  }
+  const gtfs = openGtfs(config, config.agencies[0]);
+  const data = createGtfsReader(gtfs);
 
   try {
     if (!config.agencies || config.agencies.length === 0) {
@@ -105,7 +68,12 @@ const gtfsToHtml = async (initialConfig: Config) => {
 
     if (!config.skipImport) {
       try {
-        await importGtfs(config);
+        const result = await gtfs.import();
+        if (!result.success) {
+          throw new Error(
+            `GTFS import failed: ${JSON.stringify(result.errors)}`,
+          );
+        }
       } catch (error: unknown) {
         if (isGtfsError(error)) {
           throw error;
@@ -119,6 +87,13 @@ const gtfsToHtml = async (initialConfig: Config) => {
         });
       }
     }
+
+    if ((await data.agencies()).length === 0) {
+      throw new Error(
+        `No agencies imported for source ${sourceId(config.agencies[0])}`,
+      );
+    }
+    await prepDirectory(outputPath, config);
 
     const stats: {
       timetables: number;
@@ -140,9 +115,9 @@ const gtfsToHtml = async (initialConfig: Config) => {
     };
 
     const timetablePageSummaries: TimetablePageSummary[] = [];
-    const timetablePageIds = getTimetablePagesForAgency(config).map(
-      (timetablePage) => timetablePage.timetable_page_id,
-    );
+    const timetablePageIds = (
+      await getTimetablePagesForAgency(data, config)
+    ).map((timetablePage) => timetablePage.timetable_page_id);
 
     if (
       config.noHead !== true &&
@@ -160,8 +135,14 @@ const gtfsToHtml = async (initialConfig: Config) => {
     for (const timetablePageId of timetablePageIds) {
       try {
         const timetablePage = await getFormattedTimetablePage(
+          data,
           timetablePageId as string,
           config,
+          (warning) => {
+            const message = `timetable_page_id=${timetablePageId}: ${warning}`;
+            stats.warnings.push(message);
+            bar?.interrupt(message);
+          },
         );
 
         for (const timetable of timetablePage.consolidatedTimetables) {
@@ -183,9 +164,6 @@ const gtfsToHtml = async (initialConfig: Config) => {
             },
           );
         }
-
-        stats.timetables += timetablePage.consolidatedTimetables.length;
-        stats.timetablePages += 1;
 
         const datePath = generateFolderName(timetablePage);
 
@@ -209,7 +187,7 @@ const gtfsToHtml = async (initialConfig: Config) => {
             await writeFile(csvPath, csv);
           }
         } else {
-          const html = await generateTimetableHTML(timetablePage, config);
+          const html = await generateTimetableHTML(data, timetablePage, config);
           const htmlPath = path.join(
             outputPath,
             datePath,
@@ -221,6 +199,9 @@ const gtfsToHtml = async (initialConfig: Config) => {
             await renderPdf(htmlPath);
           }
         }
+
+        stats.timetables += timetablePage.consolidatedTimetables.length;
+        stats.timetablePages += 1;
 
         // Only keep the fields the overview page template actually needs.
         timetablePageSummaries.push({
@@ -241,9 +222,13 @@ const gtfsToHtml = async (initialConfig: Config) => {
         stats.routes += timetableStats.routes;
         stats.trips += timetableStats.trips;
         stats.calendars += timetableStats.calendars;
-      } catch (error: any) {
-        stats.warnings.push(error?.message);
-        bar?.interrupt(error.message);
+      } catch (error: unknown) {
+        if (!config.ignoreErrors) {
+          throw error;
+        }
+        const warning = `Skipping timetable_page_id=${timetablePageId}: ${error instanceof Error ? error.message : String(error)}`;
+        stats.warnings.push(warning);
+        bar?.interrupt(warning);
       }
 
       bar?.increment();
@@ -252,12 +237,16 @@ const gtfsToHtml = async (initialConfig: Config) => {
     if (config.outputFormat === 'html') {
       // Generate overview HTML
       config.assetPath = '';
-      const html = await generateOverviewHTML(timetablePageSummaries, config);
+      const html = await generateOverviewHTML(
+        data,
+        timetablePageSummaries,
+        config,
+      );
       await writeFile(path.join(outputPath, 'index.html'), html);
     }
 
     // Generate log.txt
-    const logText = generateLogText(stats, config);
+    const logText = await generateLogText(data, stats, config);
     await writeFile(path.join(outputPath, 'log.txt'), logText);
 
     // Zip output, if specified
@@ -286,10 +275,62 @@ const gtfsToHtml = async (initialConfig: Config) => {
 
     return fullOutputPath;
   } finally {
-    if (config.deleteDbAfter) {
-      deleteDb(db);
-    } else {
-      closeDb(db);
+    await gtfs.close();
+  }
+};
+
+const gtfsToHtml = async (initialConfig: Config) => {
+  const config = setDefaultConfig(normalizeAgencyKeys(initialConfig));
+  const outputPath = config.outputPath
+    ? untildify(config.outputPath)
+    : path.join(
+        process.cwd(),
+        'html',
+        sanitize(config.agencies.map(sourceId).join('-')),
+      );
+  try {
+    if (config.agencies.length === 1) {
+      return await generateSource({ ...config, outputPath });
+    }
+    // Source directories avoid collisions in route IDs and feed-defined filenames.
+    // Import/render each source with its own explicitly scoped instance.
+    const links: string[] = [];
+    for (const agency of config.agencies) {
+      const folder = `source-${encodeURIComponent(sourceId(agency))}`;
+      await generateSource({
+        ...config,
+        agencies: [agency],
+        outputPath: path.join(outputPath, folder),
+        zipOutput: false,
+      });
+      links.push(
+        `<li><a href="${encodeURIComponent(folder)}/index.html">${sourceId(agency).replace(/[&<>"']/g, (character) => `&#${character.charCodeAt(0)};`)}</a></li>`,
+      );
+    }
+    if (config.outputFormat === 'html') {
+      await writeFile(
+        path.join(outputPath, 'index.html'),
+        `<!doctype html><title>Transit timetables</title><ul>${links.join('')}</ul>`,
+      );
+    }
+    if (config.zipOutput) {
+      await zipFolder(outputPath);
+      return path.join(outputPath, 'timetables.zip');
+    }
+    return outputPath;
+  } finally {
+    if (
+      config.db === undefined &&
+      config.deleteDbAfter &&
+      config.sqlitePath &&
+      config.sqlitePath !== ':memory:'
+    ) {
+      // Only remove a database after all owned connections have closed.
+      // Recheck before deletion, including when opening/importing failed.
+      const { assertCompatibleDatabase } = await import('./gtfs-config.js');
+      const databasePath = untildify(config.sqlitePath);
+      assertCompatibleDatabase(databasePath);
+      await rm(databasePath, { force: true });
     }
   }
 };

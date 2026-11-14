@@ -1,14 +1,15 @@
-import { Frequency, Route, Timetable } from 'gtfs';
+import type * as Gtfs from 'gtfs';
+import type { Row } from './gtfs.js';
 import type { FormattedTrip } from './trip.ts';
 import type { FormattedStop } from './stop.ts';
 import type { Mutable } from './mutable.ts';
 
-export interface FormattedTimetable extends Mutable<Timetable> {
+export interface FormattedTimetable extends Mutable<Row<Gtfs.Timetables>> {
   /** Original label from the feed; null when templates should generate a label. */
   timetableLabelOverride?: string | null;
   route_ids: string[];
   trip_ids: string[];
-  routes: Route[];
+  routes: Row<Gtfs.Routes>[];
   orderedTrips: FormattedTrip[];
   stops: FormattedStop[];
   service_ids?: string[];
@@ -20,7 +21,7 @@ export interface FormattedTimetable extends Mutable<Timetable> {
   calendarDates?: { excludedDates: string[]; includedDates: string[] };
   notes?: unknown[];
   geojson?: unknown;
-  frequencies?: Frequency[];
+  frequencies?: Row<Gtfs.Frequencies>[];
   frequencyExactTimes?: boolean;
   noServiceSymbolUsed?: boolean;
   requestDropoffSymbolUsed?: boolean;

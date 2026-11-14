@@ -188,8 +188,8 @@ importers:
         specifier: ^5.3.0
         version: 5.3.0
       gtfs:
-        specifier: ^4.21.0
-        version: 4.21.0
+        specifier: 5.0.0-beta.0
+        version: 5.0.0-beta.0
       js-beautify:
         specifier: ^2.0.3
         version: 2.0.3
@@ -207,13 +207,10 @@ importers:
         version: 3.0.4
       puppeteer:
         specifier: ^25.15.0
-        version: 25.15.0
+        version: 25.15.0(yauzl@3.4.0)
       sanitize-filename:
         specifier: ^1.6.4
         version: 1.6.4
-      sqlstring:
-        specifier: ^2.3.3
-        version: 2.3.3
       toposort:
         specifier: ^2.0.2
         version: 2.0.2
@@ -254,9 +251,6 @@ importers:
       '@types/pug':
         specifier: ^2.0.10
         version: 2.0.10
-      '@types/sqlstring':
-        specifier: ^2.3.2
-        version: 2.3.2
       '@types/toposort':
         specifier: ^2.0.7
         version: 2.0.7
@@ -556,9 +550,6 @@ packages:
 
   '@types/serve-static@2.2.0':
     resolution: {integrity: sha512-8mam4H1NHLtu7nmtalF7eyBH14QyOASmcxHhSfEoRyr0nP/YdoesEtU+uSRvMe96TW/HPTtkoKqQLl53N7UXMQ==}
-
-  '@types/sqlstring@2.3.2':
-    resolution: {integrity: sha512-lVRe4Iz9UNgiHelKVo8QlC8fb5nfY8+p+jNQNE+UVsuuVlQnWhyWmQ/wF5pE8Ys6TdjfVpqTG9O9i2vi6E0+Sg==}
 
   '@types/toposort@2.0.7':
     resolution: {integrity: sha512-sQNk65vbC36+UixCkcky+dCr7MlflHcVILg1FVGqlUntsLFv9xd9ToWIVko/gTuin+cVe16t+2YubEFkhnSuPQ==}
@@ -991,11 +982,8 @@ packages:
   cssfilter@0.0.10:
     resolution: {integrity: sha512-FAaLDaplstoRsDR8XGYH51znUN0UY7nMc6Z9/fvE8EXGwvJE9hu7W2vHwx1+bd6gCYnln9nLbzxFTrcO9YQDZw==}
 
-  csv-parse@7.0.2:
-    resolution: {integrity: sha512-uKZghv9UmPkMVLYy//KZ9HFAIJsl7wkhoEdIL0+rhuSY9pZQlhaeGEDPIe+/w7eh81MOql8Q/9+inAGWG6ZHYA==}
-
-  csv-stringify@6.8.3:
-    resolution: {integrity: sha512-gIeSCvq5F4VtXV3naV3VAewLhBkiZBz+PPhTOA8H3Y8h/ELa+R1ml0GZck/4/Nzo9ep2lvOluilJ6MJlbZsKMA==}
+  csv-parse@7.0.3:
+    resolution: {integrity: sha512-YFd3QM/yo17vH91L1IOZuvl09zM0zEEtdfTcOCKWcMdM++MNaQSyp09slXyFCLaPXvHstQFx/xC8myiFHSMUvw==}
 
   csv-stringify@6.9.0:
     resolution: {integrity: sha512-6b3e29CILFfSQ2nDRuZMRROzQOpPuJ+s8zPB5H7eK5ncXBbFOyVuRLU5Sx/zAUmVri3Ly49GyC8NEme4SVSAbA==}
@@ -1209,9 +1197,9 @@ packages:
   gtfs-realtime-pbf-js-module@1.0.0:
     resolution: {integrity: sha512-vfJDawq2n1dYuI8s9EZgM3ukmpa+PaiswIIFHHusgpsH2pTP7fLqTC8NxDm9nC94g1bZh3HhpYYWT0Z53UzJ1A==}
 
-  gtfs@4.21.0:
-    resolution: {integrity: sha512-L7gWAa9Wr+IgBwj1nTEohr25u9Wy7lahcAWstOgQGZKSNCLShNKZY4MFLmGZ1lZT3FmHvfdhYksGis4omtRVrA==}
-    engines: {node: '>=22'}
+  gtfs@5.0.0-beta.0:
+    resolution: {integrity: sha512-h5QbITV8j90Sp8UWtp/kdPDIDxMf05Koy5typa0MI98njsrlNdQs69Jn05FiBpuabYMhhhTsrF0xn0LbU0h/kA==}
+    engines: {node: ^22.18.0 || >=24.0.0}
     hasBin: true
 
   has-symbols@1.1.0:
@@ -1318,8 +1306,8 @@ packages:
   klaw@3.0.0:
     resolution: {integrity: sha512-0Fo5oir+O9jnXu5EefYbVK+mHMBeEVEy2cmctR1O1NECcCkPRreJKrS6Qt/j3KC2C148Dfo9i3pCmCMsdqGr0g==}
 
-  kysely@0.29.5:
-    resolution: {integrity: sha512-ooa+eSbBNPTo3MycPEuW5jdrxQdQwdtB3LC3h43FiXQbIry5tR0C5lDG7eealK0E4D7XjrnOP5DIUg/LyjRMYQ==}
+  kysely@0.29.8:
+    resolution: {integrity: sha512-ixHU1H4R+LeC5Y0nAhYgiGRFpFRHm2DXKEmJSs/vbes9sKXyssyzxzE/NYiOJX5fY0BL28biCre3GqlCqUwyXQ==}
     engines: {node: '>=22.0.0'}
 
   lazystream@1.0.1:
@@ -1445,10 +1433,6 @@ packages:
     resolution: {integrity: sha512-VijLXbi3UACN69I0JVXJsX4tjACjNoQDgv2gTF6sx2wWEi8tkSg2eX8p5gSIFi8z2+DL3oHmY6OyKce38SDolg==}
     engines: {node: ^18 || ^20 || >= 21}
 
-  node-stream-zip@1.16.0:
-    resolution: {integrity: sha512-ObaRrRoR8T68wF6suxHd7R4XQNamij6ZQHrwG7Dx1D2zeHcDNLsIOBcWrIwtDm7AsCXBguaPHgXhcjxDa2szrg==}
-    engines: {node: '>=0.12.0'}
-
   nopt@10.0.1:
     resolution: {integrity: sha512-df3sBr/6ax9hSGuC3CspvLlbnX8cP5L5nZwXF8cGN8l0zSWR6BvzmQ6jPUKjvo6+/xdpkNvEcucBNUdBeeV13g==}
     engines: {node: ^22.22.2 || ^24.15.0 || >=26.0.0}
@@ -1494,6 +1478,9 @@ packages:
   pbf@5.1.2:
     resolution: {integrity: sha512-mnvGdvOrIvJOBGUEdGkrVXjN8E/VkIJCkf2eS1DH2yv82ORUlLttmDt0rWY38yYZmVwciZwBUvHM20qxBZf40w==}
     hasBin: true
+
+  pend@1.2.0:
+    resolution: {integrity: sha512-F3asv42UuXchdzt+xXqfW1OGlVBe+mxa2mqI0pg5yAHZPvFmY3Y6drSf/GQ1A86WgWEN9Kzh/WrgKa6iGcHXLg==}
 
   picomatch@4.0.7:
     resolution: {integrity: sha512-qcJu88Q2IWqJsDD529JKMdwGm/dvInW4HvQnRwiH9JtihJvzGOscDtHE3x1pBKeUOTysQ8kVmLnJ2kJu7yhcGA==}
@@ -1677,6 +1664,9 @@ packages:
   sanitize-filename@1.6.4:
     resolution: {integrity: sha512-9ZyI08PsvdQl2r/bBIGubpVdR3RR9sY6RDiWFPreA21C/EFlQhmgo20UZlNjZMMZNubusLhAQozkA0Od5J21Eg==}
 
+  sanitize-filename@1.6.5:
+    resolution: {integrity: sha512-+dVApt46/oAFWRP0KBSnYNLRw1peY7o/b12tmpllPNFpjfwkPuZut1+DiKaD9zYx5r2SHwc+XMLSBaDiyUJw3g==}
+
   semver@7.8.5:
     resolution: {integrity: sha512-Y7/KDsb8LjooZpwaqGyulO6DQlksgCncchHGk+sZIY4SBvUocMBEFH5Ur1fI4dV+Jvl0w6cjvucaIi40puRioA==}
     engines: {node: '>=10'}
@@ -1712,10 +1702,6 @@ packages:
   source-map@0.6.1:
     resolution: {integrity: sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g==}
     engines: {node: '>=0.10.0'}
-
-  sqlstring@2.3.3:
-    resolution: {integrity: sha512-qC9iz2FlN7DQl3+wjwn3802RTyjCx7sDvfQEXchwa6CWOx07/WVfh91gBmQ9fahw8snwGEWU3xGzOt4tFyHLxg==}
-    engines: {node: '>= 0.6'}
 
   statuses@2.0.2:
     resolution: {integrity: sha512-DvEy55V3DB7uknRo+4iOGT5fP1slR8wQohVdknigZPMpMstaKJQWhwiYBACJE3Ul2pTnATihhBYnRhZQHGBiRw==}
@@ -1939,6 +1925,10 @@ packages:
     resolution: {integrity: sha512-9OpKOLeaoNFecEp7P6iYbzze/5CqWoH7N3SMs/6y1XF4nMvFMspEGZzJ6uFi9MmQwXhyzqYoSEKO3tvA3Z/o2w==}
     engines: {node: ^20.19.0 || ^22.12.0 || >=23}
 
+  yauzl@3.4.0:
+    resolution: {integrity: sha512-jIH9yLR9wqr0wOS0TpBvo/g/2UgZH5qePVbjgRliiF0BYvOZyaBknKsF+x9Iht0O6sqgnB93rCICdOZFecJuDw==}
+    engines: {node: '>=12'}
+
   yoctocolors@2.2.0:
     resolution: {integrity: sha512-xYqdZFUK/VYazNl/oCDYN+3WloWQwMfZxBoiNt6qNyk+xfOdi598muWE42rNZFp1kNOiqW936q5RhUdnpqElSg==}
     engines: {node: '>=18'}
@@ -2035,10 +2025,12 @@ snapshots:
 
   '@oxc-project/types@0.154.0': {}
 
-  '@puppeteer/browsers@3.2.5':
+  '@puppeteer/browsers@3.2.5(yauzl@3.4.0)':
     dependencies:
       modern-tar: 0.8.6
       yargs: 18.2.0
+    optionalDependencies:
+      yauzl: 3.4.0
 
   '@quansync/fs@1.1.0':
     dependencies:
@@ -2212,8 +2204,6 @@ snapshots:
     dependencies:
       '@types/http-errors': 2.0.5
       '@types/node': 26.6.5
-
-  '@types/sqlstring@2.3.2': {}
 
   '@types/toposort@2.0.7': {}
 
@@ -2533,9 +2523,7 @@ snapshots:
 
   cssfilter@0.0.10: {}
 
-  csv-parse@7.0.2: {}
-
-  csv-stringify@6.8.3: {}
+  csv-parse@7.0.3: {}
 
   csv-stringify@6.9.0: {}
 
@@ -2739,18 +2727,17 @@ snapshots:
 
   gtfs-realtime-pbf-js-module@1.0.0: {}
 
-  gtfs@4.21.0:
+  gtfs@5.0.0-beta.0:
     dependencies:
       '@turf/helpers': 7.4.0
       better-sqlite3: 13.0.3
-      csv-parse: 7.0.2
-      csv-stringify: 6.8.3
+      csv-parse: 7.0.3
+      csv-stringify: 6.9.0
       gtfs-realtime-bindings: 2.2.0
-      kysely: 0.29.5
+      kysely: 0.29.8
       lodash-es: 4.18.1
-      long: 5.3.2
-      node-stream-zip: 1.16.0
-      sanitize-filename: 1.6.4
+      sanitize-filename: 1.6.5
+      yauzl: 3.4.0
       yoctocolors: 2.2.0
 
   has-symbols@1.1.0: {}
@@ -2865,7 +2852,7 @@ snapshots:
     dependencies:
       graceful-fs: 4.2.11
 
-  kysely@0.29.5: {}
+  kysely@0.29.8: {}
 
   lazystream@1.0.1:
     dependencies:
@@ -2978,8 +2965,6 @@ snapshots:
 
   node-addon-api@8.9.2: {}
 
-  node-stream-zip@1.16.0: {}
-
   nopt@10.0.1:
     dependencies:
       abbrev: 5.0.0
@@ -3014,6 +2999,8 @@ snapshots:
   pbf@5.1.2:
     dependencies:
       resolve-protobuf-schema: 2.1.0
+
+  pend@1.2.0: {}
 
   picomatch@4.0.7: {}
 
@@ -3122,9 +3109,9 @@ snapshots:
 
   punycode.js@2.3.1: {}
 
-  puppeteer-core@25.15.0:
+  puppeteer-core@25.15.0(yauzl@3.4.0):
     dependencies:
-      '@puppeteer/browsers': 3.2.5
+      '@puppeteer/browsers': 3.2.5(yauzl@3.4.0)
       chromium-bidi: 157.0.8090-0(devtools-protocol@0.0.1696802)
       devtools-protocol: 0.0.1696802
       typed-query-selector: 2.12.3
@@ -3136,13 +3123,13 @@ snapshots:
       - utf-8-validate
       - yauzl
 
-  puppeteer@25.15.0:
+  puppeteer@25.15.0(yauzl@3.4.0):
     dependencies:
-      '@puppeteer/browsers': 3.2.5
+      '@puppeteer/browsers': 3.2.5(yauzl@3.4.0)
       chromium-bidi: 157.0.8090-0(devtools-protocol@0.0.1696802)
       devtools-protocol: 0.0.1696802
       lilconfig: 3.1.4
-      puppeteer-core: 25.15.0
+      puppeteer-core: 25.15.0(yauzl@3.4.0)
       typed-query-selector: 2.12.3
     transitivePeerDependencies:
       - bufferutil
@@ -3264,6 +3251,10 @@ snapshots:
     dependencies:
       truncate-utf8-bytes: 1.0.2
 
+  sanitize-filename@1.6.5:
+    dependencies:
+      truncate-utf8-bytes: 1.0.2
+
   semver@7.8.5: {}
 
   send@1.2.1:
@@ -3323,8 +3314,6 @@ snapshots:
 
   source-map@0.6.1:
     optional: true
-
-  sqlstring@2.3.3: {}
 
   statuses@2.0.2: {}
 
@@ -3544,6 +3533,10 @@ snapshots:
       string-width: 8.3.0
       y18n: 5.0.8
       yargs-parser: 22.0.0
+
+  yauzl@3.4.0:
+    dependencies:
+      pend: 1.2.0
 
   yoctocolors@2.2.0: {}
 

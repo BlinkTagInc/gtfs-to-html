@@ -1,8 +1,9 @@
-import { Route, TimetablePage } from 'gtfs';
+import type * as Gtfs from 'gtfs';
+import type { Row } from './gtfs.js';
 import { FormattedTimetable } from './timetable.ts';
 
 export interface FormattedTimetablePage extends Omit<
-  TimetablePage,
+  Row<Gtfs.TimetablePages>,
   'timetable_page_label' | 'filename'
 > {
   // Overridden as optional: synthesized timetable pages (built when no
@@ -10,7 +11,7 @@ export interface FormattedTimetablePage extends Omit<
   timetable_page_label?: string | null;
   filename?: string | null;
   timetables: FormattedTimetable[];
-  routes: Route[];
+  routes: Row<Gtfs.Routes>[];
   relativePath?: string;
   consolidatedTimetables?: FormattedTimetable[];
   dayList?: string;
@@ -31,5 +32,5 @@ export interface TimetablePageSummary {
   dayList?: string;
   route_ids: string[];
   agency_ids: string[];
-  consolidatedTimetables: { routes: Route[] }[];
+  consolidatedTimetables: { routes: Row<Gtfs.Routes>[] }[];
 }

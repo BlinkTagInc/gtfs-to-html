@@ -3,7 +3,8 @@ import { fileURLToPath } from 'node:url';
 import { readFileSync } from 'node:fs';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
-import { openDb } from 'gtfs';
+import { openGtfs, normalizeAgencyKeys, sourceId } from '../lib/gtfs-config.js';
+import { createGtfsReader, type GtfsReader } from '../lib/gtfs-reader.js';
 import express from 'express';
 
 import { formatTimetableLabel } from '../lib/formatters.js';
@@ -15,12 +16,7 @@ import {
   generateOverviewHTML,
   generateTimetableHTML,
 } from '../lib/utils.js';
-import {
-  GtfsToHtmlError,
-  GtfsToHtmlErrorCategory,
-  GtfsToHtmlErrorCode,
-  isGtfsToHtmlError,
-} from '../lib/errors.js';
+import { GtfsToHtmlErrorCode, isGtfsToHtmlError } from '../lib/errors.js';
 
 const argv = yargs(hideBin(process.argv))
   .option('c', {
@@ -37,27 +33,37 @@ const configPath =
   (argv.configPath as string) || join(process.cwd(), 'config.json');
 const selectedConfig = JSON.parse(readFileSync(configPath, 'utf8'));
 
-const config = setDefaultConfig(selectedConfig);
+const config = setDefaultConfig(normalizeAgencyKeys(selectedConfig));
 // Override noHead config option so full HTML pages are generated
 config.noHead = false;
 config.assetPath = '/';
 config.logFunction = console.log;
 
+const readers = new Map<string, GtfsReader>();
 try {
-  openDb(config);
-} catch (error: any) {
-  console.error(
-    `Unable to open sqlite database "${config.sqlitePath}" defined as \`sqlitePath\` config.json. Ensure the parent directory exists and run gtfs-to-html to import GTFS before running this app.`,
-  );
-  throw new GtfsToHtmlError(
-    `Unable to open sqlite database "${config.sqlitePath}"`,
-    {
-      code: GtfsToHtmlErrorCode.DATABASE_OPEN_FAILED,
-      category: GtfsToHtmlErrorCategory.DATABASE,
-      details: { sqlitePath: config.sqlitePath, dbCode: error?.code },
-      cause: error,
-    },
-  );
+  for (const agency of config.agencies) {
+    const gtfs = openGtfs({ ...config, skipImport: true }, agency);
+    readers.set(sourceId(agency), createGtfsReader(gtfs));
+    const inspection = await gtfs.schema.validate();
+    if (!inspection.compatible) {
+      throw new Error(
+        'Incompatible GTFS database schema; run gtfs-to-html to reimport first',
+      );
+    }
+  }
+} catch (error) {
+  await Promise.all([...readers.values()].map((reader) => reader.gtfs.close()));
+  throw error;
+}
+
+const closeReaders = async () => {
+  await Promise.all([...readers.values()].map((reader) => reader.gtfs.close()));
+};
+for (const signal of ['SIGINT', 'SIGTERM'] as const) {
+  process.once(signal, async () => {
+    await closeReaders();
+    process.exit(0);
+  });
 }
 
 app.set('views', getPathToViewsFolder(config));
@@ -85,87 +91,123 @@ const browserAssetsPath = join(
 app.use('/js', express.static(browserAssetsPath));
 app.use('/css', express.static(browserAssetsPath));
 
-// Show all timetable pages
-app.get('/', async (req, res, next) => {
-  try {
-    const timetablePages = [];
-    const timetablePageIds = getTimetablePagesForAgency(config).map(
-      (timetablePage) => timetablePage.timetable_page_id,
+if (config.agencies.length > 1) {
+  app.get('/', (req, res) => {
+    res.send(
+      `<!doctype html><title>Transit timetables</title><ul>${config.agencies
+        .map((agency) => {
+          const id = sourceId(agency);
+          const label = id.replace(
+            /[&<>"']/g,
+            (character) => `&#${character.charCodeAt(0)};`,
+          );
+          return `<li><a href="/sources/${encodeURIComponent(id)}/">${label}</a></li>`;
+        })
+        .join('')}</ul>`,
     );
+  });
+}
+for (const agency of config.agencies) {
+  const data = readers.get(sourceId(agency))!;
+  const sourceConfig = { ...config, agencies: [agency] };
+  const basePath =
+    config.agencies.length > 1
+      ? `/sources/${encodeURIComponent(sourceId(agency))}`
+      : '';
+  const router = express.Router();
+  app.use(basePath || '/', router);
+  // Show all timetable pages
+  router.get('/', async (req, res, next) => {
+    try {
+      const timetablePages = [];
+      const timetablePageIds = (
+        await getTimetablePagesForAgency(data, sourceConfig)
+      ).map((timetablePage) => timetablePage.timetable_page_id);
 
-    for (const timetablePageId of timetablePageIds) {
-      if (!timetablePageId) {
-        continue;
+      for (const timetablePageId of timetablePageIds) {
+        if (!timetablePageId) {
+          continue;
+        }
+
+        const timetablePage = await getFormattedTimetablePage(
+          data,
+          timetablePageId,
+          sourceConfig,
+        );
+
+        if (
+          !timetablePage.consolidatedTimetables ||
+          timetablePage.consolidatedTimetables.length === 0
+        ) {
+          console.error(
+            `No timetables found for timetable_page_id=${timetablePage.timetable_page_id}`,
+          );
+          continue;
+        }
+
+        timetablePage.relativePath = `${basePath}/timetables/${encodeURIComponent(timetablePage.timetable_page_id)}`;
+        for (const timetable of timetablePage.consolidatedTimetables) {
+          timetable.timetable_label = formatTimetableLabel(timetable);
+        }
+
+        timetablePages.push(timetablePage);
       }
 
+      const html = await generateOverviewHTML(
+        data,
+        timetablePages,
+        sourceConfig,
+      );
+      res.send(html);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  // Show a specific timetable page
+  router.get('/timetables/:timetablePageId', async (req, res, next) => {
+    const { timetablePageId } = req.params;
+
+    if (!timetablePageId) {
+      res.status(400).send('No timetablePageId provided');
+      return;
+    }
+
+    try {
       const timetablePage = await getFormattedTimetablePage(
+        data,
         timetablePageId,
-        config,
+        sourceConfig,
       );
 
       if (
+        !timetablePage ||
         !timetablePage.consolidatedTimetables ||
         timetablePage.consolidatedTimetables.length === 0
       ) {
-        console.error(
-          `No timetables found for timetable_page_id=${timetablePage.timetable_page_id}`,
-        );
-        continue;
+        res.status(404).send('Timetable page not found');
+        return;
       }
 
-      timetablePage.relativePath = `/timetables/${timetablePage.timetable_page_id}`;
-      for (const timetable of timetablePage.consolidatedTimetables) {
-        timetable.timetable_label = formatTimetableLabel(timetable);
+      const html = await generateTimetableHTML(
+        data,
+        timetablePage,
+        sourceConfig,
+      );
+      res.send(html);
+    } catch (error: any) {
+      if (
+        isGtfsToHtmlError(error) &&
+        error.code === GtfsToHtmlErrorCode.QUERY_RESULT_NOT_FOUND
+      ) {
+        res.status(404).send('Timetable page not found');
+        return;
       }
 
-      timetablePages.push(timetablePage);
+      next(error);
     }
-
-    const html = await generateOverviewHTML(timetablePages, config);
-    res.send(html);
-  } catch (error) {
-    next(error);
-  }
-});
-
-// Show a specific timetable page
-app.get('/timetables/:timetablePageId', async (req, res, next) => {
-  const { timetablePageId } = req.params;
-
-  if (!timetablePageId) {
-    res.status(400).send('No timetablePageId provided');
-    return;
-  }
-
-  try {
-    const timetablePage = await getFormattedTimetablePage(
-      timetablePageId,
-      config,
-    );
-
-    if (
-      !timetablePage ||
-      !timetablePage.consolidatedTimetables ||
-      timetablePage.consolidatedTimetables.length === 0
-    ) {
-      res.status(404).send('Timetable page not found');
-      return;
-    }
-
-    const html = await generateTimetableHTML(timetablePage, config);
-    res.send(html);
-  } catch (error: any) {
-    if (
-      isGtfsToHtmlError(error) &&
-      error.code === GtfsToHtmlErrorCode.QUERY_RESULT_NOT_FOUND
-    ) {
-      res.status(404).send('Timetable page not found');
-      return;
-    }
-
-    next(error);
-  }
-});
+  });
+}
 
 // Fallback 404 route
 app.use((req, res) => {
@@ -205,6 +247,7 @@ const startServer = async (port: number): Promise<void> => {
         });
     });
   } catch (err) {
+    await closeReaders();
     console.error('Failed to start server:', err);
     process.exit(1);
   }

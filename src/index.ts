@@ -3,12 +3,11 @@ export {
   GtfsError,
   GtfsErrorCategory,
   GtfsErrorCode,
-  GtfsWarningCode,
+  GtfsValidationNoticeCode,
   isGtfsError,
-  isGtfsValidationError,
   formatGtfsError,
 } from 'gtfs';
-export type { GtfsWarning, ImportReport } from 'gtfs';
+export type { GtfsValidationNotice, GtfsImportResult } from 'gtfs';
 export {
   GtfsToHtmlError,
   GtfsToHtmlErrorCategory,

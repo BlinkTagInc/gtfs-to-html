@@ -1,15 +1,39 @@
-import type { GtfsFeedConfig } from 'gtfs';
+import type {
+  GtfsScheduleImportConfig,
+  GtfsCsvParseOptions,
+  GtfsBorrowedNativeSqliteDatabaseConfig,
+} from 'gtfs';
 
-export type ConfigAgency = GtfsFeedConfig & {
+export interface ConfigAgency {
   agencyKey?: string;
   /** @deprecated Use `agencyKey`. */
   agency_key?: string;
-};
+  path?: string;
+  url?: string;
+  headers?: Record<string, string>;
+  exclude?: string[];
+  agencyId?: string;
+  fillEmptyAgencyId?: boolean;
+  import?: GtfsScheduleImportConfig;
+  realtimeAlerts?: { url: string; headers?: Record<string, string> };
+  realtimeTripUpdates?: { url: string; headers?: Record<string, string> };
+  realtimeVehiclePositions?: { url: string; headers?: Record<string, string> };
+}
 
 export interface Config {
   agencies: ConfigAgency[];
+  ignoreErrors?: boolean;
+  ignoreDuplicates?: boolean;
+  downloadTimeout?: number;
+  csvOptions?: Omit<GtfsCsvParseOptions, 'skipEmptyLines' | 'relaxQuotes'> & {
+    skip_empty_lines?: boolean;
+    relax_quotes?: boolean;
+  };
+  logLevel?: 'silent' | 'error' | 'warning' | 'info';
   assetPath?: string;
   sqlitePath?: string;
+  /** Caller-owned better-sqlite3 connection; takes precedence over sqlitePath. */
+  db?: GtfsBorrowedNativeSqliteDatabaseConfig['client'];
   allowEmptyTimetables?: boolean;
   beautify?: boolean;
   coordinatePrecision?: number;
