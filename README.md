@@ -108,7 +108,7 @@ Are you using `gtfs-to-html`? Let us know via email [gtfs@blinktag.com](mailto:g
 
 ## Changelog
 
-[See Changelog](https://github.com/blinktaginc/gtfs-to-html/blob/master/CHANGELOG.md)
+[See Changelog](https://github.com/blinktaginc/gtfs-to-html/blob/main/CHANGELOG.md)
 
 ## Contributing
 

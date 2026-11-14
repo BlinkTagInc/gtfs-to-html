@@ -3,7 +3,7 @@ id: custom-templates
 title: Custom Templates
 ---
 
-GTFS-to-HTML includes a default template for generating HTML timetables in [`views/default`](https://github.com/BlinkTagInc/gtfs-to-html/tree/master/views/default). It is built using [pug](https://pugjs.org/). 
+GTFS-to-HTML includes a default template for generating HTML timetables in [`views/default`](https://github.com/BlinkTagInc/gtfs-to-html/tree/main/views/default). It is built using [pug](https://pugjs.org/). 
 
 You can create your own template using the default one as a starting point.
 

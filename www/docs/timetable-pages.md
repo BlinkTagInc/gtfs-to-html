@@ -40,4 +40,4 @@ timetable_page_id,timetable_page_label,filename
 3,,
 ```
 
-An example of this file is located in [examples/timetable_pages.txt](https://github.com/BlinkTagInc/gtfs-to-html/blob/master/examples/timetable_pages.txt).
+An example of this file is located in [examples/timetable_pages.txt](https://github.com/BlinkTagInc/gtfs-to-html/blob/main/examples/timetable_pages.txt).

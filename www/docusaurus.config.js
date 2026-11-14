@@ -71,7 +71,7 @@ module.exports = {
             },
             {
               label: 'Contributors',
-              href: 'https://github.com/BlinkTagInc/gtfs-to-html/blob/master/package.json#L13',
+              href: 'https://github.com/BlinkTagInc/gtfs-to-html/blob/main/package.json#L13',
             },
           ],
         },
@@ -86,14 +86,13 @@ module.exports = {
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
-          editUrl:
-            'https://github.com/blinktaginc/gtfs-to-html/edit/master/www/',
+          editUrl: 'https://github.com/blinktaginc/gtfs-to-html/edit/main/www/',
         },
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
           editUrl:
-            'https://github.com/blinktaginc/gtfs-to-html/edit/master/www/blog/',
+            'https://github.com/blinktaginc/gtfs-to-html/edit/main/www/blog/',
           onUntruncatedBlogPosts: 'ignore',
         },
         theme: {

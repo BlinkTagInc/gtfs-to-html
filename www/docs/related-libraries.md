@@ -6,14 +6,14 @@ title: Related Libraries
 ## `node-gtfs`
 [`https://github.com/blinktaginc/node-gtfs`](https://github.com/blinktaginc/node-gtfs)
 <div style={{ display: 'flex', gap: 20 }}>
-  <div style={{ width: 100, flexShrink: 0 }}><img src="https://github.com/BlinkTagInc/node-gtfs/raw/master/docs/images/node-gtfs-logo.svg" alt="node-gtfs" width="100" /></div>
+  <div style={{ width: 100, flexShrink: 0 }}><img src="https://github.com/BlinkTagInc/node-gtfs/raw/main/docs/images/node-gtfs-logo.svg" alt="node-gtfs" width="100" /></div>
   <div><code>gtfs-to-html</code> uses the <a href="https://github.com/blinktaginc/node-gtfs">node-gtfs</a> library to handle importing and querying GTFS data. It provides methods for loading transit data in GTFS format into a SQLite database and methods to query for agencies, routes, stops, times, fares, calendars and other GTFS data. It also offers spatial queries to find nearby stops, routes and agencies and can convert stops and shapes to geoJSON format.</div>
 </div>
 
 ## `gtfs-to-geojson`
 [`https://github.com/blinktaginc/gtfs-to-geojson`](https://github.com/blinktaginc/gtfs-to-geojson)
 <div style={{ display: 'flex', gap: 20 }}>
-  <div style={{ width: 100, flexShrink: 0 }}><img src="https://github.com/BlinkTagInc/gtfs-to-geojson/raw/master/docs/images/gtfs-to-geojson-logo.svg" alt="gtfs-to-geojson" width="100" /></div>
+  <div style={{ width: 100, flexShrink: 0 }}><img src="https://github.com/BlinkTagInc/gtfs-to-geojson/raw/main/docs/images/gtfs-to-geojson-logo.svg" alt="gtfs-to-geojson" width="100" /></div>
   <div><a href="https://github.com/blinktaginc/gtfs-to-geojson"><code>gtfs-to-geojson</code></a> converts transit data in GTFS format into geoJSON. This includes both shapes and stops. It can be configured to generate one geoJSON file per route or a single file which contains all routes for an agency. This is useful for creating maps of transit routes.</div>
 </div>
 

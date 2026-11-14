@@ -63,7 +63,7 @@ timetable_id,stop_id,stop_sequence
 1,I,8
 ```
 
-An example of this file is located in [examples/timetable_stop_order.txt](https://github.com/BlinkTagInc/gtfs-to-html/blob/master/examples/timetable_stop_order.txt).
+An example of this file is located in [examples/timetable_stop_order.txt](https://github.com/BlinkTagInc/gtfs-to-html/blob/main/examples/timetable_stop_order.txt).
 
 ## Stops with different arrival and departure times
 

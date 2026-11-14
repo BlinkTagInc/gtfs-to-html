@@ -34,4 +34,4 @@ note_id,symbol,note
 7,,"[See list of holidays](http://transitagency.org/holidays)"
 ```
 
-An example of this file is located in [examples/timetable_notes.txt](https://github.com/BlinkTagInc/gtfs-to-html/blob/master/examples/timetable_notes.txt).
+An example of this file is located in [examples/timetable_notes.txt](https://github.com/BlinkTagInc/gtfs-to-html/blob/main/examples/timetable_notes.txt).

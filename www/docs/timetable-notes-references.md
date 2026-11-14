@@ -45,4 +45,4 @@ Note `5` applies only to a specific stop and stop_sequence. It shows up by the s
 
 Note `6` applies only to a specific stop and trip. It only shows up by the timepoint that matches the specific trip_id and stop_id.
 
-An example of this file is located in [examples/timetable_notes_references.txt](https://github.com/BlinkTagInc/gtfs-to-html/blob/master/examples/timetable_notes_references.txt).
+An example of this file is located in [examples/timetable_notes_references.txt](https://github.com/BlinkTagInc/gtfs-to-html/blob/main/examples/timetable_notes_references.txt).

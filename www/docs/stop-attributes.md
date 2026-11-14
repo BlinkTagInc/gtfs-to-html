@@ -29,7 +29,7 @@ stop_id,stop_city
 1005,"Lemoore, CA"
 ```
 
-An example of this file is located in [examples/stop_attributes.txt](https://github.com/BlinkTagInc/gtfs-to-html/blob/master/examples/stop_attributes.txt).
+An example of this file is located in [examples/stop_attributes.txt](https://github.com/BlinkTagInc/gtfs-to-html/blob/main/examples/stop_attributes.txt).
 
 :::note
 This feature is in development. Fields may be added or changed in the future.

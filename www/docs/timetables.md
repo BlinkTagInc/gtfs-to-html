@@ -50,7 +50,7 @@ timetable_id,route_id,direction_id,start_date,end_date,monday,tuesday,wednesday,
 7,2037,0,20150101,20151122,1,1,1,1,1,0,0,,,0,103 Westbound,Mon-Fri,horizontal,1,0,Westbound,0
 ```
 
-An example of this file is located in [examples/timetables.txt](https://github.com/BlinkTagInc/gtfs-to-html/blob/master/examples/timetables.txt).
+An example of this file is located in [examples/timetables.txt](https://github.com/BlinkTagInc/gtfs-to-html/blob/main/examples/timetables.txt).
 
 ## Multi-route Timetables
 
