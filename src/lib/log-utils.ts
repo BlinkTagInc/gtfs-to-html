@@ -272,11 +272,28 @@ export function progressBar(
     return null;
   }
 
-  const renderProgressString = () =>
-    formatString
+  const renderProgressString = () => {
+    const text = formatString
       .replace('{value}', String(barProgress))
-      .replace('{total}', String(barTotal))
-      .replace('{bar}', generateProgressBarString(barTotal, barProgress));
+      .replace('{total}', String(barTotal));
+    let size = 40;
+
+    if (process.stdout.isTTY && !config.logFunction) {
+      // Leave one column unused so redraws never wrap onto another row.
+      const width = Math.max(0, (process.stdout.columns || 80) - 1);
+      const labelLength = text.replace('{bar}', '').length;
+      size = Math.min(size, Math.max(0, width - labelLength));
+
+      if (labelLength > width) {
+        return `${barProgress}/${barTotal}`.slice(0, width);
+      }
+    }
+
+    return text.replace(
+      '{bar}',
+      generateProgressBarString(barTotal, barProgress, size),
+    );
+  };
 
   log(config)(renderProgressString(), true);
 
