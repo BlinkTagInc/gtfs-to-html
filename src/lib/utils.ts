@@ -59,10 +59,8 @@ import {
   combineCalendars,
   secondsAfterMidnight,
   fromGTFSTime,
-  calendarCodeToCalendar,
   calendarToDateList,
 } from './time-utils.js';
-import type { CalendarCode } from './time-utils.js';
 import { formatTripNameForCSV } from './template-functions.js';
 import {
   GtfsToHtmlError,
@@ -358,6 +356,41 @@ const getDaysFromCalendars = (
 };
 
 /*
+ * Group weekdays that have the same active services. Calendar patterns can
+ * overlap (for example, daily service plus extra weekend trips).
+ */
+const groupCalendarsByActiveDays = (calendars: Row<Gtfs.Calendar>[]) => {
+  const emptyDays = getDaysFromCalendars([]);
+  const groups = new Map<
+    string,
+    {
+      calendars: Row<Gtfs.Calendar>[];
+      days: WeekdayFlagsRequired;
+    }
+  >();
+
+  for (const day of Object.keys(emptyDays) as (keyof typeof emptyDays)[]) {
+    const activeCalendars = calendars.filter((calendar) => calendar[day] === 1);
+    if (activeCalendars.length === 0) {
+      continue;
+    }
+    const key = JSON.stringify(
+      activeCalendars.map((calendar) => calendar.service_id).sort(),
+    );
+    let group = groups.get(key);
+    if (!group) {
+      group = { calendars: activeCalendars, days: { ...emptyDays } };
+      groups.set(key, group);
+    }
+    group.days[day] = 1;
+  }
+
+  return [...groups.values()].map((group) =>
+    group.calendars.map((calendar) => ({ ...calendar, ...group.days })),
+  );
+};
+
+/*
  * Get the `trip_headsign` for a specific timetable.
  */
 const getDirectionHeadsignFromTimetable = async (
@@ -642,14 +675,24 @@ const convertRoutesToTimetablePages = async (
       uniqBy(trips, (trip) => trip.direction_id),
       'direction_id',
     );
-    const sortedCalendars = orderBy(calendars, calendarToCalendarCode, 'desc');
-    const calendarGroups = groupBy(sortedCalendars, calendarToCalendarCode);
     const calendarDateGroups = groupBy(calendarDates, 'service_id');
 
     const timetables: FormattedTimetable[] = [];
 
     for (const uniqueTripDirection of uniqueTripDirections) {
-      for (const calendars of Object.values(calendarGroups)) {
+      const directionServiceIds = new Set(
+        trips
+          .filter(
+            (trip) => trip.direction_id === uniqueTripDirection.direction_id,
+          )
+          .map((trip) => trip.service_id),
+      );
+      const calendarGroups = groupCalendarsByActiveDays(
+        calendars.filter((calendar) =>
+          directionServiceIds.has(calendar.service_id),
+        ),
+      );
+      for (const calendars of calendarGroups) {
         const tripsForCalendars = trips.filter((trip) =>
           some(calendars, { service_id: trip.service_id }),
         );
@@ -980,53 +1023,6 @@ const validateDate = (
       category: GtfsToHtmlErrorCategory.CONFIG,
     });
   }
-
-  if (config.startDate) {
-    // Validate config.startDate is a valid date
-    if (!moment(config.startDate).isValid()) {
-      throw new GtfsToHtmlError(
-        `Invalid startDate=${config.startDate} in config.json`,
-        {
-          code: GtfsToHtmlErrorCode.CONFIG_DATE_INVALID,
-          category: GtfsToHtmlErrorCategory.CONFIG,
-          details: { field: 'startDate', value: config.startDate },
-        },
-      );
-    }
-
-    whereClauses.push(
-      `end_date >= ${sqlString.escape(moment(config.startDate).format('YYYYMMDD'))}`,
-    );
-  }
-
-  if (whereClauses.length > 0) {
-    whereClause = `WHERE ${whereClauses.join(' AND ')}`;
-  }
-
-  const calendars: Calendar[] = db
-    .prepare(`SELECT * FROM calendar ${whereClause}`)
-    .all();
-
-  // Find all calendar dates with service_ids not present in `calendar.txt`.
-  const serviceIds = calendars.map((calendar) => calendar.service_id);
-  let calendarDatesQuery =
-    serviceIds.length > 0
-      ? `SELECT * FROM calendar_dates WHERE exception_type = 1 AND service_id NOT IN (${serviceIds
-          .map((serviceId) => sqlString.escape(serviceId))
-          .join(', ')})`
-      : 'SELECT * FROM calendar_dates WHERE exception_type = 1';
-  if (config.startDate) {
-    calendarDatesQuery += ` AND date >= ${sqlString.escape(moment(config.startDate).format('YYYYMMDD'))}`;
-  }
-  if (config.endDate) {
-    calendarDatesQuery += ` AND date <= ${sqlString.escape(moment(config.endDate).format('YYYYMMDD'))}`;
-  }
-  const calendarDates = db.prepare(calendarDatesQuery).all();
-
-  return {
-    calendars,
-    calendarDates,
-  };
 };
 
 const getCalendarsFromConfig = async (data: GtfsReader, config: Config) => {
@@ -1781,8 +1777,9 @@ export async function getTimetablePagesForAgency(
 const getDataForTimetablePageById = async (
   data: GtfsReader,
   timetablePageId: string,
+  config: Config,
 ) => {
-  let calendarCode;
+  let calendarCode: string | undefined;
   let calendars;
   let calendarDates;
   let serviceId;
@@ -1807,7 +1804,7 @@ const getDataForTimetablePageById = async (
       route_id: routeId,
       direction_id: directionId,
     },
-    ['trip_headsign', 'direction_id'],
+    ['trip_headsign', 'direction_id', 'service_id'],
   );
   const uniqueTripDirections = uniqBy(trips, (trip) => trip.direction_id);
 
@@ -1828,9 +1825,15 @@ const getDataForTimetablePageById = async (
   }
 
   if (/^[01]*$/.test(calendarCode ?? '')) {
-    calendars = await data.calendars({
-      ...calendarCodeToCalendar(calendarCode as CalendarCode),
-    });
+    const configured = await getCalendarsFromConfig(data, config);
+    const serviceIds = new Set(trips.map((trip) => trip.service_id));
+    calendars =
+      groupCalendarsByActiveDays(
+        configured.calendars.filter((calendar) =>
+          serviceIds.has(calendar.service_id),
+        ),
+      ).find((group) => calendarToCalendarCode(group[0]) === calendarCode) ??
+      [];
   } else {
     serviceId = calendarCode;
     calendarDates = await data.calendarDates({
@@ -1952,14 +1955,24 @@ const getTimetablePageById = async (
       uniqBy(trips, (trip) => trip.direction_id),
       'direction_id',
     );
-    const sortedCalendars = orderBy(calendars, calendarToCalendarCode, 'desc');
-    const calendarGroups = groupBy(sortedCalendars, calendarToCalendarCode);
     const calendarDateGroups = groupBy(calendarDates, 'service_id');
 
     const timetables: FormattedTimetable[] = [];
 
     for (const uniqueTripDirection of uniqueTripDirections) {
-      for (const calendars of Object.values(calendarGroups)) {
+      const directionServiceIds = new Set(
+        trips
+          .filter(
+            (trip) => trip.direction_id === uniqueTripDirection.direction_id,
+          )
+          .map((trip) => trip.service_id),
+      );
+      const calendarGroups = groupCalendarsByActiveDays(
+        calendars.filter((calendar) =>
+          directionServiceIds.has(calendar.service_id),
+        ),
+      );
+      for (const calendars of calendarGroups) {
         const tripsForCalendars = trips.filter((trip) =>
           some(calendars, { service_id: trip.service_id }),
         );
@@ -2001,7 +2014,7 @@ const getTimetablePageById = async (
 
   // If no `timetables.txt` in GTFS, try to parse the timetable_page_id and build the route and direction into a timetable.
   const { calendars, calendarDates, route, directionId, tripHeadsign } =
-    await getDataForTimetablePageById(data, timetablePageId);
+    await getDataForTimetablePageById(data, timetablePageId, config);
 
   const timetable = createTimetable({
     route,

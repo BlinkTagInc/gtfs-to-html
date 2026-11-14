@@ -509,14 +509,6 @@ export function updateStoptimesByOffset(
       stoptime.arrival_time,
       offsetSeconds,
     );
-    stoptime.departure_timestamp =
-      stoptime.departure_time === null
-        ? null
-        : secondsAfterMidnight(stoptime.departure_time);
-    stoptime.arrival_timestamp =
-      stoptime.arrival_time === null
-        ? null
-        : secondsAfterMidnight(stoptime.arrival_time);
     stoptime.trip_id = trip.trip_id;
     return stoptime;
   });

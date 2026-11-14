@@ -9,13 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Updated
 
+- Upgrade node-gtfs to v5.
 - Upgrade MapLibre GL JS to v6, bundle its module worker for hosted and local HTML/PDF output, and update stop popups for native GeoJSON array properties.
 - Dependency updates
 
 ### Fixed
 
+- When determining timetable calendar groups, handle overlapping calendars.
 - Keep exception-only timetables within the selected date range and preserve their date bounds so unrelated future service is not included.
 - Preserve times after midnight, such as `25:00:00`, when expanding frequency-based trips, and keep missing arrival and departure times empty.
+- Exclude trips removed by the final timetable filters from maps and trip ID lists.
+- Draw lines between stops when trips have no usable shapes.
 
 ## [2.13.6] - 2026-10-21
 
