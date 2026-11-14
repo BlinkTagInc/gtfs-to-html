@@ -1,7 +1,4 @@
 allowBuilds:
-  better-sqlite3: true
-  protobufjs: true
   puppeteer: true
 minimumReleaseAgeExclude:
-  - csv-stringify@6.9.0
   - gtfs@5.0.0-beta.0

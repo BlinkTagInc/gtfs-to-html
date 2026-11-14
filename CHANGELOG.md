@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Updated
 
 - Upgrade MapLibre GL JS to v6, bundle its module worker for hosted and local HTML/PDF output, and update stop popups for native GeoJSON array properties.
+- Dependency updates
 
 ### Fixed
 
