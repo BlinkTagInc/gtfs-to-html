@@ -589,6 +589,11 @@ const createTimetable = ({
     );
   }
 
+  if ((!calendars || calendars.length === 0) && calendarDates?.length) {
+    startDate = Math.min(...calendarDates.map((row) => row.date));
+    endDate = Math.max(...calendarDates.map((row) => row.date));
+  }
+
   const timetableId = formatTimetableId({
     routeIds: [route.route_id],
     directionId: directionId,
@@ -1006,12 +1011,18 @@ const getCalendarsFromConfig = (config: Config) => {
 
   // Find all calendar dates with service_ids not present in `calendar.txt`.
   const serviceIds = calendars.map((calendar) => calendar.service_id);
-  const calendarDatesQuery =
+  let calendarDatesQuery =
     serviceIds.length > 0
       ? `SELECT * FROM calendar_dates WHERE exception_type = 1 AND service_id NOT IN (${serviceIds
           .map((serviceId) => sqlString.escape(serviceId))
           .join(', ')})`
       : 'SELECT * FROM calendar_dates WHERE exception_type = 1';
+  if (config.startDate) {
+    calendarDatesQuery += ` AND date >= ${sqlString.escape(moment(config.startDate).format('YYYYMMDD'))}`;
+  }
+  if (config.endDate) {
+    calendarDatesQuery += ` AND date <= ${sqlString.escape(moment(config.endDate).format('YYYYMMDD'))}`;
+  }
   const calendarDates = db.prepare(calendarDatesQuery).all();
 
   return {

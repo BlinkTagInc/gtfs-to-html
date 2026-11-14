@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Upgrade MapLibre GL JS to v6, bundle its module worker for hosted and local HTML/PDF output, and update stop popups for native GeoJSON array properties.
 
+### Fixed
+
+- Keep exception-only timetables within the selected date range and preserve their date bounds so unrelated future service is not included.
+
 ## [2.13.6] - 2026-10-21
 
 ### Updated
