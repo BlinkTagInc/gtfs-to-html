@@ -119,4 +119,4 @@ Pull requests are welcome, as well as [feedback and reporting issues](https://gi
     pnpm install
     pnpm run build
 
-`pnpm install` installs dependencies. `pnpm run build` compiles TypeScript and vendors browser-compatible libraries (maplibre-gl, pbf, anchorme, etc.) from devDependencies into `dist/browser` via `scripts/copy-browser-assets.js`. These vendored files are included in the published npm package so consumers don't need to run any postinstall steps.
+`pnpm install` installs dependencies. `pnpm run build` compiles TypeScript and vendors browser-compatible libraries (maplibre-gl, pbf, anchorme, etc.) from devDependencies into `dist/browser` via `scripts/copy-browser-assets.js`. MapLibre GL JS v6 is bundled as a classic browser script with an embedded module worker to support both hosted pages and local HTML/PDF rendering. Maps require WebGL2. These vendored files are included in the published npm package so consumers don't need to run any postinstall steps.

@@ -3,6 +3,7 @@
 import { mkdir, copyFile, readFile, writeFile } from 'node:fs/promises';
 import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
+import { build } from 'tsdown';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -26,16 +27,6 @@ const filesToCopy = [
   },
   {
     package: 'maplibre-gl',
-    source: 'dist/maplibre-gl.js',
-    target: 'maplibre-gl.js',
-  },
-  {
-    package: 'maplibre-gl',
-    source: 'dist/maplibre-gl.js.map',
-    target: 'maplibre-gl.js.map',
-  },
-  {
-    package: 'maplibre-gl',
     source: 'dist/maplibre-gl.css',
     target: 'maplibre-gl.css',
   },
@@ -53,13 +44,22 @@ const filesToCopy = [
 
 const licenseFileNames = ['LICENSE', 'LICENSE.txt', 'LICENSE.md'];
 
+function resolveEntryPoint(packageName) {
+  // Match v3: support CommonJS packages and ESM-only packages such as MapLibre 6.
+  try {
+    return require.resolve(packageName);
+  } catch {
+    return fileURLToPath(import.meta.resolve(packageName));
+  }
+}
+
 function resolvePackageRoot(packageName) {
   // Walk up from the resolved entry point to find the package root. We can't
   // use require.resolve(packageName + '/package.json') because some packages
   // (e.g. pbf) don't expose ./package.json in their exports field. We also
   // can't stop at the first package.json found because some packages (e.g.
   // maplibre-gl) place a stub package.json in their dist/ subdirectory.
-  let dir = dirname(require.resolve(packageName));
+  let dir = dirname(resolveEntryPoint(packageName));
   while (true) {
     const pkgJsonPath = join(dir, 'package.json');
     try {
@@ -131,6 +131,38 @@ async function copyBrowserAssets() {
       copyFile(join(packageRoots.get(pkg), source), join(targetDir, target)),
     ),
   );
+
+  // Keep classic script loading (including file:// PDF rendering) while using
+  // MapLibre's ESM distribution. Embed its self-contained module worker so the
+  // generated pages do not need an HTTP server or a separate worker request.
+  await build({
+    config: false,
+    entry: {
+      'maplibre-gl': fileURLToPath(
+        new URL('./maplibre-browser.js', import.meta.url),
+      ),
+    },
+    outDir: targetDir,
+    format: 'iife',
+    globalName: 'maplibregl',
+    platform: 'browser',
+    target: 'es2022',
+    clean: false,
+    dts: false,
+    sourcemap: true,
+    minify: true,
+    deps: { alwaysBundle: ['maplibre-gl'], onlyBundle: ['maplibre-gl'] },
+    define: {
+      'import.meta.url': 'location.href',
+      __MAPLIBRE_WORKER_SOURCE__: JSON.stringify(
+        await readFile(
+          join(packageRoots.get('maplibre-gl'), 'dist/maplibre-gl-worker.mjs'),
+          'utf8',
+        ),
+      ),
+    },
+    outputOptions: { entryFileNames: '[name].js' },
+  });
 
   const licenseContent = await generateThirdPartyLicenses([
     ...packageRoots.keys(),

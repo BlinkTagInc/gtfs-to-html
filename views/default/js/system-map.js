@@ -56,12 +56,7 @@ function formatRoutePopup(features) {
 }
 
 function formatStopPopup(feature) {
-  let routes = [];
-  try {
-    routes = JSON.parse(feature.properties.routes);
-  } catch (error) {
-    console.error('Failed to parse routes JSON:', error);
-  }
+  const routes = feature.properties.routes ?? [];
   const container = document.createElement('div');
 
   const title = document.createElement('div');

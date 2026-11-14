@@ -84,7 +84,7 @@ function formatRoute(route) {
 }
 
 function getStopPopupHtml(feature, stop) {
-  const routeIds = JSON.parse(feature.properties.route_ids);
+  const routeIds = feature.properties.route_ids;
   const html = document.createElement('div');
 
   const title = document.createElement('div');
