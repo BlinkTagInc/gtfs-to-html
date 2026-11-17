@@ -1,6 +1,5 @@
 import type { GtfsReader } from './gtfs-reader.js';
 import simplify from '@turf/simplify';
-import { omit } from 'lodash-es';
 import { featureCollection, round } from '@turf/helpers';
 import { logWarning } from './log-utils.js';
 import { getBaseTripIds } from './trip-id-utils.js';
@@ -100,20 +99,9 @@ async function buildGeoJSON(data: GtfsReader, tripIds?: string[]) {
     route_id: [...new Set(trips.map((trip) => trip.route_id))],
   });
   const allStops = await data.gtfs.geojson.stops();
-  // Source IDs scope database queries, but are not part of the map output.
-  // Associated routes also omit the GTFS Plus route_attributes fields.
-  const publicStopFeatures = allStops.features.map((feature) => {
-    const { source_id: _source, routes, ...properties } = feature.properties;
-    return {
-      ...feature,
-      properties: {
-        ...properties,
-        routes: routes.map((route) =>
-          omit(route, ['source_id', 'category', 'subcategory', 'running_way']),
-        ),
-      },
-    };
-  });
+  // GTFS GeoJSON already omits source IDs and GTFS Plus attributes,
+  // including those on associated routes.
+  const publicStopFeatures = allStops.features;
   const stopFeatures = new Map(
     publicStopFeatures.map((feature) => [feature.properties.stop_id, feature]),
   );

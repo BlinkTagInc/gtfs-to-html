@@ -25,3 +25,5 @@ docker/config*
 
 # Build files
 /dist
+
+/docs

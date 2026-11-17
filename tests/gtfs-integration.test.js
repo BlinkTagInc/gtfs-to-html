@@ -648,7 +648,7 @@ for (const groupTimetablesIntoPages of [true, false]) {
   }
 }
 
-test('GeoJSON omits source IDs and route attributes while preserving stop attributes', async (t) => {
+test('GeoJSON omits source IDs and GTFS Plus attributes', async (t) => {
   const { config } = setup(t, {
     'route_attributes.txt':
       'route_id,category,subcategory,running_way\n4,3,101,1\n',
@@ -670,12 +670,12 @@ test('GeoJSON omits source IDs and route attributes while preserving stop attrib
   for (const geojson of geojsons) {
     assert.doesNotMatch(
       JSON.stringify(geojson),
-      /"(?:source_id|category|subcategory|running_way)"/,
+      /"(?:source_id|category|subcategory|running_way|stop_city)"/,
     );
     const stop = geojson.features.find(
       (feature) => feature.properties.stop_id === 'A',
     );
-    assert.equal(stop.properties.stop_city, 'Test City');
+    assert.equal(stop.properties.stop_name, 'Alpha');
     assert.ok(stop.properties.routes.length > 0);
     const route = stop.properties.routes.find((row) => row.route_id === '4');
     assert.equal(route.route_short_name, '4');

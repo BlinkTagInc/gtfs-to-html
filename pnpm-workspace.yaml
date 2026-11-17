@@ -1,4 +1,12 @@
 allowBuilds:
   puppeteer: true
 minimumReleaseAgeExclude:
-  - gtfs@5.0.0-beta.0
+  - gtfs@5.0.0-beta.1
+  - gtfs-realtime-bindings@3.0.0
+  - marked@18.2.1
+  - minimatch@11.0.9
+
+# Exclude vulnerable transitive glob and minimatch releases.
+overrides:
+  "glob@>=9.0.0 <=14.0.1": ^14.0.6
+  "minimatch@>=7.0.0 <11.0.1": ^11.0.9
