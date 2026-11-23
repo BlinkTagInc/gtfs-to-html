@@ -445,6 +445,40 @@ test('alternate stop placement uses the nearer shared stop within trip-order con
   }
 });
 
+test('preserves explicit stop order for split times and return visits', async (t) => {
+  const { config } = setup(t, {
+    'stops.txt': fixtureFiles['stops.txt'] + 'C,Gamma,37.02,-122.02\n',
+    'trips.txt': 'route_id,service_id,trip_id,direction_id\n4,s,out,0\n',
+    'timetable_stop_order.txt': [
+      'timetable_id,stop_id,stop_sequence',
+      'out,A,5',
+      'out,B,2',
+      'out,A,1',
+      'out,C,4',
+      'out,B,3',
+    ].join('\n'),
+    'stop_times.txt': [
+      'trip_id,arrival_time,departure_time,stop_id,stop_sequence',
+      'out,09:00:00,09:00:00,A,1',
+      'out,09:10:00,09:15:00,B,2',
+      'out,09:20:00,09:20:00,C,3',
+      'out,09:30:00,09:30:00,A,4',
+    ].join('\n'),
+  });
+  await gtfsToHtml({ ...config, showMap: false });
+  const [timetable] = pages(config.outputPath)[0].consolidatedTimetables;
+  assert.deepEqual(
+    timetable.stops.map((stop) => [stop.stop_id, stop.trips[0].formatted_time]),
+    [
+      ['A', '9:00am'],
+      ['B', '9:10am'],
+      ['B', '9:15am'],
+      ['C', '9:20am'],
+      ['A', '9:30am'],
+    ],
+  );
+});
+
 test('cyclic stop orders preserve onward times and distinct branches', async (t) => {
   const { config } = setup(t, {
     'stops.txt':

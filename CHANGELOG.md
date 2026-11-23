@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Preserve repeated stops in `timetable_stop_order.txt` for loop trips and separate arrival and departure columns.
 - Better stop order logic when trips can be topolgically sorted.
 
 ## [2.14.1] - 2026-11-17

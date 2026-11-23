@@ -979,7 +979,7 @@ const getStopOrder = async (
     {
       timetable_id: timetable.timetable_id,
     },
-    ['stop_id'],
+    ['stop_id', 'stop_sequence'],
     [['stop_sequence', 'ASC']],
   );
 
