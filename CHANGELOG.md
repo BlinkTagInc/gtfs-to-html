@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Show the scheduled departure at each trip’s origin, including trips starting partway along a route.
 - Show departure columns for qualifying fractional-minute and overnight dwells.
 - Show scheduled minutes in hourly timetables, including departure minutes on departure rows, and omit missing times.
 - Preserve repeated stops in `timetable_stop_order.txt` for loop trips and separate arrival and departure columns.

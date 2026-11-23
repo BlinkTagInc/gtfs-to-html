@@ -175,7 +175,10 @@ function filterHourlyTimes(stops: FormattedStop[], trips: FormattedTrip[]) {
     const firstTimedStop = trip.stoptimes.find(
       (stoptime) => stoptime.arrival_time || stoptime.departure_time,
     );
-    const time = firstTimedStop?.arrival_time || firstTimedStop?.departure_time;
+    const time =
+      firstTimedStop?.type === 'departure'
+        ? firstTimedStop.departure_time
+        : firstTimedStop?.arrival_time || firstTimedStop?.departure_time;
     if (!time) {
       return [];
     }
@@ -194,7 +197,7 @@ function filterHourlyTimes(stops: FormattedStop[], trips: FormattedTrip[]) {
     stop.hourlyTimes = firstHour.flatMap(({ index }) => {
       const stoptime = stop.trips[index];
       const time =
-        stop.type === 'departure'
+        stoptime.type === 'departure'
           ? stoptime.departure_time
           : stoptime.arrival_time;
       if (!time) {
@@ -418,7 +421,7 @@ export function formatStops(
 
       // Show times if it is an arrival stop and is the first stoptime for the trip.
       if (!(stop.type === 'arrival' && idx === 0)) {
-        stoptime.type = 'arrival';
+        stoptime.type ??= 'arrival';
         stop.trips.push(formatStopTime(stoptime, timetable, config));
       }
       if (stop.type === 'arrival') {

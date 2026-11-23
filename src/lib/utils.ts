@@ -1385,6 +1385,14 @@ const filterTrips = (
       }
     }
 
+    // Select the departure at the actual origin before filtering out hidden stops.
+    const origin = combinedStoptimes[0];
+    if (
+      origin?.departure_time &&
+      origin.departure_time !== origin.arrival_time
+    ) {
+      origin.type = 'departure';
+    }
     trip.stoptimes = combinedStoptimes;
   }
 

@@ -486,6 +486,41 @@ test('splits fractional-minute and overnight dwells at the inclusive threshold',
   );
 });
 
+test('uses departures at each trip origin and arrivals at other unsplit stops', async (t) => {
+  const { config } = setup(t, {
+    'timetables.txt': null,
+    'timetable_pages.txt': null,
+    'stops.txt': fixtureFiles['stops.txt'] + 'C,Gamma,37.02,-122.02\n',
+    'trips.txt':
+      'route_id,service_id,trip_id,direction_id\n4,s,through,0\n4,s,short,0\n',
+    'stop_times.txt': [
+      'trip_id,arrival_time,departure_time,stop_id,stop_sequence',
+      'through,09:00:00,09:05:00,A,1',
+      'through,09:15:00,09:17:00,B,2',
+      'through,09:25:00,09:28:00,C,3',
+      'short,09:58:00,10:02:00,B,1',
+      'short,10:12:00,10:15:00,C,2',
+    ].join('\n'),
+  });
+  await gtfsToHtml({
+    ...config,
+    defaultOrientation: 'hourly',
+    showArrivalOnDifference: null,
+    showMap: false,
+  });
+  const [timetable] = pages(config.outputPath)[0].consolidatedTimetables;
+  const rows = timetable.stops.map((stop) => [
+    stop.stop_id,
+    stop.trips.map((cell) => cell.formatted_time),
+    stop.hourlyTimes,
+  ]);
+  assert.deepEqual(rows, [
+    ['A', ['9:05am', undefined], [':05']],
+    ['B', ['9:15am', '10:02am'], [':02', ':15']],
+    ['C', ['9:25am', '10:12am'], [':12', ':25']],
+  ]);
+});
+
 test('hourly rows use scheduled minutes for each visit', async (t) => {
   const { config } = setup(t, {
     'timetables.txt': null,
