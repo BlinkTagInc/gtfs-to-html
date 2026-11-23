@@ -1,3 +1,4 @@
+import { mergeCyclicStopPatterns } from './stop-sequences.js';
 import { log } from './log-utils.js';
 import type { GtfsReader } from './gtfs-reader.js';
 import {
@@ -844,50 +845,6 @@ const getStopColumns = (
   );
 };
 
-/*
- * Align two stop sequences on their longest common subsequence. Keeping all
- * unmatched visits gives the shortest order that contains both inputs.
- */
-const mergeStopSequences = (order: string[], pattern: string[]): string[] => {
-  let matched = 0;
-  for (const id of order) {
-    if (id === pattern[matched]) {
-      matched++;
-    }
-  }
-  if (matched === pattern.length) {
-    return order;
-  }
-
-  const lengths = Array.from(
-    { length: order.length + 1 },
-    () => new Uint32Array(pattern.length + 1),
-  );
-  for (let i = order.length - 1; i >= 0; i--) {
-    for (let j = pattern.length - 1; j >= 0; j--) {
-      if (order[i] === pattern[j]) {
-        lengths[i][j] = 1 + lengths[i + 1][j + 1];
-      } else {
-        lengths[i][j] = Math.max(lengths[i + 1][j], lengths[i][j + 1]);
-      }
-    }
-  }
-  const merged: string[] = [];
-  let i = 0;
-  let j = 0;
-  while (i < order.length && j < pattern.length) {
-    if (order[i] === pattern[j]) {
-      merged.push(order[i++]);
-      j++;
-    } else if (lengths[i + 1][j] >= lengths[i][j + 1]) {
-      merged.push(order[i++]);
-    } else {
-      merged.push(pattern[j++]);
-    }
-  }
-  return merged.concat(order.slice(i), pattern.slice(j));
-};
-
 type GetStop = (id: string) => Promise<Row<Gtfs.Stops>>;
 
 // The haversine term increases with great-circle distance. Comparing it
@@ -1032,9 +989,18 @@ const getStopOrder = async (
   try {
     stopIds = toposort(stopGraph);
   } catch {
-    patterns.sort((a, b) => b.length - a.length);
-    stopIds = patterns.reduce(mergeStopSequences, []);
-    return getStopColumns(stopIds, timetable, config);
+    const order = mergeCyclicStopPatterns(patterns);
+    if (!order) {
+      throw new GtfsToHtmlError(
+        `Cyclic stop patterns in timetable ${timetable.timetable_id} exceed the automatic stop-order limit. Provide an explicit order in timetable_stop_order.txt.`,
+        {
+          code: GtfsToHtmlErrorCode.TIMETABLE_GENERATION_FAILED,
+          category: GtfsToHtmlErrorCategory.VALIDATION,
+          details: { timetable_id: timetable.timetable_id },
+        },
+      );
+    }
+    return getStopColumns(order, timetable, config);
   }
   await placeBranchStops(stopIds, patterns, stopGraph, getStop);
   return getStopColumns(stopIds, timetable, config);
