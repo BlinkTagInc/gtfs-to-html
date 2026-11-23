@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Updated
 
+- For timetable stops which are acyclic, attempt to organize stops geographically when trip order allows.
 - Dependency updates
 
 ### Fixed

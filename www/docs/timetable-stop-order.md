@@ -7,6 +7,8 @@ This is an optional, non-standard file called `timetable_stop_order.txt`. It is 
 
 GTFS-to-HTML automatically sorts stops across trips using a directed graph. When trips visit stops in conflicting orders or loop back to an earlier stop, the generator starts with the longest stop sequence and merges the other sequences into it. A stop may appear more than once so each trip's times can be read in travel order. Use this file to choose a specific order or limit which stops appear.
 
+When trip patterns can be sorted topologically, an alternate stop between two shared stops is placed as close as trip order allows to the geographically nearer shared stop. For example, with trips A–B–C–D–E–F and A–X–F, X appears just after A if it is closer to A, or just before F if it is closer to F. Equal distances or missing coordinates leave the computed order in place.
+
 ## Field Definitions
 
 ### timetable_stop_order.txt

@@ -396,6 +396,55 @@ test('automatic timetables filter calendar-only service additions by the configu
   );
 });
 
+test('alternate stop placement uses the nearer shared stop within trip-order constraints', async (t) => {
+  for (const { longitude, constraint, expected } of [
+    { longitude: 0.1, expected: 'AXBCDEF' },
+    { longitude: 4.9, expected: 'ABCDEXF' },
+    { longitude: 0.1, constraint: 'CX', expected: 'ABCXDEF' },
+    { longitude: 4.9, constraint: 'XD', expected: 'ABCXDEF' },
+  ]) {
+    const trips = { alternate: 'AXF', local: 'ABCDEF' };
+    if (constraint) {
+      trips.connection = constraint;
+    }
+    const { config } = setup(t, {
+      'stops.txt': [
+        'stop_id,stop_name,stop_lat,stop_lon',
+        ...Array.from('ABCDEF', (id, index) => `${id},Stop ${id},0,${index}`),
+        `X,Alternate,0,${longitude}`,
+      ].join('\n'),
+      'trips.txt': [
+        'route_id,service_id,trip_id,direction_id',
+        ...Object.keys(trips).map((id) => `4,s,${id},0`),
+      ].join('\n'),
+      'stop_times.txt': [
+        'trip_id,arrival_time,departure_time,stop_id,stop_sequence',
+        ...Object.entries(trips).flatMap(([tripId, sequence]) =>
+          Array.from(
+            sequence,
+            (id, i) => `${tripId},09:0${i}:00,09:0${i}:00,${id},${i + 1}`,
+          ),
+        ),
+      ].join('\n'),
+    });
+    await gtfsToHtml({ ...config, showMap: false });
+    const [timetable] = pages(config.outputPath)[0].consolidatedTimetables;
+    assert.equal(
+      timetable.stops.map((stop) => stop.stop_id).join(''),
+      expected,
+    );
+    for (const [index, trip] of timetable.orderedTrips.entries()) {
+      assert.equal(
+        timetable.stops
+          .filter((stop) => !stop.trips[index].skipped)
+          .map((stop) => stop.stop_id)
+          .join(''),
+        trips[trip.trip_id],
+      );
+    }
+  }
+});
+
 test('cyclic stop orders preserve onward times and distinct branches', async (t) => {
   const { config } = setup(t, {
     'stops.txt':

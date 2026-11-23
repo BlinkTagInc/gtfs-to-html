@@ -887,6 +887,84 @@ const mergeStopSequences = (order: string[], pattern: string[]): string[] => {
   return merged.concat(order.slice(i), pattern.slice(j));
 };
 
+type GetStop = (id: string) => Promise<Row<Gtfs.Stops>>;
+
+// The haversine term increases with great-circle distance. Comparing it
+// directly avoids converting the result to meters.
+function stopDistance(from: Row<Gtfs.Stops>, to: Row<Gtfs.Stops>) {
+  const { stop_lat: lat1, stop_lon: lon1 } = from;
+  const { stop_lat: lat2, stop_lon: lon2 } = to;
+  if (lat1 == null || lon1 == null || lat2 == null || lon2 == null) {
+    return NaN;
+  }
+  const radians = Math.PI / 180;
+  return (
+    Math.sin(((lat2 - lat1) * radians) / 2) ** 2 +
+    Math.cos(lat1 * radians) *
+      Math.cos(lat2 * radians) *
+      Math.sin(((lon2 - lon1) * radians) / 2) ** 2
+  );
+}
+
+// For a single alternate stop between two known stops, move it to the
+// nearer end of the gap, within the bounds imposed by every trip.
+async function placeBranchStops(
+  order: string[],
+  patterns: string[][],
+  edges: [string, string][],
+  getStop: GetStop,
+) {
+  if (patterns.length < 2) {
+    return;
+  }
+  const known = new Set<string>();
+  for (const pattern of patterns.toSorted((a, b) => b.length - a.length)) {
+    for (let i = 1; i < pattern.length - 1; i++) {
+      const previous = pattern[i - 1];
+      const id = pattern[i];
+      const next = pattern[i + 1];
+      if (known.has(id) || !known.has(previous) || !known.has(next)) {
+        continue;
+      }
+      const index = order.indexOf(id);
+      let earliest = order.indexOf(previous) + 1;
+      let latest = order.indexOf(next) - 1;
+      if (earliest === latest) {
+        continue;
+      }
+      // Crossing an immediate neighbor in any trip would break that trip's order.
+      for (const [from, to] of edges) {
+        if (to === id) {
+          earliest = Math.max(earliest, order.indexOf(from) + 1);
+        }
+        if (from === id) {
+          latest = Math.min(latest, order.indexOf(to) - 1);
+        }
+      }
+      const [stop, start, end] = await Promise.all([
+        getStop(id),
+        getStop(previous),
+        getStop(next),
+      ]);
+      const startDistance = stopDistance(stop, start);
+      const endDistance = stopDistance(stop, end);
+      let target = index;
+      if (startDistance < endDistance) {
+        target = earliest;
+      } else if (endDistance < startDistance) {
+        target = latest;
+      }
+      if (target !== index) {
+        order.splice(index, 1);
+        order.splice(target, 0, id);
+      }
+    }
+    for (const id of pattern) {
+      known.add(id);
+    }
+  }
+}
+
 /*
  * Get a sorted array of stop_ids for a specific timetable.
  */
@@ -894,6 +972,7 @@ const getStopOrder = async (
   data: GtfsReader,
   timetable: FormattedTimetable,
   config: Config,
+  getStop: GetStop,
 ) => {
   // First, check if `timetable_stop_order.txt` for route exists
   const timetableStopOrders = await data.timetableStopOrders(
@@ -954,7 +1033,9 @@ const getStopOrder = async (
   } catch {
     patterns.sort((a, b) => b.length - a.length);
     stopIds = patterns.reduce(mergeStopSequences, []);
+    return getStopColumns(stopIds, timetable, config);
   }
+  await placeBranchStops(stopIds, patterns, stopGraph, getStop);
   return getStopColumns(stopIds, timetable, config);
 };
 
@@ -970,17 +1051,16 @@ const getStopsForTimetable = async (
     return [];
   }
 
-  const columns = await getStopOrder(data, timetable, config);
-  const orderedStops: FormattedStop[] = await Promise.all(
-    columns.map(async (column) => {
-      const stopId = column.stop_id;
-      const stops = await data.stops({
-        stop_id: stopId,
-      });
-
-      if (stops.length === 0) {
+  const stopCache = new Map<string, Promise<Row<Gtfs.Stops>>>();
+  const getStop: GetStop = (stopId) => {
+    const cached = stopCache.get(stopId);
+    if (cached) {
+      return cached;
+    }
+    const result = data.stops({ stop_id: stopId }).then(([stop]) => {
+      if (!stop) {
         throw new GtfsToHtmlError(
-          `No stop found found for stop_id=${stopId} in timetable_id=${timetable.timetable_id}`,
+          `No stop found for stop_id=${stopId} in timetable_id=${timetable.timetable_id}`,
           {
             code: GtfsToHtmlErrorCode.QUERY_RESULT_NOT_FOUND,
             category: GtfsToHtmlErrorCategory.QUERY,
@@ -992,13 +1072,19 @@ const getStopsForTimetable = async (
           },
         );
       }
+      return stop;
+    });
+    stopCache.set(stopId, result);
+    return result;
+  };
 
-      return {
-        ...stops[0],
-        ...column,
-        trips: [],
-      };
-    }),
+  const columns = await getStopOrder(data, timetable, config, getStop);
+  const orderedStops: FormattedStop[] = await Promise.all(
+    columns.map(async (column) => ({
+      ...(await getStop(column.stop_id)),
+      ...column,
+      trips: [],
+    })),
   );
 
   // If `showStopCity` is true, look up stop attributes.
