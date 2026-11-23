@@ -445,6 +445,42 @@ test('alternate stop placement uses the nearer shared stop within trip-order con
   }
 });
 
+test('hourly rows use scheduled minutes for each visit', async (t) => {
+  const { config } = setup(t, {
+    'timetables.txt': null,
+    'timetable_pages.txt': null,
+    'stops.txt':
+      'stop_id,stop_name,stop_lat,stop_lon\nA,Alpha,37,-122\nB,Beta,37.01,-122\nC,Gamma,37.02,-122\nD,Delta,37.03,-122\n',
+    'trips.txt':
+      'route_id,service_id,trip_id,direction_id\n4,s,local,0\n4,s,express,0\n4,s,short,0\n4,s,later,0\n',
+    'stop_times.txt': [
+      'trip_id,arrival_time,departure_time,stop_id,stop_sequence',
+      'local,24:00:00,24:00:00,A,1',
+      'local,24:10:00,24:15:00,B,2',
+      'local,,,C,3',
+      'local,24:25:00,24:25:00,D,4',
+      'express,24:30:00,24:30:00,A,1',
+      'express,24:45:00,24:45:00,D,2',
+      'short,24:50:00,24:50:00,C,1',
+      'short,25:00:00,25:00:00,D,2',
+      'later,25:00:00,25:00:00,A,1',
+      'later,25:20:00,25:20:00,D,2',
+    ].join('\n'),
+  });
+  await gtfsToHtml({ ...config, defaultOrientation: 'hourly', showMap: false });
+  const [timetable] = pages(config.outputPath)[0].consolidatedTimetables;
+  assert.deepEqual(
+    timetable.stops.map((stop) => [stop.stop_id, stop.hourlyTimes]),
+    [
+      ['A', [':00', ':30']],
+      ['B', [':10']],
+      ['B', [':15']],
+      ['C', [':50']],
+      ['D', [':25', ':45', ':00']],
+    ],
+  );
+});
+
 test('preserves explicit stop order for split times and return visits', async (t) => {
   const { config } = setup(t, {
     'stops.txt': fixtureFiles['stops.txt'] + 'C,Gamma,37.02,-122.02\n',

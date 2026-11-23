@@ -14,7 +14,6 @@ import type { Row } from '../types/gtfs.js';
 
 import {
   fromGTFSTime,
-  minutesAfterMidnight,
   calendarToCalendarCode,
   secondsAfterMidnight,
   updateTimeByOffset,
@@ -170,36 +169,41 @@ function formatStopTime(
 /*
  * Find hourly times for each stop for hourly schedules.
  */
-function filterHourlyTimes(stops: FormattedStop[]) {
-  // Find all stoptimes within the first 60 minutes.
-  const firstStopTimes = [];
-  const firstTripMinutes = minutesAfterMidnight(stops[0].trips[0].arrival_time);
-  for (const trip of stops[0].trips) {
-    const minutes = minutesAfterMidnight(trip.arrival_time);
-    if (minutes >= firstTripMinutes + 60) {
-      break;
+function filterHourlyTimes(stops: FormattedStop[], trips: FormattedTrip[]) {
+  // Short-turn trips can start after the first timetable stop.
+  const starts = trips.flatMap((trip, index) => {
+    const firstTimedStop = trip.stoptimes.find(
+      (stoptime) => stoptime.arrival_time || stoptime.departure_time,
+    );
+    const time = firstTimedStop?.arrival_time || firstTimedStop?.departure_time;
+    if (!time) {
+      return [];
     }
-
-    firstStopTimes.push(fromGTFSTime(trip.arrival_time));
-  }
-
-  // Sort stoptimes by minutes for first stop.
-  const firstStopTimesAndIndex = firstStopTimes.map((time, idx) => ({
-    idx,
-    time,
-  }));
-  const sortedFirstStopTimesAndIndex = sortBy(firstStopTimesAndIndex, (item) =>
-    Number.parseInt(item.time.format('m'), 10),
+    return [{ index, seconds: secondsAfterMidnight(time) }];
+  });
+  const earliest = starts.reduce(
+    (min, start) => Math.min(min, start.seconds),
+    Infinity,
+  );
+  const firstHour = sortBy(
+    starts.filter((start) => start.seconds < earliest + 3600),
+    (start) => Math.floor(start.seconds / 60) % 60,
   );
 
-  // Filter and arrange stoptimes for all stops based on sort.
-  return stops.map((stop) => {
-    stop.hourlyTimes = sortedFirstStopTimesAndIndex.map((item) =>
-      fromGTFSTime(stop.trips[item.idx].arrival_time).format(':mm'),
-    );
-
-    return stop;
-  });
+  for (const stop of stops) {
+    stop.hourlyTimes = firstHour.flatMap(({ index }) => {
+      const stoptime = stop.trips[index];
+      const time =
+        stop.type === 'departure'
+          ? stoptime.departure_time
+          : stoptime.arrival_time;
+      if (!time) {
+        return [];
+      }
+      return [fromGTFSTime(time).format(':mm')];
+    });
+  }
+  return stops;
 }
 
 interface WeekdayFlags {
@@ -438,7 +442,10 @@ export function formatStops(
   }
 
   if (timetable.orientation === 'hourly') {
-    timetable.stops = filterHourlyTimes(timetable.stops);
+    timetable.stops = filterHourlyTimes(
+      timetable.stops,
+      timetable.orderedTrips,
+    );
   }
 
   for (const stop of timetable.stops) {
