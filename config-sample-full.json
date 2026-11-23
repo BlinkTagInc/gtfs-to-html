@@ -56,7 +56,7 @@
   "requestPickupText": "Request stop - call for pickup",
   "serviceNotProvidedOnText": "Service not provided on",
   "serviceProvidedOnText": "Service provided on",
-  "showArrivalOnDifference": 0.2,
+  "showArrivalOnDifference": 1,
   "showCalendarExceptions": true,
   "showDuplicateTrips": false,
   "showMap": true,

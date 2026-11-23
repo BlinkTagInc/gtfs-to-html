@@ -57,7 +57,6 @@ import {
   calendarToCalendarCode,
   combineCalendars,
   secondsAfterMidnight,
-  fromGTFSTime,
   calendarToDateList,
 } from './time-utils.js';
 import { formatTripNameForCSV } from './template-functions.js';
@@ -820,14 +819,16 @@ const getStopColumns = (
         continue;
       }
       column = next;
-      const dwell = fromGTFSTime(trip.stoptimes[i].departure_time).diff(
-        fromGTFSTime(arrival.arrival_time),
-        'minutes',
-      );
+      const departureTime = trip.stoptimes[i].departure_time;
+      const dwellSeconds =
+        arrival.arrival_time && departureTime
+          ? secondsAfterMidnight(departureTime) -
+            secondsAfterMidnight(arrival.arrival_time)
+          : 0;
       if (
         column > 0 &&
         column < stopIds.length - 1 &&
-        dwell >= config.showArrivalOnDifference
+        dwellSeconds / 60 >= config.showArrivalOnDifference
       ) {
         splitColumns.add(column);
       }
@@ -2173,7 +2174,7 @@ export function setDefaultConfig(initialConfig: Config) {
     requestPickupText: 'Request stop - call for pickup',
     serviceNotProvidedOnText: 'Service not provided on',
     serviceProvidedOnText: 'Service provided on',
-    showArrivalOnDifference: 0.2,
+    showArrivalOnDifference: 1,
     showCalendarExceptions: true,
     showDuplicateTrips: false,
     showMap: false,

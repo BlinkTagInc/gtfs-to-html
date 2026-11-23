@@ -13,61 +13,61 @@ Ensure that your `config.json` is [valid JSON](https://jsonformatter.curiousconc
 All files starting with `config*.json` are .gitignored - so you can create multiple configuration files such as `config-caltrain.json`. Use the `--configPath` option when running GTFS-to-HTML.
 :::
 
-| Option                                                          | Type             | Description                                                                                      |
-| --------------------------------------------------------------- | ---------------- | ------------------------------------------------------------------------------------------------ |
-| [`agencies`](#agencies)                                         | Array[Object]    | An array of GTFS and GTFS-realtime URLs to be imported.                                                           |
-| [`allowEmptyTimetables`](#allowemptytimetables)                 | Boolean          | Whether to generate timetables that have no trips.                                        |
-| [`beautify`](#beautify)                                         | Boolean          | Whether to beautify the HTML output.                                                      |
-| [`coordinatePrecision`](#coordinateprecision)                   | Number          | Number of decimal places to include when rendering GeoJSON map output.                                       |
-| [`dateFormat`](#dateformat)                                     | String           | A string defining date format in moment.js style.                                                |
-| [`daysShortStrings`](#daysshortstrings)                           | Array[String]    | An array defining contractions of weekday names from Monday to Sunday.                          |
-| [`daysStrings`](#daysstrings)                                     | Array[String]    | An array defining weekday names from Monday to Sunday.                                          |
-| [`defaultOrientation`](#defaultorientation)                     | String           | Specify timetable orientation when not specified in `timetables.txt`.                           |
-| [`deleteDbAfter`](#deletedbafter)                               | Boolean          | Whether to delete the SQLite database after timetables are generated.                            |
-| [`effectiveDate`](#effectivedate)                               | String           | A date to print at the top of the timetable.                                                     |
-| [`endDate`](#enddate)                                        | String           | A date in ISO 8601 format to control which calendars are used for the timetables.                |
-| [`groupTimetablesIntoPages`](#grouptimetablesintopages)         | Boolean          | Whether to group timetables for the same route onto one page.                                                 |
-| [`interpolatedStopSymbol`](#interpolatedstopsymbol)             | String           | The symbol used to indicate that a timepoint isn't fixed, but just interpolated.                 |
-| [`interpolatedStopText`](#interpolatedstoptext)                 | String           | The text used to describe a timepoint that isn't fixed, but just interpolated.                        |
-| [`linkStopUrls`](#linkstopurls)                                 | Boolean          | Whether to hyperlink timetable stop names to the `stop_url` defined in `stops.txt`.       |
-| [`logFunction`](#logfunction)                                   | Function         | A custom logging function for handling output of logs.                                           |
-| [`mapStyleUrl`](#mapstyleurl)                                   | String           | The URL to a MapLibre style to use for maps.                                |
-| [`menuType`](#menutype)                                         | String           | The type of menu to use for selecting timetables on a timetable page.                            |
-| [`noDropoffSymbol`](#nodropoffsymbol)                           | String           | The symbol used to indicate a stop where no drop off is available.                              |
-| [`noDropoffText`](#nodropofftext)                               | String           | The text used to describe a stop where no drop off is available.                                 |
-| [`noHead`](#nohead)                                             | Boolean          | Whether to skip the header and footer of the HTML document.                               |
-| [`noServiceSymbol`](#noservicesymbol)                           | String           | The symbol used when a specific trip does not serve a specified stop.                            |
-| [`noServiceText`](#noservicetext)                               | String           | The text used to describe a stop which is not served by a specific trip.                         |
-| [`outputFormat`](#outputformat)                                 | String           | The file format of the timetables generated. Either `html`, `pdf` or `csv`.                      |
-| [`outputPath`](#outputpath)                                     | String           | The path to write the timetables to. Optional, defaults to `html/<agencyKey>`.  |
-| [`overwriteExistingFiles`](#overwriteexistingfiles)             | Boolean          | Whether to overwrite existing files in the `outputPath` directory.                               |
-| [`noPickupSymbol`](#nopickupsymbol)                             | String           | The symbol used to indicate a stop where no pickup is available.                                 |
-| [`noPickupText`](#nopickuptext)                                 | String           | The text used to describe a stop where no pickup is available.                                   |
-| [`requestDropoffSymbol`](#requestdropoffsymbol)                 | String           | The symbol used to indicate a stop where riders must request a drop off.                         |
-| [`requestDropoffText`](#requestdropofftext)                     | String           | The text used to describe a stop where riders must request a drop off.                           |
-| [`requestPickupSymbol`](#requestpickupsymbol)                   | String           | The symbol used to indicate a stop where riders must request a pickup.                           |
-| [`requestPickupText`](#requestpickuptext)                       | String           | The text used to describe a stop where riders must request a pickup.                             |
-| [`serviceNotProvidedOnText`](#servicenotprovidedontext)         | String           | The text used to label days where service is not provided.                                       |
-| [`serviceProvidedOnText`](#serviceprovidedontext)               | String           | The text used to label days where service is provided. |        
-| [`noRegularServiceDaysText`](#noregularservicedaystext)         | String            | The text used to inform that a timetable has no regular service das (like Mon-Fri, Sat, Sun). |
-| [`showArrivalOnDifference`](#showarrivalondifference)           | Number            | Defines a difference between departure and arrival on which arrival column/row will be shown.   |
-| [`showCalendarExceptions`](#showcalendarexceptions)             | Boolean          | Whether to show a list of calendar exceptions below each timetable. |
-| [`showDuplicateTrips`](#showduplicatetrips)                     | Boolean          | Whether to show duplicate trips with identical stops and times.                                  |
-| [`showMap`](#showmap)                                           | Boolean          | Whether to show a map of the route on the timetable.                                      |
-| [`showOnlyTimepoint`](#showonlytimepoint)                       | Boolean          | Whether all stops should be shown, or only stops with a `timepoint` value in `stops.txt`. |
-| [`showRouteTitle`](#showroutetitle)                             | Boolean          | Whether to show the route title at the top of the timetable page.                         |
-| [`showStopCity`](#showstopcity)                                 | Boolean          | Whether to show each stop's city.                                                         |
-| [`showStopDescription`](#showstopdescription)                   | Boolean          | Whether to show a stop description.                                                       |
-| [`showStoptimesForRequestStops`](#showstoptimesforrequeststops) | Boolean          | Whether to show times for stops that require a request for pickup or dropoff.             |
-| [`skipImport`](#skipimport)                                     | Boolean          | Whether to skip importing GTFS data into SQLite.                                          |
-| [`sortingAlgorithm`](#sortingalgorithm)                         | String           | Defines the trip-sorting algorithm.                                                              |
-| [`sqlitePath`](#sqlitepath)                                     | String           | A path to an SQLite database. Optional, defaults to using an in-memory database.                 |
-| [`startDate`](#startdate)                                       | String           | A date in ISO 8601 format to control which calendars are used for the timetables.                |
-| [`templatePath`](#templatepath)                                 | String           | Path to custom pug template for rendering timetable.                                             |
-| [`timeFormat`](#timeformat)                                     | String           | A string defining time format in moment.js style.                                                |
-| [`useParentStation`](#useparentstation)                         | Boolean          | Whether to use a stop's `parent_station`.                                                 |
-| [`verbose`](#verbose)                                           | Boolean          | Whether to print output to the console.                                                   |
-| [`zipOutput`](#zipoutput)                                       | Boolean          | Whether to zip the output into one zip file.                                              |
+| Option                                                          | Type          | Description                                                                                   |
+| --------------------------------------------------------------- | ------------- | --------------------------------------------------------------------------------------------- |
+| [`agencies`](#agencies)                                         | Array[Object] | An array of GTFS and GTFS-realtime URLs to be imported.                                       |
+| [`allowEmptyTimetables`](#allowemptytimetables)                 | Boolean       | Whether to generate timetables that have no trips.                                            |
+| [`beautify`](#beautify)                                         | Boolean       | Whether to beautify the HTML output.                                                          |
+| [`coordinatePrecision`](#coordinateprecision)                   | Number        | Number of decimal places to include when rendering GeoJSON map output.                        |
+| [`dateFormat`](#dateformat)                                     | String        | A string defining date format in moment.js style.                                             |
+| [`daysShortStrings`](#daysshortstrings)                         | Array[String] | An array defining contractions of weekday names from Monday to Sunday.                        |
+| [`daysStrings`](#daysstrings)                                   | Array[String] | An array defining weekday names from Monday to Sunday.                                        |
+| [`defaultOrientation`](#defaultorientation)                     | String        | Specify timetable orientation when not specified in `timetables.txt`.                         |
+| [`deleteDbAfter`](#deletedbafter)                               | Boolean       | Whether to delete the SQLite database after timetables are generated.                         |
+| [`effectiveDate`](#effectivedate)                               | String        | A date to print at the top of the timetable.                                                  |
+| [`endDate`](#enddate)                                           | String        | A date in ISO 8601 format to control which calendars are used for the timetables.             |
+| [`groupTimetablesIntoPages`](#grouptimetablesintopages)         | Boolean       | Whether to group timetables for the same route onto one page.                                 |
+| [`interpolatedStopSymbol`](#interpolatedstopsymbol)             | String        | The symbol used to indicate that a timepoint isn't fixed, but just interpolated.              |
+| [`interpolatedStopText`](#interpolatedstoptext)                 | String        | The text used to describe a timepoint that isn't fixed, but just interpolated.                |
+| [`linkStopUrls`](#linkstopurls)                                 | Boolean       | Whether to hyperlink timetable stop names to the `stop_url` defined in `stops.txt`.           |
+| [`logFunction`](#logfunction)                                   | Function      | A custom logging function for handling output of logs.                                        |
+| [`mapStyleUrl`](#mapstyleurl)                                   | String        | The URL to a MapLibre style to use for maps.                                                  |
+| [`menuType`](#menutype)                                         | String        | The type of menu to use for selecting timetables on a timetable page.                         |
+| [`noDropoffSymbol`](#nodropoffsymbol)                           | String        | The symbol used to indicate a stop where no drop off is available.                            |
+| [`noDropoffText`](#nodropofftext)                               | String        | The text used to describe a stop where no drop off is available.                              |
+| [`noHead`](#nohead)                                             | Boolean       | Whether to skip the header and footer of the HTML document.                                   |
+| [`noServiceSymbol`](#noservicesymbol)                           | String        | The symbol used when a specific trip does not serve a specified stop.                         |
+| [`noServiceText`](#noservicetext)                               | String        | The text used to describe a stop which is not served by a specific trip.                      |
+| [`outputFormat`](#outputformat)                                 | String        | The file format of the timetables generated. Either `html`, `pdf` or `csv`.                   |
+| [`outputPath`](#outputpath)                                     | String        | The path to write the timetables to. Optional, defaults to `html/<agencyKey>`.                |
+| [`overwriteExistingFiles`](#overwriteexistingfiles)             | Boolean       | Whether to overwrite existing files in the `outputPath` directory.                            |
+| [`noPickupSymbol`](#nopickupsymbol)                             | String        | The symbol used to indicate a stop where no pickup is available.                              |
+| [`noPickupText`](#nopickuptext)                                 | String        | The text used to describe a stop where no pickup is available.                                |
+| [`requestDropoffSymbol`](#requestdropoffsymbol)                 | String        | The symbol used to indicate a stop where riders must request a drop off.                      |
+| [`requestDropoffText`](#requestdropofftext)                     | String        | The text used to describe a stop where riders must request a drop off.                        |
+| [`requestPickupSymbol`](#requestpickupsymbol)                   | String        | The symbol used to indicate a stop where riders must request a pickup.                        |
+| [`requestPickupText`](#requestpickuptext)                       | String        | The text used to describe a stop where riders must request a pickup.                          |
+| [`serviceNotProvidedOnText`](#servicenotprovidedontext)         | String        | The text used to label days where service is not provided.                                    |
+| [`serviceProvidedOnText`](#serviceprovidedontext)               | String        | The text used to label days where service is provided.                                        |
+| [`noRegularServiceDaysText`](#noregularservicedaystext)         | String        | The text used to inform that a timetable has no regular service das (like Mon-Fri, Sat, Sun). |
+| [`showArrivalOnDifference`](#showarrivalondifference)           | Number        | Defines a difference between departure and arrival on which arrival column/row will be shown. |
+| [`showCalendarExceptions`](#showcalendarexceptions)             | Boolean       | Whether to show a list of calendar exceptions below each timetable.                           |
+| [`showDuplicateTrips`](#showduplicatetrips)                     | Boolean       | Whether to show duplicate trips with identical stops and times.                               |
+| [`showMap`](#showmap)                                           | Boolean       | Whether to show a map of the route on the timetable.                                          |
+| [`showOnlyTimepoint`](#showonlytimepoint)                       | Boolean       | Whether all stops should be shown, or only stops with a `timepoint` value in `stops.txt`.     |
+| [`showRouteTitle`](#showroutetitle)                             | Boolean       | Whether to show the route title at the top of the timetable page.                             |
+| [`showStopCity`](#showstopcity)                                 | Boolean       | Whether to show each stop's city.                                                             |
+| [`showStopDescription`](#showstopdescription)                   | Boolean       | Whether to show a stop description.                                                           |
+| [`showStoptimesForRequestStops`](#showstoptimesforrequeststops) | Boolean       | Whether to show times for stops that require a request for pickup or dropoff.                 |
+| [`skipImport`](#skipimport)                                     | Boolean       | Whether to skip importing GTFS data into SQLite.                                              |
+| [`sortingAlgorithm`](#sortingalgorithm)                         | String        | Defines the trip-sorting algorithm.                                                           |
+| [`sqlitePath`](#sqlitepath)                                     | String        | A path to an SQLite database. Optional, defaults to using an in-memory database.              |
+| [`startDate`](#startdate)                                       | String        | A date in ISO 8601 format to control which calendars are used for the timetables.             |
+| [`templatePath`](#templatepath)                                 | String        | Path to custom pug template for rendering timetable.                                          |
+| [`timeFormat`](#timeformat)                                     | String        | A string defining time format in moment.js style.                                             |
+| [`useParentStation`](#useparentstation)                         | Boolean       | Whether to use a stop's `parent_station`.                                                     |
+| [`verbose`](#verbose)                                           | Boolean       | Whether to print output to the console.                                                       |
+| [`zipOutput`](#zipoutput)                                       | Boolean       | Whether to zip the output into one zip file.                                                  |
 
 ## agencies
 
@@ -157,10 +157,7 @@ If you don't want all GTFS files to be imported, you can specify an array of fil
     {
       "agencyKey": "myAgency",
       "path": "/path/to/the/unzipped/gtfs/",
-      "exclude": [
-        "shapes",
-        "stops"
-      ]
+      "exclude": ["shapes", "stops"]
     }
   ]
 }
@@ -283,7 +280,7 @@ Specify multiple agencies to be imported. Note that it is often better to have o
 
 ## groupTimetablesIntoPages
 
-{Boolean}  Whether to group timetables for the same route into the same page. Ignored if `timetable_pages.txt` is present. **Optional.** Defaults to `true`.
+{Boolean} Whether to group timetables for the same route into the same page. Ignored if `timetable_pages.txt` is present. **Optional.** Defaults to `true`.
 
 ```json
 "groupTimetablesIntoPages": true
@@ -491,10 +488,10 @@ gtfsToHtml(config);
 
 ## showArrivalOnDifference
 
-{Number} Whether to show an arrival column/row in the timetable. It means that if on at least one stop the difference (stay on that stop) is **equal or greater** than specified here, the arrival time will be shown. Use `0` to show on each stop or `null` to skip showing an additional column for arrival. **Optional.** No default value.
+{Number} Minimum dwell in minutes for showing separate arrival and departure columns or rows at an intermediate stop. A value of `1` splits stops with a dwell of at least one minute. Use `0` to split all intermediate stops or `null` to disable automatic splitting. **Optional.** Defaults to `1`.
 
 ```json
-"showArrivalOnDifference": 0.2
+"showArrivalOnDifference": 1
 ```
 
 ## showCalendarExceptions

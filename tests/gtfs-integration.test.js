@@ -445,6 +445,47 @@ test('alternate stop placement uses the nearer shared stop within trip-order con
   }
 });
 
+test('splits fractional-minute and overnight dwells at the inclusive threshold', async (t) => {
+  const { config } = setup(t, {
+    'stops.txt': [
+      'stop_id,stop_name,stop_lat,stop_lon',
+      ...Array.from(
+        'ABCDEF',
+        (id, i) => `${id},Stop ${id},37,-${121 + i / 100}`,
+      ),
+    ].join('\n'),
+    'trips.txt': 'route_id,service_id,trip_id,direction_id\n4,s,out,0\n',
+    'stop_times.txt': [
+      'trip_id,arrival_time,departure_time,stop_id,stop_sequence',
+      'out,23:00:00,23:00:00,A,1',
+      'out,23:10:55,23:11:25,B,2',
+      'out,23:20:00,23:20:11,C,3',
+      'out,23:58:00,24:04:00,D,4',
+      'out,24:10:50,24:11:02,E,5',
+      'out,24:20:00,24:20:00,F,6',
+    ].join('\n'),
+  });
+  await gtfsToHtml({
+    ...config,
+    showMap: false,
+    showArrivalOnDifference: 1,
+    timeFormat: 'HH:mm:ss',
+  });
+  const [timetable] = pages(config.outputPath)[0].consolidatedTimetables;
+  assert.deepEqual(
+    timetable.stops.map((stop) => [stop.stop_id, stop.trips[0].formatted_time]),
+    [
+      ['A', '23:00:00'],
+      ['B', '23:10:55'],
+      ['C', '23:20:00'],
+      ['D', '23:58:00'],
+      ['D', '00:04:00'],
+      ['E', '00:10:50'],
+      ['F', '00:20:00'],
+    ],
+  );
+});
+
 test('hourly rows use scheduled minutes for each visit', async (t) => {
   const { config } = setup(t, {
     'timetables.txt': null,
