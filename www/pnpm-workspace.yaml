@@ -1,7 +1,5 @@
 allowBuilds:
   core-js: true
-
-# Remove vulnerable transitive versions while Docusaurus pins older major releases.
 overrides:
   css-minimizer-webpack-plugin: ^8.0.0
   copy-webpack-plugin: ^14.0.0
