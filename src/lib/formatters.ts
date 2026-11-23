@@ -417,6 +417,9 @@ export function formatStops(
         stoptime.type = 'arrival';
         stop.trips.push(formatStopTime(stoptime, timetable, config));
       }
+      if (stop.type === 'arrival') {
+        stopIndex++;
+      }
     }
 
     // Fill in any missing stoptimes for this trip.

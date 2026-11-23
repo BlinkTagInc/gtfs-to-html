@@ -5,9 +5,7 @@ title: timetable_stop_order.txt
 
 This is an optional, non-standard file called `timetable_stop_order.txt`. It is used to specify the order of stops for a timetable. It is useful when generating combined timetables for multiple overlapping routes, or exerting fine-grained control on stop order.
 
-This file is often not needed. If all trips for a route serve the same set of stops, or all trips stop order is topologically sortable, there is no need to use `timetable_stop_order.txt` for that route. `timetable_stop_order.txt` is only needed for routes where some trips serve completely different stops than other trips and where the order can not be determined using a directed graph.
-
-GTFS-to-HTML uses [toposort](https://www.npmjs.com/package/toposort) to sort stops for each trip topologically iin a directed graph to determine a valid stop order for use in a timetable. If stop order across trips is cyclic or disjointed (i.e. not all trips have a common stop) then the stop order from trip with most number of stops is used as a fallback.
+GTFS-to-HTML automatically sorts stops across trips using a directed graph. When trips visit stops in conflicting orders or loop back to an earlier stop, the generator starts with the longest stop sequence and merges the other sequences into it. A stop may appear more than once so each trip's times can be read in travel order. Use this file to choose a specific order or limit which stops appear.
 
 ## Field Definitions
 

@@ -4,7 +4,6 @@ import {
   cloneDeep,
   compact,
   countBy,
-  difference,
   entries,
   every,
   find,
@@ -792,44 +791,100 @@ const generateTripsByFrequencies = (
  * Check if any stoptimes have different arrival and departure times and
  * if they do, duplicate the stop id unless it is the first or last stop.
  */
-const duplicateStopsForDifferentArrivalDeparture = (
+const getStopColumns = (
   stopIds: string[],
   timetable: FormattedTimetable,
   config: Config,
-) => {
+): Pick<FormattedStop, 'stop_id' | 'type'>[] => {
   if (
     config.showArrivalOnDifference === null ||
     config.showArrivalOnDifference === undefined
   ) {
-    return stopIds;
+    return stopIds.map((stop_id) => ({ stop_id }));
   }
 
+  const splitColumns = new Set<number>();
   for (const trip of timetable.orderedTrips) {
-    for (const stoptime of trip.stoptimes) {
-      const timepointDifference = fromGTFSTime(stoptime.departure_time).diff(
-        fromGTFSTime(stoptime.arrival_time),
+    let column = -1;
+    for (let i = 0; i < trip.stoptimes.length; i++) {
+      const arrival = trip.stoptimes[i];
+      // Adjacent visits to the same stop become one stoptime in filterTrips.
+      while (
+        i + 1 < trip.stoptimes.length &&
+        trip.stoptimes[i + 1].stop_id === arrival.stop_id
+      ) {
+        i++;
+      }
+      const next = stopIds.indexOf(arrival.stop_id ?? '', column + 1);
+      if (next === -1) {
+        continue;
+      }
+      column = next;
+      const dwell = fromGTFSTime(trip.stoptimes[i].departure_time).diff(
+        fromGTFSTime(arrival.arrival_time),
         'minutes',
       );
-
-      if (timepointDifference < config.showArrivalOnDifference) {
-        continue;
+      if (
+        column > 0 &&
+        column < stopIds.length - 1 &&
+        dwell >= config.showArrivalOnDifference
+      ) {
+        splitColumns.add(column);
       }
-
-      const stopId = stoptime.stop_id ?? '';
-      const index = stopIds.indexOf(stopId);
-      if (index === 0 || index === stopIds.length - 1) {
-        continue;
-      }
-
-      if (stopId === stopIds[index + 1] || stopId === stopIds[index - 1]) {
-        continue;
-      }
-
-      stopIds.splice(index, 0, stopId);
     }
   }
+  return stopIds.flatMap((stop_id, index) =>
+    splitColumns.has(index)
+      ? [
+          { stop_id, type: 'arrival' as const },
+          { stop_id, type: 'departure' as const },
+        ]
+      : [{ stop_id }],
+  );
+};
 
-  return stopIds;
+/*
+ * Align two stop sequences on their longest common subsequence. Keeping all
+ * unmatched visits gives the shortest order that contains both inputs.
+ */
+const mergeStopSequences = (order: string[], pattern: string[]): string[] => {
+  let matched = 0;
+  for (const id of order) {
+    if (id === pattern[matched]) {
+      matched++;
+    }
+  }
+  if (matched === pattern.length) {
+    return order;
+  }
+
+  const lengths = Array.from(
+    { length: order.length + 1 },
+    () => new Uint32Array(pattern.length + 1),
+  );
+  for (let i = order.length - 1; i >= 0; i--) {
+    for (let j = pattern.length - 1; j >= 0; j--) {
+      if (order[i] === pattern[j]) {
+        lengths[i][j] = 1 + lengths[i + 1][j + 1];
+      } else {
+        lengths[i][j] = Math.max(lengths[i + 1][j], lengths[i][j + 1]);
+      }
+    }
+  }
+  const merged: string[] = [];
+  let i = 0;
+  let j = 0;
+  while (i < order.length && j < pattern.length) {
+    if (order[i] === pattern[j]) {
+      merged.push(order[i++]);
+      j++;
+    } else if (lengths[i + 1][j] >= lengths[i][j + 1]) {
+      merged.push(order[i++]);
+    } else {
+      merged.push(pattern[j++]);
+    }
+  }
+  return merged.concat(order.slice(i), pattern.slice(j));
 };
 
 /*
@@ -850,92 +905,57 @@ const getStopOrder = async (
   );
 
   if (timetableStopOrders.length > 0) {
-    return timetableStopOrders.map(
-      (timetableStopOrder) => timetableStopOrder.stop_id,
-    );
-  }
-
-  // Next, try using a directed graph to determine stop order.
-  try {
-    const stopGraph: [string, string][] = [];
-
-    // If a stop is marked as a timepoint in any trips, treat it as a timepoint in all trips for sorting purposes.
-    const timepointStopIds = new Set(
-      timetable.orderedTrips.flatMap((trip) =>
-        trip.stoptimes
-          .filter((stoptime) => isTimepoint(stoptime))
-          .map((stoptime) => stoptime.stop_id ?? ''),
-      ),
-    );
-
-    for (const trip of timetable.orderedTrips) {
-      const sortedStopIds = trip.stoptimes
-        .filter((stoptime) => {
-          // If `showOnlyTimepoint` is true, then filter out all non-timepoints.
-          if (config.showOnlyTimepoint === true) {
-            return timepointStopIds.has(stoptime.stop_id ?? '');
-          }
-          return true;
-        })
-        .map((stoptime) => stoptime.stop_id ?? '');
-
-      for (const [index, stopId] of sortedStopIds.entries()) {
-        if (index === sortedStopIds.length - 1) {
-          continue;
-        }
-
-        stopGraph.push([stopId, sortedStopIds[index + 1]]);
+    return timetableStopOrders.map(({ stop_id }, index) => {
+      const column: Pick<FormattedStop, 'stop_id' | 'type'> = { stop_id };
+      if (stop_id === timetableStopOrders[index + 1]?.stop_id) {
+        column.type = 'arrival';
+      } else if (stop_id === timetableStopOrders[index - 1]?.stop_id) {
+        column.type = 'departure';
       }
+      return column;
+    });
+  }
+
+  const timepointStopIds = new Set(
+    timetable.orderedTrips.flatMap((trip) =>
+      trip.stoptimes.filter(isTimepoint).map((stoptime) => stoptime.stop_id),
+    ),
+  );
+  const patterns = uniqBy(
+    timetable.orderedTrips.map((trip) =>
+      trip.stoptimes
+        .filter(
+          (stoptime, index) =>
+            (index === 0 ||
+              stoptime.stop_id !== trip.stoptimes[index - 1].stop_id) &&
+            (!config.showOnlyTimepoint ||
+              timepointStopIds.has(stoptime.stop_id)),
+        )
+        .map((stoptime) => stoptime.stop_id ?? ''),
+    ),
+    (pattern) => JSON.stringify(pattern),
+  );
+
+  const stopGraph: [string, string][] = [];
+  for (const pattern of patterns) {
+    for (let i = 1; i < pattern.length; i++) {
+      stopGraph.push([pattern[i - 1], pattern[i]]);
     }
-
-    if (stopGraph.length === 0 && config.showOnlyTimepoint === true) {
-      timetable.warnings?.push(
-        `Timetable ${timetable.timetable_id}'s trips have stoptimes with timepoints but \`showOnlyTimepoint\` is true. Try setting \`showOnlyTimepoint\` to false.`,
-      );
-    }
-
-    const stopIds = toposort(stopGraph);
-
-    return duplicateStopsForDifferentArrivalDeparture(
-      stopIds,
-      timetable,
-      config,
-    );
-  } catch {
-    // Fall back to using the stop order from the trip with the most stoptimes.
-    // Note that this may miss some stops if the trip with the most stoptimes
-    // does not contain all stops.
-    const longestTripStoptimes = getLongestTripStoptimes(
-      timetable.orderedTrips,
-      config,
-    );
-    const stopIds = (longestTripStoptimes ?? []).map(
-      (stoptime) => stoptime.stop_id,
-    ) as string[];
-
-    const missingStopIds = difference(
-      Array.from(
-        new Set(
-          timetable.orderedTrips.flatMap((trip) =>
-            trip.stoptimes.map((stoptime) => stoptime.stop_id),
-          ),
-        ),
-      ),
-      Array.from(new Set(stopIds)),
-    ) as string[];
-
-    if (missingStopIds.length > 0) {
-      timetable.warnings?.push(
-        `Timetable ${timetable.timetable_id} stops are unable to be topologically sorted and has no \`timetable_stop_order.txt\`. Falling back to using the using the stop order from trip with most stoptimes, but this does not include stop_ids ${formatListForDisplay(missingStopIds)}. Try manually specifying stops with \`timetable_stop_order.txt\`. Read more at https://gtfstohtml.com/docs/timetable-stop-order`,
-      );
-    }
-
-    return duplicateStopsForDifferentArrivalDeparture(
-      stopIds,
-      timetable,
-      config,
+  }
+  if (stopGraph.length === 0 && config.showOnlyTimepoint === true) {
+    timetable.warnings?.push(
+      `Timetable ${timetable.timetable_id}'s trips have stoptimes with timepoints but \`showOnlyTimepoint\` is true. Try setting \`showOnlyTimepoint\` to false.`,
     );
   }
+
+  let stopIds: string[];
+  try {
+    stopIds = toposort(stopGraph);
+  } catch {
+    patterns.sort((a, b) => b.length - a.length);
+    stopIds = patterns.reduce(mergeStopSequences, []);
+  }
+  return getStopColumns(stopIds, timetable, config);
 };
 
 /*
@@ -950,9 +970,10 @@ const getStopsForTimetable = async (
     return [];
   }
 
-  const orderedStopIds = await getStopOrder(data, timetable, config);
-  const orderedStops = await Promise.all(
-    orderedStopIds.map(async (stopId, index) => {
+  const columns = await getStopOrder(data, timetable, config);
+  const orderedStops: FormattedStop[] = await Promise.all(
+    columns.map(async (column) => {
+      const stopId = column.stop_id;
       const stops = await data.stops({
         stop_id: stopId,
       });
@@ -972,28 +993,18 @@ const getStopsForTimetable = async (
         );
       }
 
-      const stop: FormattedStop = {
+      return {
         ...stops[0],
+        ...column,
         trips: [],
       };
-
-      if (
-        index < orderedStopIds.length - 1 &&
-        stopId === orderedStopIds[index + 1]
-      ) {
-        stop.type = 'arrival';
-      } else if (index > 0 && stopId === orderedStopIds[index - 1]) {
-        stop.type = 'departure';
-      }
-
-      return stop;
     }),
   );
 
   // If `showStopCity` is true, look up stop attributes.
   if (config.showStopCity) {
     const stopAttributes = await data.stopAttributes({
-      stop_id: orderedStopIds,
+      stop_id: columns.map((column) => column.stop_id),
     });
 
     for (const stopAttribute of stopAttributes) {

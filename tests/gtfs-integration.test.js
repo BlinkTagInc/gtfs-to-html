@@ -396,6 +396,69 @@ test('automatic timetables filter calendar-only service additions by the configu
   );
 });
 
+test('cyclic stop orders preserve onward times and distinct branches', async (t) => {
+  const { config } = setup(t, {
+    'stops.txt':
+      fixtureFiles['stops.txt'] +
+      'X,Shared intermediate,37.02,-122\nY,Other,37.03,-122\nD,East,37.04,-122\nE,West,37.05,-122\n',
+    'trips.txt':
+      'route_id,service_id,trip_id,direction_id\n4,s,first,0\n4,s,east,0\n4,s,west,0\n',
+    'stop_times.txt': [
+      'trip_id,arrival_time,departure_time,stop_id,stop_sequence',
+      'first,12:25:00,12:25:00,A,1',
+      'first,12:40:00,12:40:00,X,2',
+      'first,12:55:00,12:55:00,Y,3',
+      'first,13:07:00,13:07:00,B,4',
+      'east,13:35:00,13:35:00,B,1',
+      'east,13:42:00,13:44:00,X,2',
+      'east,13:52:00,13:52:00,D,3',
+      'west,13:35:00,13:35:00,B,1',
+      'west,13:42:00,13:44:00,X,2',
+      'west,13:57:00,13:57:00,E,3',
+    ].join('\n'),
+  });
+  await gtfsToHtml({ ...config, showMap: false });
+  const [timetable] = pages(config.outputPath)[0].consolidatedTimetables;
+  const rows = Object.fromEntries(
+    timetable.orderedTrips.map((trip, index) => [
+      trip.trip_id,
+      timetable.stops.flatMap((stop) => {
+        const cell = stop.trips[index];
+        if (cell.skipped) {
+          return [];
+        }
+        return [stop.stop_id + ' ' + cell.formatted_time];
+      }),
+    ]),
+  );
+  assert.deepEqual(rows, {
+    first: ['A 12:25pm', 'X 12:40pm', 'Y 12:55pm', 'B 1:07pm'],
+    east: ['B 1:35pm', 'X 1:42pm', 'X 1:44pm', 'D 1:52pm'],
+    west: ['B 1:35pm', 'X 1:42pm', 'X 1:44pm', 'E 1:57pm'],
+  });
+});
+
+test('timepoint-only loops retain separate visits after hiding an intermediate stop', async (t) => {
+  const { config } = setup(t, {
+    'trips.txt': 'route_id,service_id,trip_id,direction_id\n4,s,loop,0\n',
+    'stop_times.txt': [
+      'trip_id,arrival_time,departure_time,stop_id,stop_sequence,timepoint',
+      'loop,09:00:00,09:00:00,A,1,1',
+      'loop,09:10:00,09:10:00,B,2,0',
+      'loop,09:20:00,09:20:00,A,3,1',
+    ].join('\n'),
+  });
+  await gtfsToHtml({ ...config, showOnlyTimepoint: true, showMap: false });
+  const [timetable] = pages(config.outputPath)[0].consolidatedTimetables;
+  assert.deepEqual(
+    timetable.stops.map((stop) => [stop.stop_id, stop.trips[0].formatted_time]),
+    [
+      ['A', '9:00am'],
+      ['A', '9:20am'],
+    ],
+  );
+});
+
 test('display deduplication preserves realtime trip IDs but excludes filtered trips', async (t) => {
   for (const showDuplicateTrips of [false, true]) {
     for (const showMap of [false, true]) {
