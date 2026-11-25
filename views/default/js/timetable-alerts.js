@@ -1,6 +1,7 @@
-/* global anchorme, Pbf, FeedMessage, EntitySelector, TripDescriptor, alertPatterns, stopData, routeData, routeIds, stopIds, gtfsRealtimeUrls */
+/* global anchorme, Pbf, FeedMessage, EntitySelector, TripDescriptor, TimeRange, alertPatterns, stopData, routeData, routeIds, stopIds, gtfsRealtimeUrls */
 
 let gtfsRealtimeAlertsInterval;
+let alertWindowTimer;
 
 // Preserve optional selector fields. The packaged decoder otherwise supplies
 // route_type 0 (tram) even when absent and skips direction_id entirely.
@@ -22,6 +23,11 @@ EntitySelector.read = function (pbf, end) {
     {},
     end,
   );
+};
+
+// An omitted end is open-ended. An explicit zero is the Unix epoch.
+TimeRange.read = function (pbf, end) {
+  return pbf.readFields(TimeRange._readField, {}, end);
 };
 
 async function fetchGtfsRealtime(url, headers) {
@@ -160,6 +166,119 @@ function matchesAlertSelector(entity, pattern) {
   );
 }
 
+function renderAlerts(alerts) {
+  clearTimeout(alertWindowTimer);
+  const now = Date.now() / 1000;
+  let nextBoundary = Infinity;
+  const formattedAlerts = [];
+
+  for (const alert of alerts) {
+    const entities = alert.alert?.informed_entity ?? [];
+    const matchedRoutes = new Set();
+    const matchedStops = new Set();
+
+    for (const entity of entities) {
+      for (const pattern of alertPatterns) {
+        if (!matchesAlertSelector(entity, pattern)) {
+          continue;
+        }
+        if (entity.stop_id) {
+          matchedStops.add(entity.stop_id);
+        }
+        if (
+          !entity.stop_id ||
+          entity.route_id ||
+          entity.trip ||
+          entity.route_type !== undefined ||
+          entity.agency_id ||
+          entity.direction_id !== undefined
+        ) {
+          matchedRoutes.add(pattern.routeId);
+        }
+      }
+    }
+
+    const affectedRouteIdsInTimetable = routeIds.filter((id) =>
+      matchedRoutes.has(id),
+    );
+    const affectedStopsIdsInTimetable = stopIds.filter((id) =>
+      matchedStops.has(id),
+    );
+
+    // Hide alerts that don't affect any stops or routes in this timetable
+    if (
+      affectedStopsIdsInTimetable.length === 0 &&
+      affectedRouteIdsInTimetable.length === 0
+    ) {
+      continue;
+    }
+
+    const periods = alert.alert.active_period ?? [];
+    for (const { start, end } of periods) {
+      if (start > now) {
+        nextBoundary = Math.min(nextBoundary, start);
+      }
+      if (end > now) {
+        nextBoundary = Math.min(nextBoundary, end);
+      }
+    }
+
+    if (
+      periods.length > 0 &&
+      !periods.some(
+        ({ start, end }) =>
+          (start !== undefined || end !== undefined) &&
+          (start === undefined || start <= now) &&
+          (end === undefined || now < end),
+      )
+    ) {
+      continue;
+    }
+
+    try {
+      formattedAlerts.push(
+        formatAlertAsHtml(
+          alert,
+          affectedRouteIdsInTimetable,
+          affectedStopsIdsInTimetable,
+        ),
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  // Remove previously posted GTFS-RT alerts
+  const existingAlerts = document.querySelectorAll(
+    '.timetable-alerts-list .timetable-alert',
+  );
+  existingAlerts.forEach((alert) => alert.remove());
+
+  if (formattedAlerts.length > 0) {
+    // Remove the empty message if present
+    const emptyMessage = document.querySelector('.timetable-alert-empty');
+    if (emptyMessage) {
+      emptyMessage.style.display = 'none';
+    }
+
+    const alertsList = document.querySelector('.timetable-alerts-list');
+    for (const alert of formattedAlerts) {
+      alertsList.appendChild(alert);
+    }
+  } else {
+    // Replace the empty message if present
+    const emptyMessage = document.querySelector('.timetable-alert-empty');
+    if (emptyMessage) {
+      emptyMessage.style.display = 'block';
+    }
+  }
+  // Re-evaluate the last feed at the boundary, even between downloads.
+  if (Number.isFinite(nextBoundary)) {
+    const delay = Math.min(nextBoundary * 1000 - Date.now(), 2 ** 31 - 1);
+    alertWindowTimer = setTimeout(() => renderAlerts(alerts), delay);
+  }
+}
+
 async function updateAlerts() {
   if (!gtfsRealtimeUrls?.realtimeAlerts) {
     return;
@@ -175,86 +294,7 @@ async function updateAlerts() {
       return;
     }
 
-    const formattedAlerts = [];
-
-    for (const alert of alerts) {
-      const entities = alert.alert?.informed_entity ?? [];
-      const matchedRoutes = new Set();
-      const matchedStops = new Set();
-
-      for (const entity of entities) {
-        for (const pattern of alertPatterns) {
-          if (!matchesAlertSelector(entity, pattern)) {
-            continue;
-          }
-          if (entity.stop_id) {
-            matchedStops.add(entity.stop_id);
-          }
-          if (
-            !entity.stop_id ||
-            entity.route_id ||
-            entity.trip ||
-            entity.route_type !== undefined ||
-            entity.agency_id ||
-            entity.direction_id !== undefined
-          ) {
-            matchedRoutes.add(pattern.routeId);
-          }
-        }
-      }
-
-      const affectedRouteIdsInTimetable = routeIds.filter((id) =>
-        matchedRoutes.has(id),
-      );
-      const affectedStopsIdsInTimetable = stopIds.filter((id) =>
-        matchedStops.has(id),
-      );
-
-      // Hide alerts that don't affect any stops or routes in this timetable
-      if (
-        affectedStopsIdsInTimetable.length === 0 &&
-        affectedRouteIdsInTimetable.length === 0
-      ) {
-        continue;
-      }
-
-      try {
-        formattedAlerts.push(
-          formatAlertAsHtml(
-            alert,
-            affectedRouteIdsInTimetable,
-            affectedStopsIdsInTimetable,
-          ),
-        );
-      } catch (error) {
-        console.error(error);
-      }
-    }
-
-    // Remove previously posted GTFS-RT alerts
-    const existingAlerts = document.querySelectorAll(
-      '.timetable-alerts-list .timetable-alert',
-    );
-    existingAlerts.forEach((alert) => alert.remove());
-
-    if (formattedAlerts.length > 0) {
-      // Remove the empty message if present
-      const emptyMessage = document.querySelector('.timetable-alert-empty');
-      if (emptyMessage) {
-        emptyMessage.style.display = 'none';
-      }
-
-      const alertsList = document.querySelector('.timetable-alerts-list');
-      for (const alert of formattedAlerts) {
-        alertsList.appendChild(alert);
-      }
-    } else {
-      // Replace the empty message if present
-      const emptyMessage = document.querySelector('.timetable-alert-empty');
-      if (emptyMessage) {
-        emptyMessage.style.display = 'block';
-      }
-    }
+    renderAlerts(alerts);
   } catch (error) {
     console.error(error);
   }

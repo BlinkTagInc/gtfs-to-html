@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Show GTFS-Realtime alerts only during their published effective windows. Alerts without a effective window stay visible while the feed includes them.
 - Fixed GTFS-Realtime alert matching so trip-specific alerts appear on the correct timetables and route-specific alerts no longer appear on other routes that share a stop.
 - Bound memory and CPU use for cyclic GTFS stop patterns
 
