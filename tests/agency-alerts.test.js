@@ -95,7 +95,19 @@ test('alerts match all selector fields on the same timetable service', async (t)
                 id: title,
                 alert: {
                   informed_entity: selectors,
-                  header_text: { translation: [{ text: title }] },
+                  header_text: {
+                    translation: [
+                      {
+                        text:
+                          window.updatedBusAlert && title === 'Buses only'
+                            ? 'Updated bus notice'
+                            : title,
+                      },
+                    ],
+                  },
+                  url: {
+                    translation: [{ text: 'https://example.test/details' }],
+                  },
                   description_text: { translation: [{ text: 'Details' }] },
                 },
               }),
@@ -141,6 +153,30 @@ test('alerts match all selector fields on the same timetable service', async (t)
           ]
         : ['Agency closure', 'Inbound trip', 'Buses only', 'Either route'],
     );
+    // Tab onto the second alert's link, then refresh with identical data
+    // and again with a change to a different card.
+    await page.focus('.alert-more-info');
+    await page.keyboard.press('Tab');
+    assert.equal(
+      await page.evaluate(async () => {
+        const link = document.activeElement;
+        if (link !== document.querySelectorAll('.alert-more-info')[1]) {
+          return false;
+        }
+        await updateAlerts();
+        window.updatedBusAlert = true;
+        await updateAlerts();
+        return link === document.activeElement && link.isConnected;
+      }),
+      true,
+    );
+    assert.ok(
+      await page.evaluate(() =>
+        [...document.querySelectorAll('.alert-title')].some(
+          (el) => el.textContent === 'Updated bus notice',
+        ),
+      ),
+    );
     await page.evaluate(async () => {
       window.alertResponseStatus = 503;
       await updateAlerts();
@@ -153,7 +189,9 @@ test('alerts match all selector fields on the same timetable service', async (t)
       await page.$$eval('.alert-title', (elements) =>
         elements.map((el) => el.textContent),
       ),
-      titles,
+      titles.map((title) =>
+        title === 'Buses only' ? 'Updated bus notice' : title,
+      ),
     );
     await page.evaluate(async () => {
       window.alertResponseStatus = 200;

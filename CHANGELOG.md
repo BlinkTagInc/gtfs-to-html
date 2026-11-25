@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Don't rerender existing alerts when refreshing.
 - In multi-source feeds, show the service alerts panel only for sources with a configured realtime alert feed.
 - Better service alerts loading indicator.
 - Show GTFS-Realtime alerts only during their published effective windows. Alerts without a effective window stay visible while the feed includes them.

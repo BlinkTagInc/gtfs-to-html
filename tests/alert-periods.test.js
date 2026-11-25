@@ -69,7 +69,12 @@ test('re-evaluates decoded alert periods at each boundary between feed polls', a
     routeIds: ['r'],
     stopIds: [],
     alertPatterns: [{ routeId: 'r' }],
-    record: (entity) => displayed.push(entity.id),
+    record: (entity) => {
+      displayed.push(entity.id);
+      return {
+        remove: () => displayed.splice(displayed.indexOf(entity.id), 1),
+      };
+    },
   };
   const scripts = await Promise.all(
     [
@@ -94,7 +99,6 @@ test('re-evaluates decoded alert periods at each boundary between feed polls', a
     assert.ok(scheduled);
     assert.equal(scheduled.delay, 1000);
     now = second * 1000;
-    displayed.length = 0;
     scheduled.callback();
     assert.deepEqual(
       displayed,

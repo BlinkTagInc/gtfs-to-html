@@ -2,6 +2,7 @@
 
 let gtfsRealtimeAlertsInterval;
 let alertWindowTimer;
+const alertCards = new Map();
 let alertRefreshPending = false;
 let alertRefreshWarning = '';
 let lastAlertRefresh;
@@ -176,7 +177,8 @@ function renderAlerts(alerts) {
   clearTimeout(alertWindowTimer);
   const now = Date.now() / 1000;
   let nextBoundary = Infinity;
-  const formattedAlerts = [];
+  const alertsList = document.querySelector('.timetable-alerts-list');
+  const visibleKeys = new Set();
 
   for (const alert of alerts) {
     const entities = alert.alert?.informed_entity ?? [];
@@ -242,33 +244,43 @@ function renderAlerts(alerts) {
     }
 
     try {
-      formattedAlerts.push(
-        formatAlertAsHtml(
+      const key = alert.id;
+      const signature = JSON.stringify([
+        alert.alert.header_text?.translation?.[0]?.text,
+        alert.alert.description_text?.translation?.[0]?.text,
+        alert.alert.url?.translation?.[0]?.text,
+        affectedRouteIdsInTimetable,
+        affectedStopsIdsInTimetable,
+      ]);
+      const existing = alertCards.get(key);
+      if (existing?.signature !== signature) {
+        const element = formatAlertAsHtml(
           alert,
           affectedRouteIdsInTimetable,
           affectedStopsIdsInTimetable,
-        ),
-      );
+        );
+        if (existing) {
+          existing.element.replaceWith(element);
+        } else {
+          alertsList.appendChild(element);
+        }
+        alertCards.set(key, { signature, element });
+      }
+      visibleKeys.add(key);
     } catch (error) {
       console.error(error);
     }
   }
 
-  // Remove previously posted GTFS-RT alerts
-  const existingAlerts = document.querySelectorAll(
-    '.timetable-alerts-list .timetable-alert',
-  );
-  existingAlerts.forEach((alert) => alert.remove());
-
-  const alertsList = document.querySelector('.timetable-alerts-list');
-  for (const alert of formattedAlerts) {
-    alertsList.appendChild(alert);
+  for (const [key, card] of alertCards) {
+    if (!visibleKeys.has(key)) {
+      card.element.remove();
+      alertCards.delete(key);
+    }
   }
   setAlertStatus(
     alertRefreshWarning ||
-      (formattedAlerts.length
-        ? ''
-        : 'There are no service alerts at this time.'),
+      (visibleKeys.size ? '' : 'There are no service alerts at this time.'),
   );
 
   // Re-evaluate the last feed at the boundary, even between downloads.
@@ -281,7 +293,9 @@ function renderAlerts(alerts) {
 function setAlertStatus(message) {
   const status = document.querySelector('.timetable-alert-empty');
   if (status) {
-    status.textContent = message;
+    if (status.textContent !== message) {
+      status.textContent = message;
+    }
     status.style.display = message ? 'block' : 'none';
   }
 }
