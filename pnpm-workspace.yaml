@@ -2,8 +2,7 @@ allowBuilds:
   puppeteer: true
 
 minimumReleaseAgeExclude:
-  - gtfs@5.0.0-beta.2
-  - lint-staged@17.6.2
+  - '@maplibre/maplibre-gl-geocoder@1.9.5'
 
 overrides:
   minimatch@>=7.0.0 <11.0.1: ^11.0.9
