@@ -48,9 +48,15 @@ test('alerts match all selector fields on the same timetable service', async (t)
     const page = await browser.newPage();
     await page.evaluateOnNewDocument(() => {
       const originalFetch = window.fetch;
+      window.alertResponseStatus = 503;
       window.fetch = (url, options) => {
         if (url !== 'https://example.com/alerts') {
           return originalFetch(url, options);
+        }
+        if (window.alertResponseStatus !== 200) {
+          return Promise.resolve(
+            new Response(null, { status: window.alertResponseStatus }),
+          );
         }
         const alerts = [
           ['Agency closure', { agency_id: 'a' }],
@@ -83,14 +89,17 @@ test('alerts match all selector fields on the same timetable service', async (t)
         const writer = new Pbf.PbfWriter();
         FeedMessage.write(
           {
-            entity: alerts.map(([title, ...selectors]) => ({
-              id: title,
-              alert: {
-                informed_entity: selectors,
-                header_text: { translation: [{ text: title }] },
-                description_text: { translation: [{ text: 'Details' }] },
-              },
-            })),
+            header: { gtfs_realtime_version: '2.0' },
+            entity: (window.emptyAlertFeed ? [] : alerts).map(
+              ([title, ...selectors]) => ({
+                id: title,
+                alert: {
+                  informed_entity: selectors,
+                  header_text: { translation: [{ text: title }] },
+                  description_text: { translation: [{ text: 'Details' }] },
+                },
+              }),
+            ),
           },
           writer,
         );
@@ -99,6 +108,17 @@ test('alerts match all selector fields on the same timetable service', async (t)
     });
     await page.goto(pathToFileURL(join(outputPath, name)).href, {
       waitUntil: 'domcontentloaded',
+    });
+    const status = () =>
+      document.querySelector('.timetable-alert-empty').textContent;
+    await page.waitForFunction(
+      () =>
+        document.querySelector('.timetable-alert-empty').textContent ===
+        'Service alerts are temporarily unavailable.',
+    );
+    await page.evaluate(async () => {
+      window.alertResponseStatus = 200;
+      await updateAlerts();
     });
     await page.waitForSelector('.alert-title', { timeout: 5000 });
     const { titles, routeId } = await page.evaluate(() => ({
@@ -121,6 +141,30 @@ test('alerts match all selector fields on the same timetable service', async (t)
           ]
         : ['Agency closure', 'Inbound trip', 'Buses only', 'Either route'],
     );
+    await page.evaluate(async () => {
+      window.alertResponseStatus = 503;
+      await updateAlerts();
+    });
+    assert.match(
+      await page.evaluate(status),
+      /temporarily unavailable.*Last checked:/,
+    );
+    assert.deepEqual(
+      await page.$$eval('.alert-title', (elements) =>
+        elements.map((el) => el.textContent),
+      ),
+      titles,
+    );
+    await page.evaluate(async () => {
+      window.alertResponseStatus = 200;
+      window.emptyAlertFeed = true;
+      await updateAlerts();
+    });
+    assert.equal(
+      await page.evaluate(status),
+      'There are no service alerts at this time.',
+    );
+    assert.equal(await page.$('.alert-title'), null);
     await page.close();
   }
 });

@@ -2,6 +2,9 @@
 
 let gtfsRealtimeAlertsInterval;
 let alertWindowTimer;
+let alertRefreshPending = false;
+let alertRefreshWarning = '';
+let lastAlertRefresh;
 
 // Preserve optional selector fields. The packaged decoder otherwise supplies
 // route_type 0 (tram) even when absent and skips direction_id entirely.
@@ -44,6 +47,9 @@ async function fetchGtfsRealtime(url, headers) {
   }
 
   const bufferRes = await response.arrayBuffer();
+  if (bufferRes.byteLength === 0) {
+    throw new Error('Empty realtime feed response');
+  }
   const pbf = new Pbf.PbfReader(new Uint8Array(bufferRes));
   const obj = FeedMessage.read(pbf);
   return obj.entity;
@@ -254,24 +260,17 @@ function renderAlerts(alerts) {
   );
   existingAlerts.forEach((alert) => alert.remove());
 
-  if (formattedAlerts.length > 0) {
-    // Remove the empty message if present
-    const emptyMessage = document.querySelector('.timetable-alert-empty');
-    if (emptyMessage) {
-      emptyMessage.style.display = 'none';
-    }
-
-    const alertsList = document.querySelector('.timetable-alerts-list');
-    for (const alert of formattedAlerts) {
-      alertsList.appendChild(alert);
-    }
-  } else {
-    // Replace the empty message if present
-    const emptyMessage = document.querySelector('.timetable-alert-empty');
-    if (emptyMessage) {
-      emptyMessage.style.display = 'block';
-    }
+  const alertsList = document.querySelector('.timetable-alerts-list');
+  for (const alert of formattedAlerts) {
+    alertsList.appendChild(alert);
   }
+  setAlertStatus(
+    alertRefreshWarning ||
+      (formattedAlerts.length
+        ? ''
+        : 'There are no service alerts at this time.'),
+  );
+
   // Re-evaluate the last feed at the boundary, even between downloads.
   if (Number.isFinite(nextBoundary)) {
     const delay = Math.min(nextBoundary * 1000 - Date.now(), 2 ** 31 - 1);
@@ -279,24 +278,38 @@ function renderAlerts(alerts) {
   }
 }
 
+function setAlertStatus(message) {
+  const status = document.querySelector('.timetable-alert-empty');
+  if (status) {
+    status.textContent = message;
+    status.style.display = message ? 'block' : 'none';
+  }
+}
+
 async function updateAlerts() {
-  if (!gtfsRealtimeUrls?.realtimeAlerts) {
+  if (!gtfsRealtimeUrls?.realtimeAlerts?.url || alertRefreshPending) {
     return;
   }
 
+  alertRefreshPending = true;
   try {
     const alerts = await fetchGtfsRealtime(
       gtfsRealtimeUrls.realtimeAlerts.url,
       gtfsRealtimeUrls.realtimeAlerts.headers,
     );
-
-    if (!alerts) {
-      return;
-    }
-
+    alertRefreshWarning = '';
     renderAlerts(alerts);
+    lastAlertRefresh = new Date();
   } catch (error) {
     console.error(error);
+    alertRefreshWarning = 'Service alerts are temporarily unavailable.';
+    if (lastAlertRefresh) {
+      alertRefreshWarning +=
+        ' Last checked: ' + lastAlertRefresh.toLocaleString() + '.';
+    }
+    setAlertStatus(alertRefreshWarning);
+  } finally {
+    alertRefreshPending = false;
   }
 }
 
@@ -307,7 +320,14 @@ if (document.readyState === 'loading') {
 }
 
 function initializeAlerts() {
-  if (!gtfsRealtimeAlertsInterval && gtfsRealtimeUrls?.realtimeAlerts?.url) {
+  if (
+    typeof gtfsRealtimeUrls === 'undefined' ||
+    !gtfsRealtimeUrls?.realtimeAlerts?.url
+  ) {
+    setAlertStatus('Service alerts are temporarily unavailable.');
+    return;
+  }
+  if (!gtfsRealtimeAlertsInterval) {
     const alertUpdateInterval = 60 * 1000; // Every Minute
     updateAlerts();
     gtfsRealtimeAlertsInterval = setInterval(() => {
