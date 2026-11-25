@@ -1612,6 +1612,8 @@ const formatTimetables = async (
   config: Config,
   onWarning: (warning: string) => void,
 ) => {
+  const agencies = config.showMap ? await data.agencies() : [];
+  const defaultAgencyId = agencies.length === 1 ? agencies[0].agency_id : null;
   const failedTimetables = new Set<FormattedTimetable>();
   const formattedTimetables = await Promise.all(
     timetables.map(async (timetable) => {
@@ -1744,6 +1746,7 @@ const formatTimetables = async (
             data,
             timetable,
             config,
+            defaultAgencyId,
           );
         }
 
@@ -2273,7 +2276,7 @@ export async function generateTimetableHTML(
   timetablePage: FormattedTimetablePage,
   config: Config,
 ) {
-  const agencies = (await data.agencies()) as { agency_name: string }[];
+  const agencies = await data.agencies();
   const templateVars = {
     timetablePage,
     config,
@@ -2332,7 +2335,7 @@ export async function generateOverviewHTML(
   timetablePages: TimetablePageSummary[],
   config: Config,
 ) {
-  const agencies = (await data.agencies()) as { agency_name: string }[];
+  const agencies = await data.agencies();
   if (agencies.length === 0) {
     throw new GtfsToHtmlError('No agencies found', {
       code: GtfsToHtmlErrorCode.QUERY_RESULT_NOT_FOUND,
@@ -2342,7 +2345,11 @@ export async function generateOverviewHTML(
   }
 
   const geojson = config.showMap
-    ? await getAgencyGeoJSON(data, config)
+    ? await getAgencyGeoJSON(
+        data,
+        config,
+        agencies.length === 1 ? agencies[0].agency_id : null,
+      )
     : undefined;
 
   const templateVars = {

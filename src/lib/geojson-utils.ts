@@ -6,6 +6,17 @@ import { getBaseTripIds } from './trip-id-utils.js';
 
 import type { Config, FormattedTimetable } from '../types/index.ts';
 
+// GTFS allows routes to omit agency_id when the source has a single agency.
+function withDefaultAgencyId<Route extends { agency_id?: string | null }>(
+  route: Route,
+  defaultAgencyId: string | null | undefined,
+): Route {
+  if (route.agency_id || !defaultAgencyId) {
+    return route;
+  }
+  return { ...route, agency_id: defaultAgencyId };
+}
+
 type GeoJSONFeatureCollection = GeoJSON.FeatureCollection;
 
 /*
@@ -49,10 +60,11 @@ export async function getTimetableGeoJSON(
   data: GtfsReader,
   timetable: FormattedTimetable,
   config: Config,
+  defaultAgencyId: string | null | undefined,
 ) {
   const tripIds = getBaseTripIds(timetable.orderedTrips);
 
-  const geojson = await buildGeoJSON(data, tripIds);
+  const geojson = await buildGeoJSON(data, defaultAgencyId, tripIds);
 
   let simplifiedGeojson;
   try {
@@ -73,8 +85,12 @@ export async function getTimetableGeoJSON(
 /*
  * Get the geoJSON for an agency (all routes and stops).
  */
-export async function getAgencyGeoJSON(data: GtfsReader, config: Config) {
-  const geojson = await buildGeoJSON(data);
+export async function getAgencyGeoJSON(
+  data: GtfsReader,
+  config: Config,
+  defaultAgencyId: string | null | undefined,
+) {
+  const geojson = await buildGeoJSON(data, defaultAgencyId);
 
   let simplifiedGeojson;
   try {
@@ -93,7 +109,11 @@ export async function getAgencyGeoJSON(data: GtfsReader, config: Config) {
 // Routes GeoJSON selects complete routes. Build each route's geometry
 // from the actual timetable trips instead, retaining the browser's route feature
 // properties and a stop-to-stop fallback for trips without usable shapes.
-async function buildGeoJSON(data: GtfsReader, tripIds?: string[]) {
+async function buildGeoJSON(
+  data: GtfsReader,
+  defaultAgencyId: string | null | undefined,
+  tripIds?: string[],
+) {
   const trips = await data.trips(tripIds ? { trip_id: tripIds } : {});
   const routes = await data.routes({
     route_id: [...new Set(trips.map((trip) => trip.route_id))],
@@ -147,7 +167,7 @@ async function buildGeoJSON(data: GtfsReader, tripIds?: string[]) {
       features.push({
         type: 'Feature',
         properties: {
-          ...route,
+          ...withDefaultAgencyId(route, defaultAgencyId),
           route_color: route.route_color ? `#${route.route_color}` : null,
           route_text_color: route.route_text_color
             ? `#${route.route_text_color}`
@@ -159,7 +179,15 @@ async function buildGeoJSON(data: GtfsReader, tripIds?: string[]) {
   }
   for (const feature of publicStopFeatures) {
     if (tripIds === undefined || usedStops.has(feature.properties.stop_id)) {
-      features.push(feature);
+      features.push({
+        ...feature,
+        properties: {
+          ...feature.properties,
+          routes: feature.properties.routes.map((route) =>
+            withDefaultAgencyId(route, defaultAgencyId),
+          ),
+        },
+      });
     }
   }
   return featureCollection(features);

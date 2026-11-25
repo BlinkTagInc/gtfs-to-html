@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Bound memory and CPU use for cyclic GTFS stop patterns
 
+### Updated
+
+- Handle GTFS-Realtime alerts that specify only agency_id on route pages
+
 ## [2.15.0] - 2026-11-22
 
 ### Updated

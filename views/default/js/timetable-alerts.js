@@ -1,6 +1,22 @@
-/* global anchorme, Pbf, FeedMessage, stopData, routeData, routeIds, tripIds, stopIds, gtfsRealtimeUrls */
+/* global anchorme, Pbf, FeedMessage, EntitySelector, stopData, routeData, routeIds, stopIds, gtfsRealtimeUrls */
 
 let gtfsRealtimeAlertsInterval;
+
+// Preserve optional selector fields. The packaged decoder otherwise supplies
+// route_type 0 (tram) even when absent and skips direction_id entirely.
+EntitySelector.read = function (pbf, end) {
+  return pbf.readFields(
+    (tag, entity, reader) => {
+      if (tag === 6) {
+        entity.direction_id = reader.readVarint();
+      } else {
+        EntitySelector._readField(tag, entity, reader);
+      }
+    },
+    {},
+    end,
+  );
+};
 
 async function fetchGtfsRealtime(url, headers) {
   if (!url) {
@@ -124,24 +140,28 @@ async function updateAlerts() {
     const formattedAlerts = [];
 
     for (const alert of alerts) {
-      const affectedRouteIds = [
-        ...new Set([
-          ...alert.alert.informed_entity
-            .filter(
-              (entity) =>
-                entity.route_id !== undefined && entity.route_id !== '',
-            )
-            .map((entity) => entity.route_id),
-        ]),
-      ];
-
+      const entities = alert.alert?.informed_entity ?? [];
       const affectedRouteIdsInTimetable = routeIds.filter((routeId) =>
-        affectedRouteIds.includes(routeId),
+        entities.some((entity) => {
+          if (entity.route_id === routeId) {
+            return true;
+          }
+
+          return (
+            entity.agency_id &&
+            entity.agency_id === routeData[routeId]?.agency_id &&
+            !entity.route_id &&
+            !entity.stop_id &&
+            !entity.trip &&
+            entity.route_type === undefined &&
+            entity.direction_id === undefined
+          );
+        }),
       );
 
       const affectedStopIds = [
         ...new Set([
-          ...alert.alert.informed_entity
+          ...entities
             .filter(
               (entity) => entity.stop_id !== undefined && entity.stop_id !== '',
             )

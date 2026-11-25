@@ -906,8 +906,10 @@ for (const groupTimetablesIntoPages of [true, false]) {
   }
 }
 
-test('GeoJSON omits source IDs and GTFS Plus attributes', async (t) => {
+test('GeoJSON resolves the single agency and omits source IDs and GTFS Plus attributes', async (t) => {
   const { config } = setup(t, {
+    'routes.txt':
+      'route_id,route_short_name,route_long_name,route_type\n4,4,Downtown,3\n',
     'route_attributes.txt':
       'route_id,category,subcategory,running_way\n4,3,101,1\n',
     'stop_attributes.txt': 'stop_id,stop_city\nA,Test City\n',
@@ -938,10 +940,12 @@ test('GeoJSON omits source IDs and GTFS Plus attributes', async (t) => {
     const route = stop.properties.routes.find((row) => row.route_id === '4');
     assert.equal(route.route_short_name, '4');
     assert.equal(route.route_type, 3);
-    assert.ok(
-      geojson.features.some(
+    assert.equal(route.agency_id, 'a');
+    assert.equal(
+      geojson.features.find(
         (feature) => feature.geometry.type === 'MultiLineString',
-      ),
+      ).properties.agency_id,
+      'a',
     );
   }
 });
