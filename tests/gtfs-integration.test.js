@@ -202,6 +202,42 @@ test('overlapping source IDs remain isolated, including calendars, extensions, o
   }
 });
 
+test('each source exports only its own alert feed when timetable IDs overlap', async (t) => {
+  const { config, feed } = setup(t);
+  const agencies = ['one', 'two', 'offline'].map((agencyKey) => ({
+    agencyKey,
+    path: feed,
+    ...(agencyKey === 'offline'
+      ? {}
+      : { realtimeAlerts: { url: `https://example.test/${agencyKey}` } }),
+  }));
+  await gtfsToHtml({
+    ...config,
+    templatePath: undefined,
+    noHead: false,
+    agencies,
+  });
+  for (const { agencyKey, realtimeAlerts } of agencies) {
+    const directory = join(config.outputPath, 'source-' + agencyKey);
+    const file = readdirSync(directory, { recursive: true }).find((name) =>
+      name.endsWith('page.html'),
+    );
+    const html = readFileSync(join(directory, file), 'utf8');
+    assert.equal(
+      html.includes('class="timetable-alerts"'),
+      Boolean(realtimeAlerts),
+    );
+    for (const agency of agencies) {
+      if (agency.realtimeAlerts) {
+        assert.equal(
+          html.includes(agency.realtimeAlerts.url),
+          agency.agencyKey === agencyKey,
+        );
+      }
+    }
+  }
+});
+
 test('maps select the matching direction and service-period trips, including their stops', async (t) => {
   const { config } = setup(t, {
     'trips.txt':

@@ -109,7 +109,7 @@ if (config.agencies.length > 1) {
 }
 for (const agency of config.agencies) {
   const data = readers.get(sourceId(agency))!;
-  const sourceConfig = { ...config, agencies: [agency] };
+  const sourceConfig = setDefaultConfig({ ...config, agencies: [agency] });
   const basePath =
     config.agencies.length > 1
       ? `/sources/${encodeURIComponent(sourceId(agency))}`
