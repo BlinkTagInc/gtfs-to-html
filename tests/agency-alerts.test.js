@@ -8,7 +8,7 @@ import puppeteer from 'puppeteer';
 import gtfsToHtml from '../dist/index.js';
 import { fixtureFiles } from './fixtures/feed.js';
 
-test('agency-wide alerts appear on every route page with maps enabled', async (t) => {
+test('alerts match all selector fields on the same timetable service', async (t) => {
   const root = await mkdtemp(join(tmpdir(), 'gtfs-agency-alerts-'));
   t.after(() => rm(root, { recursive: true, force: true }));
   const feed = join(root, 'feed');
@@ -58,12 +58,24 @@ test('agency-wide alerts appear on every route page with maps enabled', async (t
           ['Route 4 only', { agency_id: 'a', route_id: '4' }],
           ['Other stop', { agency_id: 'a', stop_id: 'X' }],
           ['Specific trip', { agency_id: 'a', trip: { trip_id: 'out' } }],
+          ['Unresolved trip', { trip: { route_id: '4' } }],
+          ['Inbound trip', { trip: { trip_id: 'back' } }],
+          ['Shared stop on Route 4', { route_id: '4', stop_id: 'B' }],
+          ['Unknown stop on Route 4', { route_id: '4', stop_id: 'X' }],
+          ['Wrong agency on Route 4', { agency_id: 'b', route_id: '4' }],
+          ['Direction zero', { route_id: '4', direction_id: 0 }],
+          ['Wrong direction', { route_id: '5', direction_id: 0 }],
+          ['Buses only', { route_type: 3 }],
+          ['Either route', { route_id: '4' }, { trip: { trip_id: 'back' } }],
           ['Trams only', { agency_id: 'a', route_type: 0 }],
         ];
         // The bundled writer omits explicit zero values.
         const writeSelector = EntitySelector.write;
         EntitySelector.write = (selector, pbf) => {
           writeSelector(selector, pbf);
+          if (selector.direction_id !== undefined) {
+            pbf.writeVarintField(6, selector.direction_id);
+          }
           if (selector.route_type === 0) {
             pbf.writeVarintField(3, 0);
           }
@@ -71,10 +83,10 @@ test('agency-wide alerts appear on every route page with maps enabled', async (t
         const writer = new Pbf.PbfWriter();
         FeedMessage.write(
           {
-            entity: alerts.map(([title, selector]) => ({
+            entity: alerts.map(([title, ...selectors]) => ({
               id: title,
               alert: {
-                informed_entity: [selector],
+                informed_entity: selectors,
                 header_text: { translation: [{ text: title }] },
                 description_text: { translation: [{ text: 'Details' }] },
               },
@@ -97,7 +109,17 @@ test('agency-wide alerts appear on every route page with maps enabled', async (t
     }));
     assert.deepEqual(
       titles,
-      routeId === '4' ? ['Agency closure', 'Route 4 only'] : ['Agency closure'],
+      routeId === '4'
+        ? [
+            'Agency closure',
+            'Route 4 only',
+            'Specific trip',
+            'Shared stop on Route 4',
+            'Direction zero',
+            'Buses only',
+            'Either route',
+          ]
+        : ['Agency closure', 'Inbound trip', 'Buses only', 'Either route'],
     );
     await page.close();
   }

@@ -1377,6 +1377,18 @@ const filterTrips = (
   // schedules are combined into a single displayed trip below.
   timetable.trip_ids = getBaseTripIds(filteredTrips);
 
+  if (config.hasGtfsRealtimeAlerts) {
+    const groups = groupBy(filteredTrips, (trip) =>
+      JSON.stringify([trip.route_id, trip.direction_id, trip.alertStopIds]),
+    );
+    timetable.alertPatterns = Object.values(groups).map((trips) => ({
+      routeId: trips[0].route_id,
+      directionId: trips[0].direction_id,
+      stopIds: trips[0].alertStopIds ?? [],
+      tripIds: getBaseTripIds(trips),
+    }));
+  }
+
   if (config.showDuplicateTrips === false) {
     filteredTrips = deduplicateTrips(filteredTrips);
   }
@@ -1551,6 +1563,13 @@ const getTripsForTimetable = async (
       if (formattedTrip.continues_from_route) {
         timetable.has_continues_from_route = true;
       }
+    }
+
+    if (config.hasGtfsRealtimeAlerts) {
+      // Keep platform IDs before parent-station grouping and timetable stop filtering.
+      formattedTrip.alertStopIds = uniq(
+        compact(formattedTrip.stoptimes.map((time) => time.stop_id)),
+      ).sort();
     }
 
     const tripFrequencies = frequencies.filter(

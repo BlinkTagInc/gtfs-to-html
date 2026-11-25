@@ -9,6 +9,12 @@ export interface FormattedTimetable extends Mutable<Row<Gtfs.Timetables>> {
   timetableLabelOverride?: string | null;
   route_ids: string[];
   trip_ids: string[];
+  alertPatterns?: {
+    routeId: string;
+    directionId: FormattedTrip['direction_id'];
+    stopIds: string[];
+    tripIds: string[];
+  }[];
   routes: Row<Gtfs.Routes>[];
   orderedTrips: FormattedTrip[];
   stops: FormattedStop[];

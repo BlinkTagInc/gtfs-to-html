@@ -68,5 +68,5 @@ include formatting_functions.pug
 
   if config.showMap
     script.
-        const { gtfsRealtimeUrls, mapStyleUrl, routeData, stopData, pageData: { routeIds, tripIds,  stopIds, geojsons } } = !{JSON.stringify(prepareMapData(timetablePage, config))};
+        const { alertPatterns, gtfsRealtimeUrls, mapStyleUrl, routeData, stopData, pageData: { routeIds, tripIds,  stopIds, geojsons } } = !{JSON.stringify(prepareMapData(timetablePage, config))};
         createMaps();

@@ -18,6 +18,7 @@ export interface BlockTrip extends Pick<
 }
 
 export interface FormattedTrip extends Mutable<Row<Gtfs.Trips>> {
+  alertStopIds?: string[];
   stoptimes: FormattedStopTime[];
   firstStoptime?: number;
   lastStoptime?: number;

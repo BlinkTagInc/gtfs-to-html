@@ -151,6 +151,7 @@
 
     return {
       gtfsRealtimeUrls,
+      alertPatterns: timetablePage.consolidatedTimetables.flatMap(timetable => timetable.alertPatterns ?? []),
       mapStyleUrl: config.mapStyleUrl,
       pageData: {
         routeIds: Array.from(new Set(_.flatMap(timetablePage.consolidatedTimetables, timetable => timetable.routes.map(route => route.route_id)))).sort(),

@@ -1,4 +1,4 @@
-/* global anchorme, Pbf, FeedMessage, EntitySelector, stopData, routeData, routeIds, stopIds, gtfsRealtimeUrls */
+/* global anchorme, Pbf, FeedMessage, EntitySelector, TripDescriptor, alertPatterns, stopData, routeData, routeIds, stopIds, gtfsRealtimeUrls */
 
 let gtfsRealtimeAlertsInterval;
 
@@ -7,7 +7,13 @@ let gtfsRealtimeAlertsInterval;
 EntitySelector.read = function (pbf, end) {
   return pbf.readFields(
     (tag, entity, reader) => {
-      if (tag === 6) {
+      if (tag === 4) {
+        entity.trip = reader.readFields(
+          TripDescriptor._readField,
+          {},
+          reader.readVarint() + reader.pos,
+        );
+      } else if (tag === 6) {
         entity.direction_id = reader.readVarint();
       } else {
         EntitySelector._readField(tag, entity, reader);
@@ -122,6 +128,38 @@ function formatAlertAsHtml(
   return alertElement;
 }
 
+function matchesAlertSelector(entity, pattern) {
+  const route = routeData[pattern.routeId];
+  const trip = entity.trip;
+  // A route from an unresolved trip descriptor cannot identify the affected trip.
+  if (trip && !trip.trip_id) {
+    return false;
+  }
+  if (
+    !entity.agency_id &&
+    !entity.route_id &&
+    entity.route_type === undefined &&
+    !entity.stop_id &&
+    !trip &&
+    entity.direction_id === undefined
+  ) {
+    return false;
+  }
+  return (
+    (!entity.agency_id || entity.agency_id === route?.agency_id) &&
+    (!entity.route_id || entity.route_id === pattern.routeId) &&
+    (entity.route_type === undefined ||
+      entity.route_type === route?.route_type) &&
+    (entity.direction_id === undefined ||
+      entity.direction_id === pattern.directionId) &&
+    (!entity.stop_id || pattern.stopIds.includes(entity.stop_id)) &&
+    (!trip?.trip_id || pattern.tripIds.includes(trip.trip_id)) &&
+    (!trip?.route_id || trip.route_id === pattern.routeId) &&
+    (trip?.direction_id === undefined ||
+      trip.direction_id === pattern.directionId)
+  );
+}
+
 async function updateAlerts() {
   if (!gtfsRealtimeUrls?.realtimeAlerts) {
     return;
@@ -141,36 +179,35 @@ async function updateAlerts() {
 
     for (const alert of alerts) {
       const entities = alert.alert?.informed_entity ?? [];
-      const affectedRouteIdsInTimetable = routeIds.filter((routeId) =>
-        entities.some((entity) => {
-          if (entity.route_id === routeId) {
-            return true;
+      const matchedRoutes = new Set();
+      const matchedStops = new Set();
+
+      for (const entity of entities) {
+        for (const pattern of alertPatterns) {
+          if (!matchesAlertSelector(entity, pattern)) {
+            continue;
           }
+          if (entity.stop_id) {
+            matchedStops.add(entity.stop_id);
+          }
+          if (
+            !entity.stop_id ||
+            entity.route_id ||
+            entity.trip ||
+            entity.route_type !== undefined ||
+            entity.agency_id ||
+            entity.direction_id !== undefined
+          ) {
+            matchedRoutes.add(pattern.routeId);
+          }
+        }
+      }
 
-          return (
-            entity.agency_id &&
-            entity.agency_id === routeData[routeId]?.agency_id &&
-            !entity.route_id &&
-            !entity.stop_id &&
-            !entity.trip &&
-            entity.route_type === undefined &&
-            entity.direction_id === undefined
-          );
-        }),
+      const affectedRouteIdsInTimetable = routeIds.filter((id) =>
+        matchedRoutes.has(id),
       );
-
-      const affectedStopIds = [
-        ...new Set([
-          ...entities
-            .filter(
-              (entity) => entity.stop_id !== undefined && entity.stop_id !== '',
-            )
-            .map((entity) => entity.stop_id),
-        ]),
-      ];
-
-      const affectedStopsIdsInTimetable = stopIds.filter((stopId) =>
-        affectedStopIds.includes(stopId),
+      const affectedStopsIdsInTimetable = stopIds.filter((id) =>
+        matchedStops.has(id),
       );
 
       // Hide alerts that don't affect any stops or routes in this timetable
